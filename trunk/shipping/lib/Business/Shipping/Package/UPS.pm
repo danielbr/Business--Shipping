@@ -22,6 +22,7 @@ use strict;
 use warnings;
 use base ( 'Business::Shipping::Package' );
 
+
 =item * packaging
 
 UPS-only attribute.
