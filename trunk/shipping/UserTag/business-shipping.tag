@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.17 2004/01/28 16:46:09 db-ship Exp $
+# $Id: business-shipping.tag,v 1.18 2004/01/29 00:10:23 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -268,32 +268,41 @@ sub {
 	#   XPS_GEN_INCIDENTS
 	#   SYSTEMS_SUPPORT_EMAIL
 	#
+	
 	if ( ! $charges or $charges !~ /\d+/) {
 		
 		if ( $Variable->{ 'XPS_GEN_INCIDENTS' } ) {
-			
-			my %important_vars = @opt{ 'shipper', 'service', 'to_country', 'weight', 'to_zip' };
 			my $vars_out;
 			
-			$vars_out .= "\nImportant variables:\n";
-			$vars_out .= "\t$_ => $important_vars{$_}\n"
-				foreach ( keys %important_vars );
+			$vars_out .= "Important variables:\n";
+			foreach ( 'shipper', 'service', 'to_country', 'weight', 'to_zip' ) {
+				$vars_out .= "\t$_ => \t\'$opt{$_}\',\n";
+			}
 				
 			$vars_out .= "\nAll variables\n";
-			$vars_out = "\t$_ => $opt{$_}\n"
-				foreach ( keys %opt );
+			foreach ( keys %opt ) {
+				$vars_out .= "\t$_ => \t\t\'$opt{$_}\',\n";
+			}				
 				
 			$vars_out .= "\nActual values from the rate_request object\n";
-			$vars_out = "\t" . '$rate_request->$_() => ' . $rate_request->$_() . "\n"
-				foreach ( keys %opt );
+			foreach ( keys %opt ) {
+				$vars_out .= "\t$_ => \t\t\'" . $rate_request->$_() . "\',\n";
+			}
 
+			
 			my $error = $rate_request->error();
+			$error = $error ? "errors: $error." : 'errors: none.';
 			
 			#
 			# Ignore errors if [incident] is missing or misbehaves.
 			#
 			eval {
-				$Tag->incident("[business-shipping]: $shipper error: $error. \n Options were: $vars_out");
+				$Tag->incident(
+					{
+						subject => "[business-shipping]: $shipper $error", 
+						content => "$vars_out"
+					}
+				);
 			};
 			$@ = '';
 		}

@@ -36,5 +36,7 @@ cp -f UserTag/business-shipping.tag $B_S_GLOBAL_TAG_DIR/
 cp -f UserTag/incident.tag $B_S_GLOBAL_TAG_DIR/
 chown ${B_S_USER}.${B_S_GROUP} $B_S_GLOBAL_TAG_DIR/business-shipping.tag
 chown ${B_S_USER}.${B_S_GROUP} $B_S_GLOBAL_TAG_DIR/incident.tag
+echo
+echo
 echo Please restart Interchange for the new usertag to take effect
 

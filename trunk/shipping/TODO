@@ -1,7 +1,9 @@
 ######################################################
 ##  General TODO
 ######################################################
- 
+
+ * [ENH] Add scripts/ directory somewhere.
+
  * [ENH] Use fields.pm to guard against autovivification. 
  
  * [ENH] Improve documentation (adding sections to all .pm files)

@@ -1,23 +1,24 @@
-UserTag incident Order		error
+UserTag incident AddAttr
 UserTag incident Routine 	<<EOR
 sub
 {
-	my ( $error ) = @_;
-	
+	my ( $opt ) = @_;
 	return unless $Variable->{ SYSTEMS_SUPPORT_EMAIL };
+	return unless $opt->{ subject } or $opt->{ content };
 	
 	my $timestamp = $Tag->time();
 	my $dump = $Tag->dump();		
 	return $Tag->email(
 		{
 			'to' => $Variable->{ SYSTEMS_SUPPORT_EMAIL },
-			'subject' => substr( $error, 0, 67 ),
+			'subject' => substr( $opt->{ subject }, 0, 67 ),
 		},
-			"Date & time: $timestamp\n"
+			"Date & time:\t$timestamp\n"
 		.	"\n"
-		.	"User affected: " . $Values->{ fname } . " " . $Values->{ lname } . "\n"
+		.	"User affected:\t" . $Values->{ fname } . " " . $Values->{ lname } . "\n"
 		.	"\n"
-		.	$error . "\n"
+		.	"\n"
+		.	$opt->{ content } . "\n"
 		.	"\n"
 		.	$dump
 	);
