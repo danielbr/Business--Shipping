@@ -4,29 +4,40 @@ use warnings;
 use Test::More 'no_plan';
 use Carp;
 use Business::Shipping;
-use_ok( "Business::Shipping::UPS::Package" );
+use Business::Shipping::Shipment;
+use Business::Shipping::Shipment::UPS;
+use Business::Shipping::Shipment::USPS;
+use Business::Shipping::Package;
+use Business::Shipping::Package::UPS;
+use Business::Shipping::Package::USPS;
+use Business::Shipping::RateRequest;
+use Business::Shipping::RateRequest::Online;
+use Business::Shipping::RateRequest::Online::UPS;
+use Business::Shipping::RateRequest::Online::USPS;
 
-my $standard_method = new Business::Shipping( 'shipper' => 'UPS' );
+my $standard_method = new Business::Shipping->rate_request( 'shipper' => 'UPS' );
 ok( defined $standard_method,	'UPS standard object construction' );
 
-my $other_method = new Business::Shipping::UPS;
+my $other_method = new Business::Shipping::RateRequest::Online::UPS;
 ok( defined $other_method,		'UPS alternate object construction' );
 
-my $package = new Business::Shipping::UPS::Package;
-ok( defined $package,			'UPS package object construction' );
+my $package_one = new Business::Shipping::Package::UPS;
+ok( defined $package_one,			'UPS package object construction' );
 
 sub test
 {
 	my ( %args ) = @_;
-	my $shipment = new Business::Shipping( 'shipper' => 'UPS' );
-	$shipment->set(
+	my $shipment = Business::Shipping->rate_request( 
+		'shipper' => 'UPS',
 		'user_id'		=> $ENV{ UPS_USER_ID },
 		'password'		=> $ENV{ UPS_PASSWORD },
 		'access_key'	=> $ENV{ UPS_ACCESS_KEY }, 
-		'test_mode'		=> 1,
-		'cache_enabled'	=> 0,
+		'cache'	=> 0,
+		event_handlers => {
+			#trace => 'STDERR' 
+		}
 	);
-	$shipment->set( %args );
+	$shipment->submit( %args ) or die $shipment->error();
 	return $shipment;
 }
 
@@ -57,30 +68,30 @@ SKIP: {
 	
 	###########################################################################
 	##  Domestic Multi-package API
+	##  TODO: Re-enable.  Currently disabled.
 	###########################################################################
-	$shipment = test(
-		'pickup_type'	 	=> 'daily pickup',
-		'from_zip'			=> '98682',
-		'from_country'		=> 'US',
-		'to_country'		=> 'US',	
-		'service'			=> '1DA',
-		'to_residential'	=> '1',
-		'to_zip'			=> '98270',
-	);
-	
-	$shipment->add_package(
-		'weight'		=> '3.45',
-		'packaging' 	=>  '02',
-	);
-	
-	$shipment->add_package(
-		'weight'		=> '6.9',
-		'packaging' 	=>  '02',
-	);
-	$shipment->submit() or die $shipment->error();
-	ok( $shipment->total_charges(),	'UPS domestic multi-package API total_charges > 0' );
-	
-	
+
+#	$shipment = test(
+#		'pickup_type'	 	=> 'daily pickup',
+#		'from_zip'			=> '98682',
+#		'from_country'		=> 'US',
+#		'to_country'		=> 'US',	
+#		'service'			=> '1DA',
+#		'to_residential'	=> '1',
+#		'to_zip'			=> '98270',
+#	);
+#	
+#	$shipment->add_package(
+#		'weight'		=> '3.45',
+#		'packaging' 	=>  '02',
+#	);
+#	
+#	$shipment->add_package(
+#		'weight'		=> '6.9',
+#		'packaging' 	=>  '02',
+#	);
+#	$shipment->submit() or die $shipment->error();
+#	ok( $shipment->total_charges(),	'UPS domestic multi-package API total_charges > 0' );
 	
 	
 	###########################################################################
@@ -94,7 +105,7 @@ SKIP: {
 		'to_country'		=> 'GB',	
 		'service'			=> 'XDM',
 		'to_residential'	=> '1',
-		'to_city'			=> 'Godstone',
+		#'to_city'			=> 'Godstone',
 		'to_zip'			=> 'RH98AX',
 		'weight'			=> '3.45',
 		'packaging' 		=> '02',
@@ -105,28 +116,28 @@ SKIP: {
 	###########################################################################
 	##  International Multi-package API
 	###########################################################################
-	$shipment = test(
-		'pickup_type'	 	=> 'daily pickup',
-		'from_zip'			=> '98682',
-		'from_country'		=> 'US',
-		'to_country'		=> 'GB',	
-		'service'			=> 'XDM',
-		'to_residential'	=> '1',
-		'to_city'			=> 'Godstone',
-		'to_zip'			=> 'RH98AX',
-	);
-	
-	$shipment->add_package(
-		'weight'			=> '3.45',
-		'packaging' 		=> '02',
-	);
-	
-	$shipment->add_package(
-		'weight'		=> '6.9',
-		'packaging' 	=>  '02',
-	);
-	$shipment->submit() or die $shipment->error();
-	ok( $shipment->total_charges(),	'UPS intl multi-package API total_charges > 0' );
+#	$shipment = test(
+#		'pickup_type'	 	=> 'daily pickup',
+#		'from_zip'			=> '98682',
+#		'from_country'		=> 'US',
+#		'to_country'		=> 'GB',	
+#		'service'			=> 'XDM',
+#		'to_residential'	=> '1',
+#		'to_city'			=> 'Godstone',
+#		'to_zip'			=> 'RH98AX',
+#	);
+#	
+#	$shipment->add_package(
+#		'weight'			=> '3.45',
+#		'packaging' 		=> '02',
+#	);
+#	
+#	$shipment->add_package(
+#		'weight'		=> '6.9',
+#		'packaging' 	=>  '02',
+#	);
+#	$shipment->submit() or die $shipment->error();
+#	ok( $shipment->total_charges(),	'UPS intl multi-package API total_charges > 0' );
 	
 	
 	###########################################################################
@@ -134,7 +145,7 @@ SKIP: {
 	##  Multiple sequential queries should give *different* results.
 	###########################################################################
 	$shipment = test(
-		'cache_enabled'		=> 1,
+		'cache'		=> 1,
 		'pickup_type'	 	=> 'daily pickup',
 		'from_zip'			=> '98682',
 		'from_country'		=> 'US',
@@ -149,7 +160,7 @@ SKIP: {
 	my $total_charges_1_pound = $shipment->total_charges();
 	
 	$shipment = test(
-		'cache_enabled'		=> 1,
+		'cache'				=> 1,
 		'pickup_type'	 	=> 'daily pickup',
 		'from_zip'			=> '98682',
 		'from_country'		=> 'US',
@@ -175,7 +186,7 @@ SKIP: {
 		'to_country'		=> 'GB',	
 		'service'			=> 'XPD',
 		'to_residential'	=> '1',
-		'to_city'			=> 'Godstone',
+		#'to_city'			=> 'Godstone',
 		'to_zip'			=> 'RH98AX',
 		'weight'			=> '3.45',
 		'packaging' 		=> '02',

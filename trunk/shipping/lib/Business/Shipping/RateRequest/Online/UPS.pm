@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::UPS - Abstract class for shipping cost rating.
 # 
-# $Id: UPS.pm,v 1.3 2003/07/10 16:25:27 db-ship Exp $
+# $Id: UPS.pm,v 1.4 2003/08/07 22:45:47 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 #@ISA = ( 'Business::Shipping::RateRequest::Online' );
 use base ( 'Business::Shipping::RateRequest::Online' );
 
@@ -183,7 +183,7 @@ sub _massage_values
 	
 	# UPS requires weight is at least 0.1 pounds.
 	foreach my $package ( @{ $self->shipment->packages() } ) {
-		$package->weight( 0.1 )			if ( $package->weight() < 0.1 );
+		$package->weight( 0.1 )			if ( ! $package->weight() or $package->weight() < 0.1 );
 	}
 
 	# In the U.S., UPS only wants the 5-digit base ZIP code, not ZIP+4

@@ -19,6 +19,8 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
  Error
  Cache::FileCache
  Data::Dumper
+ Class::MethodMaker
+
  
 =head1 USAGE
 

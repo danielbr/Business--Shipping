@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment::USPS
 # 
-# $Id: USPS.pm,v 1.2 2003/07/10 07:38:22 db-ship Exp $
+# $Id: USPS.pm,v 1.3 2003/08/07 22:45:47 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -14,7 +14,7 @@ use warnings;
 
 use vars qw( @ISA $VERSION );
 @ISA = ( 'Business::Shipping::Shipment' );
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping::Debug;
 use Business::Shipping::Package;
@@ -83,10 +83,10 @@ sub to_country
 		my $new_to_country = shift;
 		$new_to_country = $self->_country_name_translator( $new_to_country );
 		#$self->{ 'to_country' } = $new_to_country;
-		debug ( "setting country to \'$new_to_country\'" );
+		#debug ( "setting country to \'$new_to_country\'" );
 		$self->SUPER::to_country( $new_to_country );
 	} 
-	debug ( "to_country now is " . ( $self->SUPER::to_country() || '' ) );
+	#debug ( "to_country now is " . ( $self->SUPER::to_country() || '' ) );
 	return $self->SUPER::to_country();
 }
 

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::USPS - Abstract class for shipping cost rating.
 # 
-# $Id: USPS.pm,v 1.2 2003/07/10 07:38:21 db-ship Exp $
+# $Id: USPS.pm,v 1.3 2003/08/07 22:45:47 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( @ISA $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @ISA = ( 'Business::Shipping::RateRequest::Online' );
 
 
@@ -257,17 +257,33 @@ sub _handle_response
 		#
 		
 		foreach my $service ( @{ $response_tree->{Package}->{Service} } ) {
-			debug( "Postage for $service->{SvcDescription} service = " . $service->{Postage} );
+			debug( "Charges for $service->{SvcDescription} service = " . $service->{Postage} );
 			
-			# TODO: store the prices using $self->package_id( $id )->set_charges( $service->{Postage} )
-			
-			if ( $service->{SvcDescription} and $service->{SvcDescription} =~ $self->service() ) {
+			# BUG: you can't check if the service descriptions match, because many countries use
+			# different descriptions for the same service.  So we try to match by description
+			# *or* by mail_type.  (There are probably many services with the same mail_type, how 
+			# do we handle those?  We could just get them based on index number (maybe all "zero" 
+			# is the cheapest ground service, or...?
+			if	(
+					( $self->mail_type()	and $self->mail_type()	=~ $service->{ MailType } 		)
+				or	( $self->service() 		and $self->service 		=~ $service->{SvcDescription} 	)
+				) {
+					
 				my $charges = $service->{ 'Postage' };
 				if ( ! $charges ) { $self->error( 'charges are 0, error out' ); return $self->clear_is_success(); }
 				debug( 'Setting charges to ' . $service->{Postage} );
 				my $packages = [ { 'charges' => $charges, }, ];
 				my $results = { $self->shipment->shipper() => $packages };
 				$self->results( $results );
+				
+			}
+			else {
+				my $error_msg = "The requested service (" . $self->service() 
+						. ") did not match the service that was available for that country: "
+						. $service->{SvcDescription};
+				
+				print STDERR $error_msg;
+				$self->error( $error_msg );
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online - Abstract class for shipping cost rating.
 # 
-# $Id: Online.pm,v 1.2 2003/07/10 07:38:21 db-ship Exp $
+# $Id: Online.pm,v 1.3 2003/08/07 22:45:47 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( @ISA $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @ISA = ( 'Business::Shipping::RateRequest' );
 
 use Business::Shipping::Debug;
@@ -56,7 +56,7 @@ sub perform_action
 	#
 	
 	if ( ! $self->response()->is_success() ) { 
-		error( "HTTP Error. Status line: " . $self->response->status_line .
+		Business::Shipping::Debug::error( "HTTP Error. Status line: " . $self->response->status_line .
 		"Content: " . $self->response->content() );
 		return( undef ); 
 	}

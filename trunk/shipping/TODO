@@ -2,7 +2,16 @@
 ##  General TODO
 ######################################################
  
- * Debugging is handling by configuration files.
+ 
+ 
+ * Fix the multi-package API for UPS.
+ 
+ * Find a way to correlate "Air mail" with all the various names it is called by each country.
+ 
+ * Look into bug cases
+ 
+ * Debugging settings can be handled by configuration files, environment variables, or
+   passed-parameters.
  
  * Bug Reports:
    - Some of the intermittent errors:
@@ -63,6 +72,7 @@
 
  * Business::Shipping::OldUPS interface?
  	- Utilize Business::UPS?  Advantage:  no username/id...
+	- Or utilize the new Business::Shipping::UPS?
 	
  * New feature ideas:
  	- Address Verification

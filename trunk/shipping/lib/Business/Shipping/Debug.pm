@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest - Abstract class for shipping cost rating.
 # 
-# $Id: Debug.pm,v 1.2 2003/07/10 07:38:19 db-ship Exp $
+# $Id: Debug.pm,v 1.3 2003/08/07 22:45:46 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -12,14 +12,21 @@ package Business::Shipping::Debug;
 use strict;
 use warnings;
 
-use vars qw( @ISA $VERSION @EXPORT );
-@ISA = ( 'Business::Shipping' );
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+use vars qw( $VERSION @EXPORT );
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
-require Exporter;
-@ISA = qw(Exporter);
+use base ( 'Exporter', 'Business::Shipping' );
+@EXPORT = qw( uneval debug debug3 trace log_error );
 
-@EXPORT = qw( uneval debug debug3 trace log_error );	
+###########################################################################
+##  Variables
+###########################################################################
+
+%Business::Shipping::Debug::event_handlers = ();
+$Business::Shipping::Debug::event_handlers{ 'debug' } 	= undef;
+$Business::Shipping::Debug::event_handlers{ 'debug3' }	= undef;
+$Business::Shipping::Debug::event_handlers{ 'trace' } 	= undef;
+$Business::Shipping::Debug::event_handlers{ 'error' } 	= 'STDERR';
 
 ###########################################################################
 ##  Helper methods
@@ -87,18 +94,11 @@ sub _log
 	$msg  = "$sub: $msg" if $sub and $msg;
 	$msg .= "\n" unless ( $msg =~ /\n$/ );
 	
-	#my @event_handlers = keys %{$self->{'event_handlers'}}
-	my @event_handlers = ( 'debug', 'debug3','trace', 'error' );
-	my %event_handlers = (
-		'debug' => 'STDERR',
-		'debug3' => 'STDERR',
-		'error' => 'STDERR',
-		'trace' => 'STDERR',
-	);
+	my @event_handlers = ( 'debug', 'debug3', 'trace', 'error' );
 	
 	foreach my $eh ( @event_handlers ) {
-		my $eh_value = $event_handlers{ $eh };
-		if ( $type eq $eh and $eh_value and $ENV{ 'BUSINESS_SHIPPING_ENABLE_' . uc($eh) } ) {
+		my $eh_value = $Business::Shipping::Debug::event_handlers{ $eh };
+		if ( $type eq $eh and $eh_value ) {
 			print STDERR $msg if $eh_value eq "STDERR";
 			print STDOUT $msg if $eh_value eq "STDOUT";
 			Carp::carp   $msg if $eh_value eq "carp";

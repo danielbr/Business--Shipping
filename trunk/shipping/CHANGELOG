@@ -1,12 +1,16 @@
 Revision history for Business::Shipping.
 
+0.71  Aug 06 2003
+	- International USPS bug fixes.
+	- Many, many additional tests.
+	- Very much improved debug/error handling.
+
 0.70  Jul 07 2003
 	- Complete rewrite of the entire system
 	- Now more modular, object oriented, smaller, and simpler.
 	- License changed to GPL
 	- New cache system (faster, more reliable)
 	- Enhancements to Class::Methodmaker
-	
 
 0.04  Jun 24 2003
 	- Interchange usertag bugfixes

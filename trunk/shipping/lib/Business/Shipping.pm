@@ -1,6 +1,6 @@
-# Name:: - Description
+# Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.2 2003/07/10 07:38:19 db-ship Exp $
+# $Id: Shipping.pm,v 1.3 2003/08/07 22:45:46 db-ship Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -13,14 +13,14 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Carp;
 use Business::Shipping::Debug;
 use Business::Shipping::CustomMethodMaker
 	new_hash_init => 'new',
 	grouped_fields => [
-		optional => [ 'event_handlers', 'tx_type' ]
+		optional => [ 'tx_type' ]
 	],
 	get_set => [ 'error_msg' ];
 
@@ -36,13 +36,19 @@ sub error
 	return $self->error_msg();
 }
 
+sub event_handlers
+{
+	my $self = shift;
+	my $event_handlers = shift;
+	%Business::Shipping::Debug::event_handlers = %$event_handlers;
+	return;
+}
+
 sub validate
 {
 	trace( '()' );
 	my ( $self ) = shift;
 	
-	#debug( "self = $self" );
-	#my @required = $self->required();
 	my @required = $self->required();
 	my @optional = $self->optional();
 	
@@ -60,13 +66,12 @@ sub validate
 	
 	if ( @missing ) {
 		# TODO: error handling.
-		# $self->error( "Missing required argument " . join ", ", @missing_args );
 		$self->error( "Missing required argument " . join ", ", @missing );
 		debug( "returning undef" );
 		return undef;
 	}
 	else {
-		debug( "returning 1" );
+		debug( "returning success" );
 		return 1;
 	}
 }
@@ -144,7 +149,9 @@ sub rate_request
 	my $new_rate_request	= Business::Shipping->new_subclass( 'RateRequest::Online::' . $opt{ 'shipper' } );
 	$shipment->packages_push( $package );
 	$new_rate_request->shipment( $shipment );
-	$new_rate_request->init( %opt ); #rate_request->init() automatically passes the option to Shipment and Package.
+	
+	# init(), in turn, automatically delegates certain options to Shipment and Package.
+	$new_rate_request->init( %opt ); 
 	
 	return ( $new_rate_request );
 }

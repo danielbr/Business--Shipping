@@ -70,6 +70,8 @@ ln -s $version Business-Shipping-latest
 cd CVS-Business-Shipping
 cvs up
 
+# Need to update the version number in index.html
+
 EOF
 };
 
