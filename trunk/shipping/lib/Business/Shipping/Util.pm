@@ -18,7 +18,7 @@ Many file-related functions, some others.
 
 package Business::Shipping::Util;
 
-$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT  = ( 'element_in_array' );
 
 use strict;
