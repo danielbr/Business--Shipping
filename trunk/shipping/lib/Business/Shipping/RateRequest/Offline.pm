@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline
 #
-# $Id: Offline.pm,v 1.7 2004/03/03 04:07:51 danb Exp $
+# $Id: Offline.pm,v 1.8 2004/03/08 17:13:56 danb Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. 
 #
@@ -18,7 +18,7 @@ disables the cache feature, and has a few miscellaneous function.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -27,10 +27,8 @@ use Business::Shipping::RateRequest;
 use Business::Shipping::Shipment;
 use Business::Shipping::Package;
 use Business::Shipping::Debug;
-use Business::Shipping::CustomMethodMaker
-    new_with_init => 'new',
-    new_hash_init => 'hash_init';
-
+use Class::MethodMaker 2.0 [ new => [ qw/ -hash new / ] ];
+    
 # We don't have online things to request.
 sub perform_action {}
 

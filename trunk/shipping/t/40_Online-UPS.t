@@ -5,6 +5,7 @@ use Test::More 'no_plan';
 use Carp;
 use Business::Shipping;
 
+$::debug = 0;
 
 my $standard_method = new Business::Shipping->rate_request( 'shipper' => 'UPS' );
 ok( defined $standard_method,    'UPS standard object construction' );
@@ -15,6 +16,10 @@ ok( defined $other_method,        'UPS alternate object construction' );
 my $package_one = new Business::Shipping::Package::UPS;
 ok( defined $package_one,            'UPS package object construction' );
 
+sub debug
+{
+    print STDERR $_[ 0 ] . "\n" if $::debug;
+}
 sub test
 {
     my ( %args ) = @_;
@@ -151,7 +156,7 @@ SKIP: {
     ##  Cache Test
     ##  Multiple sequential queries should give *different* results.
     ###########################################################################
-    $shipment = test(
+    my $rr1 = test(
         'cache'        => 1,
         'pickup_type'         => 'daily pickup',
         'from_zip'            => '98682',
@@ -160,13 +165,14 @@ SKIP: {
         'service'            => '1DA',
         'to_residential'    => '1',
         'to_zip'            => '98270',
-        'weight'            => '1.0',
+        'weight'            => 2,
         'packaging'         => '02',
     );
-    $shipment->submit() or die $shipment->error();
-    my $total_charges_1_pound = $shipment->total_charges();
+    $rr1->submit() or die $rr1->error();
+    my $total_charges_2_pounds = $rr1->total_charges();
+    debug( "Cache test. 2 pounds = $total_charges_2_pounds" ); 
     
-    $shipment = test(
+    my $rr2 = test(
         'cache'                => 1,
         'pickup_type'         => 'daily pickup',
         'from_zip'            => '98682',
@@ -175,12 +181,13 @@ SKIP: {
         'service'            => '1DA',
         'to_residential'    => '1',
         'to_zip'            => '98270',
-        'weight'            => '5',
+        'weight'            => 9,
         'packaging'         => '02',
     );
-    $shipment->submit() or die $shipment->error();
-    my $total_charges_5_pounds = $shipment->total_charges();
-    ok( $total_charges_1_pound != $total_charges_5_pounds, 'UPS intl cache, sequential charges are different' );
+    $rr2->submit() or die $rr2->error();
+    my $total_charges_9_pounds = $rr2->total_charges();
+    debug( "Cache test. 9 pounds = $total_charges_9_pounds" );
+    ok( $total_charges_2_pounds != $total_charges_9_pounds, 'UPS domestic cache, sequential charges are different' );
     
     
     ###########################################################################

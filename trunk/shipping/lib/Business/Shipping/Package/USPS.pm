@@ -1,4 +1,4 @@
-# $Id: USPS.pm,v 1.8 2004/03/03 04:07:51 danb Exp $
+# $Id: USPS.pm,v 1.9 2004/03/08 17:13:55 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,7 +13,7 @@ Business::Shipping::Package::USPS
 
 =head1 VERSION
 
-$Revision: 1.8 $      $Date: 2004/03/03 04:07:51 $
+$Revision: 1.9 $      $Date: 2004/03/08 17:13:55 $
 
 =head1 METHODS
 
@@ -21,7 +21,7 @@ $Revision: 1.8 $      $Date: 2004/03/03 04:07:51 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -50,31 +50,58 @@ Default 'Package'.
 =item * ounces
 
 =cut
-use Business::Shipping::CustomMethodMaker
-    new_with_init => 'new',
-    new_hash_init => 'hash_init',
-    grouped_fields_inherit => [
-        optional => [ 'container', 'size', 'machinable', 'mail_type', 'pounds', 'ounces' ],
-        
-        # Note that we use 'weight' as the unique value, which should convert from pounds/ounces.
-        unique => [ 'container', 'size', 'machinable', 'mail_type' ]
+use Class::MethodMaker 2.0
+    [
+      new    => [ { -hash => 1, -init => 'this_init' }, 'new' ],
+      scalar => [ { -default => 'None'    }, 'container'  ],
+      scalar => [ { -default => 'Regular' }, 'size'       ],
+      scalar => [ { -default => 'False'   }, 'machinable' ],
+      scalar => [ { -default => 'Package' }, 'mail_type'  ],
+      scalar => [ { -default => '0.00'    }, 'ounces'     ],
+      scalar => [ { -default => '0.00'    }, 'pounds'     ],
+      scalar => [ 
+                  { 
+                    -static => 1, 
+                    -default => 'container, size, machinable, mail_type, pounds, '
+                              . 'ounces'  
+                  }, 
+                  'Optional' 
+                ], 
+      #
+      # Note that we use 'weight' as the unique value, which should convert 
+      # from pounds/ounces.
+      #
+      scalar => [ 
+                  { 
+                    -static => 1, 
+                    -default => 'container, size, machinable, mail_type' 
+                  }, 
+                  'Unique' 
+                ]
     ];
+    
+sub this_init { $_[ 0 ]->shipper( 'USPS' ); }
 
-use constant INSTANCE_DEFAULTS => (
-    container    => 'None',
-    size        => 'Regular',
-    machinable    => 'False',
-    mail_type    => 'Package',
-    ounces        => 0,
-);
- 
-sub init
+=item * Required()
+
+We use a hand-written "Required()" method for this class, because we require one
+of the following: pounds, ounces, or weight.  It doesn't matter which one it is,
+but if none of them are defined, then we pick 'weight' to Require.
+
+=cut
+sub Required
 {
-    my $self   = shift;
-    my %values = ( INSTANCE_DEFAULTS, @_ );
-    $self->hash_init( %values );
-    return;
+    my ( $self ) = @_;
+    
+    for ( qw( weight pounds ounces ) ) {
+        if ( $self->$_ ) {
+            return '';
+        }
+    }
+    
+    return 'weight';
 }
+
 
 =item * weight
 
@@ -84,8 +111,8 @@ ounces.
 =cut
 sub weight
 {
-    trace '()';
     my ( $self, $in_weight ) = @_;
+    trace( '(' . uneval( \@_ ) . ')' );
     
     if ( $in_weight ) {
         
@@ -94,54 +121,57 @@ sub weight
             $in_weight = 1.00;
         }
         
-        my ( $pounds, $ounces ) = $self->weight_to_imperial( $in_weight );
-        
-        $self->pounds( $pounds ) if $pounds;
-        $self->ounces( $ounces ) if $ounces;
+        $self->set_lbs_oz( $in_weight );
     }
-    
-    my $out_weight = $self->imperial_to_weight( $self->pounds(), $self->ounces() );
-    
     # Convert back to 'weight' (i.e. one number) when returning.
+    my $out_weight = $self->lbs_oz_to_weight;
+    
     return $out_weight;
 }
 
-=item * weight_to_imperial
+=item * set_lbs_oz
 
-Converts fractional pounds to pounds + ounces.
+Set pounds and ounces.  Converts from fractional pounds.
 
 =cut
-sub weight_to_imperial
+sub set_lbs_oz
 {
     my ( $self, $in_weight ) = @_;
     
-    my $pounds = $self->_round_up( $in_weight );
-    my $remainder = $pounds - $in_weight;
+    my $pounds = 0;
+    my $ounces = 0;
     
+    $pounds = $self->_round_up( $in_weight );
+    my $remainder = $pounds - $in_weight;
     # For some weights (e.g. 2.4), this is necessary.
     $remainder = -$remainder if $remainder < 0;
-    
-    my $ounces;
     if ( $remainder ) {
         $ounces = $remainder * 16;
         $ounces = sprintf( "%1.0f", $ounces );
     }
+    $self->pounds( $pounds );
+    $self->ounces( $ounces );
     
-    return ( $pounds, $ounces );
+    return;
 }
 
-=item * weight_to_imperial
+=item * lbs_oz_to_weight
 
-Converts pounds + ounces to fractional weight.
+Converts pounds + ounces to fractional weight.  Returns weight.
 
 =cut
-sub imperial_to_weight
+sub lbs_oz_to_weight
 {
-    my ( $self, $pounds, $ounces ) = @_;
+    my ( $self ) = @_;
     
-    my $fractional_pounds = sprintf( "%1.0f", $self->ounces() / 16 );
+    trace '()';
     
-    return ( $pounds + $fractional_pounds );
+    my $pounds = $self->pounds || 0;
+    my $ounces = $self->ounces || 0;
+    my $fractional_pounds = $ounces ? sprintf( "%1.0f", $ounces / 16 ) : 0;
+    my $weight = ( $pounds + $fractional_pounds );
+    
+    return $weight;
 }
 
 =item * _round_up

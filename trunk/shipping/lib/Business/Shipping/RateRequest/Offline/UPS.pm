@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
 #
-# $Id: UPS.pm,v 1.19 2004/03/03 04:07:52 danb Exp $
+# $Id: UPS.pm,v 1.20 2004/03/08 17:13:56 danb Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003, 2004 Kavod Technologies, Dan Browning. 
@@ -24,7 +24,7 @@ Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
 
 =head1 VERSION
 
-$Revision: 1.19 $      $Date: 2004/03/03 04:07:52 $
+$Revision: 1.20 $      $Date: 2004/03/08 17:13:56 $
 
 =head1 SPECIAL INFO
 
@@ -45,7 +45,7 @@ EAS        Extended Area Surcharge (EAS)
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.19 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.20 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -74,7 +74,7 @@ use Scalar::Util 1.10;
 
 =item * is_from_west_coast
 
-=item * zones
+=item * Zones
 
 Hash.  Format:
 
@@ -98,40 +98,62 @@ Hash.  Format:
   - For Canada, it is...?
 
 =cut
-use Business::Shipping::CustomMethodMaker
-    new_with_init => 'new',
-    new_hash_init => 'hash_init',
-    boolean => [
-        'update',
-        'download',
-        'unzip', 
-        'convert',
-        'is_from_west_coast',
-    ],
-    hash => [ 'zone' ],
-    grouped_fields_inherit => [
-        optional => [ 
-            'zone_file',
-            'zone_name',
-        ],
-        required => [
-            'from_state',
-        ],        
-    ],
-    #
-    # Class Static Attributes
-    #
-    hash => [ '-static', 'Zones' ];
+use Class::MethodMaker 2.0
+    [ 
+      new    => [ { -init => 'this_init' }, 'new' ],
+      scalar => [
+                  'update',
+                  'download',
+                  'unzip', 
+                  'convert',
+                  'is_from_west_coast',
+                  'zone_file',
+                  'zone_name',
+                ],
+                #
+                # The forward is just for a shortcut.
+                #
+      scalar => [ { -type    => 'Business::Shipping::Shipment::UPS',
+                    -forward => [ 
+                                    'service', 
+                                    'from_country',
+                                    'from_country_abbrev',
+                                    'to_country',
+                                    'to_country_abbrev',
+                                    'to_ak_or_hi',
+                                    'from_zip',
+                                    'to_zip',
+                                    'packages',
+                                    'default_package',
+                                    'weight',
+                                    'shipper',
+                                    'domestic',
+                                    'intl',
+                                    'domestic_or_ca',
+                                    'from_canada',
+                                    'to_canada',
+                                    'from_ak_or_hi',
+                                    'from_state',
+                                    'from_state_abbrev',
+                                ],
+                   },
+                   'shipment'
+                 ],
+      scalar => [ { -static => 1, 
+                    -default => "shipment=>Business::Shipping::Shipment::UPS" 
+                  }, 
+                  'Has_a' 
+               ],
+      scalar => [ { -static => 1, -default => 'zone_file, zone_name' }, 'Optional' ],
+      scalar => [ { -static => 1 }, 'Zones' ],
+    ];
 
-use constant INSTANCE_DEFAULTS => ();
-sub init
+sub this_init
 {
-    my $self   = shift;
-    my %values = ( INSTANCE_DEFAULTS, @_ );
-    $self->hash_init( %values );
+    #$_[ 0 ]->shipper( 'UPS' );
+    $_[ 0 ]->Zones(   {}    );
     return;
 }
-
 sub to_residential { return shift->shipment->to_residential( @_ ); }
 sub is_from_east_coast { return not shift->is_from_west_coast(); }
 
@@ -541,9 +563,9 @@ sub _handle_response
     ];
     
     my $results = {
-        $self->shipment->shipper() => $packages
+        $self->shipper() => $packages
     };
-    debug3 'results = ' . uneval(  $results );
+    debug3 'results = ' . uneval( $results );
     $self->results( $results );
     
     return $self->is_success( 1 );
@@ -556,6 +578,13 @@ sub calc_express_plus_adder
 {
 
     my ( $self, $total_charges ) = @_;
+    
+    if ( ! $total_charges ) {
+        $self->error( "Need total_charges" );
+        return 0;
+    }
+    
+    
     trace "( $total_charges )";
     return 0 unless $total_charges;
     
@@ -611,6 +640,10 @@ sub service_code_to_ups_name
 {
     my ( $self, $service ) = @_;
     
+    if ( ! $service ) {
+        $self->error( "Need service parameter." );
+        return;
+    }
     #
     # These are the names at the top of the zone file.
     #
@@ -633,6 +666,11 @@ sub service_code_to_ups_name
 sub ups_name_to_table
 {
     my ( $self, $ups_name ) = @_;
+    
+    if ( ! $ups_name ) {
+        $self->error( "Need ups_name parameter." );
+        return;
+    }
     
     my $translate_map = cfg()->{ ups_names_in_zone_file_to_table_map };
     
@@ -666,16 +704,19 @@ sub calc_zone_data
     my ( $self ) = @_;
     
     my $zone_name = $self->zone_name;
-    if ( ! $zone_name ) {
-        $self->error( "No $zone_name, exiting..." );
+    if ( not defined $zone_name ) {
+        $self->error( "Need zone_name" );
         return;
     }
     
     #
     # Don't recalculate it if it already exists, unless overridden by configuration.
     #
+    debug( "zone_name = $zone_name" );
+    debug( "Zones = " . $self->Zones );
+    
     if     (    
-                $self->Zones( $zone_name ) 
+            $self->Zones->{ $zone_name } 
             and ! cfg()->{ ups_information }->{ always_calc_zone_data }
         )
     {
@@ -686,7 +727,7 @@ sub calc_zone_data
     #
     # Initialize this zone
     #
-    $self->Zones( $zone_name => {} );
+    $self->Zones->{ $zone_name } = {};
     
     #
     # World-wide:  instead of 130-139,123,345, we have:
@@ -694,8 +735,8 @@ sub calc_zone_data
     #
     debug( 'looking for zone_name: ' . $zone_name . ", with zone_file: " . $self->zone_file );
     
-    for ( keys %{ $self->Zones() } ) {
-        my $this_zone = $self->Zones( $_ );
+    for ( keys %{ $self->Zones } ) {
+        my $this_zone = $self->Zones->{ $_ };
         if ( ! $this_zone->{ zone_data } ) {
             $this_zone->{ zone_data } = Business::Shipping::Util::readfile( $self->zone_file() );
         }
@@ -792,6 +833,12 @@ sub determine_keys
         #
         # Domestic and Canada - by ZIP code
         #
+        
+        if ( ! $self->to_zip ) {
+            $self->error( "Need to_zip." );
+            return;
+        }
+        
         $raw_key = $self->to_zip;
         $key = $self->to_zip;
         $key = substr($key, 0, 3);
@@ -855,11 +902,16 @@ sub calc_cost
 {
     my ( $self ) = @_;
     
-    my $zone_name     = $self->zone_name;
-    my $zref         = $self->Zones( $zone_name );
-    my $type         = $self->service_code_to_ups_name(    $self->service()    );
-    my $table         = $self->ups_name_to_table(            $type                 );
-    $table             = $self->rate_table_exceptions( $type, $table );
+    if ( ! $self->zone_name or ! $self->service ) {
+        $self->error( "Need zone_name and service" );
+        return;
+    }
+    
+    my $zone_name = $self->zone_name;
+    my $zref      = $self->Zones->{ $zone_name };
+    my $type      = $self->service_code_to_ups_name( $self->service() );
+    my $table     = $self->ups_name_to_table(        $type            );
+    $table        = $self->rate_table_exceptions(    $type, $table    );
     
     
     my ( $key, $raw_key ) = $self->determine_keys; 
@@ -884,7 +936,7 @@ sub calc_cost
     # Check that the zone (e.g. 450) was defined.
     # Check that we have the zone data calculated.
     #
-    debug( "rate table = $table, zone_name = $zone_name" );
+    debug( "rate table = " . ( $table ? $table : 'undef' ) . ", zone_name = " . ( $zone_name ? $zone_name : 'undef' ) );
     if ( ! defined $zref->{zone_data} ) {
         $self->error( "zone data could not be found" );
         return 0;
@@ -1076,8 +1128,13 @@ sub calc_zone_info
     my $zone_file;
     if ( $self->domestic ) {
         debug( "domestic" );
+        if ( ! $self->from_zip ) {
+            $self->error( "Need from_zip" );
+            return;
+        }
+        debug( "from_zip = " . $self->from_zip );
         $zone = $self->make_three( $self->from_zip );
-        
+        debug( "!!!!!!!!!!!!!") ;
         $zone_file = "/data/$zone.csv";
     }
     elsif ( $self->to_canada ) {
@@ -1096,15 +1153,17 @@ sub calc_zone_info
             }
             my $state_to_upsstd_zone_file = cfg()->{ ups_information }->{ state_to_upsstd_zone_file };
             my $states = $self->config_to_hash( $state_to_upsstd_zone_file );
-            debug( "my from_state = " . $self->from_state  );
-            if ( $states->{ $self->from_state } ) {
-                $zone_file = "/data/" . $states->{ $self->from_state };    
+            use Data::Dumper;
+            debug( "states = " . Dumper( $states ) );
+            debug( "my from_state = " . ( $self->from_state || 'undef' ) );
+            if ( $self->from_state_abbrev and $states->{ $self->from_state_abbrev } ) {
+                $zone_file = "/data/" . $states->{ $self->from_state_abbrev };    
                 debug3(    "Found state in the state to upsstd_zone_file configuration "
                         . "parameter, zone_file = $zone_file " );
             }
             else {
                 $self->error(
-                    "could not find state in \'state to UPS Standard zone file \' converter."
+                    "could not find state in \'state to UPS Standard zone file\' converter."
                 );
                 return;
             }
@@ -1191,6 +1250,13 @@ sub _massage_values
 {
     my ( $self ) = @_;
     trace '()';
+
+    #
+    # In order to share the Shipment::UPS object between both Online::UPS and
+    # Offline::UPS, we do a little magic.  If it gets more complex than this,
+    # subclass it instead.
+    #
+    $self->shipment->offline( 1 );
     
     #    
     # TODO: do table lookup to find if it is residential or not.
@@ -1204,5 +1270,20 @@ sub _massage_values
 }
 
 1;
+
 __END__
+
+=back
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut
 

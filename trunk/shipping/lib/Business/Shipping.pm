@@ -1,6 +1,6 @@
 # Business::Shipping - Interface for shippers (UPS, USPS)
 #
-# $Id: Shipping.pm,v 1.19 2004/03/03 03:36:31 danb Exp $
+# $Id: Shipping.pm,v 1.20 2004/03/08 17:13:55 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -66,7 +66,7 @@ Business::Shipping - Interface for shippers (UPS, USPS)
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (< 2.0)
+ Class::MethodMaker (2.00)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
@@ -163,24 +163,41 @@ overwritten by a new error.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.19 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.20 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use Carp;
 use Business::Shipping::Debug;
-use Business::Shipping::CustomMethodMaker
-    new_hash_init  => 'new',
-    grouped_fields => [ optional => [ 'tx_type' ] ],
-    get_set        => [ 'error_msg' ];
+use Business::Shipping::ClassAttribs;
+use Scalar::Util 'blessed';
+use Class::MethodMaker 2.0
+    [ 
+      new    => [ qw/ -hash new  / ],
+      scalar => [ 'tx_type', 'error_msg', 'shipper' ],
+      scalar => [ { -static => 1, -default => 'tx_type' }, 'Optional' ]
+    ];
+
+sub init
+{
+    my ( $self, %args ) = @_;
     
+    foreach my $arg ( %args ) {
+        if ( $self->can( $arg ) ) {
+            $self->$arg( $args{ $arg } );
+        }
+    }
+    
+    return;
+}
+
 sub error
 {
     my ( $self, $msg ) = @_;
     
     if ( defined $msg ) {
         $self->error_msg( $msg );
-        Business::Shipping::Debug::log_error( $msg );
+        log_error( $msg );
     }
     
     return $self->error_msg();
@@ -198,8 +215,8 @@ sub validate
     trace '()';
     my ( $self ) = shift;
     
-    my @required = $self->required();
-    my @optional = $self->optional();
+    my @required = $self->get_grouped_attrs( 'Required' );
+    my @optional = $self->get_grouped_attrs( 'Optional' );
     
     debug( "required = " . join (', ', @required ) ); 
     debug3( "optional = " . join (', ', @optional ) );    
@@ -212,7 +229,7 @@ sub validate
     }
     
     if ( @missing ) {
-        $self->error( "Missing required argument " . join ", ", @missing );
+        $self->error( "Missing required argument(s): " . join ", ", @missing );
         $self->invalid( 1 );
         return;
     }
@@ -254,7 +271,7 @@ The origin zipcode.
 
 =item * from_state
 
-The origin state.  Required for Offline::UPS.
+The origin state in two-letter code format or full-name format.  Required for Offline::UPS.
 
 =item * to_zip
 
@@ -291,34 +308,41 @@ sub rate_request
         $full_shipper = "Online::" . $opt{ shipper };
     }
         
-    my $package                = Business::Shipping->new_subclass( 'Package::'             . $opt{ 'shipper' } );
-    my $shipment             = Business::Shipping->new_subclass( 'Shipment::'             . $opt{ 'shipper' } );
-    
-    my $subclass = 'RateRequest::' . $full_shipper;
+    my $package;
+    my $shipment;
     my $new_rate_request;
-    eval {
-        $new_rate_request = Business::Shipping->new_subclass( $subclass );
-    };
-    die $@ if $@;
+    eval { $package  = Business::Shipping->new_subclass( 'Package::'  . $opt{ 'shipper' } ); };
+    die "Error when creating Package subclass: $@" if $@;
+    die "package was undefined."  if not defined $package;
+    eval { $shipment = Business::Shipping->new_subclass( 'Shipment::' . $opt{ 'shipper' } ); };
+    die "Error when creating Shipment subclass: $@" if $@;
+    die "shipment was undefined." if not defined $shipment;
+    eval { $new_rate_request = Business::Shipping->new_subclass( 'RateRequest::' . $full_shipper ); };
+    die "Error when creating RateRequest subclass: $@" if $@;
+    die "RateRequest was undefined." if not defined $new_rate_request;
     
     $shipment->packages_push( $package );
     $new_rate_request->shipment( $shipment );
     
     # init(), in turn, automatically delegates certain options to Shipment and Package.
-    $new_rate_request->init( %opt ); 
+    #$new_rate_request->init( %opt );
+    #
+    # init() is not provided for us anymore, so we're using this...
+    #
+    for ( keys %opt ) {
+        $new_rate_request->$_( $opt{ $_ } );
+    }
+    
     
     return ( $new_rate_request );
 }
 
 sub new_subclass
 {
-    my $class = shift;
-    my $subclass = shift;
+    my ( $class, $subclass, %opt ) = @_;
+    
     my $new_class = $class . '::' . $subclass;
-    
-    my ( %opt ) = @_;
-    
-    if ( not defined &$new_class ) {
+    if ( not defined &$new_class ) {  # TODO: this test is always false: get a better test.
         #
         # Clear previous errors
         #
@@ -330,9 +354,34 @@ sub new_subclass
         eval "import $new_class";
         Carp::croak( "Error when trying to import $new_class: $@" ) if $@;
     }
+    else {
+        # "$new_class already defined.";
+    }
     
     my $new_sub_object = eval "$new_class->new()";
+    if ( $@ ) {
+        die "Failed to create new $new_class object.  Error: $@";
+    }
+    
     return $new_sub_object;    
+}
+
+sub get_class_name { return blessed $_[ 0 ]; }
+
+sub determine_shipper_from_self
+{
+    my ( $self ) = @_;
+    
+    trace( 'called' );
+    
+    my $class = blessed $self;
+    
+    debug "class = $class";
+    
+    return 'UPS' if $class =~ /UPS$/;
+    return 'USPS' if $class =~ /UPS$/;
+    
+    return;
 }
 
 #

@@ -1,6 +1,6 @@
 # Business::Shipping::Util - Miscellaneous functions
 # 
-# $Id: Util.pm,v 1.5 2004/03/03 04:07:51 danb Exp $
+# $Id: Util.pm,v 1.6 2004/03/08 17:13:55 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Util - Miscellaneous functions
 
 =head1 VERSION
 
-$Revision: 1.5 $      $Date: 2004/03/03 04:07:51 $
+$Revision: 1.6 $      $Date: 2004/03/08 17:13:55 $
 
 =head1 DESCRIPTION
 
@@ -27,7 +27,7 @@ Many file-related functions, some others.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT_OK = ( 'element_in_array' );
 
 use strict;
@@ -101,7 +101,7 @@ sub _unzip_file
         #$self->error( $error );
         die $error;
     }
-    if ( $@ ) { die $@; }
+    if ( $@ ) { die "_unzip_file error: $@"; }
     
     $zip->extractTree( '', $destination_directory );
     
@@ -269,6 +269,25 @@ sub close_fh
     
     return;
 }
+
+=item * unique( @ary )
+
+Removes duplicates (but leaves at least one).
+
+=cut
+sub unique
+{
+    my ( @ary ) = @_;
+    
+    my %seen;
+    my @unique;
+    foreach my $item ( @ary ) {
+        push( @unique, $item ) unless $seen{ $item }++;
+    }
+    
+    return @unique;
+}
+
 
 1;
 

@@ -1,15 +1,15 @@
-ifndef DEF_UPS_QUERY
-Variable DEF_UPS_QUERY     1 # Ensures that [ups-query] is only included once.
+ifndef USERTAG_UPS_QUERY
+Variable USERTAG_UPS_QUERY     1
 Message Loading [ups-query] usertag (compatiblity layer over [business-shipping])...
 
 UserTag  ups-query  Order  mode origin zip weight country
 UserTag  ups-query  addAttr
 UserTag  ups-query  Routine <<EOR
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# This program is free software; you can redistribute it and/or modify it 
-# under the same terms as Perl itself.
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
 #
-# $Id: ups-query.tag,v 1.6 2004/03/03 04:07:51 danb Exp $
+# $Id: ups-query.tag,v 1.7 2004/03/08 17:13:54 danb Exp $
 
 =head1 NAME
 
@@ -35,5 +35,20 @@ sub
         %opt,
     );
 }
+
+__END__
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut
+
 EOR
 endif

@@ -1,4 +1,4 @@
-# $Id: USPS.pm,v 1.9 2004/03/03 04:07:52 danb Exp $
+# $Id: USPS.pm,v 1.10 2004/03/08 17:13:57 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,7 +13,7 @@ usiness::Shipping::Shipment::USPS
 
 =head1 VERSION
 
-$Revision: 1.9 $      $Date: 2004/03/03 04:07:52 $
+$Revision: 1.10 $      $Date: 2004/03/08 17:13:57 $
 
 =head1 DESCRIPTION
 
@@ -27,7 +27,7 @@ Move the country translator data into configuration.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -35,22 +35,33 @@ use base ( 'Business::Shipping::Shipment' );
 use Business::Shipping::Debug;
 use Business::Shipping::Config;
 use Business::Shipping::Package;
-use Business::Shipping::CustomMethodMaker
-    new_with_init => 'new',
-    new_hash_init => 'hash_init';
+use Class::MethodMaker 2.0 
+    [ 
+      new   => [ { -hash => 1, -init => 'this_init' }, 'new' ],
+      array => [ { -type => 'Business::Shipping::Package::USPS' }, 'packages' ],
+      scalar => [ { -static => 1, -default => 'default_package=>Business::Shipping::Package::USPS' }, 'Has_a' ],
+      #
+      # We use a hand-written "Required()" method for this class (below), 
+      # because International USPS does not require service or from_zip, but
+      # domestic does.
+      #
+      # scalar => [ { -static => 1, -default => 'service, from_zip' }, 'Required' ],
+];
 
-use constant INSTANCE_DEFAULTS => (
-    shipper => 'USPS',
-    from_country => 'US',
-);
- 
-sub init
+sub this_init
 {
-    my $self   = shift;
-    my %values = ( INSTANCE_DEFAULTS, @_ );
-    $self->hash_init( %values );
+    $_[ 0 ]->shipper(      'USPS' );
+    $_[ 0 ]->from_country( 'US'   );
     return;
 }
+
+sub Required
+{
+    return 'service, from_zip' if $_[ 0 ]->domestic;
+    return '';
+}
+
+sub ounces { &{ $_[ 0 ]->default_package->ounces }; }
 
 =item * from_country
 
@@ -67,7 +78,7 @@ own translations.  The former may not be necessary, but the latter is.
 =cut
 sub to_country
 {
-    trace '( ' . uneval( \@_ ) . ' )';
+    #trace '( ' . uneval( \@_ ) . ' )';
     my ( $self, $to_country ) = @_;    
     
     if ( defined $to_country ) {

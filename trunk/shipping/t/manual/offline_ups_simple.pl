@@ -8,6 +8,7 @@ use Business::Shipping;
 
 my $rate_request = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
 
+
 $rate_request->submit(
     from_country =>     'US',
     to_country =>       'US',
@@ -16,11 +17,13 @@ $rate_request->submit(
     to_residential =>   '1',
     from_zip =>         '98682',
     weight =>           '4.25',
-    to_zip =>           '96720-1749',
-    event_handlers => {
-                        debug    => 'STDERR',
-                        error    => 'STDERR',
-    },
+    to_zip =>           '96720',
+#    event_handlers => {
+#                        trace  => 'STDERR',
+#                        debug  => 'STDERR',
+#                        error  => 'STDERR',
+#    },
+
 ) or die $rate_request->error();
 
 print "offline = " . $rate_request->total_charges() . "\n";

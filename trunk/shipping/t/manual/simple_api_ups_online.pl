@@ -10,14 +10,14 @@ my $rate_request = Business::Shipping->rate_request(
             'error' => 'STDERR',
     },
         cache => 0,
-        shipper => 'Offline::UPS',
+        shipper => 'Online::UPS',
         'from_zip'            => '98682',
         'from_country'        => 'US',
         'to_country'        => 'US',    
         'service'            => '1DA',
         'to_residential'    => '1',
         'to_zip'            => '98270',
-        'weight'            => '1',
+        'weight'            => 9,
 );
 
 not defined $rate_request and die $@;

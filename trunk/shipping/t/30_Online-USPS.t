@@ -7,7 +7,7 @@ use Test::More 'no_plan';
 use Carp;
 use Business::Shipping;
 
-my $standard_method = new Business::Shipping->rate_request( 'shipper' => 'USPS' );
+my $standard_method = new Business::Shipping->rate_request( shipper => 'Online::USPS' );
 ok( defined $standard_method,    'USPS standard object construction' );
 
 my $other_method = new Business::Shipping::RateRequest::Online::USPS;
@@ -20,11 +20,11 @@ sub test
 {
     my ( %args ) = @_;
     my $shipment = Business::Shipping->rate_request( 
-        shipper         => 'USPS',
-        user_id            => $ENV{ USPS_USER_ID },
-        password        => $ENV{ USPS_PASSWORD },
-        cache            => 0,
-        event_handlers     => {
+        shipper        => 'USPS',
+        user_id        => $ENV{ USPS_USER_ID },
+        password       => $ENV{ USPS_PASSWORD },
+        cache          => 0,
+        event_handlers => {
             #trace => 'STDERR', 
         },
     );
@@ -55,24 +55,24 @@ SKIP: {
     
     my $shipment;
     $shipment = test(
-        'test_mode'    => 1,
+        'test_mode'  => 1,
         'service'    => 'EXPRESS',
-        'from_zip'    => '20770',
-        'to_zip'    => '20852',
-        'pounds'    => 10,
-        'ounces'    => 0,
-        'container'    => 'None',
-        'size'        => 'REGULAR',
-        'machinable'    => '',
+        'from_zip'   => '20770',
+        'to_zip'     => '20852',
+        'pounds'     => 10,
+        'ounces'     => 0,
+        'container'  => 'None',
+        'size'       => 'REGULAR',
+        'machinable' => '',
     );
     ok( $shipment->total_charges(),     'USPS domestic test total_charges > 0' );
     
     $shipment = test(
-        'test_mode'        =>    1,
-        'pounds'        =>    0,
-        'ounces'        =>    1,
-        'mail_type'        =>    'Postcards or Aerogrammes',
-        'to_country'    =>    'Algeria',
+        'test_mode'  => 1,
+        'pounds'     => 0,
+        'ounces'     => 1,
+        'mail_type'  => 'Postcards or Aerogrammes',
+        'to_country' => 'Algeria',
     );
     ok( $shipment->total_charges(),     'USPS intl test total_charges > 0' );
         

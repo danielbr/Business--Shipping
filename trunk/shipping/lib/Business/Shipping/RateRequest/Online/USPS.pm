@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::USPS - Estimates shipping cost online
 # 
-# $Id: USPS.pm,v 1.11 2004/03/03 04:07:52 danb Exp $
+# $Id: USPS.pm,v 1.12 2004/03/08 17:13:56 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ See Business::Shipping.pm POD for usage information.
 
 =head1 VERSION
 
-$Revision: 1.11 $      $Date: 2004/03/03 04:07:52 $
+$Revision: 1.12 $      $Date: 2004/03/08 17:13:56 $
 
 =head1 SERVICE TYPES
 
@@ -49,7 +49,7 @@ $Revision: 1.11 $      $Date: 2004/03/03 04:07:52 $
 
 package Business::Shipping::RateRequest::Online::USPS;
 
-$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -66,32 +66,40 @@ use HTTP::Response;
 =item * domestic
 
 =cut
-use Business::Shipping::CustomMethodMaker
-    new_with_init => 'new',
-    new_hash_init => 'hash_init',
-    boolean => [ 'domestic' ];
-    
-use constant INSTANCE_DEFAULTS => (
-    'prod_url'        => 'http://production.shippingapis.com/ShippingAPI.dll',
-    'test_url'        => 'http://testing.shippingapis.com/ShippingAPItest.dll',
-    'domestic'        => 1,
-);
- 
-sub init
-{
-    #trace '( ' . uneval( @_ ) . ' )';
-    my $self           = shift;
-    my %values         = ( INSTANCE_DEFAULTS, @_ );
-    $self->hash_init( %values );
-    return;
-}
+use Class::MethodMaker 2.0
+    [
+      new    => [ { -hash => 1, -init => 'this_init' }, 'new' ],
+      scalar => [ { -default => 1 }, 'domestic' ],
+      scalar => [ { -default => 'http://production.shippingapis.com/ShippingAPI.dll'  }, 'prod_url' ],
+      scalar => [ { -default => 'http://testing.shippingapis.com/ShippingAPItest.dll' }, 'test_url' ],
+      scalar => [ { -type    => 'Business::Shipping::Shipment::USPS',
+                    -forward => [ 
+                                  'from_city',
+                                  'to_city',
+                                ],
+                   },
+                   'shipment'
+                 ],
+      scalar => [ { -static => 1, 
+                    -default => "shipment=>Business::Shipping::Shipment::USPS" 
+                  }, 
+                  'Has_a' 
+               ],
+      scalar => [ { -static => 1, -default => 'zone_file, zone_name' }, 'Optional' ],
+      scalar => [ { -static => 1 }, 'Zones' ],      
+    ];
+
+sub this_init { $_[ 0 ]->shipper( 'USPS' ); }
 
 #
-# Map to default_package
+# Map to default_package for convenience when calling.
 #
-foreach my $attribute ( 'ounces', 'pounds', 'container', 'size', 'machinable', 'mail_type' ) {
-    eval "sub $attribute { return shift->default_package->$attribute( \@_ ); }"
+foreach my $attribute ( 'ounces', 'pounds', 'weight', 'container', 'size', 'machinable', 'mail_type' ) {
+    #eval "sub $attribute { return &{ \$_[0]->shipment->default_package->$attribute; }; }";
+    eval "sub $attribute { return shift->shipment->default_package->$attribute( \@_ ); }";
 }
+
+sub to_residential { return 0; }
 
 =item * _gen_request_xml
 
@@ -230,7 +238,7 @@ sub _massage_values
     # Round up if United States... international can have less than 1 pound.
     if ( $self->to_country() and $self->to_country() =~ /(USA?)|(United States)/ ) {
         foreach my $package ( @{ $self->shipment->packages() } ) {
-            $package->pounds( 1 ) if ( $package->pounds() < 1 );
+            $package->weight( 1 ) if ( $package->weight and $package->weight < 1 );
         }
     }
     
@@ -317,7 +325,7 @@ sub _handle_response
             }
             # Still can't find the right service...
             if ( ! $charges ) {
-                my $error_msg = "The requested service (" . $self->service() 
+                my $error_msg = "The requested service (" . ( $self->service() || 'none entered by user' )
                         . ") did not match any services that was available for that country.";
                 
                 print STDERR $error_msg;
@@ -328,7 +336,7 @@ sub _handle_response
     
     if ( ! $charges ) { 
         $self->error( 'charges are 0, error out' ); 
-        return $self->clear_is_success();
+        return $self->is_success( 0 );
     }
     debug( 'Setting charges to ' . $charges );
     my $packages = [ { 'charges' => $charges, }, ];
@@ -350,10 +358,10 @@ sub _domestic_or_intl
     trace '()';
     
     if ( $self->shipment->to_country() and $self->shipment->to_country() !~ /(US)|(United States)/) {
-        $self->clear_domestic();
+        $self->domestic( 0 );
     }
     else {
-        $self->set_domestic();
+        $self->domestic( 1 );
     }
     debug( $self->domestic() ? 'Domestic' : 'International' );
     return;

@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.26 2004/03/03 04:07:45 danb Exp $
+# $Id: business-shipping.tag,v 1.27 2004/03/08 17:13:54 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -21,8 +21,8 @@ UserTag  business-shipping  Documentation     <<EOD
 
 =head1 VERSION
 
-[business-shipping] usertag:    $Revision: 1.26 $
-Requires Business::Shipping:     Revision: 1.04
+[business-shipping] usertag:    $Revision: 1.27 $
+Requires Business::Shipping:     Revision: 1.04+
 
 =head1 AUTHOR 
 
@@ -45,7 +45,7 @@ Requires Business::Shipping:     Revision: 1.04
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (< 2.0)
+ Class::MethodMaker (2.00)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
@@ -154,19 +154,19 @@ sub {
                 $Variable->{ XPS_TO_COUNTRY_FIELD } || 'country' 
             },
             'to_zip'            => $Values->{ $Variable->{ XPS_TO_ZIP_FIELD } || 'zip' },
-            'from_country'        => $Variable->{ XPS_FROM_COUNTRY },
-            'from_zip'            => $Variable->{ XPS_FROM_ZIP },
+            'from_country'      => $Variable->{ XPS_FROM_COUNTRY },
+            'from_zip'          => $Variable->{ XPS_FROM_ZIP },
             'event_handlers'    => {
                     'error' => 'STDERR',
                     'debug' => ( $debug ? 'STDOUT' : undef ),
                     'trace' => undef,
                     'debug3' => undef,
             },
-            'cache'                => ( defined $opt{ cache } ? $opt{ cache } : 1 ),
+            'cache'             => ( defined $opt{ cache } ? $opt{ cache } : 1 ),
         },
         'Online::USPS' => {
-            'user_id'            => $Variable->{ "USPS_USER_ID" },
-            'password'            => $Variable->{ "USPS_PASSWORD" },
+            'user_id'           => $Variable->{ "USPS_USER_ID" },
+            'password'          => $Variable->{ "USPS_PASSWORD" },
             'to_country' => $Tag->data( 
                 'country', 
                 'name', 
@@ -175,12 +175,12 @@ sub {
         },
         'Online::UPS' => {
             'access_key'        => $Variable->{ "UPS_ACCESS_KEY" },
-            'user_id'            => $Variable->{ "UPS_USER_ID" },
-            'password'            => $Variable->{ "UPS_PASSWORD" },
+            'user_id'           => $Variable->{ "UPS_USER_ID" },
+            'password'          => $Variable->{ "UPS_PASSWORD" },
         },
         'Offline::UPS' => { 
             'from_state'        => $Variable->{ XPS_FROM_STATE },
-            'cache'                => 0,
+            'cache'             => 0,
         },
     };
     
@@ -314,12 +314,12 @@ sub {
         }
             
         $vars_out .= "\nAll variables\n";
-        foreach ( keys %opt ) {
+        foreach ( sort keys %opt ) {
             $vars_out .= "\t$_ => \t\t\'$opt{$_}\',\n";
         }                
             
         $vars_out .= "\nActual values from the rate_request object\n";
-        foreach ( keys %opt ) {
+        foreach ( sort keys %opt ) {
             $vars_out .= "\t$_ => \t\t\'" . $rate_request->$_() . "\',\n";
         }
 
@@ -344,6 +344,21 @@ sub {
     
     return $charges;
 }
+
+__END__
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut
+
 EOR
 Message ...done.
 endif

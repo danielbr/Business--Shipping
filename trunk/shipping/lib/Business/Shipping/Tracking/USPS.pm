@@ -1,6 +1,6 @@
 # Business::Shipping::Tracking::USPS - Abstract class for tracking shipments
 # 
-# $Id: USPS.pm,v 1.2 2004/03/03 04:07:52 danb Exp $
+# $Id: USPS.pm,v 1.3 2004/03/08 17:13:57 danb Exp $
 # 
 # Copyright (c) 2004 InfoGears Inc.  All Rights Reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
@@ -59,7 +59,7 @@ Licensed under the GNU Public License (GPL).  See COPYING for more info.
 
 package Business::Shipping::Tracking::USPS;
 
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -71,22 +71,12 @@ use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
 use Clone;
-use Business::Shipping::CustomMethodMaker
-  new_with_init => 'new',
-  new_hash_init => 'hash_init';
-
-use constant INSTANCE_DEFAULTS => (
-    'prod_url'        => 'http://production.shippingapis.com/ShippingAPI.dll',
-    'test_url'        => 'http://testing.shippingapis.com/ShippingAPItest.dll',
-);
+use Class::MethodMaker 2.0 [ new => [ { -hash => 1, -init => 'this_init' }, 'new' ] ];
  
-sub init
+sub this_init
 {
-    #trace '( ' . uneval( @_ ) . ' )';
-    my $self           = shift;
-    my %values         = ( INSTANCE_DEFAULTS, @_ );
-    
-    $self->hash_init( %values );
+    $_[ 0 ]->prod_url( 'http://production.shippingapis.com/ShippingAPI.dll' );
+    $_[ 0 ]->test_url( 'http://testing.shippingapis.com/ShippingAPItest.dll' );
     return;
 }
 

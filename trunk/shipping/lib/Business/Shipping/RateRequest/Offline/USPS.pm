@@ -3,7 +3,7 @@
 #
 # Business::Shipping::RateRequest::Offline::USPS
 #
-# $Id: USPS.pm,v 1.5 2004/03/03 04:07:52 danb Exp $
+# $Id: USPS.pm,v 1.6 2004/03/08 17:13:56 danb Exp $
 #
 # Copyright (C) 2003 Interchange Development Group
 # Copyright (c) 2003, 2004 Kavod Technologies, Dan Browning. 
@@ -78,7 +78,7 @@ multiple 70-pound packages (plus one package with the remainder).
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -90,20 +90,7 @@ use Business::Shipping::Data;
 use Business::Shipping::Util;
 use Business::Shipping::Config;
 use Data::Dumper;
-use Business::Shipping::CustomMethodMaker
-    new_with_init => 'new',
-    new_hash_init => 'hash_init';
-
-use constant INSTANCE_DEFAULTS => ();
-sub init
-{
-    my $self   = shift;
-    
-    my %values = ( INSTANCE_DEFAULTS, @_ );
-    $self->hash_init( %values );
-    return;
-}
-
+use Class::MethodMaker 2.0 [ new => [ qw/ -hash new / ] ];
 
 sub calculate {
     my ($mode, $weight, $row, $opt, $tagopt, $extra) = @_;
@@ -240,3 +227,19 @@ sub calculate {
 }
 
 1;
+
+__END__
+
+=back
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut

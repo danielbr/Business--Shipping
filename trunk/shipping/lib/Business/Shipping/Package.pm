@@ -1,6 +1,6 @@
 # Business::Shipping::Package - Abstract class
 # 
-# $Id: Package.pm,v 1.6 2004/03/03 04:07:51 danb Exp $
+# $Id: Package.pm,v 1.7 2004/03/08 17:13:55 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Package - Abstract class
 
 =head1 VERSION
 
-$Revision: 1.6 $      $Date: 2004/03/03 04:07:51 $
+$Revision: 1.7 $      $Date: 2004/03/08 17:13:55 $
 
 =head1 DESCRIPTION
 
@@ -28,10 +28,11 @@ implementation.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
+use base ( 'Business::Shipping' );
 
 =item * $self->weight()
 
@@ -42,12 +43,13 @@ Accessor for weight.
 Package ID (for unique identification in a list of packages).
 
 =cut
-use Business::Shipping::CustomMethodMaker
-    new_hash_init => 'new',
-    grouped_fields_inherit => [
-        required => [ 'weight' ],
-        optional => [ 'id', 'charges' ],
-        unique   => [ 'weight' ],
+use Class::MethodMaker 2.0
+    [ 
+      new    => [ qw/ -hash new / ],
+      scalar => [ 'weight', 'id', 'charges' ],
+      scalar => [ { -static => 1, -default => ''            }, 'Required' ],
+      scalar => [ { -static => 1, -default => 'id, charges' }, 'Optional' ],
+      scalar => [ { -static => 1, -default => 'weight'      }, 'Unique'   ]
     ];
 
 #

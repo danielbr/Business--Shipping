@@ -2,16 +2,7 @@
 ##  General TODO
 ######################################################
 
- * [BUG] The "don't send if required field is missing" doesn't work in the 
-   "send incident report code" feature -- it sends it even if to_zip is missing.
-
- * [DOC] Add some notices to all subclasses? 
-   - This class is for internal implementation only. It is not a public API.
-   
  * [DOC] Look into OODoc or Pod::Tree
-
- * [DOC] Add minimal documentation to each module, with most of the 
-   documentation in the main module.
 
  * [DOC] Include the terms of use for each provider.
  
@@ -156,7 +147,13 @@
    - It does not support several features, like 'grouped_fields'.
    - It does not support grouped_fields_inherit
    - It is prettier.
+ 
+ * [ENH] Test for thread-safety-ness.
 
+ * [ENH] New feature for MethodMaker: parent_defaults => [ 'shipper' => 'UPS' ].
+   After initialization, calls parent methods with default values so the user 
+   does not have to write an "-init" method.
+ 
 ######################################################
 ##  Online::USPS TODO
 ######################################################
@@ -177,7 +174,7 @@
 ######################################################
 ##  Offline::UPS TODO
 ######################################################
- 
+
  * [ENH] Determine the upcoming fuel surcharge changes from UPS website, then 
    check to see if that date has passed.  If so, automatically update the fuel 
    surcharge.
@@ -188,12 +185,36 @@
    discontinued for the following services:  UPS Ground Commercial, UPS Ground 
    Residential, UPS Ground Hundredweight Service, and UPS Standard to Canada.
 
- * [BUG] Error:  No zone found for geo code (key) 802, type Express.
+ * [BUG] Israel:
+     No zone found for geo code (key) Israel, type ExpeditedSM_EC.
         from_country =>                 'US',
+        to_country =>           'IL',
+        event_handlers =>               'HASH(0x9aae31c)',
+        from_state =>           'WA',
+        service =>              'XPD',
+        from_zip =>             '98682',
+        weight =>               '5.5',
+        to_zip =>               '79505',
+        cache =>                '1',
+        shipper =>              'Offline::UPS',
+
+ * [BUG] Serbia:
+        from_country =>         'US',
+        to_country =>           'XS',
+        from_state =>           'WA',
+        service =>              'XDM',
+        from_zip =>             '98682',
+        weight =>               '2',
+        to_zip =>               '564',
+        cache =>                '1',
+        shipper =>              'Offline::UPS',
+
+ * [BUG] Error:  No zone found for geo code (key) 802, type Express.
+        from_country =>         'US',
         to_country =>           'CA',
         from_state =>           'OR',
         service =>              'XPR',
-        to_residential =>               '1',
+        to_residential =>       '1',
         from_zip =>             '97214',
         weight =>               '1',
         to_zip =>               '80210',
@@ -322,8 +343,6 @@
  * [ENH] Allow better names, like "One Day Air" instead of 1DA.
    - Better names for packaging too (instead of numbers).
  
- * [ENH] Test for thread-safety-ness.	
- 
  * [ENH] UPS support for sending multiple simultaneous requests
 	- (USPS had built-in support in the API for Intl)
  	- If they don't support it, try LWP::Parallel::UserAgent.
@@ -331,10 +350,6 @@
 ######################################################
 ##  Interchange UserTag TODO
 ######################################################
-
- * [BUG] The $shipper variable acts as if it can only be "UPS" or "USPS", but
-   now it can actually be "Offline::UPS" or anything else.  Works for now, but
-   should be fixed.
 
  * [ENH] Test for ability to use within Safe?  Or catalog-level usertag?
    [perl]$Tag->business_shipping();[/perl] 

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest - Abstract class for shipping cost estimation
 # 
-# $Id: RateRequest.pm,v 1.10 2004/03/03 04:07:51 danb Exp $
+# $Id: RateRequest.pm,v 1.11 2004/03/08 17:13:55 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::RateRequest - Abstract class for shipping cost estimation
 
 =head1 VERSION
 
-$Revision: 1.10 $      $Date: 2004/03/03 04:07:51 $
+$Revision: 1.11 $      $Date: 2004/03/08 17:13:55 $
 
 =head1 DESCRIPTION
 
@@ -29,7 +29,7 @@ Represents a request for shipping cost estimation.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -56,7 +56,7 @@ UserTag/business-shipping.tag for an example implementation).
 
 =item * results()
 
-Hash.  Stores the results of a rate request, for example:
+Hashref.  Stores the results of a rate request, for example:
 
  {
    'UPS' => [ 
@@ -78,39 +78,44 @@ See _handle_response() for implementation details.
 Stores a Business::Shipping::Shipment object.  Many methods are forwarded to it.
 
 =cut
-use Business::Shipping::CustomMethodMaker
-    new_hash_init => 'new',
-    boolean       => [ 'is_success', 'cache', 'invalid' ],
-    hash          => [ 'results' ],
-    grouped_fields_inherit => [ required => [ 'shipper' ],
-                                unique   => [ 'shipper' ]
-                              ],
-    object => [
-        # Right now, each RateRequest has only one shipment.
-        # Eventually, maybe we'll use object_list with "shipments()->..." like packages.
-        'Business::Shipping::Shipment' => {
-            'slot' => 'shipment',
-            'comp_mthds' => [ 
-                'service', 
-                'from_country',
-                'from_country_abbrev',
-                'to_country',
-                'to_country_abbrev',
-                'to_ak_or_hi',
-                'from_zip',
-                'to_zip',
-                'packages',
-                'default_package',
-                'weight',
-                'shipper',
-                'domestic',
-                'intl',
-                'domestic_or_ca',
-                'from_canada',
-                'to_canada',
-                'from_ak_or_hi',
-            ],
-        }
+use Class::MethodMaker 2.0
+    [ new => [ qw/ -hash new / ],
+      scalar        => [ 'is_success', 'cache', 'invalid' ],
+      scalar        => [ 'shipper' ],
+      scalar        => [ 'results' ],
+      # Right now, each RateRequest has only one shipment.
+      # Eventually, maybe we'll use object_list with "shipments()->..." like packages.
+      scalar => [ { -type    => 'Business::Shipping::Shipment',
+                    -forward => [ 
+                                    'service', 
+                                    'from_country',
+                                    'from_country_abbrev',
+                                    'to_country',
+                                    'to_country_abbrev',
+                                    'to_ak_or_hi',
+                                    'from_zip',
+                                    'to_zip',
+                                    'packages',
+                                    'default_package',
+                                    'weight',
+                                    'shipper',
+                                    'domestic',
+                                    'intl',
+                                    'domestic_or_ca',
+                                    'from_canada',
+                                    'to_canada',
+                                    'from_ak_or_hi',
+                                ],
+                   },
+                   'shipment'
+                 ],
+      scalar => [ { -static => 1, 
+                    -default => "shipment=>Business::Shipping::Shipment" 
+                  }, 
+                  'Has_a' 
+               ],
+      scalar => [ { -static => 1, -default => 'shipper' }, 'Required' ],
+      scalar => [ { -static => 1, -default => 'shipper' }, 'Unique'   ]
     ];
 
 =item $shipment->submit( %args )
@@ -123,7 +128,6 @@ sub submit
 {
     my ( $self, %args ) = @_;
     trace( "( " . uneval( %args ) . " )" );
-    
     
     #
     # Tried to use this code to find error when I was getting 'Use of 
@@ -199,6 +203,8 @@ sub validate
     my ( $self ) = @_;
     trace '()';
     
+    my $invalid = $self->SUPER::validate;
+    
     my @invalid_rate_requests_ups = $self->config_to_ary_of_hashes( 
         cfg()->{ invalid_rate_requests }->{ invalid_rate_requests_ups }
     );
@@ -242,11 +248,11 @@ sub validate
             my $reason = ( $invalid_rate_request->{ reason } ? '  ' . $invalid_rate_request->{ reason } : '' ); 
             $self->invalid( 1 );
             $self->error( "Rate request invalid.$reason" );
-            return;
+            $invalid = 1;
         }
     }
         
-    return 1;
+    return $invalid;
 }
 
 =item * get_unique_hash()
@@ -262,11 +268,17 @@ sub get_unique_hash
     
     my %unique;
     
-    $unique{ $_ } = $self->$_() for $self->unique();
-    $unique{ $_ } = $self->shipment->$_() for $self->shipment->unique();
+    my @Unique = $self->get_grouped_attrs( 'Unique' );
+    
+    debug( "Unique attributes for this RateRequest are: " . join( ',', @Unique ) ); 
+    for ( @Unique ) {
+        if ( $self->can( $_ ) ) {
+            $unique{ $_ } = $self->$_;
+        }
+    }
     
     foreach my $package ( $self->shipment->packages() ) {
-        foreach my $package_unique_key ( $package->unique() ) {
+        foreach my $package_unique_key ( $package->get_grouped_attrs( 'Unique', object => $package ) ) {
             $unique{ 'p1_' . $package_unique_key } = $package->$package_unique_key();
         }
     }
@@ -290,10 +302,10 @@ sub hash_to_sorted_values
     return @sorted_values;
 }
 
-=item * gen_unique_key( %unique_hash )
+=item * gen_unique_key( )
 
-Takes hash generated by get_unique_hash(), sorts them with 
-hash_to_sorted_values(), then returns them in string format.
+Calls get_unique_hash(), sorts them with hash_to_sorted_values(), then returns 
+them in string format.
 
 =cut
 sub gen_unique_key
@@ -316,11 +328,11 @@ sub total_charges
     my $self = shift;
     my $total;
     
-    my $shippers = $self->results();
+    my $shippers = $self->results;
     foreach my $shipper ( keys %$shippers ) {
         debug3 "\tshipper: $shipper\n";
         
-        my $packages = $self->results( $shipper );        
+        my $packages = $self->results->{ $shipper };        
         foreach my $package ( @$packages ) {
             debug3 "\t" . uneval( $package );
             debug3 "\t\tcharges = " . $package->{ 'charges' } . "\n";

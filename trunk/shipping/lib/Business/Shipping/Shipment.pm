@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment - Abstract class
 # 
-# $Id: Shipment.pm,v 1.8 2004/03/03 04:07:51 danb Exp $
+# $Id: Shipment.pm,v 1.9 2004/03/08 17:13:55 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # This program is free software; you may redistribute it and/or modify it under
@@ -9,7 +9,7 @@
 
 package Business::Shipping::Shipment;
 
-$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 =head1 NAME
 
@@ -17,7 +17,7 @@ Business::Shipping::Shipment - Abstract class
 
 =head1 VERSION
 
-$Revision: 1.8 $      $Date: 2004/03/03 04:07:51 $
+$Revision: 1.9 $      $Date: 2004/03/08 17:13:55 $
 
 =head1 DESCRIPTION
 
@@ -58,37 +58,31 @@ use Business::Shipping::Config;
 Has-A: Object list: Business::Shipping::Package.
 
 =cut
-use Business::Shipping::CustomMethodMaker
-    new_hash_init => 'new',
-    get_set => [ 'current_package_index', ],
-    grouped_fields_inherit => [
-        'required' => [
-            'service',
-            'from_zip',
-            'shipper',
-        ],
-        'optional' => [ 
-            'from_country',
-            'to_country',
-            'to_zip',
-            'from_city',
-            'to_city',
-        ],
-        'unique' => [
-            'service',
-            'from_zip',
-            'from_country',
-            'to_zip',
-            'from_city',
-            'to_city',
-        ],
-    ],
-    object_list => [ 
-        'Business::Shipping::Package' => {
-            'slot'        => 'packages',
-        },
+use Class::MethodMaker 2.0
+    [
+      new    => [ { -hash => 1, -init => 'this_init' }, 'new' ],
+      scalar => [ qw/ current_package_index service from_country from_zip
+                      from_city  to_country to_zip to_city / 
+                ],
+      #
+      # Let it be defined in non-abstract classes only?
+      #
+      array  => [ { -type => 'Business::Shipping::Package' }, 'packages' ],
+      scalar => [ { -static => 1, -default => 'default_package=>Business::Shipping::Package' }, 'Has_a' ],
+      scalar => [ { -static => 1, 
+                    -default => 'from_country, to_country, to_zip, from_city, to_city' 
+                  },
+                  'Optional' 
+                ],
+      scalar => [ { -static => 1, 
+                    -default => 'service, from_zip, from_country, to_zip, from_city, to_city' 
+                  },
+                  'Unique' 
+                ]
     ];
-    
+
+sub this_init { }
+
 =item * weight
 
 Forward the weight to the current package.
@@ -223,35 +217,6 @@ sub from_country_abbrev
     return $from_country_abbrev;
 }
 
-
-=item * from_state
-
-=cut
-sub from_state
-{
-    my ( $self, $from_state ) = @_;
-    
-    $self->{ from_state } = $from_state if defined $from_state;
-    
-    return $self->{ from_state };
-}
-
-=item * from_state_abbrev()
-
-Returns the abbreviated form of 'from_state'.
-
-=cut
-sub from_state_abbrev
-{
-    my ( $self ) = @_;
-    
-    my $state_abbrevs = $self->config_to_hash( 
-        cfg()->{ ups_information }->{ state_to_abbrev } 
-    );
-    
-    return $state_abbrevs->{ $self->from_state } or $self->from_state;
-}
-
 =item * current_package()
 
 The Shipment object keeps an index of which package object is the current
@@ -267,7 +232,7 @@ sub current_package {
     my $current_package_index = $self->current_package_index || 0;
     if ( not defined $self->packages_index( $current_package_index ) ) {
         debug( 'Current package (index: $current_package_index) not defined yet, creating one...' );
-        $self->packages_push( Business::Shipping::Package->new( id => $current_package_index ) );
+        $self->packages_push( eval "Business::Shipping::Package::" . $self->shipper . "->new" );
     }
     
     return $self->packages_index( $current_package_index ); 
@@ -282,7 +247,17 @@ sub default_package {
     
     if ( not defined $self->packages_index( 0 ) ) {
         debug( 'No default package defined yet, creating one...' );
-        $self->packages_push( Business::Shipping::Package->new() );
+        #
+        # The only time that $shipper is undefined is probably when using 
+        # ClassAttribs, since it polls the abstract classes ("Shipment").
+        #
+        my $shipper = $self->shipper || $self->determine_shipper_from_self;
+        $shipper  ||= $shipper ? "::" . $self->shipper : '';
+        #debug( "shipper = " . $self->shipper );
+        $self->packages_push( eval "Business::Shipping::Package" . $shipper . "->new" );
+    }
+    else {
+        #debug( 'Package already defined, using it.');
     }
     
     return $self->packages_index( 0 ); 
@@ -315,7 +290,7 @@ Returns 1 or 0 (true or false).
 sub intl
 {
     my ( $self ) = @_;
-    
+
     if ( $self->to_country ) {
         if ( $self->to_country !~ /(US)|(United States)/) {
             return 1;
@@ -330,7 +305,16 @@ sub intl
 Returns the opposite of $self->intl
  
 =cut
-sub domestic { return ( not $_[ 0 ]->intl ); }
+sub domestic
+{ 
+    my ( $self ) = @_;
+
+    if ( $self->intl ) {
+        return 0;
+    }
+    
+    return 1;
+}
 
 
 =item * to_canada()
@@ -364,24 +348,6 @@ sub to_canada
         if ( $self->to_country =~ /^((CA)|(Canada))$/i ) {
             return 1;
         }
-    }
-    
-    return 0;
-}
-
-
-=item * from_ak_or_hi()
-
-Alaska and Hawaii are treated differently by many shippers.
-
-=cut
-sub from_ak_or_hi
-{
-    my ( $self ) = @_;
-    return unless $self->from_state;
-    
-    if ( $self->from_state =~ /(AK)|(HI)/i ) {
-        return 1;
     }
     
     return 0;

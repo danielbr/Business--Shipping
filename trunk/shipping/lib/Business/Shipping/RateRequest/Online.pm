@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online - Abstract class for shipping cost rating.
 # 
-# $Id: Online.pm,v 1.7 2004/03/03 04:07:51 danb Exp $
+# $Id: Online.pm,v 1.8 2004/03/08 17:13:56 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -9,7 +9,7 @@
 
 package Business::Shipping::RateRequest::Online;
 
-$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -18,22 +18,16 @@ use Business::Shipping::Debug;
 use XML::Simple;
 use LWP::UserAgent;
 use Cache::FileCache;
-use Business::Shipping::CustomMethodMaker
-    new_hash_init => 'new',
-    boolean => [ 'test_mode' ],
-    get_set => [ 'user_id', 'password' ],
-    grouped_fields_inherit => [
-        required => [ 'user_id', 'password' ],
-        optional => [ 'prod_url', 'test_url' ],
-    ],
-    object => [
-        'LWP::UserAgent' => {
-            slot => 'user_agent',
-        },
-        'HTTP::Response' => {
-            slot => 'response',
-        }
+use Class::MethodMaker 2.0
+    [
+      new    => [ { -hash => 1, -init => 'this_init' }, 'new' ],
+      scalar => [ 'test_mode', 'user_id', 'password' ],
+      scalar => [ { -static => 1, -default => 'user_id, password' }, 'Required' ],
+      scalar => [ { -static => 1, -default => 'prod_url, test_url' }, 'Optional' ],
+      scalar => [ 'response' ],
     ];
+
+sub this_init {}
 
 sub perform_action
 {
@@ -78,8 +72,13 @@ sub _gen_request
 
 sub _get_response
 {
-    trace '()';
-    return $_[0]->user_agent->request( $_[1] );
+    my ( $self, $request_param ) = @_;
+    trace 'called';
+
+    my $ua = LWP::UserAgent->new; 
+    my $response = $ua->request( $request_param );
+    
+    return $response;
 }
 
 

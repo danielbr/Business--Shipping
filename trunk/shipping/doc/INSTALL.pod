@@ -5,7 +5,7 @@
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (< 2.0)
+ Class::MethodMaker (2.00)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
@@ -21,13 +21,15 @@
 
 =head2 Module Installation via CPAN
 
+ C<perl -MCPAN -e 'force install XML::Parser XML::Parser::PerlSAX'>
+ C<perl -MCPAN -e 'install F/FL/FLUFFY/Class-MethodMaker-2.00.tar.gz'>
  C<perl -MCPAN -e 'install Bundle::Business::Shipping'>
 
 As of February 10, 2004, two CPAN modules in Bundle::Business::Shipping do not
-pass their own tests.  Therefore, we recommend forcing their installation first:
+pass their own tests.  Therefore, we recommend forcing their installation first.
+The manual insatllation of Class-MethodMaker 2.0 is required, since 1.12 is 
+always selected if you only input "Class::MethodMaker".
 
- C<perl -MCPAN -e 'force install XML::Parser XML::Parser::PerlSAX'>
- C<perl -MCPAN -e 'install Bundle::Business::Shipping'>
 
 =head1 MANUAL INSTALLATION
 

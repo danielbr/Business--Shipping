@@ -3,26 +3,47 @@ Revision history for Business::Shipping.
 
 1.50  CVS
   
-    Compatibility
-      - Clone module now required (for Tracking).
-      - Require that Class::MethodMaker be less than 2.0 (2.0 does not have
-        all of the features of 1.x yet).
+  Compatibility
+    - Clone module now required (for Tracking).
+    - Class::MethodMaker 2.0 now required.  CPAN installation instructions:
+      perl -MCPAN -e 'install F/FL/FLUFFY/Class-MethodMaker-2.00.tar.gz'
+      Updated because the new version has sugary syntax.
         
-    Tracking
-      - Rusty Conover <rconover@infogears.com> contributed the following:
-          Tracking
-          Tracking::USPS
-          Tracking::UPS
+  Tracking
+    - Rusty Conover <rconover@infogears.com> contributed the following:
+        Tracking
+        Tracking::USPS
+        Tracking::UPS
         
-    General
-      - Changed to dual GPL/Artistic License.
-      - Changed hosting from kavod.com to sf.net.
-	  - Code cleanup all over the place.
-      - Major documentation updates.
-      - Change tabs to four spaces
+  General
+    - Changed to dual GPL/Artistic License.
+    - Changed hosting from kavod.com to sf.net.
+        - Code cleanup all over the place.
+    - Major documentation updates.
+    - Change tabs to four spaces
+    - Developed ClassAttribs and ClassInfo packages for extracting meta-data
+      from the classes themselves (uses static class methods).  Used here to
+      implement "Required Options", "Optional Options", and "Unique Options".
+    - Upgrade to Class::MethodMaker 2.0 syntax.  
+      Business::Shipping::CustomMethodMaker removed.
+    - Added minimal documentation to most of the modules.
+    - Shipment: default_package function now a little smarter with regard to
+      the auto-creation of a default package if one does not exist.
+    - LWP::UserAgent and HTTP::Response objects now created on-the-fly.
+    - Many other misc. changes.
+   
+  Offline::UPS
+    - Bug fixed: Zip+4 not handled correctly (should drop the four).
     
-    Offline::UPS
-      - Bug fixed: Zip+4 not handled correctly (should drop the four).
+  Online::USPS
+    - Pounds, ounces, and weight handling refactored.
+    
+  UserTag
+    - Sort hashes before reporting them in incidents.
+    - [Fixed] The "don't send if required field is missing" doesn't work in 
+      the "send incident report code" feature -- it sends it even if to_zip is
+      missing.
+        - Fixed with "Required arguments" changes.
    
 	  
 1.06  Feb 11 2004

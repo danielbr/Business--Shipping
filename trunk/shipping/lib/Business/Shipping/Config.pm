@@ -1,6 +1,6 @@
 # Business::Shipping::Config - Configuration functions
 # 
-# $Id: Config.pm,v 1.5 2004/03/03 04:07:51 danb Exp $
+# $Id: Config.pm,v 1.6 2004/03/08 17:13:55 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Config - Configuration functions
 
 =head1 VERSION
 
-$Revision: 1.5 $      $Date: 2004/03/03 04:07:51 $
+$Revision: 1.6 $      $Date: 2004/03/08 17:13:55 $
 
 =head1 DESCRIPTION
 
@@ -28,12 +28,12 @@ Config::IniFiles module.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT = qw( cfg cfg_obj );
 
 use strict;
 use warnings;
-use base ( 'Exporter', 'Business::Shipping' );
+use base ( 'Exporter' );
 use Config::IniFiles;
 use Carp;
 

@@ -55,11 +55,11 @@ my $ups_online_msg = 'UPS: we need the username, password, and access license ke
 ###########################################################################
 
 my %one_da_light_us = (
-    service            => '1DA',
-    weight            => '3.45',
-    from_zip        => '98682',
-    to_residential    => '0',
-    to_zip            => '98270',
+    service        => '1DA',
+    weight         => '3.45',
+    from_zip       => '98682',
+    to_residential => '0',
+    to_zip         => '98270',
 );
 
 $shipment = test( %one_da_light_us );
@@ -210,7 +210,7 @@ SKIP: {
 
 $shipment = test( %test );
 ok( $shipment->total_charges(),        'UPS offline express to gb' );
-print "Offline: intl to gb " . $shipment->total_charges() . "\n";
+print "Offline: intl express to gb " . $shipment->total_charges() . "\n";
 
 SKIP: {
     skip( $ups_online_msg, 1 ) 
@@ -403,11 +403,11 @@ SKIP: {
 ###################
 
 %test = (
-        from_zip    => '98682',
-        from_state    => 'Washington',
-        service =>      'XPD',
-        to_country =>   'NL',
-        weight =>       '12.75',
+        from_zip =>      '98682',
+        from_state =>    'Washington',
+        service =>       'XPD',
+        to_country =>    'NL',
+        weight =>        '12.75',
 );
 $this_test_desc = "Netherlands XPD: ";
 
@@ -420,8 +420,8 @@ print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 ###################
 
 %test = (
-        from_zip => '98682',
-        from_state => 'Washington',
+        from_zip =>     '98682',
+        from_state =>   'Washington',
         shipper =>      'Offline::UPS',
         service =>      'XPR',
         to_country =>   'IL',
@@ -447,11 +447,11 @@ SKIP: {
 ##  away the +4.
 ########################################################################
 %test = (
-        from_country =>                 'US',
+        from_country =>         'US',
         to_country =>           'US',
         from_state =>           'WA',
         service =>              '2DA',
-        to_residential =>               '1',
+        to_residential =>       '1',
         from_zip =>             '98682',
         weight =>               '4.25',
         to_zip =>               '96720-1749',

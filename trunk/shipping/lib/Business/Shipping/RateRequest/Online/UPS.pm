@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::UPS - Estimates shipping cost online
 # 
-# $Id: UPS.pm,v 1.14 2004/03/03 04:07:52 danb Exp $
+# $Id: UPS.pm,v 1.15 2004/03/08 17:13:56 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -71,7 +71,7 @@ See Shipping.pm POD for usage information.
     
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.14 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.15 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -93,37 +93,49 @@ use LWP::UserAgent;
 =item * to_city
 
 =cut
-use Business::Shipping::CustomMethodMaker
-    new_with_init => 'new',
-    new_hash_init => 'hash_init',
-    #
-    # Need to map 'to_residential'
-    #
-    #forward => {
-    #    shipment => [ 'to_residential' ],
-    #},
-    #
-    grouped_fields_inherit => [
-        required => [ 'access_key' ],
-        optional => [ 'test_server', 'no_ssl', 'to_city' ]
-        # nothing unique here, either.
+use Class::MethodMaker 2.0
+    [
+      new => [ qw/ -hash new / ],
+      scalar => [ 'access_key' ],
+      scalar => [ { -static => 1, -default => 'access_key' }, 'Required' ],
+      scalar => [ { -static => 1, -default => 'test_server, no_ssl, to_city' }, 'Optional' ],
+      scalar => [ { -default => 'https://www.ups.com/ups.app/xml/Rate' }, 'prod_url' ],
+      scalar => [ { -default => 'https://wwwcie.ups.com/ups.app/xml/Rate' }, 'test_url' ],      
+      scalar => [ { -type    => 'Business::Shipping::Shipment::UPS',
+                    -forward => [ 
+                                  'from_city',
+                                  'to_city',
+                                    'service', 
+                                    'from_country',
+                                    'from_country_abbrev',
+                                    'to_country',
+                                    'to_country_abbrev',
+                                    'to_ak_or_hi',
+                                    'from_zip',
+                                    'to_zip',
+                                    'packages',
+                                    'default_package',
+                                    'weight',
+                                    'shipper',
+                                    'domestic',
+                                    'intl',
+                                    'domestic_or_ca',
+                                    'from_canada',
+                                    'to_canada',
+                                    'from_ak_or_hi',                                  
+                                ],
+                   },
+                   'shipment'
+                 ],
+      scalar => [ { -static => 1, 
+                    -default => "shipment=>Business::Shipping::Shipment::UPS" 
+                  }, 
+                  'Has_a' 
+               ],
     ];
 
 sub to_residential { return shift->shipment->to_residential( @_ ); }
 sub packaging { return shift->shipment->default_package->packaging( @_ ); }
-
-use constant INSTANCE_DEFAULTS => (
-    prod_url => 'https://www.ups.com/ups.app/xml/Rate', 
-    test_url => 'https://wwwcie.ups.com/ups.app/xml/Rate',
-);
- 
-sub init
-{
-    my $self   = shift;
-    my %values = ( INSTANCE_DEFAULTS, @_ );
-    $self->hash_init( %values );
-    return;
-}
 
 #
 # Ignore

@@ -1,6 +1,6 @@
 # Makefile.PL - Installation script for Business::Shipping
 # 
-# $Id: Makefile.PL,v 1.28 2004/03/03 03:36:30 danb Exp $
+# $Id: Makefile.PL,v 1.29 2004/03/08 17:13:54 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -32,7 +32,7 @@ WriteMakefile(
 		'Archive::Zip'			=> 0,
 		'Bundle::DBD::CSV'		=> 0,
 		'Cache::FileCache'		=> 0,
-		'Class::MethodMaker'	=> '< 2.0',
+		'Class::MethodMaker'	=> '2.00',
 		'Clone'					=> 0,
 		'Config::IniFiles'		=> 0,
 		'Crypt::SSLeay'			=> 0,
