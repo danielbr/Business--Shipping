@@ -14,10 +14,14 @@ Business::Ship::USPS - A USPS module
 
 Documentation forthcoming.
 
+ * Register for the API here:
+ 
+http://www.uspsprioritymail.com/et_regcert.html
+
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.5 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.6 $ =~ /(\d+)\.(\d+)/);
 use Business::Ship;
 use LWP::UserAgent ();
 use HTTP::Request ();
@@ -67,24 +71,9 @@ sub _gen_request
 	# The "API=Rate&XML=" is the only part that is different from UPS...
 	my $request_xml = 'API=Rate&XML=' . $self->_gen_request_xml();
 
-	
-=pod  This is an example of a working request
-<RateRequest USERID="539KAVOD6731" PASSWORD="900QZ55LW201">
-	<Package ID="0">
-		<Service>BPM</Service>
-		<ZipOrigination>29708</ZipOrigination>
-		<ZipDestination>28278</ZipDestination>
-		<Pounds>1</Pounds>
-		<Ounces>0</Ounces>
-		<Container>NONE</Container>
-		<Size>Regular</Size>
-		<Machinable>False</Machinable>
-	</Package>
-</RateRequest>
-=cut
-
+	# This is an example of a working request
 	$request_xml = qq{API=Rate&XML=
-	<RateRequest USERID="539KAVOD6731" PASSWORD="900QZ55LW201">
+	<RateRequest USERID=$ENV{USPS_USER_ID} PASSWORD=$ENV{USPS_PASSWORD}>
 		<Package ID="0">
 			<Service>BPM</Service>
 			<ZipOrigination>29708</ZipOrigination>

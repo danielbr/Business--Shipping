@@ -36,6 +36,26 @@ redistribute it and/or modify it under the GPL license.
 	
 =head1 INSTALLATION
 
+Here is a general outline of the installation in interchange.
+
+ * Install all the necessary perl modules:
+	- (Bundle::LWP Bundle::XML Crypt::SSLeay)
+
+ * Sign up for UPS XML Access
+	- Add Access ID and code using Admin UI
+
+ * Copy the UPSTools.pm file into
+	- interchange/lib/Business directory
+
+ * Copy the ups-query.tag file into
+	- interchange/usertags (depends on IC version)
+
+ * Add any shipping methods that are needed
+	- to catalog/products/shipping.asc
+	- (The defaults that come with Interchange are fine)
+
+ * Need to write instructions for getting access information…
+
 To utilize the new Business::UPSTools module, you might try the following
 installation steps:
 

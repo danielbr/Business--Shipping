@@ -1,0 +1,124 @@
+######################################################
+##  General TODO
+######################################################
+ 
+ * Documentation
+ 
+ * Support Multiple packages (also supported by USPS/UPS) 
+ 	- add_package() and get_package_total() functions?
+	- Some ideas...
+		$shipment->add_package(
+			PackagingType_Code => '...'
+			Weight => '...'
+			Dimensions => '...'
+		);
+		$shipment->run_query();
+		my $total_charges = $ups->total_charges();
+		my $package1_charges = $ups->charges('package' => '1');
+		my %all_package_charges = $ups->all_package_charges();
+		my $package2_charges = $all_package_charges{2};
+
+ * Build support for sending multiple requests at once
+ 	- Do any APIs support it directly?
+ 	- If they don't support it, try LWP::Parallel::UserAgent
+
+ * Business::Ship::FedEx module
+ 	- Utilize the recently released Business::FedEx::DirectConnect module.
+
+ * More flexible handling of SSL?
+	- Here's how Interchange does it...
+	
+ * New features:
+ 	- Address Verification
+	- Package Tracking
+	- Service Availability
+	
+ * Business::Ship::OldUPS interface?
+ 	- Utilize Business::UPS?  Advantage:  no username/id...
+	
+ * Build tests (t/*) for the module.
+ 
+ * Is our namespace good?
+ 	- Business::Ship 
+ 	- Business::Shipment
+ 	- Business::Shipper
+	- My favorite is Business::Ship, conceptually the same 
+	  as "Shipment", but shorter.
+
+BEGIN {
+
+	my $selected;
+	eval {
+		package Vend::Payment;
+		require Net::SSLeay;
+		import Net::SSLeay qw(post_https make_form make_headers);
+		$selected = "Net::SSLeay";
+	};
+
+	$Vend::Payment::Have_Net_SSLeay = 1 unless $@;
+
+	unless ($Vend::Payment::Have_Net_SSLeay) {
+
+		eval {
+			package Vend::Payment;
+			require LWP::UserAgent;
+			require HTTP::Request::Common;
+			require Crypt::SSLeay;
+			import HTTP::Request::Common qw(POST);
+			$selected = "LWP and Crypt::SSLeay";
+		};
+
+		$Vend::Payment::Have_LWP = 1 unless $@;
+
+	}
+
+	unless ($Vend::Payment::Have_Net_SSLeay or $Vend::Payment::Have_LWP) {
+		die __PACKAGE__ . " requires Net::SSLeay or Crypt::SSLeay";
+	}
+
+	::logGlobal("%s payment module initialized, using %s", __PACKAGE__, $selected)
+		unless $Vend::Quiet;
+}
+
+######################################################
+##  Interchange usertags TODO
+######################################################
+
+ * Move as much stuff from ups-query.tag into Business::UPS
+ 
+ * Test for ability to use within Safe?
+	([perl]$Tag->ups_query('', '', '');[/perl]) 
+	
+######################################################
+##  Business::Ship::USPS TODO
+######################################################
+
+>  - Pull the test cases & responses out of the PDF docs and 
+> program them
+> so that they are a test case (commonly in the /t directory in 
+> most CPAN
+> modules) so that a user can plug their username and password in the
+> script, or via the build process and test that their account is
+> accepting data correctly.  Comments/Suggestions?
+
+>  - Identify the different USPS interfaces (Standard Mail (what we're
+> working on), Priority Mail, International, ?Others? and pull the specs
+> from the PDF's on how to structure the requests and parse the
+> responses.  Comments/Suggestions?
+
+######################################################
+##  Business::Ship::UPS TODO
+######################################################
+ 
+ * Tests that *I* should run:
+
+	- All types (ground, air, etc.) 
+	- World wide (several countries, states (Hawaii, Alaska), etc.)
+	- Confirm that price returned > 0, and no error.  (If error, fail test and dispaly error).
+
+ * Confirm thread-safety-ness (run on thread-enabled Perl).
+
+ * Is non-ssl communication with UPS servers possible?	
+
+ * Be able to handle "mal-formed XML doc" error return from UPS.  
+ 	- Right now, it still tries to parse as an XML doc.
