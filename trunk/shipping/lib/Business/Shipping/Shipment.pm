@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment - Abstract class
 # 
-# $Id: Shipment.pm,v 1.4 2004/01/21 22:39:52 db-ship Exp $
+# $Id: Shipment.pm,v 1.5 2004/01/30 00:56:47 db-ship Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -9,7 +9,7 @@
 
 package Business::Shipping::Shipment;
 
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -262,7 +262,7 @@ sub from_canada
 	my ( $self ) = @_;
 	
 	if ( $self->from_country ) {
-		if ( $self->from_country =~ /(CA)|(Canada)/i ) {
+		if ( $self->from_country =~ /^((CA)|(Canada))$/i ) {
 			return 1;
 		}
 	}
@@ -280,7 +280,7 @@ sub to_canada
 	my ( $self ) = @_;
 	
 	if ( $self->to_country ) {
-		if ( $self->to_country =~ /(CA)|(Canada)/i ) {
+		if ( $self->to_country =~ /^((CA)|(Canada))$/i ) {
 			return 1;
 		}
 	}

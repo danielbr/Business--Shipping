@@ -28,6 +28,12 @@ Revision history for Business::Shipping.
         - Minor fixes: Express Plus.
         - Offline::UPS now supports all services to Canada, which completes all of 
           the Offline::UPS countries.
+		- New error message for XDM to Canada.
+		- Removed regexp that was causing an extra field to be put in the data.
+	      (This fixed a lot of XDM shipments that weren't working before.)
+		- Fixed: Some country/service type records were not returning errors 
+		  (e.g. Malaysia+XDM).
+		- Fixed: CA (Canada) was matching AfriCA.
 
     - Tests:
       - Additional UPS Online/Offline tests: Canada, Mexico.
@@ -36,12 +42,13 @@ Revision history for Business::Shipping.
         standard testing scheme (instead of a manual test).
     
     - UserTag Updates:
-        - Major UserTag enhancements.  
-        - Defaults now readable.  
+        - Major enhancements.  
+        - Defaults now readable.
         - Bug fixes.
         - Reporting updates.
         - Add the [incident] usertag for reporting errors.
         - Minor UserTag compatibility updates (from_state)
+		- Add a mechanism for ignoring simple errors.
 
 1.02  Jan 06 2004
     - Update all data tables from UPS (Jan 05 2004)

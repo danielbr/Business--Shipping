@@ -231,7 +231,7 @@ SKIP: {
 );
 
 $shipment = test( %test );
-ok( $shipment->total_charges(),		'UPS offline intl to gb' );
+ok( $shipment->total_charges(),		'UPS express plus intl to gb' );
 print "Offline: intl to gb " . $shipment->total_charges() . "\n";
 
 SKIP: {
@@ -242,6 +242,22 @@ SKIP: {
 	ok( $shipment_online->total_charges(),		'UPS intl to gb' );
 	print "Online: intl to gb: " . $shipment_online->total_charges() . "\n";
 }
+
+%test = (
+        shipper =>      'Offline::UPS',
+        service =>      'XPR',
+        to_country =>   'CA',
+        weight =>       '0.5',
+        to_zip =>       'M1V 2Z9',
+);
+$this_test_desc = "0.5 XPR to Canada M1V: ";
+
+$shipment = test( %test );
+ok( $shipment->total_charges(),	 "UPS Offline: " . $this_test_desc );
+print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
+
+
+
 
 ###########################################################################
 ##  Hawaii / Alaska
@@ -388,8 +404,7 @@ SKIP: {
 		unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
 
 	$shipment_online = test_online( %test );
-	ok( $shipment_online->total_charges(),	"UPS Online: " . $this_test_desc . $shipment_online->total_charges() );
-	
+	ok( $shipment_online->total_charges(),	"UPS Online: " . $this_test_desc . $shipment_online->total_charges() );	
 }
 
 }; #/end TODO

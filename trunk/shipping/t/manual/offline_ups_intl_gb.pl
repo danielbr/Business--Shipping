@@ -18,11 +18,12 @@ $rate_request->submit(
 		debug3	=> 'STDERR',
 	},
 
-		shipper =>      'Offline::UPS',
-        service =>      'XDM',
-        to_country =>   'FX',
-        weight =>       '1.5',
-        to_zip =>       '17300',
+	from_state	=> 'Washington',
+	from_zip	=> '98682',
+	service		=> 'XPR',
+	weight		=> 20,
+	to_country	=> 'GB',
+	to_zip		=> 'RH98AX',
 		
 ) or die $rate_request->error();
 

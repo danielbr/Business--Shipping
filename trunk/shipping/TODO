@@ -128,6 +128,14 @@
 ##  UPS OFFLINE TODO
 ######################################################
 
+ * [DOC] Refer to Express for Express Plus.  To determine whether Express Plus
+   service is available to your destination postal code, call 800-782-7892.
+
+ * Analyze the 'extra services fees' table:
+   - Extended/Domestic Area Surcharge:  Residential = 1.75, Commercial= 1.00
+   - Residential Surcharge = 1.40 (always assume yes, unless explicitly stated
+     no).
+ 
  * [ENH] Allow user to specify "use default" for Makefile.PL (already done?)
  
  * [ENH] Provide example documentation for easily keeping up to date with the

@@ -1,6 +1,6 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.12 2004/01/21 22:39:52 db-ship Exp $
+# $Id: Shipping.pm,v 1.13 2004/01/30 00:56:47 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 #
@@ -43,7 +43,7 @@ Example usage for a rating request:
 		weight			=> 5.00,
 	);
 	
-	$rate_request->submit() or print $rate_request->error();
+	$rate_request->submit() or die $rate_request->error();
 	
 	print $rate_request->total_charges();
 
@@ -112,11 +112,6 @@ The destination country.  Required for international shipments only.
 
 Weight of the shipment, in pounds, as a decimal number.
 
-=item * test_mode
-
-If true, connects to a test server instead of a live server, if possible. 
-Defaults to 0.
-
 =back
 
 An object is returned if the operation is successful, or 'undef' otherwise.
@@ -154,7 +149,7 @@ An object is returned if the operation is successful, or 'undef' otherwise.
  # Add the shipment to the rate request.
  #
  $rate_request->shipment( $shipment );
- $rate_request->submit() or print $rate_request->error();
+ $rate_request->submit() or ie $rate_request->error();
 
  print $rate_request->package('0')->get_charges( 'GNDRES' );
  print $rate_request->package('1')->get_charges( 'GNDRES' );
@@ -194,7 +189,7 @@ overwritten by a new error.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.13 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;

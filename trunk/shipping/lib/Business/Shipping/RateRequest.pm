@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest - Abstract class
 # 
-# $Id: RateRequest.pm,v 1.5 2004/01/21 22:39:52 db-ship Exp $
+# $Id: RateRequest.pm,v 1.6 2004/01/30 00:56:47 db-ship Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -9,7 +9,7 @@
 
 package Business::Shipping::RateRequest;
 
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -85,7 +85,7 @@ sub submit
 	
 	$self->init( %args ) if %args;
 	$self->_massage_values();
-	$self->validate() or return ( undef );
+	$self->validate() or return;
 	my $cache = Cache::FileCache->new() if $self->cache();
 	if ( $self->cache() ) {
 		trace( 'cache enabled' );	
@@ -166,18 +166,17 @@ sub hash_to_sorted_values
 
 sub total_charges
 {
-	trace '()';
 	my $self = shift;
 	my $total;
 	
 	my $shippers = $self->results();
 	foreach my $shipper ( keys %$shippers ) {
-		debug "\tshipper: $shipper\n";
+		debug3 "\tshipper: $shipper\n";
 		
 		my $packages = $self->results( $shipper );		
 		foreach my $package ( @$packages ) {
 			debug3 "\t" . uneval( $package );
-			debug "\t\tcharges = " . $package->{ 'charges' } . "\n";
+			debug3 "\t\tcharges = " . $package->{ 'charges' } . "\n";
 			$total += $package->{ 'charges' };
 		}
 	}

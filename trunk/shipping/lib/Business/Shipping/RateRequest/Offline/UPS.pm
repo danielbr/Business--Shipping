@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS
 #
-# $Id: UPS.pm,v 1.11 2004/01/28 16:46:09 db-ship Exp $
+# $Id: UPS.pm,v 1.12 2004/01/30 00:56:47 db-ship Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003,2004 Kavod Technologies, Dan Browning. 
@@ -16,7 +16,7 @@
 
 package Business::Shipping::RateRequest::Offline::UPS;
 
-$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -417,6 +417,25 @@ sub do_update
 	return;
 }	
 
+sub validate
+{
+	my ( $self ) = @_;
+	trace '()';
+	
+	if ( $self->to_canada ) {
+		if ( $self->service eq 'XDM' ) {
+			$self->error( 
+				  "Offline::UPS cannot estimate Express Plus to Canada, because "
+				. "not all zip codes are supported."
+			);
+			
+			return;
+		}
+	}
+	
+	return 1;
+}
+
 sub _handle_response
 {
 	my $self = $_[ 0 ];
@@ -600,6 +619,7 @@ sub calc_zone_data
 				s/,/-/;
 			}
 		}
+		
 		if ( $zone[ 0 ] and $zone[ 0 ] !~ /\t/ ) {
 			@zone = grep /\S/, @zone;
 			@zone = grep /^[^"]/, @zone;
@@ -612,9 +632,10 @@ sub calc_zone_data
 			# Split into a tab-separated format.
 			#
 			for(@zone[1 .. $#zone]) {
-				s/^\s*(\w+)\s*,/$1 . ',' . $1 . ','/e;
+				#my $before = $_;
 				s/^\s*(\w+)\s*-\s*(\w+),/$1 . ',' . $2 . ','/e;
 				s/\s*,\s*/\t/g;
+				#my $after = $_;
 			}
 		}
 		$this_zone->{ zone_data } = \@zone;
@@ -791,7 +812,7 @@ sub calc_cost
 	@fieldnames = split( /\t/, $zdata->[ 0 ] ) if $zdata->[ 0 ];
 	debug( "Looking for $type in fieldnames: " . ( join( ' ', @fieldnames ) || 'undef' ) );
 	
-	for($i = 2; $i < @fieldnames; $i++) {
+	for($i = 1; $i < @fieldnames; $i++) {
 		debug3( "checking $fieldnames[$i] eq $type" );
 		next unless $fieldnames[ $i ] eq $type;
 		$point = $i;
@@ -802,7 +823,7 @@ sub calc_cost
 		return 0;
 	}
 	else {
-		debug( "point (i.e. field index) found!  It is $point." );
+		debug( "point (i.e. field index) found!  It is $point.  Fieldname referenced by point is $fieldnames[$point]" );
 	}
 
 	#
@@ -817,8 +838,8 @@ sub calc_cost
 			last;
 		}
 	}
+	
 	debug( "point = $point, looking in zone data..." );
-
 	for ( @{ $zdata }[ 1.. $#{ $zdata } ] ) {
 		@data = split /\t/, $_;
 		if ( $self->current_shipment->domestic_or_ca ) {
@@ -844,14 +865,11 @@ sub calc_cost
 			$zone = $data[ $point ];
 		}
 		else {
-			debug3( "checking $data[0] eq $key" );
-			
 			next unless ( $data[0] and $key eq $data[0] );
-			$zone = $data[ ( $point - 1 ) ];
+			$zone = $data[ ( $point - 1) ];
 		}
 		
 		$eas_zone = $data[$eas_point] if defined $eas_point;
-		return 0 unless $zone;
 		last;
 	}
 	
@@ -862,7 +880,7 @@ sub calc_cost
 		return 0;
 	}
 	elsif ( ! $zone or $zone eq '-') {
-		$self->error( "No $type shipping allowed for geo code (key) $key." );
+		$self->error( "No $type shipping allowed for $key." );
 		return 0;
 	}
 
@@ -934,13 +952,14 @@ sub special_zone_hi_ak
 	return $zone;
 }
 
-=item * determine_zone_info()
+=item * calc_zone_info()
 
 Determines which zone (zone_name), and which zone file to use for lookup.
 
 =cut
-sub determine_zone_info
+sub calc_zone_info
 {
+	trace '()';
 	my ( $self ) = @_;
 	
 	my $zone;
@@ -951,6 +970,7 @@ sub determine_zone_info
 		$zone_file = "/data/$zone.csv";
 	}
 	elsif ( $self->to_canada ) {
+		debug( "to canada" );
 		$zone = $self->make_three( $self->to_zip );
 		
 		if ( $self->service =~ /UPSSTD/i ) {
@@ -1048,6 +1068,9 @@ sub determine_coast
 	
 	return;
 }
+
+	
+
 =item * _massage_values()
 
 Performs some final value modification just before the submit.
@@ -1063,7 +1086,7 @@ sub _massage_values
 	# Currently, we just always assume it is residential.
 	#
 	$self->to_residential( 1 );
-	$self->determine_zone_info;
+	$self->calc_zone_info;
 	$self->determine_coast;
 	
 	return;

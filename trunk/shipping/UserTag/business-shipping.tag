@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.18 2004/01/29 00:10:23 db-ship Exp $
+# $Id: business-shipping.tag,v 1.19 2004/01/30 00:56:46 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -75,12 +75,12 @@ XPS_FROM_STATE	WA	Shipping
 XPS_FROM_ZIP	98682	Shipping
 XPS_TO_COUNTRY_FIELD	country	Shipping
 XPS_TO_ZIP_FIELD	zip	Shipping
-UPS_ACCESS_KEY	FJ28AWJN328A3	Shipping 
+UPS_ACCESS_KEY	AB12CDEF345G6	Shipping 
 UPS_USER_ID	userid	Shipping
 UPS_PASSWORD	mypassword	Shipping
 UPS_PICKUPTYPE	Daily Pickup	Shipping
-USPS_USER_ID	143264KAVOD7241	Shipping
-USPS_PASSWORD	awji2398r2	Shipping
+USPS_USER_ID	123456ABCDE7890	Shipping
+USPS_PASSWORD	abcd1234d5	Shipping
 
  * Sample shipping.asc entry:
 
@@ -269,43 +269,59 @@ sub {
 	#   SYSTEMS_SUPPORT_EMAIL
 	#
 	
-	if ( ! $charges or $charges !~ /\d+/) {
-		
-		if ( $Variable->{ 'XPS_GEN_INCIDENTS' } ) {
-			my $vars_out;
-			
-			$vars_out .= "Important variables:\n";
-			foreach ( 'shipper', 'service', 'to_country', 'weight', 'to_zip' ) {
-				$vars_out .= "\t$_ => \t\'$opt{$_}\',\n";
+	my $report_incident;
+	if ( 
+			( ! $charges or $charges !~ /\d+/ )
+		and	 $Variable->{ 'XPS_GEN_INCIDENTS' }
+		) 
+	{
+		$report_incident = 1;
+		my @do_not_report_errors = (
+			'Offline::UPS cannot estimate Express Plus to Canada, because not all zip codes are supported.',
+		);
+		if ( $rate_request->error() ) {
+			foreach ( @do_not_report_errors ) {
+				if ( $rate_request->error =~ /$_/ ) {
+					$report_incident = 0;
+				}
 			}
-				
-			$vars_out .= "\nAll variables\n";
-			foreach ( keys %opt ) {
-				$vars_out .= "\t$_ => \t\t\'$opt{$_}\',\n";
-			}				
-				
-			$vars_out .= "\nActual values from the rate_request object\n";
-			foreach ( keys %opt ) {
-				$vars_out .= "\t$_ => \t\t\'" . $rate_request->$_() . "\',\n";
-			}
-
-			
-			my $error = $rate_request->error();
-			$error = $error ? "errors: $error." : 'errors: none.';
-			
-			#
-			# Ignore errors if [incident] is missing or misbehaves.
-			#
-			eval {
-				$Tag->incident(
-					{
-						subject => "[business-shipping]: $shipper $error", 
-						content => "$vars_out"
-					}
-				);
-			};
-			$@ = '';
 		}
+	}
+	
+	if ( $report_incident ) {
+		my $vars_out;
+		
+		$vars_out .= "Important variables:\n";
+		foreach ( 'shipper', 'service', 'to_country', 'weight', 'to_zip' ) {
+			$vars_out .= "\t$_ => \t\'$opt{$_}\',\n";
+		}
+			
+		$vars_out .= "\nAll variables\n";
+		foreach ( keys %opt ) {
+			$vars_out .= "\t$_ => \t\t\'$opt{$_}\',\n";
+		}				
+			
+		$vars_out .= "\nActual values from the rate_request object\n";
+		foreach ( keys %opt ) {
+			$vars_out .= "\t$_ => \t\t\'" . $rate_request->$_() . "\',\n";
+		}
+
+		
+		my $error = $rate_request->error();
+		$error = $error ? "errors: $error." : 'errors: none.';
+		
+		#
+		# Ignore errors if [incident] is missing or misbehaves.
+		#
+		eval {
+			$Tag->incident(
+				{
+					subject => "[business-shipping]: $shipper $error", 
+					content => "$vars_out"
+				}
+			);
+		};
+		$@ = '';
 	}
 	::logDebug( "[business-shipping] returning " . uneval( $charges ) ) if $debug;
 	
