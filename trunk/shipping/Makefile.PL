@@ -12,6 +12,29 @@ my %my_globals = (
 	SUPPORT_FILES_DIR	=> '/var/perl/Business-Shipping'
 );
 
+=head1 USAGE
+
+ perl Makefile.PL [--use_defaults=<1|0>] [-u=<1|0>]
+ 
+ -u=1 or --use_defaults=1: Use default values, do not ask for values.  
+ 
+ This option is only available if you have Getopt::Mixed installed.
+
+=cut
+
+$::UseDefaults = 0;
+if ( @ARGV ) {
+    eval "use Getopt::Mixed";
+    if ( ! $@ ) {
+        our $opt_u;
+        Getopt::Mixed::getOptions( 'u:i use_defaults>u' );
+        my %rr_params;
+        if ( $opt_u ) {
+            $::UseDefaults = 1;
+        }
+    }
+}
+
 WriteMakefile(
     NAME			=> 'Business::Shipping',
     VERSION_FROM	=> 'lib/Business/Shipping.pm',
@@ -63,6 +86,8 @@ support_files_install :
 sub extra_WriteMakefile_options {
     
     my $module = "Business::Shipping";
+    if ( not $::UseDefaults ) {
+
     my $question = qq(
              ---  $module Support files directory  ---
   
@@ -78,10 +103,12 @@ installed: Business::Shipping::DataFiles.
 
 $module Support files directory:);
 
+    
 	$my_globals{ SUPPORT_FILES_DIR } = prompt( 
         $question, 
 		$my_globals{ SUPPORT_FILES_DIR },
 	);
+    } # end if not use defaults
     
 	$my_globals{ SUPPORT_FILES_DIR } =~ s:[\\/]\s*$::;
 	$my_globals{ SUPPORT_FILES_DIR } =~ s:^\s*::;
@@ -106,8 +133,9 @@ $module Support files directory:);
 	return \%EXTRA_CONFIG_OPTIONS;
 }
 
+=head1 METHODS
 
-=head2 * subst( files => [ ], variables => { } )
+=head2 subst( files => [ ], variables => { } )
 
 Converts variables, like so:
  

@@ -27,6 +27,10 @@ Revision history for Business::Shipping
       - New system checks to see if prerequisite modules were installed before
         testing functionality that depends on them. 
 
+    * [Done] [Enh] Add "use_defaults=1" option to "perl Makefile.PL"
+      - New options: -u=1 or --use_defaults=1: Use default values, do not ask 
+        for values.
+    
 
 1.53  Sep 17 2004
 
