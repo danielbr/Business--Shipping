@@ -81,7 +81,7 @@ use Class::MethodMaker 2.0
                    'shipment'
                  ],
       scalar => [ { -static => 1, 
-                    -default => "shipment=>Business::Shipping::Shipment::USPS" 
+                    -default => "shipment=>Business::Shipping::USPS_Online::Shipment" 
                   }, 
                   'Has_a' 
                ],
