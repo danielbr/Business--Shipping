@@ -21,12 +21,13 @@ http://www.uspsprioritymail.com/et_regcert.html
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.6 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.7 $ =~ /(\d+)\.(\d+)/);
 use Business::Ship;
-use LWP::UserAgent ();
-use HTTP::Request ();
-use HTTP::Response ();
-use XML::Simple ();
+use LWP::UserAgent;
+use HTTP::Request;
+use HTTP::Response;
+use XML::Simple 2.05;
+use XML::DOM;
 
 
 use Data::Dumper;
@@ -45,7 +46,7 @@ sub set_defaults
 		test_mode	1
 		container	NONE
 		size		Regular
-		machineable	False
+		machinable	False
 		ounces		0
 	|);
 	
@@ -64,29 +65,69 @@ sub _gen_url
 	return( $self->test_mode() ? $self->test_url() : $self->prod_url() );
 }
 
+# _gen_request_xml()
+# Generate the XML document.
+sub _gen_request_xml
+{
+	my ( $self ) = shift;
+	
+	# Note: The XML::Simple hash-tree-based generation method wont work with USPS,
+	# because they enforce the order of their parameters (unlike UPS).
+	
+	my $rateReqDoc = new XML::DOM::Document; 
+	my $rateReqEl = $rateReqDoc->createElement('RateRequest'); 
+	$rateReqEl->setAttribute('USERID', $self->user_id() ); 
+	$rateReqEl->setAttribute('PASSWORD', $self->password()); 
+	$rateReqDoc->appendChild($rateReqEl); 
+	my $packageEl = $rateReqDoc->createElement('Package'); 
+	$packageEl->setAttribute('ID', '0'); 
+	$rateReqEl->appendChild($packageEl); 
+	my $serviceEl = $rateReqDoc->createElement('Service'); 
+	my $serviceText = $rateReqDoc->createTextNode( $self->service() ); 
+	$serviceEl->appendChild($serviceText); 
+	$packageEl->appendChild($serviceEl); 
+	my $zipOrigEl = $rateReqDoc->createElement('ZipOrigination'); 
+	my $zipOrigText = $rateReqDoc->createTextNode( $self->from_zip()); 
+	$zipOrigEl->appendChild($zipOrigText); 
+	$packageEl->appendChild($zipOrigEl); 
+	my $zipDestEl = $rateReqDoc->createElement('ZipDestination'); 
+	my $zipDestText = $rateReqDoc->createTextNode( $self->to_zip()); 
+	$zipDestEl->appendChild($zipDestText); 
+	$packageEl->appendChild($zipDestEl); 
+	my $poundsEl = $rateReqDoc->createElement('Pounds'); 
+	my $poundsText = $rateReqDoc->createTextNode( $self->pounds() );
+	$poundsEl->appendChild($poundsText); 
+	$packageEl->appendChild($poundsEl); 
+	my $ouncesEl = $rateReqDoc->createElement('Ounces'); 
+	my $ouncesText = $rateReqDoc->createTextNode( $self->ounces() ); 
+	$ouncesEl->appendChild($ouncesText); 
+	$packageEl->appendChild($ouncesEl); 
+	my $containerEl = $rateReqDoc->createElement('Container'); 
+	my $containerText = $rateReqDoc->createTextNode( $self->container() ); 
+	$containerEl->appendChild($containerText); 
+	$packageEl->appendChild($containerEl); 
+	my $oversizeEl = $rateReqDoc->createElement('Size'); 
+	my $oversizeText = $rateReqDoc->createTextNode( $self->size() ); 
+	$oversizeEl->appendChild($oversizeText); 
+	$packageEl->appendChild($oversizeEl); 
+	my $machineEl = $rateReqDoc->createElement('Machinable'); 
+	my $machineText = $rateReqDoc->createTextNode( $self->machinable() ); 
+	$machineEl->appendChild($machineText); 
+	$packageEl->appendChild($machineEl); 
+	
+	my $request_xml = $rateReqDoc->toString();
+	
+	return ( $request_xml );
+}
+
 sub _gen_request
 {
 	my ( $self ) = shift;
 	
 	# The "API=Rate&XML=" is the only part that is different from UPS...
-	my $request_xml = 'API=Rate&XML=' . $self->_gen_request_xml();
+	my $request_xml = 'API=Rate&XML=';
+	$request_xml .= $self->_gen_request_xml();
 
-	# This is an example of a working request
-	$request_xml = qq{API=Rate&XML=
-	<RateRequest USERID=$ENV{USPS_USER_ID} PASSWORD=$ENV{USPS_PASSWORD}>
-		<Package ID="0">
-			<Service>BPM</Service>
-			<ZipOrigination>29708</ZipOrigination>
-			<ZipDestination>28278</ZipDestination>
-			<Pounds>1</Pounds>
-			<Ounces>0</Ounces>
-			<Container>NONE</Container>
-			<Size>Regular</Size>
-			<Machinable>False</Machinable>
-		</Package>
-	</RateRequest>
-	};
-	
 	my $request = new HTTP::Request 'POST', $self->_gen_url();
 	
 	$request->header( 'content-type' => 'application/x-www-form-urlencoded' );
@@ -122,6 +163,9 @@ sub submit
 	#$self->validate() or return ( undef );
 	
 	my $request = $self->_gen_request();
+	
+	$self->debug( "request = \n" . Dumper( $request ) );
+	
 	$self->response( $self->{'ua'}->request( $request ) );
 	
 	$self->debug( "response content = " . $self->response()->content );
@@ -150,37 +194,6 @@ sub submit
 	return $self->success( 1 );
 }
 
-# _gen_request_xml()
-# Generate the XML document.
-sub _gen_request_xml
-{
-	my ( $self ) = shift;
-
-	my $request_tree = {
-		'RateRequest' => [{
-			'USERID' => $self->user_id(),
-			'PASSWORD' => $self->password(),
-			'Package' => [{
-				'ID' => '0',
-				'Service' => [ $self->service() ],
-				'ZipOrigination' => [ $self->from_zip() ],
-				'ZipDestination' => [ $self->to_zip() ],
-				'Pounds' => [ $self->pounds() ],
-				'Ounces' => [ $self->ounces() ],
-				'Container' => [ $self->container() ],
-				'Size' => [ $self->size() ],
-				'Machineable' => [ $self->machineable() ],
-			}]
-		}]
-	};
-
-	my $request_xml = '<?xml version="1.0"?>' . "\n"
-		. $self->{xs}->XMLout( $request_tree );
-
-	$self->debug( "request xml = \n" . $request_xml );
-	
-	return ( $request_xml );
-}
 
 sub build_subs
 {
@@ -198,14 +211,13 @@ sub build_subs
 		xs
 		container
 		size
-		machineable
+		machinable
 		pounds
 		ounces
 	/;
 	
 	$self->SUPER::build_subs( @_, @usps_required_vals, @usps_optional_vals );
 	
-	# build these sub	
 }
 
 sub _set_pounds_ounces
