@@ -12,6 +12,9 @@ new-release - the Business::Shipping release script.
 
 =head1 RELEASE STEPS
 
+ # Remove the old tars
+ rm -f Business-Shipping-*.tar.gz
+ 
  # Test it
  make test
  
