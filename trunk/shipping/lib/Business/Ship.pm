@@ -2,7 +2,7 @@
 # All rights reserved. This program is free software; you can 
 # redistribute it and/or modify it under the same terms as Perl 
 # itself.
-# $Id: Ship.pm,v 1.10 2003/04/30 08:25:47 db-ship Exp $
+# $Id: Ship.pm,v 1.11 2003/05/01 04:16:39 db-ship Exp $
 package Business::Ship;
 use strict;
 use warnings;
@@ -26,14 +26,20 @@ else {
 	print $shipment->error();
 }
 
+Requires the following modules:
+
+Digest::SHA1
+Error
+
 =cut
 
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.10 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.11 $ =~ /(\d+)\.(\d+)/);
 
 use Data::Dumper;
 use Carp;
+use Cache::FileCache;
 
 
 # If called with a 'shipper' argument, then return a sub object (like Ship::USPS)
@@ -41,50 +47,68 @@ use Carp;
 sub new 
 {
 	my( $class, %args ) = @_;
-	print "Business::Ship::new()\n";
 	
 	# Defaults
-	my %required = (qw/
-		user_id		undef
-		password	undef
-	/);
+	my %required = (
+		user_id		=> undef,
+		password	=> undef,
+	);
 	
-	my %optional = (qw/
-		success		undef
-		tx_type		undef
-		error_msg	undef
-		response	undef
+	my %optional = (
+		success		=> undef,
+		tx_type		=> undef,
+		error_msg	=> undef,
+		response	=> undef,
 		
-		test_url	undef
-		prod_url	undef
-		test_mode	undef
+		test_url	=> undef,
+		prod_url	=> undef,
+		test_mode	=> undef,
 		
-		service 	undef
-		from_zip	undef
-		to_zip		undef
-		weight		undef
-		total_charges	undef
+		service 	=> undef,
+		from_zip	=> undef,
+		to_zip		=> undef,
+		weight		=> undef,
+		total_charges	=> undef,
 		
-		event_handlers	undef
-	/);
+		cache		=> new Cache::FileCache,
+		
+		
+		event_handlers	=> undef,
+	);
 	
-	my %internal = (qw/
-	
-	/);
+	my %internal = (
+		response_tree	=> undef,
+	);
 	my $self = bless( {}, $class );
+	
+	$self->trace('just blessed self, building subs and setting defaults now...');
 	
 	$self->build_subs( keys %required, keys %optional, keys %internal );
 	$self->set( %required, %optional, %internal );
 	$self->set(
 		'event_handlers' => ({ 
 			'debug' => undef,
+			'trace' => undef,
 			'error' => 'croak',
 		})
 	);
 	$self->set( %args );
 	
+	$self->trace('...returning self');
+	
 	return $self;
 }
+
+sub uneval { my $self = shift; return Dumper ( @_ ); }
+
+# Remap to Package::to_country().
+sub to_country { return shift->default_package()->to_country( @_ ); }
+
+# If someone isn't using the multi-package API, but wants the price of a 
+# specific service...
+sub get_price { return shift->default_package()->get_price( @_ ); }
+
+sub default_package { return shift->packages()->[0]; }
 
 sub validate 
 {
@@ -119,6 +143,12 @@ sub debug
     return $self->_log( 'debug', $msg );
 }
 
+sub trace
+{
+	my ( $self, $msg ) = @_;
+	return $self->_log( 'trace', $msg );
+}
+
 sub error 
 {
     my ( $self, $msg ) = @_;
@@ -150,6 +180,17 @@ sub _log
 	return ( $msg );
 }	
 
+
+sub get_unique_keys
+{
+	my $self = shift;
+	
+	# None at the Business::Ship level.
+	my @unique_keys = ();
+	
+	return( @unique_keys );
+}
+	
 
 sub build_subs 
 {
