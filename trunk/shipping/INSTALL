@@ -11,7 +11,8 @@ NOTES
     If you are planning on using all of the shipping methods, install
     "Bundle::Business::Shipping". However, if you would only like to install
     the required modules for one shipper, you can select it individually:
-
+    
+    * "Bundle::Business::Shipping"
     * "Bundle::Business::Shipping::UPS_Online"
     * "Bundle::Business::Shipping::UPS_Offline"
     * "Bundle::Business::Shipping::USPS_Online"

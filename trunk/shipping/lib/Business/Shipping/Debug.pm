@@ -29,7 +29,7 @@ Aside from the usual stuff, these functions have been specially mapped:
     error     => moved to Shipping::user_error  
                  ('user_error' calls error, but also logs the message for 
                  display to the user).
-    uneval    => moted to Util::uneval
+    uneval    => moved to Util::uneval
                            
 
 So, for compatibility, the 'error' sub here replaces the one that was normally

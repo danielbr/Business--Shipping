@@ -23,7 +23,7 @@ use Carp;
 use Log::Log4perl;
 
 $Business::Shipping::KLogging::Current_Level = 'WARN';
-@Business::Shipping::KLogging::Levels = ( 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL' );
+@Business::Shipping::KLogging::Levels = qw( DEBUG INFO WARN ERROR FATAL );
 
 =head2 debug
 

@@ -417,8 +417,10 @@ sub calc_fuel_surcharge
         { $fuel_surcharge = $g_fuel_surcharge; }
     else 
         { $fuel_surcharge = $a_fuel_surcharge; }
-    $fuel_surcharge *= .01;
-    $fuel_surcharge *= $self->_total_charges;
+    
+    $fuel_surcharge ||= 0;
+    $fuel_surcharge  *= .01;
+    $fuel_surcharge  *= $self->_total_charges;
     
     return $fuel_surcharge;
 }

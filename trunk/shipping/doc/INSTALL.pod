@@ -24,13 +24,15 @@ required modules for one shipper, you can select it individually:
 
 =item * C<Bundle::Business::Shipping::USPS_Online>
 
+=item * C<Bundle::Business::Shipping>
+
 =back
 
 =head1 CPAN INSTALLATION
 
 All shippers:
 
- perl -MCPAN -e 'force install DBD::CSV XML::DOM'
+ perl -MCPAN -e 'force install XML::DOM'
  perl -MCPAN -e 'install Bundle::Business::Shipping'
 
 UPS_Online only:
@@ -40,7 +42,6 @@ UPS_Online only:
 
 UPS_Offline only:
 
- perl -MCPAN -e 'force install DBD::CSV'
  perl -MCPAN -e 'install Bundle::Business::Shipping::UPS_Offline'
 
 USPS_Online only:
@@ -51,11 +52,7 @@ USPS_Online only:
 =head1 MANUAL INSTALLATION
 
 Be sure to install all required modules before installing.  After unpacking the 
-tarball, execute this command:
-
- perl Makefile.PL && make && make test && make install
-
-Or, expressed as separate commands:
+tarball, execute the following:
 
  perl Makefile.PL [--use_defaults=<1|0>]
  make
@@ -65,7 +62,7 @@ Or, expressed as separate commands:
 =head1 All required modules
 
 Each Bundle lists the required modules for each shipper type.  Here is the 
-combined list:
+combined list for all shippers:
 
  Bundle::DBD::CSV (any)
  Business::Shipping::DataFiles (any)

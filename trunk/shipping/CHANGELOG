@@ -6,11 +6,15 @@ Revision history for Business::Shipping
 
   General
   
-    * [Fixed] "You tried to plan twice" error in t/16_Pod-Coverage.t
+    * [Fixed] Testing error in t/16_Pod-Coverage.t
     
     * [Enh] Minor documentation updates
 
   Offline_UPS
+  
+    * [Enh] 2005 Zones and Rates supported.
+      - UPS changed the file format
+      - See updated Business::Shipping::DataFiles
   
     * [Enh] Fuel surcharge auto-update
       - [Enh] Updated to work with new format introduced on 12/1/2004, which 
