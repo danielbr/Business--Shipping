@@ -48,8 +48,8 @@
 		<li><a href="#_obj_validate__">$obj-&gt;<code>validate()</code></a></li>
 		<li><a href="#_obj_rate_request__">$obj-&gt;<code>rate_request()</code></a></li>
 		<li><a href="#business__shipping_log_level__">Business::Shipping-&gt;<code>log_level()</code></a></li>
-		<li><a href="#_obj_event_handlers__">$obj-&gt;<code>event_handlers()</code></a></li>
 		<li><a href="#business__shipping__new_subclass__">Business::Shipping-&gt;<code>_new_subclass()</code></a></li>
+		<li><a href="#_obj_event_handlers__">$obj-&gt;<code>event_handlers()</code></a></li>
 	</ul>
 
 	<li><a href="#see_also">SEE ALSO</a></li>
@@ -71,7 +71,7 @@
 </p>
 <hr />
 <h1><a name="version">VERSION</a></h1>
-<p>Version 1.54</p>
+<p>Version 1.55</p>
 <p>
 </p>
 <hr />
@@ -83,7 +83,7 @@
  use Business::Shipping;
  
  my $rate_request = Business::Shipping-&gt;rate_request(
-     shipper   =&gt; 'Offline::UPS',
+     shipper   =&gt; 'UPS_Offline',
      service   =&gt; 'GNDRES',
      from_zip  =&gt; '98682',
      to_zip    =&gt; '98270',
@@ -106,7 +106,51 @@
 </li>
 <li><strong><a name="item_shipment_tracking_2e">Shipment tracking.</a></strong><br />
 </li>
-</ul>
+<li><strong><a name="item_rate_shopping_2e">Rate Shopping.</a></strong><br />
+</li>
+Gets rates for all the services in one request:
+<pre>
+ my $rr_shop = Business::Shipping-&gt;rate_request( 
+     service      =&gt; 'shop',    
+     shipper      =&gt; 'UPS_Online',
+     from_zip     =&gt; '98682',
+     to_zip       =&gt; '98270',
+     weight       =&gt; 5.00,
+     user_id      =&gt; $ENV{ UPS_USER_ID },
+     password     =&gt; $ENV{ UPS_PASSWORD },
+     access_key   =&gt; $ENV{ UPS_ACCESS_KEY }
+ );
+ 
+ $rr_shop-&gt;go() or die $rr_shop-&gt;user_error();
+ 
+ foreach my $shipper ( @$results ) {
+     print &quot;Shipper: $shipper-&gt;{name}\n\n&quot;;
+     foreach my $rate ( @{ $shipper-&gt;{ rates } } ) {
+         print &quot;  Service:  $rate-&gt;{name}\n&quot;;
+         print &quot;  Charges:  $rate-&gt;{charges_formatted}\n&quot;;
+         print &quot;  Delivery: $rate-&gt;{deliv_date_formatted}\n&quot; 
+             if $rate-&gt;{ deliv_date_formatted };
+         print &quot;\n&quot;;
+     }
+ }</pre>
+<p></p>
+<li><strong><a name="item_c_2eo_2ed_2e__28cash_on_delivery_29">C.O.D. (Cash On Delivery)</a></strong><br />
+</li>
+#DeliveryConfirmation and COD cannot coexist on a single Pakcage (DeliveryConfirmation is not yet implemented in Business::Shiping).
+#cod_code: The code associated with the type of COD.  Values: 1 = Regular COD, 2 = Express COD, 3 = Tagless COD
+<p>Add these options to your rate request for C.O.D.:</p>
+<p>cod: enable C.O.D.</p>
+<p>cod_funds_code:  The code that indicates the type of funds that will be used for the COD payment.  Required if CODCode is 1, 2, or 3.  Valid Values: 0 = All Funds Allowed.  8 = cashier's check or money order, no cash allowed.</p>
+<p>cod_value: The COD value for the package.  Required if COD option is present.  Valid values: 0.01 - 50000.00
+</p>
+<pre>
+
+For example:</pre>
+<pre>
+        cod            =&gt; 1,
+        cod_funds_code =&gt; 0,
+        cod_value      =&gt; 400.00,</pre>
+<p></p></ul>
 <p>
 </p>
 <h2><a name="ups_offline__united_parcel_service">UPS_Offline: United Parcel Service</a></h2>
@@ -264,7 +308,7 @@ The origin zipcode.
 <p></p>
 <li><strong><a name="item_from_state">from_state</a></strong><br />
 </li>
-The origin state in two-letter code format or full-name format.  Required for Offline::UPS.
+The origin state in two-letter code format or full-name format.  Required for UPS_Offline.
 <p></p>
 <li><strong><a name="item_to_zip">to_zip</a></strong><br />
 </li>
@@ -282,13 +326,13 @@ Weight of the shipment, in pounds, as a decimal number.
 <ul>
 <li><strong><a name="item_user_id">user_id</a></strong><br />
 </li>
-A user_id, if required by the provider. Online::USPS and Online::UPS require
-this, while Offline::UPS does not.
+A user_id, if required by the provider. USPS_Online and UPS_Online require
+this, while UPS_Offline does not.
 <p></p>
 <li><strong><a name="item_password">password</a></strong><br />
 </li>
-A password,  if required by the provider. Online::USPS and Online::UPS require
-this, while Offline::UPS does not.
+A password,  if required by the provider. USPS_Online and UPS_Online require
+this, while UPS_Offline does not.
 <p></p></ul>
 <p>
 </p>
@@ -297,15 +341,15 @@ this, while Offline::UPS does not.
 <p>Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.</p>
 <p>
 </p>
-<h2><a name="_obj_event_handlers__">$obj-&gt;<code>event_handlers()</code></a></h2>
-<p>For backwards compatibility only.</p>
-<p>
-</p>
 <h2><a name="business__shipping__new_subclass__">Business::Shipping-&gt;<code>_new_subclass()</code></a></h2>
 <p>Private Method.</p>
 <p>Generates an object of a given subclass dynamically.  Will dynamically 'use' 
 the corresponding module, unless runtime module loading has been disabled via 
 the 'preload' option.</p>
+<p>
+</p>
+<h2><a name="_obj_event_handlers__">$obj-&gt;<code>event_handlers()</code></a></h2>
+<p>For backwards compatibility only.</p>
 <p>
 </p>
 <hr />
@@ -337,8 +381,7 @@ author and/or on their website or in their application.
 <li><strong><a name="item_system">Interchange e-commerce system ( <a href="http://www.icdevgroup.org">http://www.icdevgroup.org</a> ).  See 
     <code>UserTag/business-shipping.tag</code>.</a></strong><br />
 </li>
-<li><strong><a name="item_the_paymentonline_2ecom_mod_perl_2ftemplate_toolki">The paymentonline.com mod_perl/template 
-    toolkit system.</a></strong><br />
+<li><strong><a name="item_the_paymentonline_2ecom_mod_perl_2ftemplate_toolki">The paymentonline.com mod_perl/template toolkit system.</a></strong><br />
 </li>
 <li><strong><a name="item_the__22shopping_cart_22_wobject_for_the_webgui_pro">The ``Shopping Cart'' Wobject for the WebGUI project, by Andy Grundman 
     &lt;<a href="mailto:andy@kahncentral.net">andy@kahncentral.net</a>&gt;.

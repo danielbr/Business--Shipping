@@ -2,14 +2,14 @@ NAME
     Business::Shipping - Rates and tracking for UPS and USPS
 
 VERSION
-    Version 1.54
+    Version 1.55
 
 SYNOPSIS
   Rate request example
      use Business::Shipping;
  
      my $rate_request = Business::Shipping->rate_request(
-         shipper   => 'Offline::UPS',
+         shipper   => 'UPS_Offline',
          service   => 'GNDRES',
          from_zip  => '98682',
          to_zip    => '98270',
@@ -26,6 +26,56 @@ FEATURES
   UPS_Online: United Parcel Service
     * Shipment rate estimation using UPS Online WebTools.
     * Shipment tracking.
+    * Rate Shopping.
+        Gets rates for all the services in one request:
+
+         my $rr_shop = Business::Shipping->rate_request( 
+             service      => 'shop',    
+             shipper      => 'UPS_Online',
+             from_zip     => '98682',
+             to_zip       => '98270',
+             weight       => 5.00,
+             user_id      => $ENV{ UPS_USER_ID },
+             password     => $ENV{ UPS_PASSWORD },
+             access_key   => $ENV{ UPS_ACCESS_KEY }
+         );
+ 
+         $rr_shop->go() or die $rr_shop->user_error();
+ 
+         foreach my $shipper ( @$results ) {
+             print "Shipper: $shipper->{name}\n\n";
+             foreach my $rate ( @{ $shipper->{ rates } } ) {
+                 print "  Service:  $rate->{name}\n";
+                 print "  Charges:  $rate->{charges_formatted}\n";
+                 print "  Delivery: $rate->{deliv_date_formatted}\n" 
+                     if $rate->{ deliv_date_formatted };
+                 print "\n";
+             }
+         }
+
+    * C.O.D. (Cash On Delivery)
+        #DeliveryConfirmation and COD cannot coexist on a single Pakcage
+        (DeliveryConfirmation is not yet implemented in Business::Shiping).
+        #cod_code: The code associated with the type of COD. Values: 1 =
+        Regular COD, 2 = Express COD, 3 = Tagless COD
+
+        Add these options to your rate request for C.O.D.:
+
+        cod: enable C.O.D.
+
+        cod_funds_code: The code that indicates the type of funds that will
+        be used for the COD payment. Required if CODCode is 1, 2, or 3.
+        Valid Values: 0 = All Funds Allowed. 8 = cashier's check or money
+        order, no cash allowed.
+
+        cod_value: The COD value for the package. Required if COD option is
+        present. Valid values: 0.01 - 50000.00
+
+        For example:
+
+                cod            => 1,
+                cod_funds_code => 0,
+                cod_value      => 400.00,
 
   UPS_Offline: United Parcel Service
     * Shipment rate estimation using offline tables.
@@ -140,7 +190,7 @@ METHODS
 
     * from_state
         The origin state in two-letter code format or full-name format.
-        Required for Offline::UPS.
+        Required for UPS_Offline.
 
     * to_zip
         The destination zipcode.
@@ -154,20 +204,17 @@ METHODS
     There are some additional common values:
 
     * user_id
-        A user_id, if required by the provider. Online::USPS and Online::UPS
-        require this, while Offline::UPS does not.
+        A user_id, if required by the provider. USPS_Online and UPS_Online
+        require this, while UPS_Offline does not.
 
     * password
-        A password, if required by the provider. Online::USPS and
-        Online::UPS require this, while Offline::UPS does not.
+        A password, if required by the provider. USPS_Online and UPS_Online
+        require this, while UPS_Offline does not.
 
   Business::Shipping->log_level()
     Sets the log level for all Business::Shipping objects.
 
     Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.
-
-  $obj->event_handlers()
-    For backwards compatibility only.
 
   Business::Shipping->_new_subclass()
     Private Method.
@@ -175,6 +222,9 @@ METHODS
     Generates an object of a given subclass dynamically. Will dynamically
     'use' the corresponding module, unless runtime module loading has been
     disabled via the 'preload' option.
+
+  $obj->event_handlers()
+    For backwards compatibility only.
 
 SEE ALSO
     Important modules that are related to Business::Shipping:

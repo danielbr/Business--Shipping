@@ -10,9 +10,11 @@ contributed.
    estimation system for the Interchange project.  They were adapted for use 
    with Business::Shipping.
  
- * Selena Brewington <computers@chrisking.com> contributed the 'Shop' service
-   for UPS_Online that retrieves all the rates in one request, as well as 
-   various minor patches.
+ * Selena Brewington <computers@chrisking.com> contributed:
+   - The 'Shop' service for UPS_Online that retrieves all the rates in one 
+     request (ver 1.55).
+   - C.O.D. (Cash On Delivery) for UPS_Online (ver 1.55).
+   - Various minor patches.
  
  * Kevin Old <kold@carolina.rr.com> got the USPS XML generator working.
  
