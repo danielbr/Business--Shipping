@@ -6,6 +6,7 @@ version_from: lib/Business/Shipping.pm
 installdirs:  site
 requires:
     Bundle::DBD::CSV:              0
+    Business::Shipping::DataFiles: 0
     Cache::FileCache:              0
     Class::MethodMaker::Engine:    0
     Clone:                         0

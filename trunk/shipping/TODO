@@ -2,24 +2,14 @@
 ##  General TODO
 ################################################################################
     
-    * [Enh] Split the data into its own distribution, and add it to the bundle.
-      - Business::Shipping::Data
-      - Benefits: 
-        + Allows data to be updated separately from the code.
-        + It changes less often
-        + Update scripts can just do a CPAN install of the latest data module.
-      - Issues:
-        + Chicken and Egg problem.  Can't install data first, because it needs
-	  Business::Shipping to know where to install.  Can't install Shipping
-	  first because it needs data in order to test.  Solution?  Ask for the 
-	  path during data installation, then use it for Shipping installation.
-	  OR, ask during both.
+    * [Enh] Change my $VERSION into our $VERSION.
     
     * [Enh] Test on Sourceforge Compile Farm systems.
       - Also test using older perl versions (e.g. 5.6.x).
 
     * [Enh] Build a replacement for ClassInfo and ClassAttribs that will be more 
-      simple, efficient, and portable.
+      simple, efficient, and portable.  Should work for static or dynamic 
+      generation of Required, Optional, Unique, and other metadata.
   
     * [Enh] Business::Shipping::UPS_XML
       - Add to documentation as an alternative to Business::Shipping
@@ -32,7 +22,10 @@
       - Memory usage:
         + 6.5 MB at the time of "use Business::Shipping::UPS_Offline::RateRequest"
         + 1.5 MB at the time of submit() for an UPS_Offline::RateRequest. 
-
+    
+    * [Enh] Allow usage of LWP through a proxy
+      - Suggested by mpolo on Perlmonks.
+	
 * [Enh] Unit tests for each class.
   
 * [Enh] Conform to coding style: private methods should be prefixed with an
@@ -310,7 +303,7 @@
   (see FedEx.pm).
 
 * See FedEx::DirectConnect
-  Business::FedEx::ShipRequest
+  Business::FedEx (Win32 Only)
   
 ################################################################################
 ##  Online::DHL 

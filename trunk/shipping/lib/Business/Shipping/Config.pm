@@ -165,6 +165,34 @@ sub config_to_ary_of_hashes
     return @ary;
 }
 
+sub data_dir_name
+{
+    # name only.
+    return cfg()->{ general }->{ data_dir_name } || 'data';
+}
+
+sub data_dir
+{
+    # full path.  combine with support files dir if applicable.
+    
+    my $data_dir_name = data_dir_name();
+    
+    # A filename that will be present in any data dir (to know if it exists).
+    my $test_filename = 'wash.csv';
+    if ( -f "./$data_dir_name/$test_filename" ) {
+        return "./$data_dir_name";
+    }
+    elsif ( -f "../Business-Shipping-DataFiles/$data_dir_name/$test_filename" ) {
+        return "../Business-Shipping-DataFiles/$data_dir_name";
+    }
+    elsif ( -f support_files() . "/$data_dir_name/$test_filename" ) {
+        return support_files() . "/$data_dir_name";
+    }
+    else {
+        die "Data dir could not be found.  Is data_dir configured correctly?";
+    }
+}
+
 1;
 
 __END__

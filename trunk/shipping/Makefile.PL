@@ -27,19 +27,20 @@ WriteMakefile(
     AUTHOR		    => 'Dan Browning <db@kavod.com>',
 	CONFIGURE		=> \&extra_WriteMakefile_options,
     PREREQ_PM		=>	{
-		'Bundle::DBD::CSV'		     => 0,
-		'Cache::FileCache'		     => 0,
-		'Class::MethodMaker::Engine' => 0,
-		'Clone'					     => 0,
-		'Config::IniFiles'		     => 0,
-		'Crypt::SSLeay'			     => 0,
-		'Getopt::Mixed'		      	 => 0,
-		'Log::Log4perl'              => 0,
-        'LWP::UserAgent'		     => 0,
-		'Math::BaseCnv'			     => 0,
-		'Scalar::Util'			     => '1.10',
-		'XML::DOM' 				     => 0,
-		'XML::Simple'			     => '2.05',
+		'Bundle::DBD::CSV'		         => 0,
+        'Business::Shipping::DataFiles'  => 0,  # Only needed for UPS_Offline.
+		'Cache::FileCache'		         => 0,
+		'Class::MethodMaker::Engine'     => 0,
+		'Clone'					         => 0,
+		'Config::IniFiles'		         => 0,
+		'Crypt::SSLeay'			         => 0,
+		'Getopt::Mixed'		      	     => 0,
+		'Log::Log4perl'                  => 0,
+        'LWP::UserAgent'		         => 0,
+		'Math::BaseCnv'		    	     => 0,
+		'Scalar::Util'			         => '1.10',
+		'XML::DOM' 				         => 0,
+		'XML::Simple'			         => '2.05',
 	},
 		#'Archive::Zip'			     => 0,      # For updates only
     	#'Devel::Required'	      	 => '0.03', # For documentation updates only
@@ -64,8 +65,7 @@ sub MY::install {
 sub MY::postamble {
 	return qq{
 docs :
-	podchecker -nowarnings doc/INSTALL.pod doc/README.pod
-	find lib -name '*.pm' -exec podchecker -nowarnings {} \\;
+	find lib -name '*.pm' -or -name '*.pod' -exec podchecker -nowarnings {} \\;
 	pod2text doc/README.pod > README
 	pod2html doc/README.pod > doc/README.html
 	pod2text doc/INSTALL.pod > INSTALL
@@ -85,17 +85,18 @@ support_files_install :
 
 sub extra_WriteMakefile_options {
     
+    my $module = "Business::Shipping::DataFiles";
     my $question = qq(
-             ---  Business::Shipping support files directory  ---
+             ---  $module Support files directory  ---
   
-Business::Shipping comes with various support files for configuration, database,
-etc.  Please input the path you would like to copy these files to.  You can 
-modify the path later by changing the Business/Shipping/Config.pm file.
+$module module comes with various support files for configuration, database, etc. 
+Please input the path you would like to copy these files to.  You can 
+modify the path later by changing the Config.pm file.
 
 On many systems, this directory will only be accessible by the user who 
 installed perl, typically root.
 
-Business::Shipping support files directory:);
+$module Support files directory:);
 
 	$my_globals{ SUPPORT_FILES_DIR } = prompt( 
         $question, 

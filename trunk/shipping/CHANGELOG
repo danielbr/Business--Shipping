@@ -13,7 +13,23 @@ Revision history for Business::Shipping
         use Business::Shipping { preload => 'USPS_Online' };
       - Without preloading, some modules will be loaded at runtime.  Normally, 
         runtime loading is the best mode of operation.  However, there are some
-	circumstances when preloading is advantagous (see docs).   
+	circumstances when preloading is advantagous (see docs).
+    * [Enh] Split the data into its own distribution, and add it to the bundle.
+      - Business::Shipping::DataFiles - Offline cost estimation tables
+      - Benefits: 
+        + Allows data to be updated separately from the code.
+        + It changes less often
+        + Update scripts can just do a CPAN install of the latest data module.
+      - Issues:
+        + Chicken and Egg problem.  Can't install data first, because it needs
+	  Business::Shipping to know where to install.  Can't install Shipping
+	  first because it needs data in order to test.  Solution:  Check for
+	  pre-installed Business::Shipping and use that as the default, but ask
+	  anyway (for both).
+    * [Enh] Add Business::Shipping::DataTools 
+      - Converts shipper files into a format usable by Business::Shipping.
+      - Most methods were removed from UPS_Offline::RateRequest where they were
+        languishing.
    
   Tracking
     * [Enh] More progress on upgrade of tracking modules to C:MM 2.0. 

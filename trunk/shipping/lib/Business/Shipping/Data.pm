@@ -80,7 +80,9 @@ sub dbh
     if ( ! defined $::dbh_store ) {
         $::dbh_store = {};
         my $support_files = Business::Shipping::Config::support_files();
-        my $dsn = cfg()->{Database}{DSN} || "DBI:CSV:f_dir=$support_files/data";
+        
+        my $data_dir = Business::Shipping::Config::data_dir();
+        my $dsn = cfg()->{Database}{DSN} || "DBI:CSV:f_dir=$data_dir";
         $dsn .= ";csv_eol=\n;";
         
         my $dbh = DBI->connect( $dsn )

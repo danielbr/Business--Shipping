@@ -154,368 +154,6 @@ sub is_from_east_coast { return not shift->is_from_west_coast(); }
 
 =cut
 
-sub convert_ups_rate_file
-{
-    trace "( $_[0] )";
-    
-    my ( $file ) = @_;
-    my $file2 = "$file.new";
-    if ( ! -f $file ) { return; }
-    
-    open(         RATE_FILE,        $file            ) or logdie $@;
-    binmode(     RATE_FILE                         ) if $Global::Windows;
-    flock(         RATE_FILE,         LOCK_EX         ) or logdie $@;
-    open(         NEW_RATE_FILE,    ">$file2"        ) or logdie $@;
-    binmode(     NEW_RATE_FILE                     ) if $Global::Windows;
-    flock(         NEW_RATE_FILE,    LOCK_EX            ) or logdie $@;
-    
-    my $line;
-
-    #
-    # Line ending is now \n (might have been changed to nothing ealier)
-    #
-    $/ = "\n";
-
-    #
-    # Remove all the lines until we get to the line with "Weight Not To Exceed"
-    #
-    while ( $line = <RATE_FILE> ) {
-        last if ( $line =~ /^Weight Not To Exceed/ );
-    }
-    
-    if ( $line ) {
-        # Remove "Weight Not To " from this line
-        $line =~ s/^Weight Not To//;
-        
-        # Remove all occurences of "Zone" from this line
-        $line =~ s/Zone//g;
-        
-        # Remove all the left-over spaces.
-        $line =~ s/ //g;
-        
-        # Now-adjusted Header
-        print NEW_RATE_FILE $line;
-    }
-    
-    #
-    # Remove blank lines before the data starts, if any
-    #
-    
-    while ( $line = <RATE_FILE> ) {
-        #
-        # Skip the line if it is empty, or just has commas.
-        #
-        debug3( "checking line... $line" );
-        
-        next if ! $line;
-        next if $line =~ /^\s+$/; 
-        next if $line =~ /^(\,|\ )+$/;
-        
-        #
-        # wwrates/ww-xp*
-        # I don't really know what "Min" and "Per Pd." are for, so I'm deleting them.
-        #
-        last if $line =~ /^UPS Worldwide Express Box/;
-        last if $line =~ /^Min/;
-        last if $line =~ /^Per Pd\./;
-        
-        debug3( "Writing line... $line" );
-        
-        print NEW_RATE_FILE $line;
-    }
-
-    flock(     RATE_FILE,         LOCK_UN    ) or logdie $@;
-    close(     RATE_FILE                 ) or logdie $@;
-    flock(    NEW_RATE_FILE,     LOCK_UN    ) or logdie $@;
-    close(    NEW_RATE_FILE             ) or logdie $@;
-    copy(     $file2,         $file     ) or logdie $@;
-    unlink( $file2                     ) or logdie $@;
-    
-    return;
-}
-
-=item * do_download
-
-=cut
-
-sub do_download
-{
-    my ( $self ) = @_;
-    my $data_dir = cfg()->{ general }->{ data_dir };
-    debug( "data_dir = $data_dir" );
-    
-    my $us_origin_rates_url = cfg()->{ ups_information }->{ us_origin_rates_url };
-    my $us_origin_zones_url = cfg()->{ ups_information }->{ us_origin_zones_url };
-    my $us_origin_rates_filenames = cfg()->{ ups_information }->{ us_origin_rates_filenames };
-    my $us_origin_zones_filenames = cfg()->{ ups_information }->{ us_origin_zones_filenames };
-    
-    for ( @$us_origin_zones_filenames ) {
-        s/\s//g;
-        Business::Shipping::Util::download_to_file( "$us_origin_zones_url/$_", "$data_dir/$_" );
-    }
-    for ( @$us_origin_rates_filenames ) {
-        s/\s//g;
-        Business::Shipping::Util::download_to_file( "$us_origin_rates_url/$_", "$data_dir/$_" ) ;
-    }
-}
-
-=item * do_unzip
-
-=cut
-
-sub do_unzip
-{
-    for ( 
-            @{ cfg()->{ ups_information }->{ us_origin_rates_filenames } },
-            @{ cfg()->{ ups_information }->{ us_origin_zones_filenames } },
-        )
-    {
-        #
-        # Remove any leading spaces.
-        #
-        s/^\s//g;
-        my $filename_without_extension = Business::Shipping::Util::filename_only( $_ );
-        my $data_dir = cfg()->{ general }->{ data_dir };
-        #
-        # Disable splitting up the data.  I just want them in one big flat directory, for now.
-        #
-        #my $destionation_dir = "$filename_without_extension/";
-        my $destionation_dir = '';
-        debug3( "Going to unzip: $data_dir/$_ into directory $data_dir/$destionation_dir" );
-        Business::Shipping::Util::_unzip_file(  "$data_dir/$_", "$data_dir/$destionation_dir" )
-    }
-    
-    return;
-}
-
-=item * do_convert_data()
-
-Find all data .csv files and convert them from the vanilla UPS CSV format
-into one that Business::Shipping can use.
-
-=cut
-
-sub do_convert_data
-{
-    trace '()';
-    my $self = shift;
-    
-    #
-    # * Find all *rate* csv files in the data directory (and sub-dirs)
-    # * Ignore zone files (because they can be used as-is) 
-    # * Ignore other files (zip files, extented area, residential, domestic, fuel surcharge, etc. files).
-    #
-    
-    my @files_to_process;
-    my $find_rates_files_sub = sub {
-        
-        #
-        # Now, we do translate zone files.
-        #
-        return if ( $File::Find::dir =~ /zone/i );
-        return if ( $_ =~ /zone/i );
-        return if ( $_ =~ /\d\d\d/ );
-        my $cvs_files_skip_regexes = cfg()->{ ups_information }->{ csv_files_skip_regexes };
-        foreach my $cvs_files_skip_regex ( @$cvs_files_skip_regexes ) {
-            $cvs_files_skip_regex =~ s/\s//g;
-            return if ( $_ eq $cvs_files_skip_regex );
-        }
-        
-        # Only csv files
-        return if ( $_ !~ /\.csv$/i );
-        
-        # Ignore CVS files
-        return if ( $_ eq '.' );
-        return if ( $File::Find::dir =~ /CVS$/ );
-        return if ( $_ eq 'CVS' );
-        
-        # Ignore Dirs
-        return unless ( -f $_ );
-        
-        debug3( "$_\n" );
-        
-        push ( @files_to_process, $File::Find::name );
-        return;
-    };
-    
-    find( $find_rates_files_sub, cfg()->{ general }->{ data_dir } );
-    
-    my $cannot_convert_at_this_time = cfg()->{ ups_information }->{ cannot_convert };
-    
-    #
-    # add the data dir
-    #
-    my @temp;
-    for ( @$cannot_convert_at_this_time ) {
-        debug( "cannot convert $_" );
-        push @temp, cfg()->{ general }->{ data_dir } . "/$_";
-    }
-    $cannot_convert_at_this_time = \@temp;
-
-    #
-    # Remove the files that we cannot convert at this time.
-    #
-    @files_to_process = Business::Shipping::Util::remove_elements_of_x_that_are_in_y( \@files_to_process, $cannot_convert_at_this_time );
-    
-    debug3( "files_to_process = " . join( "\n", @files_to_process ) );
-    for ( @files_to_process ) {
-        Business::Shipping::Util::remove_windows_carriage_returns( $_ );
-        convert_ups_rate_file( $_ );
-        
-        $_ = Business::Shipping::Util::remove_extension( $_ );
-        $_ = rename_tables_that_start_with_numbers( $_);
-        $_ = rename_tables_that_have_a_dash( $_ );
-    }
-    #
-    # Convert the ewwzone.csv file manually, since it is skipped, above.
-    #
-    Business::Shipping::Util::remove_windows_carriage_returns( 
-        cfg()->{ general }->{ data_dir } . '/ewwzone.csv' 
-    );
-    $self->convert_zone_file( 'ewwzone.csv' );
-    
-}
-
-=item * convert_zone_file
-
-=cut
-
-sub convert_zone_file
-{
-    my ( $self, $file ) = @_;
-    trace "( $file )";
-    $file =  cfg()->{ general }->{ data_dir } . "/$file";
-    my $file2 = "$file.new";
-
-    open(         ZONE_FILE,        $file            ) or logdie "Could not open file $file. $@";
-    binmode(     ZONE_FILE                         ) if $Global::Windows;
-    flock(         ZONE_FILE,         LOCK_EX         ) or logdie $@;
-    open(         NEW_ZONE_FILE,    ">$file2"        ) or logdie $@;
-    binmode(     NEW_ZONE_FILE                     ) if $Global::Windows;
-    flock(         NEW_ZONE_FILE,    LOCK_EX            ) or logdie $@;
-    
-    my $line;
-
-    #
-    # Line ending is now \n (might have been changed to nothing ealier)
-    #
-    $/ = "\n";
-
-    #
-    # Remove all the lines until we get to the line with "Weight Not To Exceed"
-    #
-    debug( "check zone file for ExpressSM..." );
-    while ( $line = <ZONE_FILE> ) {
-        if ( $line =~ /ExpressSM/ ) {
-            debug( "changing ExpressSM to ExpressSM_WC, etc..." );
-            #
-            # Change *just* the first occurrence of ExpressSM to ExpressSM
-            #
-            $line =~ s/ExpressSM,/ExpressSM_WC,/;
-            $line =~ s/ExpeditedSM,/ExpeditedSM_WC,/;
-            
-            #
-            # Change *just* the first occurence (which will now ignore the "WC")
-            #
-            $line =~ s/ExpressSM,/ExpressSM_EC,/;
-            $line =~ s/ExpeditedSM,/ExpeditedSM_EC,/;
-            
-            #
-            # Remove the space in "Express Plus"
-            #
-            $line =~ s/Express PlusSM/ExpressPlusSM/;
-        }
-        print NEW_ZONE_FILE $line;
-    }
-    
-    flock(     ZONE_FILE,         LOCK_UN    ) or logdie $@;
-    close(     ZONE_FILE                 ) or logdie $@;
-    flock(    NEW_ZONE_FILE,     LOCK_UN    ) or logdie $@;
-    close(    NEW_ZONE_FILE             ) or logdie $@;
-    copy(     $file2,         $file     ) or logdie $@;
-    unlink( $file2                     ) or logdie $@;
-
-    return;
-}
-
-=item * rename_tables_that_start_with_numbers
-
-=cut
-
-sub rename_tables_that_start_with_numbers
-{
-    my $path = shift;
-    trace "( $path )";
-    
-    $_ = $path;
-    my $new_file = $_;
-    
-    my ( $dir, $file ) = Business::Shipping::Util::split_dir_file( $path );
-    
-    if ( $file =~ /^\d/ ) {
-        $new_file = "$dir/a_$file";
-        debug( "renaming $path => $new_file" );
-        rename( $path, $new_file );
-    }
-    
-    return $new_file;
-}
-
-=item * rename_tables_that_have_a_dash
-
-=cut
-
-sub rename_tables_that_have_a_dash
-{
-    my $path = shift;
-    trace "( $path )";
-    
-    $_ = $path;
-    my $new_file = $_;
-    
-    my ( $dir, $file ) = Business::Shipping::Util::split_dir_file( $path );
-    
-    if ( $file =~ /\-/ ) {
-        $file =~ s/\-/\_/g;
-        $new_file = "$dir/$file";
-        debug( "renaming $path => $new_file" );
-        rename( $path, $new_file );
-    }
-    
-    return $new_file;
-}
-
-=item * auto_update
-
-=cut
-
-sub auto_update
-{
-    my ( $self ) = @_;
-    $self->update( 1 );
-    $self->do_update();
-}
-
-=item * do_update
-
-=cut
-
-sub do_update
-{
-    my ( $self ) = @_;
-    
-    if ( $self->update ) {
-        $self->download( 1 );
-        $self->unzip( 1 );
-        $self->convert( 1 );
-    }
-    
-    $self->do_download()         if $self->download;
-    $self->do_unzip()             if $self->unzip;
-    $self->do_convert_data()    if $self->convert;
-    
-    return;
-}    
 
 =item * validate
 
@@ -1289,6 +927,7 @@ sub calc_zone_info
     
     my $zone;
     my $zone_file;
+    my $data_dir_name = Business::Shipping::Config::data_dir_name();
     if ( $self->domestic ) {
         debug( "domestic" );
         if ( ! $self->from_zip ) {
@@ -1298,7 +937,7 @@ sub calc_zone_info
         debug( "from_zip = " . $self->from_zip );
         $zone = $self->make_three( $self->from_zip );
         #debug( "!!!!!!!!!!!!!") ;
-        $zone_file = "/data/$zone.csv";
+        $zone_file = "$zone.csv";
     }
     elsif ( $self->to_canada ) {
         debug( "to canada" );
@@ -1318,9 +957,9 @@ sub calc_zone_info
             my $states = config_to_hash( $state_to_upsstd_zone_file );
 
             if ( $self->from_state_abbrev and $states->{ $self->from_state_abbrev } ) {
-                $zone_file = "/data/" . $states->{ $self->from_state_abbrev };    
+                $zone_file = $states->{ $self->from_state_abbrev };    
                 debug3(    "Found state in the state to upsstd_zone_file configuration "
-                        . "parameter, zone_file = $zone_file " );
+                         . "parameter, zone_file = $zone_file " );
             }
             else {
                 $self->user_error(
@@ -1333,29 +972,30 @@ sub calc_zone_info
             #
             # WorldWide Expedited/Express uses the 'canww' zone file.
             #
-            $zone_file = "/data/canww.csv";
+            $zone_file = "canww.csv";
         }
     }
     else {
         $zone = $self->to_country();
-        $zone_file = "/data/ewwzone.csv";
+        
+        $zone_file = 'ewwzone.csv';
     }
-    $zone_file = Business::Shipping::Config::support_files() . $zone_file;
+    my $data_dir = Business::Shipping::Config::data_dir();
+    $zone_file = "$data_dir/$zone_file";
     
-    #
     # If you can't find the zone file on the first try, try up to 10 times.
     # (Sometimes, zips like 97214 are in a different file, like 970).
     # TODO: analyze all the zone files and use the metadata to build a map
     # of which zips go to which file.
     #
     # Only apply if the zone is purly numeric.
-    #
+
     if ( Scalar::Util::looks_like_number( $zone ) ) {
         for ( my $c = 10; $c >= 1; $c-- ) {
             if ( ! -f $zone_file ) {
                 debug( "zone_file $zone_file doesn't exist, trying others nearby..." );
                 $zone--;
-                $zone_file = Business::Shipping::Config::support_files() . "/data/$zone.csv";
+                $zone_file = "$data_dir/$zone.csv";
             }
         }
     }
