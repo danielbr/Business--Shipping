@@ -120,7 +120,7 @@ sub _gen_request_xml
     
     my $package_count = 0;
     
-    die "No packages defined internally." unless ref $self->shipment->packages();
+    logdie "No packages defined internally." unless ref $self->shipment->packages();
     foreach my $package ( @{ $self->shipment->packages() } ) {
 
         my $id;

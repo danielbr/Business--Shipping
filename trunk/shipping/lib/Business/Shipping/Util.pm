@@ -96,9 +96,9 @@ sub _unzip_file
     if ( $status != AZ_OK )  {
         my $error = "Read of $zipName failed";
         #$self->user_error( $error );
-        die $error;
+        logdie $error;
     }
-    if ( $@ ) { die "_unzip_file error: $@"; }
+    if ( $@ ) { logdie "_unzip_file error: $@"; }
     
     $zip->extractTree( '', $destination_directory );
     

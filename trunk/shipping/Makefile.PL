@@ -23,7 +23,7 @@ my %my_globals = (
 WriteMakefile(
     NAME			=> 'Business::Shipping',
     VERSION_FROM	=> 'lib/Business/Shipping.pm',
-    ABSTRACT		=> 'Business::Shipping - Interface for shippers (UPS, USPS)',
+    ABSTRACT		=> 'Business::Shipping - Cost estimation and tracking for UPS and USPS',
     AUTHOR		    => 'Dan Browning <db@kavod.com>',
 	CONFIGURE		=> \&extra_WriteMakefile_options,
     PREREQ_PM		=>	{

@@ -86,6 +86,8 @@ sub get_grouped_attrs
 
     my $object = $options{ object } || $self || eval "use $class_name; return $class_name->new;";
     
+    $@ = '';
+    
     debug3( "Creating ClassInfo object" );
     
     my $class_info = Business::Shipping::ClassInfo->new();

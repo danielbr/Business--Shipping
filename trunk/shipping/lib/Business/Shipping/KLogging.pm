@@ -22,6 +22,9 @@ use warnings;
 use Carp;
 use Log::Log4perl;
 
+$Business::Shipping::KLogging::Current_Level = 'WARN';
+@Business::Shipping::KLogging::Levels = ( 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL' );
+
 =item * debug
 
 =item * debug1
@@ -71,8 +74,10 @@ BEGIN
         warn       warn
         error      error
         fatal      fatal
+        logdie     logdie
+        logwarn    logwarn
     );
-    my @subs = keys %subs;
+    my @subs = sort keys %subs;
     
     sub subs
     {

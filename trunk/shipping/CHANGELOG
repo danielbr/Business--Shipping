@@ -3,8 +3,20 @@ Revision history for Business::Shipping
 
 
 1.52  SCM 
-
-
+  
+  
+  General
+    * [Enh] Allow users to change the runtime logging level.
+      New Business::Shipping->log_level() method can override the log4perl.conf
+      logging level.
+      
+    * [Done] [Enh] Resurrect the event_handlers() method for backwards 
+      compatibility.  Mapped to Business::Shipping->log_level().
+      
+    * [Done] [Enh] [Log4perl] replace die and warn with logdie and logwarn.
+    
+    * [Fixed] ClassInfo/ClassAttribs does not trap all exceptions.
+      
   USPS_Online
     * [Fixed] Missing module bugs
       - List of errors:
@@ -19,8 +31,7 @@ Revision history for Business::Shipping
 
   Compatibility
     * Module names have been restructured.  When using 
-      Business::Shipping->rate_request(), be sure to use the new values for 
-      'shipper':
+      Business::Shipping->rate_request(), use the new values for 'shipper':
       shipper => 'UPS_Online',
       shipper => 'USPS_Online',
       shipper => 'UPS_Offline',

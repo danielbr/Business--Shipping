@@ -288,6 +288,7 @@ sub get_object
         # Lets just ignore the errors.
         #
         #log_error( "\tError when calling $class->new: $@.  Caller was $caller\n" );
+        $@ = '';
         return;
     }
     
@@ -362,6 +363,7 @@ sub add_missing_objects
     foreach my $class ( $self->get_classes_ary ) {
         if ( not defined $self->classes->{ $class }->{ object } ) {
             my $object = eval "$class->new;";
+            $@ = '';
             if ( defined $object ) {
                 $self->classes->{ $class }->{ object } = $object;
                 debug "$class: constructed object successfully..";
@@ -370,6 +372,7 @@ sub add_missing_objects
                 debug "$class: tried to get object, but failed. Deleting class.";
                 delete $self->classes->{ $class };
             }
+            
         }
     }
      
@@ -391,14 +394,16 @@ sub get_parent_class_names
         eval "use $class_name";
     };
     if ( $@ ) {
-        #error "Died when using class $class_name\n"; 
+        #error "Logdied when using class $class_name\n"; 
+        $@ = '';
         return; 
     }
     eval {
         @parent_class_names = eval "@" . "$class_name" . '::' . 'ISA';
     };
     if ( $@ ) { 
-        # error "Died when getting ISA for class $class_name: $@\n"; 
+        # error "Logdied when getting ISA for class $class_name: $@\n";
+        $@ = '';
         return;
     }
     #error "parents of $class_name are: " . join( ', ', @parent_class_names );

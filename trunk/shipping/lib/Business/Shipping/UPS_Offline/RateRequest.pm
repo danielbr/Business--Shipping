@@ -162,12 +162,12 @@ sub convert_ups_rate_file
     my $file2 = "$file.new";
     if ( ! -f $file ) { return; }
     
-    open(         RATE_FILE,        $file            ) or die $@;
+    open(         RATE_FILE,        $file            ) or logdie $@;
     binmode(     RATE_FILE                         ) if $Global::Windows;
-    flock(         RATE_FILE,         LOCK_EX         ) or die $@;
-    open(         NEW_RATE_FILE,    ">$file2"        ) or die $@;
+    flock(         RATE_FILE,         LOCK_EX         ) or logdie $@;
+    open(         NEW_RATE_FILE,    ">$file2"        ) or logdie $@;
     binmode(     NEW_RATE_FILE                     ) if $Global::Windows;
-    flock(         NEW_RATE_FILE,    LOCK_EX            ) or die $@;
+    flock(         NEW_RATE_FILE,    LOCK_EX            ) or logdie $@;
     
     my $line;
 
@@ -224,12 +224,12 @@ sub convert_ups_rate_file
         print NEW_RATE_FILE $line;
     }
 
-    flock(     RATE_FILE,         LOCK_UN    ) or die $@;
-    close(     RATE_FILE                 ) or die $@;
-    flock(    NEW_RATE_FILE,     LOCK_UN    ) or die $@;
-    close(    NEW_RATE_FILE             ) or die $@;
-    copy(     $file2,         $file     ) or die $@;
-    unlink( $file2                     ) or die $@;
+    flock(     RATE_FILE,         LOCK_UN    ) or logdie $@;
+    close(     RATE_FILE                 ) or logdie $@;
+    flock(    NEW_RATE_FILE,     LOCK_UN    ) or logdie $@;
+    close(    NEW_RATE_FILE             ) or logdie $@;
+    copy(     $file2,         $file     ) or logdie $@;
+    unlink( $file2                     ) or logdie $@;
     
     return;
 }
@@ -387,12 +387,12 @@ sub convert_zone_file
     $file =  cfg()->{ general }->{ data_dir } . "/$file";
     my $file2 = "$file.new";
 
-    open(         ZONE_FILE,        $file            ) or die "Could not open file $file. $@";
+    open(         ZONE_FILE,        $file            ) or logdie "Could not open file $file. $@";
     binmode(     ZONE_FILE                         ) if $Global::Windows;
-    flock(         ZONE_FILE,         LOCK_EX         ) or die $@;
-    open(         NEW_ZONE_FILE,    ">$file2"        ) or die $@;
+    flock(         ZONE_FILE,         LOCK_EX         ) or logdie $@;
+    open(         NEW_ZONE_FILE,    ">$file2"        ) or logdie $@;
     binmode(     NEW_ZONE_FILE                     ) if $Global::Windows;
-    flock(         NEW_ZONE_FILE,    LOCK_EX            ) or die $@;
+    flock(         NEW_ZONE_FILE,    LOCK_EX            ) or logdie $@;
     
     my $line;
 
@@ -428,12 +428,12 @@ sub convert_zone_file
         print NEW_ZONE_FILE $line;
     }
     
-    flock(     ZONE_FILE,         LOCK_UN    ) or die $@;
-    close(     ZONE_FILE                 ) or die $@;
-    flock(    NEW_ZONE_FILE,     LOCK_UN    ) or die $@;
-    close(    NEW_ZONE_FILE             ) or die $@;
-    copy(     $file2,         $file     ) or die $@;
-    unlink( $file2                     ) or die $@;
+    flock(     ZONE_FILE,         LOCK_UN    ) or logdie $@;
+    close(     ZONE_FILE                 ) or logdie $@;
+    flock(    NEW_ZONE_FILE,     LOCK_UN    ) or logdie $@;
+    close(    NEW_ZONE_FILE             ) or logdie $@;
+    copy(     $file2,         $file     ) or logdie $@;
+    unlink( $file2                     ) or logdie $@;
 
     return;
 }

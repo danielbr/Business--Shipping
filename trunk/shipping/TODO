@@ -2,18 +2,12 @@
 ##  General TODO
 ################################################################################
 
-* [Enh] Resurrect the event_handlers() method.  Log4perl configuration should 
-  allow manual overrides via event_handlers.  Can be done via some code that 
-  would check for event_handlers(), then set normal values.  E.g.,
-  
-      log4perl.appender.DB.username = \
-        sub { $ENV{DB_USER_NAME } }
-
-* [Enh] [Log4perl] replace die and warn with logdie and logwarn.
+    
 
 * [Enh] CPAN tarball cannot be downloaded (404).
 
 * [Enh] Test on Sourceforge Compile Farm systems.
+  - Also test using older perl versions (e.g. 5.6.x).
 
 * [Enh] Build a replacement for ClassInfo and ClassAttribs that will be more 
   simple, efficient, and portable.

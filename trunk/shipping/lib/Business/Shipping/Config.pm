@@ -37,6 +37,7 @@ use strict;
 use warnings;
 use base ( 'Exporter' );
 use Config::IniFiles;
+use Business::Shipping::Logging;
 use Carp;
 
 my $support_files_dir;

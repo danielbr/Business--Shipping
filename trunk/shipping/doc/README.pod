@@ -117,8 +117,8 @@ See the TODO file for a comprehensive list.
 You will get the following error when there is no connection to the internet 
 when using Online::USPS:
 
- Business::Shipping::RateRequest::Online::USPS::_handle_response: ()
- File does not exist:  at .../RateRequest/Online/USPS.pm ...
+ Business::Shipping::USPS_Online::RateRequest::_handle_response: ()
+ File does not exist:  at .../USPS_Online/RateRequest.pm ...
 
 =back
 

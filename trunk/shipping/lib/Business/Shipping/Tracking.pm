@@ -31,7 +31,7 @@ tracking_ids => ['EJ958083578US', 'EJ958083578US'],
 
 );
 
-$tracker->submit() || die $tracker->user_error();
+$tracker->submit() || logdie $tracker->user_error();
 my $hash = $tracker->results();
 
 use Data::Dumper;

@@ -1,4 +1,4 @@
-# Business::Shipping - Interface for shippers (UPS, USPS)
+# Business::Shipping - Cost estimation and tracking for UPS and USPS
 #
 # $Id$
 #
@@ -10,7 +10,7 @@ package Business::Shipping;
 
 =head1 NAME
 
-Business::Shipping - Interface for shippers (UPS, USPS)
+Business::Shipping - Cost estimation and tracking for UPS and USPS
 
 =head1 SYNOPSIS
 
@@ -26,7 +26,7 @@ Business::Shipping - Interface for shippers (UPS, USPS)
         weight    =>  5.00,
     );    
     
-    $rate_request->submit() or die $rate_request->user_error();
+    $rate_request->submit() or logdie $rate_request->user_error();
     
     print $rate_request->total_charges();
 
@@ -85,13 +85,14 @@ See the INSTALL file for more information.
 =head1 ERROR/DEBUG HANDLING
 
 Log4perl is used for logging error, debug, etc. messages.  See 
-config/log4perl.conf.
+config/log4perl.conf.  For simple manipulation of the current log level, use
+the Business::Shipping->log_level( $log_level ) class method (below).
  
 =head1 METHODS
 
 =cut
 
-$VERSION = '1.51';
+$VERSION = '1.52';
 
 use strict;
 use warnings;
@@ -270,7 +271,7 @@ sub rate_request
     }
         
     my $rr = Business::Shipping->new_subclass( $shipper . '::RateRequest' );
-    die "New $shipper::RateRequest object was undefined." if not defined $rr;
+    logdie "New $shipper::RateRequest object was undefined." if not defined $rr;
     
     $rr->init( %opt );
    
@@ -299,14 +300,45 @@ sub new_subclass
     return $new_sub_object;    
 }
 
+=head2 Business::Shipping->log_level( $log_level )
+
+Sets the log level for all Business::Shipping objects.
+
+$log_level can be 'debug', 'info', 'warn', 'error', or 'fatal'.
+
+=cut
+
+*log_level = *Business::Shipping::Logging::log_level;
+
+# COMPAT: event_handlers() is for backwards compatibility only.
 sub event_handlers
 {
-    #warn 'The event_handlers() method has not yet been implement for the new ' . 
-    #     'Log::Log4Perl system.  In the mean time, configure event handlers ' .
-    #     'in config/log4perl.conf.';
+    my ( $self, $event_handlers_hash ) = @_;
+    
+    use Data::Dumper;
+    print "called with event_handlers_hash = " . Dumper( $event_handlers_hash );
+    KEY: foreach my $key ( keys %$event_handlers_hash ) {
+        $key = uc $key;
+        foreach my $Log_Level ( @Business::Shipping::KLogging::Levels ) {
+            if ( $key eq $Log_Level ) {
+                # We ignore the value of the key (whether STDERR, STDOUT, etc.),
+                # because it would be a lot of work to set it up correctly, and 
+                # if a user is going to use the debug system, they would probably
+                # be willing to upgrade to the most recent version.
+                
+                # The levels are in order from least to greatest, so as soon as 
+                # we get a match, we need to stop, because the lowest level (DEBUG)
+                # will automatically include all of the greater levels.
+                
+                Business::Shipping->log_level( $Log_Level );
+                last KEY;
+            }
+        }
+    }
     
     return;
 }
+
 
 1;
 
