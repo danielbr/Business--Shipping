@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS
 #
-# $Id: UPS.pm,v 1.7 2004/01/21 22:39:53 db-ship Exp $
+# $Id: UPS.pm,v 1.8 2004/01/22 15:28:29 db-ship Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003,2004 Kavod Technologies, Dan Browning. 
@@ -16,7 +16,7 @@
 
 package Business::Shipping::RateRequest::Offline::UPS;
 
-$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -607,9 +607,13 @@ sub calc_zone_data
 			$zone[0] =~ s/^\w+/low,high/;
 			@zone = grep /,/, @zone;
 			$zone[0] =~	s/\s*,\s*/\t/g;
+			
+			#
+			# Split into a tab-separated format.
+			#
 			for(@zone[1 .. $#zone]) {
-				s/^\s*(\w+)\s*,/$self->make_three( $1 ) . ',' . $self->make_three( $1 ) . ','/e;
-				s/^\s*(\w+)\s*-\s*(\w+),/$self->make_three( $1 ) . ',' . $self->make_three( $2 ) . ','/e;
+				s/^\s*(\w+)\s*,/$1 . ',' . $1 . ','/e;
+				s/^\s*(\w+)\s*-\s*(\w+),/$1 . ',' . $2 . ','/e;
 				s/\s*,\s*/\t/g;
 			}
 		}
@@ -727,7 +731,6 @@ sub calc_cost
 	my $opt = {};
 	$opt->{residential} ||= $self->shipment()->to_residential();
 	
-	
 	#
 	# TODO: validation checks...
 	# 
@@ -735,7 +738,7 @@ sub calc_cost
 	# Check that the zone (e.g. 450) was defined.
 	# Check that we have the zone data calculated.
 	#
-	debug( "rate table = $table" );
+	debug( "rate table = $table, zone_name = $zone_name" );
 	if ( ! defined $zref->{zone_data} ) {
 		$self->error( "zone data could not be found" );
 		return 0;
@@ -766,6 +769,9 @@ sub calc_cost
 		$type =~ s/SM$//;
 	}
 	else {
+		#
+		# The only other Express/Expedited methods are intl.
+		#
 		if ( $type eq 'ExpressSM' ) {
 			$type = $self->is_from_west_coast() ? 'ExpressSM_WC' : 'ExpressSM_EC';
 		}
@@ -778,6 +784,7 @@ sub calc_cost
 	debug( "Looking for $type in fieldnames: " . ( join( ' ', @fieldnames ) || 'undef' ) );
 	
 	for($i = 2; $i < @fieldnames; $i++) {
+		debug3( "checking $fieldnames[$i] eq $type" );
 		next unless $fieldnames[ $i ] eq $type;
 		$point = $i;
 		last;
@@ -786,7 +793,13 @@ sub calc_cost
 		$self->error( "Zone '$code' lookup failed, type '$type' not found" );
 		return 0;
 	}
+	else {
+		debug( "point (i.e. field index) found!  It is $point." );
+	}
 
+	#
+	# TODO: EAS
+	# 
 	my $eas_point;
 	my $eas_zone;
 	if($zref->{eas}) {
@@ -823,6 +836,8 @@ sub calc_cost
 			$zone = $data[ $point ];
 		}
 		else {
+			debug3( "checking $data[0] eq $key" );
+			
 			next unless ( $data[0] and $key eq $data[0] );
 			$zone = $data[ ( $point - 1 ) ];
 		}
@@ -923,6 +938,7 @@ sub determine_zone_info
 	my $zone;
 	my $zone_file;
 	if ( $self->domestic ) {
+		debug( "domestic" );
 		$zone = $self->make_three( $self->from_zip );
 		$zone_file = "/data/$zone.csv";
 	}
