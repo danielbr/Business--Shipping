@@ -8,29 +8,49 @@ Revision history for Business::Shipping
   
     * All significant changes and bugfixes in this version were completed 
       by Rubenstein Technology Group:  
+      - Ed Zborowski <ed@rubensteintech.com> 
       - Martin H. Beauchamp <martin@rubensteintech.com>
       - Jaron Rubenstein <jaron@rubensteintech.com>
-      - Ed Zborowski <ed@rubensteintech.com> 
     
-    * [Fixed] Class::MethodMaker 2.05 has a different default_ctor() usage.
+    * [Fixed] Class::MethodMaker 2.05 now works
+      - Different default_ctor() usage.
+    
+    * Changed how errors were handled.  Instead of just generating an 
+      message and exiting, the code now saves the error info to the object,
+      generates a message, and exits if the error was fatal enough.  More
+      than one error message is now stored.
+    
+    * [Fixed] Business::Shipping::Shipment was trying to load a package 
+      that did not exist.  
+      - Changed the package class from 
+        Business::Shipping::Shipment::<Shipper> to 
+        Business::Shipping::<Shipper>::Shipment.
+    
+    * [Fixed] Business::Shipping::UPS_Online::RateRequest could not generate
+      xml for more than one package.  
+      - Stored the packages in the hash as an array.  XML::Simple then 
+        converts the array into seperate Package elements.      
     
     * Store results using hash instead of a hash ref.
+
+  Tracking
   
+    * Made a lot of bugfixes and changes to get the UPS and USPS Tracking 
+      modules working.
+      
   USPS_Online
   
     * Use version 2 of the protocol.
     
+    * Changed USPS rate code so that it correctly parsed the response XML
+      and created a similar results data structure that UPS rate code 
+      creates.
+    
     * Only pass machinable information if the user stated it.
-  
-  USPS_Online::Tracking
-  
-    * Minor bug fixes.
     
-  UPS_Online::Tracking
-  
-    * Minor bug fixes.
-    
+    * Added shipper to foward array in RateRequest shipment method.
 
+    
 1.56  Jan 03 2005
 
 
