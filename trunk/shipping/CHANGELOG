@@ -7,6 +7,7 @@ Revision history for Business::Shipping.
 General
     - Fix Bundle::Business::Shipping
     - Remove unneeded .zip files from data/
+	- Minor documentation updates
 
 1.04  Feb 07 2004
 	- Compatibility

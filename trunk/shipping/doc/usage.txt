@@ -49,6 +49,9 @@ REQUIRED MODULES
      XML::DOM (any)
      XML::Simple (2.05)
 
+INSTALLATION
+    "perl -MCPAN -e 'install Bundle::Business::Shipping'"
+
 MULTI-PACKAGE API
   Online::UPS Example
      use Business::Shipping;

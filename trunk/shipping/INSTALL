@@ -17,14 +17,14 @@ REQUIRED MODULES
      XML::Simple (2.05)
 
   Module Installation via CPAN
-    The following CPAN usage example has all the needed modules on one line.
-    Note that you may need to do "force install XML::Parser::SAX".
+     C<perl -MCPAN -e 'install Bundle::Business::Shipping'>
 
-     perl -MCPAN -e shell
-     install Archive::Zip Bundle::DBD::CSV Cache::FileCache Class::MethodMaker \
-             Config::IniFiles Crypt::SSLeay Data::Dumper Devel::Required Error \
-                     LWP::UserAgent Math::BaseCnv XML::DOM XML::Simple
-     install Business::Shipping
+    As of February 10, 2004, two CPAN modules in Bundle::Business::Shipping
+    do not pass their own tests. Therefore, we recommend forcing their
+    installation first:
+
+     C<perl -MCPAN -e 'force install XML::Parser XML::Parser::PerlSAX'>
+     C<perl -MCPAN -e 'install Bundle::Business::Shipping'>
 
 MANUAL INSTALLATION
     This will install the Business::Shipping module (if you haven't already
