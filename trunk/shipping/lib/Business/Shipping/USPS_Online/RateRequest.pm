@@ -72,6 +72,7 @@ use Class::MethodMaker 2.0
                                   'size',
                                   'machinable',
                                   'mail_type',
+                                  'shipper',
                                 ],
                    },
                    'shipment'
