@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.11 2004/01/21 23:05:36 db-ship Exp $
+# $Id: business-shipping.tag,v 1.12 2004/01/21 23:08:00 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -133,13 +133,8 @@ sub {
 	# Defaults: Cache enabled.  Log errors only.
 	#	
 	
-	my $simple_shipper_name = $shipper;
-	$simple_shipper_name =~ s/(On|Off)line:://;
-	
 	my $defaults = {
 		'all' => {
-			'user_id'			=> $Variable->{ "${simple_shipper_name}_USER_ID" },
-			'password'			=> $Variable->{ "${simple_shipper_name}_PASSWORD" },
 			'to_country'		=> $Values->{ 
 				$Variable->{ XPS_TO_COUNTRY_FIELD } || 'country' 
 			},
@@ -155,6 +150,8 @@ sub {
 			'cache'				=> ( defined $opt{ cache } ? $opt{ cache } : 1 ),
 		},
 		'Online::USPS' => {
+			'user_id'			=> $Variable->{ "USPS_USER_ID" },
+			'password'			=> $Variable->{ "USPS_PASSWORD" },
 			'to_country' => $Tag->data( 
 				'country', 
 				'name', 
@@ -162,7 +159,9 @@ sub {
 			)
 		},
 		'Online::UPS' => {
-			'access_key'		=> ( $Variable->{ "UPS_ACCESS_KEY" } || undef ),
+			'access_key'		=> $Variable->{ "UPS_ACCESS_KEY" },
+			'user_id'			=> $Variable->{ "UPS_USER_ID" },
+			'password'			=> $Variable->{ "UPS_PASSWORD" },
 		},
 		'Offline::UPS' => { 
 			'from_state'		=> $Variable->{ XPS_FROM_STATE },
