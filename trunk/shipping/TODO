@@ -18,11 +18,25 @@
 		my %all_package_charges = $ups->all_package_charges();
 		my $package2_charges = $all_package_charges{2};
 
- * Build support for sending multiple requests at once
- 	- Do any APIs support it directly?
+ * Build support for sending multiple simultaneous requests
+ 	- USPS supports multiple rate requests... does UPS?
+	- (Docs... "for instance, you may request multiple rate quotes, where each
+	  rate quote is identified by an “ID” attribute. Within a given package, 
+	  an <Error> may be returned. For multiple request documents, you need to
+	  check if there is an <Error> within a given <Package>, <Address>, etc.
+		<RateRequest>
+		<Package ID=”0”>
+		…
+		</Package>
+		<Package ID=”1”>
+		<Error>
+		…
+		</Error>
+		</Package>
+		</RateRequest>
  	- If they don't support it, try LWP::Parallel::UserAgent
 
- * Business::Ship::FedEx module
+* Business::Ship::FedEx module
  	- Utilize the recently released Business::FedEx::DirectConnect module.
 
  * More flexible handling of SSL?
