@@ -2,9 +2,11 @@
 ##  General TODO
 ################################################################################
  
- * [BUG] 'make test' generates these bugs:
-    t/45_Offline-UPS..........Argument "Letter" isn't numeric in numeric eq (==) at /usr/lib/perl5/site_perl/5.8.3/SQL/Statement.pm line 1120, <GEN3> chunk 2.
-    Argument "Multiplier" isn't numeric in numeric eq (==) at /usr/lib/perl5/site_perl/5.8.3/SQL/Statement.pm line 1120, <GEN3> chunk 153.
+ * [BUG] 'make test' generates these warnings (because of "use diagnostics"):
+    t/45_Offline-UPS..........Argument "Letter" isn't numeric in numeric eq (==)
+    at /usr/lib/perl5/site_perl/5.8.3/SQL/Statement.pm line 1120, <GEN3> chunk 
+    2.  Argument "Multiplier" isn't numeric in numeric eq (==) at 
+    /usr/lib/perl5/site_perl/5.8.3/SQL/Statement.pm line 1120, <GEN3> chunk 153.
 
  * [DOC] Documentation Ehancements:
    Look into OODoc or Pod::Tree
@@ -20,6 +22,7 @@
          Shipping::RateRequest::Online::UPS --> Shipping::UPS_Online::RateRequest
 	 Shipping::Shipment::UPS --> Shipping::UPS_Online::Shipment
 	 Shipping::RateRequest::Online::USPS --> Shipping::USPS_Online::RateRequest
+	 Shipping::Tracking::UPS --> Shipping::UPS_Online::Tracking
    - Benefits:
      All of the vendor-related code is in one directory (UPS/, FedEx/, etc.).
      All of the abstract code is in neutral directories.
@@ -226,48 +229,14 @@ Anyway, I think I need to investigate it some more.
 ##  Offline::UPS TODO
 ################################################################################
 
- * Get an alternate set of data for people who aren't on daily pickup.
+ * Get an alternate set of data for people who aren't on daily pickup, or, if 
+   the only difference is the $4.00 surcharge, implement that manually.
 
- * [BUG] UPS Ground: Was 7.02.  Should have been 8.11, or 8.64.
-   - See t/manual/offline_ups_bug2_al.pl
-   - Offline is not handling the residential thing correctly, I think.
-     "A delivery area surcharge of ___" (determined from accessorrials.csv)
-     Currently: $1.75.
-     Residential Differential: 1.40
-   - REAL PROBLEM: It looks like I'm in zone 4, when I should be in zone 8!
-     Are my zone/rate files up-to-date?
-
+ * Delivery Area Surcharge: check xarea table instead of always applying.
+   
  * [ENH] Determine the upcoming fuel surcharge changes from UPS website, then 
    check to see if that date has passed.  If so, automatically update the fuel 
    surcharge.
-   
-   The surcharge also applies to the following accessorial charges (where 
-   applicable):
-
-    * On-Call Pickup Charges
-    * UPS Next Day Air Early A.M./UPS Express Plus Charges
-    * International Extended Area Charges
-    * Remote Delivery Charges
-    * Saturday Delivery
-    * Saturday Pickup
-
- * [BUG] Note:  Effective January 5, 2004, the Fuel Surcharge will be 
-   discontinued for the following services:  UPS Ground Commercial, UPS Ground 
-   Residential, UPS Ground Hundredweight Service, and UPS Standard to Canada.
-   
- * [BUG] United Kingdom Express Plus
-   Error:  Zero cost returned for mode ExpressPlusSM, geo code (key) United 
-   Kingdom.
-        from_country =>                 'US',
-        to_country =>           'UK',
-        event_handlers =>               'HASH(0x9b8b5ac)',
-        from_state =>           'WA',
-        service =>              'XDM',
-        from_zip =>             '98682',
-        weight =>               '55',
-        to_zip =>               'S11 9BU',
-        cache =>                '1',
-        shipper =>              'Offline::UPS',
 
  * [BUG] United Arab Emirates XPD:
    No zone found for geo code (key) United Arab Emirates, type ExpeditedSM_EC.
@@ -392,8 +361,6 @@ Anyway, I think I need to investigate it some more.
                        service         => 'XPD',
                        access_key       => 'XXXXXX',
                );
-
-
 				
  * [ENH] Confirm that the auto-update feature works well.
  
@@ -419,9 +386,6 @@ Anyway, I think I need to investigate it some more.
  * [ENH] How to find the current fuel surcharge rate:
    - http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html	
    - m/Effective.+: ?(\d\.\d\d\)%/
-   
- * [ENH] Extended Area Surcharge: 
-   - http://www.ups.com/media/en/extended_area_us.pdf
    
  * [ENH] Modify the system so that the easy-to-read data is read into memory
          just once, and then is optimized for lookup speed, so the sequential
@@ -483,7 +447,7 @@ Anyway, I think I need to investigate it some more.
 ################################################################################
 
  * [ENH] Test for ability to use within Safe?
-   Remove runtime requires: Business::Shipping->rate_request( ... )
+   - Remove runtime requires.
    
 ################################################################################
 ##  Online::FedEx 

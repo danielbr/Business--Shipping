@@ -19,7 +19,7 @@ Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
 
 =head1 VERSION
 
-$Revision: 1.22 $      $Date: 2004/05/06 20:15:27 $
+$Revision: 1.23 $      $Date: 2004/05/07 05:29:38 $
 
 =head1 GLOSSARY
 
@@ -35,7 +35,7 @@ $Revision: 1.22 $      $Date: 2004/05/06 20:15:27 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.22 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.23 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -679,8 +679,12 @@ sub calc_delivery_area_surcharge
 {
     my ( $self ) = @_;
     
-    return 1.75 if $self->to_residential;
-    return 1.00;
+    if ( $self->domestic ) {
+        return 1.75 if $self->to_residential;
+        return 1.00;
+    }
+    
+    return 0.00;
 }
 
 =item * $self->calc_residential_surcharge()
@@ -725,14 +729,19 @@ sub calc_fuel_surcharge
     # The surcharge applies to all domestic and International transportation 
     # charges except UPS Ground Commercial, UPS Ground Residential, UPS Ground
     # Hundredweight Service®, and UPS Standard to Canada.
+    
     my $ups_service_name = $self->service_code_to_ups_name( $self->service );
     my @exempt_services = qw/
+        GNDRES
+        GNDCOM
+        UPSSTD
+        Ground
         UPS Ground Commercial
         UPS Ground Residential
         UPS Ground Hundredweight Service
         UPS Standard
     /;
-    return 0 if grep @exempt_services, /$ups_service_name/i;
+    return 0 if grep /$ups_service_name/i, @exempt_services;
     
     my $fuel_surcharge = cfg()->{ ups_information }->{ fuel_surcharge } || do { 
         $self->user_error( "fuel surcharge rate not found" ); 
@@ -788,7 +797,11 @@ sub ups_name_to_table
     my $translate_map = cfg()->{ ups_names_in_zone_file_to_table_map };
     
     if ( $translate_map->{ $ups_name } ) {
-        return $translate_map->{ $ups_name };
+        my $name = $translate_map->{ $ups_name };
+        if ( $name eq 'gndres' and ! $self->to_residential ) {
+            return 'gndcomm';
+        }
+        return $name;
     }
     else {
         return $ups_name;
@@ -1159,15 +1172,21 @@ sub calc_cost
         return 0;
     }
 
+    # Some UPS files (ww_xpr) do not have a record for every weight (e.g. 55). 
+    # To solve the problem, add 1 to the weight, and try again.
+
     my $cost;
-    debug( "zone=$zone, going to call record( $table, $zone, $weight ) " );
-    $cost =  record( $table, $zone, $weight );
+    for ( my $tries = 0; $tries <= 5; $tries++ ) {
+        debug( "zone=$zone, going to call record( $table, $zone, " . ( $weight + $tries ) . " ) " );
+        $cost = record( $table, $zone, $weight + $tries );
+        last if $cost;
+    }
     
     if ( ! $cost ) {
         $self->user_error( "Zero cost returned for mode $type, geo code (key) $key.");
         return 0;
     }
-        
+   
     debug "cost = $cost";
     #
     # TODO: Surcharge table + Surcharge_field?
@@ -1364,18 +1383,15 @@ sub _massage_values
     my ( $self ) = @_;
     trace '()';
 
-    #
     # In order to share the Shipment::UPS object between both Online::UPS and
     # Offline::UPS, we do a little magic.  If it gets more complex than this,
     # subclass it instead.
-    #
+
     $self->shipment->offline( 1 );
     
-    #    
-    # TODO: do table lookup to find if it is residential or not.
-    # Currently, we just always assume it is residential.
-    #
-    $self->to_residential( 1 );
+    # Default is residential: yes.
+
+    if ( not defined $self->to_residential ) { $self->to_residential( 1 ); }
     $self->calc_zone_info;
     $self->determine_coast;
     

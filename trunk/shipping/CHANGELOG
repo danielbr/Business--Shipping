@@ -52,7 +52,19 @@ Revision history for Business::Shipping
     - Rewrite of surcharge/adder system for consistency.
     - Make pricing components available to the user.  Allows the user to see
       how much of the total charges were for various surcharges.
-    
+    - Fuel surcharge only applies to the correct services.
+    - [Fixed] [BUG] UPS Ground: Was 7.02; should have been 8.64.
+      - See t/manual/offline_ups_bug2_al.pl
+      - Was using gndcomm instead of gndres
+      - Surcharges weren't setup correctly
+    - [Fixed] [BUG] Gaps in data are not accounted for.
+      - Some UPS files (ww_xpr) do not have a record for every weight (Exceed = 55)
+        To solve the problem, add 1 to the weight, and try again.
+    - [Fixed] [BUG] United Kingdom Express Plus
+      - Caused by the "Gaps in data are not accounted for" bug.
+        Error:  Zero cost returned for mode ExpressPlusSM, geo code (key) United 
+        Kingdom.
+
   Online::USPS
     - Pounds, ounces, and weight handling refactored.
     

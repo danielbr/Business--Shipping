@@ -9,15 +9,17 @@ use Business::Shipping;
 my $rate_request = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
 
 $rate_request->submit(
-    shipper    => 'Offline::UPS',    
-    from_state => 'Washington',    
-    cache      => 0,
-    from_state => 'Washington',
-    from_zip   => '98682',
-    service    => 'XDM',
-    weight     => 20,
-    to_country => 'UK',
-    to_zip     => 'RH98AX',
+        from_country => 'US',
+        from_state   => 'WA',
+        from_city    => 'Vancouver',
+        from_zip     => '98682',
+        
+        to_country   => 'UK',
+        to_city      => 'Gladstone', 
+        to_zip       => 'S11 9BU',
+        
+        service =>              'XDM',
+        weight =>               '55',
         
 ) or die $rate_request->user_error();
 

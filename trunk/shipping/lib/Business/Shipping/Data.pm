@@ -1,6 +1,6 @@
 # Business::Shipping::Data - Database interface
 # 
-# $Id: Data.pm,v 1.5 2004/03/31 19:11:05 danb Exp $
+# $Id: Data.pm,v 1.6 2004/05/07 05:29:38 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Data - Database interface
 
 =head1 VERSION
 
-$Revision: 1.5 $      $Date: 2004/03/31 19:11:05 $
+$Revision: 1.6 $      $Date: 2004/05/07 05:29:38 $
 
 =head1 DESCRIPTION
 
@@ -27,7 +27,7 @@ Uses DBI for CSV file access.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT = qw( record );
 
 use strict;
@@ -52,9 +52,8 @@ sub record
     return unless $key_column;
     debug3( "key_column = $key_column" );
     
-    #
     # Apparently, with DBD::CSV, '*' is required instead of the field name.
-    #
+    
     my $query = "SELECT * FROM $table WHERE $key_column = \'$key\'";
     debug( $query );
     my $sth = sth( $query )

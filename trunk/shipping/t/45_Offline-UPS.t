@@ -5,7 +5,7 @@ use warnings;
 use Test::More 'no_plan';
 use Carp;
 use Business::Shipping;
-
+use constant CLOSE_ENOUGH_PERCENT   => 10;
 
 my %test;
 my $this_test_desc;
@@ -13,9 +13,9 @@ sub test
 {
     my ( %args ) = @_;
     my $shipment = Business::Shipping->rate_request( 
-        from_state    => 'Washington',    
-        shipper         => 'Offline::UPS',
-        cache            => 0,
+        from_state => 'Washington',    
+        shipper    => 'Offline::UPS',
+        cache      => 0,
     );
     
     $shipment->submit( %args ) or die $shipment->user_error();
@@ -26,17 +26,29 @@ sub test_online
 {
     my ( %args ) = @_;
     my $shipment = Business::Shipping->rate_request( 
-        shipper         => 'Online::UPS',
-        cache            => 0,
-        user_id            => $ENV{ UPS_USER_ID },
-        password        => $ENV{ UPS_PASSWORD },
-        access_key        => $ENV{ UPS_ACCESS_KEY }, 
-        cache            => 0,
+        shipper    => 'Online::UPS',
+        cache      => 0,
+        user_id    => $ENV{ UPS_USER_ID },
+        password   => $ENV{ UPS_PASSWORD },
+        access_key => $ENV{ UPS_ACCESS_KEY }, 
+        cache      => 0,
     );
     
     $shipment->submit( %args ) or die $shipment->user_error();
     return $shipment;
 }
+
+sub close_enough
+{
+    my ( $n1, $n2 ) = @_;
+    
+    my ( $greater, $lesser ) = $n1 > $n2 ? ( $n1, $n2 ) : ( $n2, $n1 );
+    my $percentage_of_difference = $lesser / $greater;
+    
+    return 1 if ( $percentage_of_difference <= ( CLOSE_ENOUGH_PERCENT * .10 ) );
+    return 0;
+}
+
 
 my $shipment;
 my $shipment_online;
@@ -455,6 +467,27 @@ ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
 
+my %r1 = (
+    from_city      => 'Vancouver',
+    from_zip       => '98682',
+    
+    to_city        => 'Enterprise',
+    to_zip         => '36330',
+    to_residential => 1,
+    
+    weight         => 2.75,
+    service        => 'GNDRES',
+);
+
+my $rr_off = Business::Shipping->rate_request( shipper => 'Offline::UPS', %r1 );
+$rr_off->submit or die $rr_off->user_error();
+
+my $rr_on = Business::Shipping->rate_request( shipper => 'Online::UPS', %r1 );
+$rr_on->submit or die $rr_on->user_error();
+
+ok( close_enough( $rr_off->total_charges(), $rr_on->total_charges() ),
+    'UPS Offline and Online are close enough for GNDRES, light, far' 
+  );
 
 #TODO: {
 #      local $TODO = "Not yet implmented.";

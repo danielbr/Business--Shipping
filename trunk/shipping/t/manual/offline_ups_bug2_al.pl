@@ -12,7 +12,7 @@ my %request = (
     
     to_city        => 'Enterprise',
     to_zip         => '36330',
-    to_residential => 1,
+    to_residential => 0,
     
     weight         => 2.75,
     service        => 'GNDRES',
