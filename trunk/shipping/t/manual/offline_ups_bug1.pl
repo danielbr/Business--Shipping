@@ -6,7 +6,7 @@ use diagnostics;
 
 use Business::Shipping;
 
-my $rate_request = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
+my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
 $rate_request->submit(
         from_country =>                 'US',
@@ -17,7 +17,7 @@ $rate_request->submit(
         weight =>               '0.6875',
         from_zip =>             '97214',
         to_zip =>               '92648',
-        shipper =>              'Offline::UPS',
+        shipper =>              'UPS_Offline',
         cache =>                '1',
 
     event_handlers => {

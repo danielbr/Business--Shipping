@@ -6,7 +6,7 @@ use diagnostics;
 use Business::Shipping;
 
 
-my $rate_request = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
+my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
 $rate_request->submit(
     service        => 'UPSSTD',
@@ -19,7 +19,7 @@ $rate_request->submit(
 
 print STDERR "UPS Standard =\t" . $rate_request->total_charges() . "\n";
 
-$rate_request = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
+$rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
  
 $rate_request->submit(
     service        => 'XPD',

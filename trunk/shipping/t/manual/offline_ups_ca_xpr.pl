@@ -6,7 +6,7 @@ use diagnostics;
 
 use Business::Shipping;
 
-my $rate_request = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
+my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
 $rate_request->submit(
     service        => 'XPD',

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Business::Shipping;
 
-my $rate_request = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
+my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
 my %shipping_options = (
     service        => '3DS',
@@ -21,7 +21,7 @@ print "offline = " . $rate_request->total_charges() . "\n";
 print "offline price components = " . $rate_request->display_price_components . "\n";
 
 
-my $rate_request_online = Business::Shipping->rate_request( shipper => 'Online::UPS' );
+my $rate_request_online = Business::Shipping->rate_request( shipper => 'UPS_Online' );
 $rate_request_online->submit( %shipping_options )
     or die $rate_request_online->user_error();
 print "online = " .  $rate_request_online->total_charges() . "\n";

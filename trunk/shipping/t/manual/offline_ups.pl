@@ -4,12 +4,12 @@ use Data::Dumper;
 use Business::Shipping;
 use Business::Shipping::Package::UPS;
 use Business::Shipping::Shipment::UPS;
-use Business::Shipping::RateRequest::Offline::UPS;
+use Business::Shipping::UPS_Offline::RateRequest;
 
 
 my $package         = Business::Shipping::Package::UPS->new();
 my $shipment        = Business::Shipping::Shipment::UPS->new();
-my $rate_request    = Business::Shipping::RateRequest::Offline::UPS->new();
+my $rate_request    = Business::Shipping::UPS_Offline::RateRequest->new();
 
 $shipment->packages_push( $package );
 $rate_request->shipment( $shipment );

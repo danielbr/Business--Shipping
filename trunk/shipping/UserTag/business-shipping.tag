@@ -29,7 +29,7 @@ Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.c
 =head1 SYNOPSIS
 
 [business-shipping 
-    shipper='Offline::UPS'
+    shipper='UPS_Offline'
     service='GNDRES'
     from_zip='98682'
     to_zip='98270'
@@ -90,7 +90,7 @@ UPS_GROUND: UPS Ground
     criteria    [criteria-intl]
     min            0
     max            150
-    cost        f [business-shipping mode="Offline::UPS" service="GNDRES" weight="@@TOTAL@@"]
+    cost        f [business-shipping mode="UPS_Offline" service="GNDRES" weight="@@TOTAL@@"]
 
 =head1 UPGRADE from [ups-query]
 
@@ -120,9 +120,6 @@ sub {
         return;
     }
     
-    # TODO: If the user didn't specify the "Online::" or "Offline::" 
-    # prefix of the shipper variable, change it to "Online::" automatically?
-
     # We pass the options mostly unmodifed to the underlying library, so here we
     # take out anything Interchange-specific that isn't necessary with a hash
     # slice.
@@ -153,7 +150,7 @@ sub {
             'from_zip'          => $Variable->{ XPS_FROM_ZIP },
             'cache'             => ( defined $opt{ cache } ? $opt{ cache } : 1 ),
         },
-        'Online::USPS' => {
+        'USPS_Online' => {
             'user_id'           => $Variable->{ "USPS_USER_ID" },
             'password'          => $Variable->{ "USPS_PASSWORD" },
             'to_country' => $Tag->data( 
@@ -162,21 +159,20 @@ sub {
                 $Variable->{ XPS_TO_COUNTRY_FIELD } || 'country'
             )
         },
-        'Online::UPS' => {
+        'UPS_Online' => {
             'access_key'        => $Variable->{ "UPS_ACCESS_KEY" },
             'user_id'           => $Variable->{ "UPS_USER_ID" },
             'password'          => $Variable->{ "UPS_PASSWORD" },
         },
-        'Offline::UPS' => { 
+        'UPS_Offline' => { 
             'from_state'        => $Variable->{ XPS_FROM_STATE },
             'cache'             => 0,
         },
     };
     
-
     # Apply all of the above defaults.  Sorting the hash keys causes 'all' to
     # be applied first, which allows each shipper to override the default.
-    # For example, Online::USPS overrides the to_country method.
+    # For example, USPS_Online overrides the to_country method.
 
     foreach my $shipper_key ( sort keys %$defaults ) {
         if ( $shipper_key eq $shipper or $shipper_key eq 'all' ) {

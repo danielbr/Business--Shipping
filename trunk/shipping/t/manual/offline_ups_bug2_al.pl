@@ -20,7 +20,7 @@ my %request = (
 );
 
 my $rr_off = Business::Shipping->rate_request( 
-    shipper => 'Offline::UPS', 
+    shipper => 'UPS_Offline', 
     %request
 );
 $rr_off->submit or die $rr_off->user_error();
@@ -28,7 +28,7 @@ print "offline = " . $rr_off->total_charges() . "\n";
 print "offline price components = " . $rr_off->display_price_components;
 
 my $rr_on = Business::Shipping->rate_request( 
-    shipper => 'Online::UPS', 
+    shipper => 'UPS_Online', 
     %request
 );
 $rr_on->submit or die $rr_on->user_error();

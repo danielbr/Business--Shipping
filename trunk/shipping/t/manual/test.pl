@@ -24,7 +24,7 @@ my $rate_request = Business::Shipping->rate_request(
     'weight' => "0.75",
     'to_zip' => "98682",
     'cache' => "1",
-    'shipper' => "Online::USPS",
+    'shipper' => "USPS_Online",
     
     #'to_city' => 'Vancouver',
 );

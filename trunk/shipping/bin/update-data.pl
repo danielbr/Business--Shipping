@@ -62,7 +62,7 @@ if ( $opt_d ) {
 }
 
 my $rate_request = Business::Shipping->rate_request( 
-    shipper    => "Offline::UPS",
+    shipper    => "UPS_Offline",
     %rr_params,
 );
 

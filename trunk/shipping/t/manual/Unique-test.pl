@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Business::Shipping;
 
-my $rr = Business::Shipping->rate_request( shipper => 'Online::UPS' );
+my $rr = Business::Shipping->rate_request( shipper => 'UPS_Online' );
 
 $rr->event_handlers(
     {

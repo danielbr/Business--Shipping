@@ -12,8 +12,8 @@ use Business::Shipping::Package::UPS;
 use Business::Shipping::Package::USPS;
 use Business::Shipping::RateRequest;
 use Business::Shipping::RateRequest::Online;
-use Business::Shipping::RateRequest::Online::UPS;
-use Business::Shipping::RateRequest::Online::USPS;
+use Business::Shipping::UPS_Online::RateRequest;
+use Business::Shipping::USPS_Online::RateRequest;
 my $rate_request;
 
 

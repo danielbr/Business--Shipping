@@ -5,12 +5,12 @@ use Data::Dumper;
 print "Test name: What fields are required?\n";
 print "====================================\n\n";
 
-show( 'Business::Shipping::RateRequest::Offline::UPS' );
-#show( 'Business::Shipping::RateRequest::Online::UPS' );
-#show( 'Business::Shipping::RateRequest::Online::USPS' );
+show( 'Business::Shipping::UPS_Offline::RateRequest' );
+#show( 'Business::Shipping::UPS_Online::RateRequest' );
+#show( 'Business::Shipping::USPS_Online::RateRequest' );
 
 
-#my $ups = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
+#my $ups = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 #show_ary( $ups->Required );
 #show_ary( $ups::Required );
 

@@ -10,7 +10,7 @@ my $rate_request = Business::Shipping->rate_request(
             'error' => 'STDERR',
     },
         cache => 0,
-        shipper => 'Offline::UPS',
+        shipper => 'UPS_Offline',
         'from_zip'            => '98682',
         'from_country'        => 'US',
         'to_country'        => 'US',    

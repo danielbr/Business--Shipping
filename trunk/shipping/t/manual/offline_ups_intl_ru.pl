@@ -6,11 +6,11 @@ use diagnostics;
 
 use Business::Shipping;
 
-my $rate_request = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
+my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
 $rate_request->submit(
     'weight' => "3.5",'from_country' => "US",'to_country' => "Russia",'shipper' =>
-    "Offline::UPS",'to_zip' => "21037",'cache' => "1",'from_zip' => "98682",'from_state' => "WA",'service'
+    "UPS_Offline",'to_zip' => "21037",'cache' => "1",'from_zip' => "98682",'from_state' => "WA",'service'
     => "XPR",
     event_handlers => {
         debug     => 'STDERR',

@@ -9,8 +9,8 @@ use Business::Shipping::Package::UPS;
 use Business::Shipping::Package::USPS;
 use Business::Shipping::RateRequest;
 use Business::Shipping::RateRequest::Online;
-use Business::Shipping::RateRequest::Online::UPS;
-use Business::Shipping::RateRequest::Online::USPS;
+use Business::Shipping::UPS_Online::RateRequest;
+use Business::Shipping::USPS_Online::RateRequest;
 
 
 #show( 'Business::Shipping' );
@@ -20,10 +20,10 @@ use Business::Shipping::RateRequest::Online::USPS;
 #show( 'Business::Shipping::RateRequest::Online' );
 
 
-#show( 'Business::Shipping::RateRequest::Online::UPS' );
+#show( 'Business::Shipping::UPS_Online::RateRequest' );
 
-#use Business::Shipping::RateRequest::Online::UPS;
-#my $ups_online_rate_request = Business::Shipping::RateRequest::Online::UPS->new();
+#use Business::Shipping::UPS_Online::RateRequest;
+#my $ups_online_rate_request = Business::Shipping::UPS_Online::RateRequest->new();
 #print $ups_online_rate_request->required();
 
 my $ups_online_rate_request = Business::Shipping->rate_request(
@@ -51,8 +51,8 @@ use Business::Shipping::RateRequest::Online;
 my $online_rate_request = Business::Shipping::RateRequest::Online->new();
 show_ary( $online_rate_request->required2() );
 
-use Business::Shipping::RateRequest::Online::UPS;
-my $ups_online_rate_request = Business::Shipping::RateRequest::Online::UPS->new();
+use Business::Shipping::UPS_Online::RateRequest;
+my $ups_online_rate_request = Business::Shipping::UPS_Online::RateRequest->new();
 show_ary( $ups_online_rate_request->required2() );
 =cut
 
@@ -60,8 +60,8 @@ show_ary( $ups_online_rate_request->required2() );
 #my $online_rate_request = Business::Shipping::RateRequest::Online->new();
 #show_ary( $online_rate_request->find_required() );
 
-#use Business::Shipping::RateRequest::Online::UPS;
-#my $ups_online_rate_request = Business::Shipping::RateRequest::Online::UPS->new();
+#use Business::Shipping::UPS_Online::RateRequest;
+#my $ups_online_rate_request = Business::Shipping::UPS_Online::RateRequest->new();
 #print join( ', ',  $ups_online_rate_request->required() ) . "\n";
 #
 #print "showing array: " . show_ary( $ups_online_rate_request->find_required() ) . "\n";

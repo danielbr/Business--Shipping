@@ -27,7 +27,7 @@ sub
     my( $mode, $origin, $zip, $weight, $country, $opt) = @_;
     my %opt = %$opt;
     return $Tag->business_shipping(
-        mode       => 'UPS',
+        mode       => 'UPS_Online',
         service    => $mode,
         weight     => $weight,
         to_zip     => $zip,

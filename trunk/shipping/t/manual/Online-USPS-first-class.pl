@@ -5,7 +5,7 @@ use warnings;
 use Business::Shipping;
 
 my $rr_first_class = Business::Shipping->rate_request(
-    shipper     => 'Online::USPS',
+    shipper     => 'USPS_Online',
     
     from_zip    => 98682,
     

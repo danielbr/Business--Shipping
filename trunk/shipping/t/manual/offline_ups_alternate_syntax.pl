@@ -9,7 +9,7 @@ use Carp;
 use Business::Shipping;
 
 my $shipment = Business::Shipping->rate_request( 
-    shipper => 'Offline::UPS', 
+    shipper => 'UPS_Offline', 
     event_handlers => {
         debug => 'STDERR',
         error => 'STDERR',
@@ -23,7 +23,7 @@ $shipment->init(
     'weight' => "5.10",
     'from_zip' => "97214",
     'to_zip' => "98270",
-    'shipper' => "Offline::UPS",
+    'shipper' => "UPS_Offline",
     'cache' => "1",
 );
 

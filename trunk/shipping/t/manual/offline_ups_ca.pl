@@ -6,7 +6,7 @@ use warnings;
 use Business::Shipping;
 
 my $enable_online = 0;
-my $rate_request = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
+my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
 $rate_request->submit(
     service        => 'UPSSTD',
@@ -21,7 +21,7 @@ print "offline = " . $rate_request->total_charges() . "\n";
 
 exit unless $enable_online;
 
-my $rate_request_online = Business::Shipping->rate_request( shipper => 'Online::UPS' );
+my $rate_request_online = Business::Shipping->rate_request( shipper => 'UPS_Online' );
 
 $rate_request_online->submit(
     service        => 'UPSSTD',

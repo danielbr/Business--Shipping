@@ -5,7 +5,7 @@ use warnings;
 
 use Business::Shipping;
 
-my $rate_request = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
+my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
 $rate_request->submit(
         from_country =>         'US',
@@ -17,7 +17,7 @@ $rate_request->submit(
         weight =>               '1',
         to_zip =>               '80210',
         cache =>                '1',
-        shipper =>              'Offline::UPS',
+        shipper =>              'UPS_Offline',
 ) or die $rate_request->user_error();
 
 print "offline = " . $rate_request->total_charges() . "\n";

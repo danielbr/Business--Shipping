@@ -5,7 +5,7 @@ use warnings;
 use diagnostics;
 use Business::Shipping;
 
-my $rate_request_online1 = Business::Shipping->rate_request( shipper => 'Online::UPS' );
+my $rate_request_online1 = Business::Shipping->rate_request( shipper => 'UPS_Online' );
 
 $rate_request_online1->submit(
     user_id            => $ENV{ UPS_USER_ID },

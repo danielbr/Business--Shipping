@@ -25,7 +25,7 @@ my $rr = test_ol_usps(
 );
 
 $rr->submit() or die $rr->user_error();
-ok( $rr->total_charges, 'Online::USPS International does not require certain fields.' );
+ok( $rr->total_charges, 'USPS_Online International does not require certain fields.' );
  
 
 
