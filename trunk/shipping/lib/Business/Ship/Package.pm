@@ -3,16 +3,14 @@ use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.6 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.7 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship;
 use Data::Dumper;
 
 my %options_defaults = (
-	from_zip	=> undef,
-	to_zip		=> undef,
+	id			=> undef,
 	weight		=> undef,
-	from_country	=> undef,
 	response	=> undef,
 );
 	
@@ -70,13 +68,13 @@ sub get_charges
 	return $self->{'price'}->{$service};	
 }
 
-
 sub is_empty
 {
 	my $self = shift;
 	
 	for ( keys %options_defaults ) {
-		if ( $self->$_() and $self->$_() ne $options_defaults{ $_ } ) {
+		if ( $self->$_() 
+			 and $self->$_() ne $options_defaults{ $_ } ) {
 			return 0;
 		}
 	}		
@@ -92,6 +90,16 @@ sub build_subs
 			eval "sub $_ { my \$self = shift; if(\@_) { \$self->{$_} = shift; } return \$self->{$_}; }";
 		}
     }
+	return;
+}
+
+sub compatibility_map
+{
+	my ( $self, %map ) = @_;
+	foreach my $map_from ( keys %map ) {
+		my $map_to = $map{ $map_from };
+		eval "sub $map_to { return shift->$map_from( \@_ ); }";
+	}
 	return;
 }
 

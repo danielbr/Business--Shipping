@@ -21,21 +21,6 @@ print test_domestic(
 	to_zip		=> '99501',
 	service		=> 'Priority',
 );
-print test_domestic(
-	'to_zip' => '96826',
-	'weight' => '2',
-	'service' => 'Priority',
-);
-print test_domestic(
-	'to_zip' => '96826',
-	'weight' => '2',
-	'service' => 'Priority',
-);
-print test_domestic(
-	'to_zip' => '96826',
-	'weight' => '2',
-	'service' => 'Priority',
-);
 
 #$shipment->set( 'event_handlers' => ({ 'debug' => 'STDOUT' }) );
 
@@ -44,37 +29,6 @@ print test_domestic(
 	'weight' => '2',
 	'service' => 'Priority',
 );
-
-
-print test_domestic(
-	'to_country' => 'United States',
-	'to_zip' => '96826',
-	'weight' => '2',
-	'service' => 'Priority',
-);
-
-=pod
-print test_domestic(
-	'to_country' => 'United States',
-	'service' => 'Priority',
-	'to_zip' => '96826',
-	'pounds' => '6.348',
-	'tx_type' => 'rate',
-);
-
-
-print test_domestic(
-	'user_id' => '539KAVOD6731',
-	'to_country' => 'United States',
-	'service' => 'Priority',
-	'to_zip' => '96826',
-	'password' => '900QZ55LW201',
-	'pounds' => '2',
-	'tx_type' => 'rate',
-	'from_zip' => '98682',
-);
-
-=cut
 
 print "\n";
 

@@ -2,7 +2,7 @@
 # All rights reserved. This program is free software; you can 
 # redistribute it and/or modify it under the same terms as Perl 
 # itself.
-# $Id: Ship.pm,v 1.15 2003/05/13 00:24:52 db-ship Exp $
+# $Id: Ship.pm,v 1.16 2003/05/25 00:10:04 db-ship Exp $
 package Business::Ship;
 use strict;
 use warnings;
@@ -73,7 +73,7 @@ print $shipment->get_total_price( 'Airmail Parcel Post' );
 
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.15 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.16 $ =~ /(\d+)\.(\d+)/);
 
 use Data::Dumper;
 use Carp;
@@ -90,20 +90,21 @@ use Cache::FileCache;
 sub new 
 {
 	my( $class, %args ) = @_;
-
-	# "Driver" (child-first) initiation, if used.
-	if ( $args{ 'shipper' } ) {
-		# Build a sub-object and return.
-		# The sub-object will call this parent new() method again, as SUPER->new()
-		# But 'shipper' wont be part of the arguments then, so the normal init will 
-		# be done.
-		my $shipper = delete $args{'shipper'};
-	    my $subclass = "${class}::$shipper";
-		if ( not defined &$subclass ) {
-			eval "use $subclass";
-			Carp::croak("unknown shipper $shipper ($@)") if $@;
+	
+	my $subclass;
+	foreach my $potential_subclass_name ( 'subclass', 'shipper', 'package' ) {
+		my $test = $args{ $potential_subclass_name };
+		if ( $test ) {
+			$subclass = delete $args{ $potential_subclass_name };
 		}
-		return( eval "new $subclass( %args )" );
+	}	
+	if ( $subclass ) {
+		my $qualified_subclass = "${class}::$subclass";
+		if ( not defined &$qualified_subclass ) {
+			eval "use $qualified_subclass";
+			Carp::croak("unknown subclass $subclass ($@)") if $@;
+		}
+		return( eval "new $qualified_subclass( %args )" );
     }
 	
 	# Regular Initiation
@@ -126,7 +127,8 @@ sub new
 				'debug' => undef,
 				'trace' => undef,
 				'error' => 'croak',
-			}),		
+			}),
+		cache_enabled	=> 1, 
 		
 		###########################
 		# Internal
@@ -141,10 +143,6 @@ sub new
 	# For people who aren't using the multi-package API, this provides quick calling.
 	my %alias_to_default_package = (
 		id			=> undef,
-		service 	=> undef,
-		from_zip	=> undef,
-		to_zip		=> undef,
-		to_country	=> undef,
 		get_charges	=> undef,
 		weight		=> undef,
 	);
@@ -160,6 +158,23 @@ sub new
 	$self->set( %required, %optional, %args );
 	$self->trace('...returning self');
 	
+	return $self;
+}
+
+sub initialize
+{
+	my ( $self, %args ) = @_;
+	$self->build_subs( $self->_metadata( 'internal' ) );
+	$self->build_subs( $self->_metadata( 'required' ) );
+	$self->build_subs( $self->_metadata( 'optional' ) );
+	$self->build_alias_subs( $self->_metadata( 'alias_to_default_package' ) );
+	foreach ('internal', 'optional', 'parent_defaults' ) {
+		$self->set(
+			%{ $self->_metadata( $_ ) }
+		);
+	}
+	$self->set( %args );
+	#$self->compatibility_map( %{ $self->_metadata( 'compatibility_map' ) } ); 
 	return $self;
 }
 
@@ -251,20 +266,27 @@ sub _get_response
 	my $self = shift;
 	my $request = shift;
 	
-	my @unique_values = $self->_gen_unique_values();
-	my $key = join( "|", @unique_values );
-	my $response = $self->cache()->get( $key );
-	if ( not defined $response ) {
-		#$self->trace( "unique_values = " . $self->uneval( @unique_values ) );
-		$self->trace( "running request manually, then add to cache." );
-		$response = $self->{'ua'}->request( $request );
-		#TODO: Allow setting of cache properties (time limit, enable/disable, etc.)
-		$self->cache()->set( $key, $response, "2 days" ); 
+	if ( $self->cache_enabled() ) {
+		my @unique_values = $self->_gen_unique_values();
+		my $key = join( "|", @unique_values );
+		my $response = $self->cache()->get( $key );
+		if ( not defined $response ) {
+			#$self->trace( "unique_values = " . $self->uneval( @unique_values ) );
+			$self->trace( "running request manually, then add to cache." );
+			$response = $self->{'ua'}->request( $request );
+			#TODO: Allow setting of cache properties (time limit, enable/disable, etc.)
+			$self->cache()->set( $key, $response, "2 days" ); 
+		}
+		else {
+			$self->trace( "using cached response." );
+		}
+		return $response;
 	}
 	else {
-		$self->trace( "using cached response." );
-	}
-	return $response;	
+		$self->trace( 'cache disabled.' );
+		$self->debug( "sending this request: " . Dumper( $request ) );
+		return $self->{'ua'}->request( $request );
+	}	
 }
 
 =item $shipment->submit( [%args] )
@@ -283,11 +305,47 @@ sub submit
 	$self->response( $self->_get_response( $self->_gen_request() ) );
 	$self->debug( "response content = " . $self->response()->content() );
 	unless ( $self->response()->is_success() ) { 
-		$self->error( "HTTP Error. Content: " . $self->response->content() );
+		$self->error( "HTTP Error. Status line: " . $self->response->status_line .
+		"Content: " . $self->response->content() );
 		return( undef ); 
 	}
 	return $self->_handle_response();
 }
+
+
+sub add_package
+{
+	my $self = shift;
+	$self->trace('called with' . $self->uneval( @_ ) );
+	
+	my $new = new Business::Ship( 'package' => $self->package_subclass_name() );
+	$new->set( @_ );
+	
+	# If the passed package has an ID, then use that.
+	if ( $new->id() or ( $new->id() and $new->id() == 0 ) ) {
+		$self->trace( "Using id in passed package" );
+		$self->packages()->[$new->id()] = $new;
+		return 1;
+	}
+		
+	# If the "default" package ($self->packages()->[0]) is 
+	# still in "default" state (has not yet been updated),
+	# then replace it with the passed package.
+	$self->trace( 'checking to see if default package is empty...' );
+	if ( $self->default_package()->is_empty() ) {
+		$self->trace( 'yes, is empty.' );
+		$self->packages()->[0] = $new;
+		$self->trace( 'done setting up default package.' );
+		return 1;	
+	}
+	$self->trace( 'no, not empty.' );
+	
+	# Otherwise, add the package in the second slot.
+	push( @{$self->packages()}, $new );
+	
+	return 1;
+}
+
 
 
 ###########################################################################

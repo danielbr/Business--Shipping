@@ -3,21 +3,22 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.7 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.8 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship::Package;
 use Data::Dumper;
 @ISA = qw( Business::Ship::Package );
-
 	
 my %options_defaults = (
-	id			=> undef,
 	service		=> undef,
 	ounces		=> 0,
 	container	=> 'None',
 	size		=> 'Regular',
 	machinable	=> 'False',
 	mail_type	=> 'Package',
+	from_zip	=> undef,
+	to_zip		=> undef,
+	from_country	=> undef,
 );
 
 sub new

@@ -19,10 +19,12 @@ http://www.uspsprioritymail.com/et_regcert.html
  * You will need to call or e-mail to active the account for "Production" usage
  * Otherwise, it will only work with special test queries.
 
+#TODO: Utilize $self->_metadata( 'optionname' ) and $self->initialize(), like UPS. 
+ 
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.13 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.14 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship;
 use Business::Ship::USPS::Package;
@@ -38,9 +40,7 @@ use Data::Dumper;
 
 sub new
 {
-	my( $class, %arg ) = @_;
-
-	my $self = $class->SUPER::new();
+	my ( $class, %arg ) = @_;
 	
 	my %internal = (
 		ua			=> new LWP::UserAgent,
@@ -53,6 +53,7 @@ sub new
 		packages	=> [ new Business::Ship::USPS::Package ],
 		intl		=> undef,
 		domestic	=> undef,
+		package_subclass_name	=> 'USPS::Package',
 	);
 	
 	# These should be in USPS::Package now... called through build_subs_packages()
@@ -65,8 +66,6 @@ sub new
 		prod_url	http://production.shippingapis.com/ShippingAPI.dll
 	|);
 	
-	bless( $self, $class );
-	
 	my %alias_to_default_package = (
 		pounds		=> undef,
 		ounces		=> 0,
@@ -75,7 +74,15 @@ sub new
 		machinable	=> 'False',
 		mail_type	=> 'Package',
 		from_country	=> undef,
+		service 	=> undef,
+		from_zip	=> undef,
+		to_zip		=> undef,
+		to_country	=> undef,
+
 	);
+	
+	my $self = $class->SUPER::new();
+	bless( $self, $class );
 	
 	# We need our internals for the rest of it...
 	$self->build_subs( keys %internal );
@@ -223,35 +230,6 @@ sub _massage_values
 	return;
 }
 
-sub add_package
-{
-	my $self = shift;
-	$self->trace('called with' . $self->uneval( @_ ) );
-	
-	my $new = new Business::Ship::USPS::Package( @_ );
-	
-	# If the passed package has an ID, then use that.
-	if ( $new->id() or ( $new->id() and $new->id() == 0 ) ) {
-		$self->trace( "Using id in passed package" );
-		$self->packages()->[$new->id()] = $new;
-		return 1;
-	}
-		
-	# If the "default" package ($self->packages()->[0]) is 
-	# still in "default" state (has not yet been updated),
-	# then replace it with the passed package.
-	
-	if ( $self->default_package()->is_empty() ) {
-		$self->packages()->[0] = $new;
-		return 1;	
-	}
-	
-	# Otherwise, add the package in the second slot.
-	push( @{$self->packages()}, $new );
-	
-	return 1;
-}
-
 sub validate
 {
 	my $self = shift;
@@ -262,8 +240,6 @@ sub validate
 	}
 	return undef;
 }
-
-
 
 sub _gen_unique_values
 {
@@ -368,6 +344,9 @@ sub _domestic_or_intl
  	EXPRESS
 	Priority
 	Parcel
+	Library
+	BPM
+	Media
 
  * International Service types:
  

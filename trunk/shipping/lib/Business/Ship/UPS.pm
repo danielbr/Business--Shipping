@@ -2,7 +2,7 @@
 # All rights reserved. This program is free software; you can redistribute it
 # and/or modify it under the same terms as Perl itself.
 #
-# $Id: UPS.pm,v 1.11 2003/05/09 07:52:03 db-ship Exp $
+# $Id: UPS.pm,v 1.12 2003/05/25 00:10:05 db-ship Exp $
 package Business::Ship::UPS;
 use strict;
 use warnings;
@@ -108,13 +108,17 @@ The following methods are available:
 
 =cut
 
-use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.11 $ =~ /(\d+)\.(\d+)/);
+use vars qw( @ISA $VERSION );
+use Business::Ship;
+use Business::Ship::UPS::Package;
+$VERSION = sprintf("%d.%03d", q$Revision: 1.12 $ =~ /(\d+)\.(\d+)/);
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
 use XML::Simple 2.05;
 use Carp;
+
+@ISA = qw( Business::Ship );
 
 =item B<new>
 
@@ -160,131 +164,181 @@ Optional Arguments:
 
 sub new
 {
-	my($class, %arg) = @_;
-	
-	my @required_options = qw/
-		access_license_number
-		user_id
-		password
-		pickup_type_code
-		shipper_country_code
-		shipper_postal_code
-		ship_to_residential_address
-		ship_to_country_code
-		ship_to_postal_code
-		service_code
-		packaging_type_code
-		weight
-	/;
-	my @optional_options = qw/
-		shipper_city
-		ship_to_city
-		test_server
-		no_ssl
-		event_handler_debug
-		event_handler_error
-	/;
-	my @all_options = ( @required_options, @optional_options );
-	my $xs = new XML::Simple( ForceArray => 1, KeepRoot => 1 );
-	my $ua = new LWP::UserAgent;
-	my %opt;
-	my @errors;
-	my %event_handlers = ( 'error' => 'STDERR' );
-
-	my $self = bless { 
-		'required_options' => \@required_options,
-		'optional_options' => \@optional_options,
-		'all_options' => \@all_options,
-		'xs' => $xs,
-		'ua' => $ua,
-		'opt' => \%opt,
-		'errors' => \@errors,
-		'event_handlers' => \%event_handlers,
-		}, $class;
-	
-	$self->set( %arg );
-	
-	return $self;
+	my($class, %args) = @_;	
+	my $self = $class->SUPER::new();
+	bless( $self, $class );
+	return $self->initialize( %args );
 }
 
-=item $ups->set( %args )
+sub _metadata
+{
+	my ( $self, $desired ) = @_;
+	
+	my $values = { 
+		'internal' => {
+			'ua'					=> LWP::UserAgent->new(),
+			'xs'					=> XML::Simple->new( ForceArray => 1, KeepRoot => 1 ),
+			'packages'				=> [ Business::Ship::UPS::Package->new() ],
+			'package_subclass_name'	=> 'UPS::Package',
+		},
+		'required' => {
+			user_id			=> undef,
+			password		=> undef,
+			license			=> undef,
+			pickup_type		=> undef,
+			from_country	=> 'US',
+			from_zip		=> undef,
+			to_residential	=> undef,
+			to_country		=> 'US',
+			to_zip			=> undef,
+			service			=> undef,
+		},
+		'optional' => {
+			from_city				=> undef,
+			to_city					=> undef,
+			test_server				=> undef,
+			no_ssl					=> undef,
+		},
+		'parent_defaults' => {
+			test_url				=> 'https://wwwcie.ups.com/ups.app/xml/Rate',
+			prod_url				=> 'https://www.ups.com/ups.app/xml/Rat',
+		},
+		# TODO: automatically pull in the values from Ship::UPS::Package, map whatever is used.
+		'alias_to_default_package' => {
+			weight					=> undef,
+			packaging				=> undef,
+		},
+		'unique_values' => {
+			pickup_type				=> undef,
+		},
+	};
+	
+	my %result = %{ $values->{ $desired } };
+	return wantarray ? keys( %result ) : \%result;
+}
 
-This method assigns internal options.
+sub package_subclass_name { return 'UPS::Package'; }
+
+sub _gen_unique_values
+{
+	my ( $self ) = @_;
+	
+	return ( $self->_metadata( 'unique_values' ) );
+	
+=pod
+	##NOTE: This is from Business::Ship::USPS... perhaps consolidate them both.
+	
+	# Nothing unique at this level either, try the USPS::Package level...
+	my @unique_values;
+	foreach my $package ( @{$self->packages()} ) {
+		push @unique_values, $package->get_unique_values()
+	}
+	
+	# We prefer 0 in the key to represent 'undef'
+	# clean it all up...
+	my @new_unique_values;
+	foreach my $value ( @unique_values ) {
+		if ( not defined $value ) {
+			$value = 0;
+		}
+		push @new_unique_values, $value;
+	}
 
 =cut
-
-sub build_subs {
-    my $self = shift;
-    foreach(@_) {
-        eval "sub $_ { my \$self = shift; if(\@_) { \$self->{$_} = shift; } return \$self->{$_}; }";
-    }
+	
 }
 
-sub set
+sub _massage_values
 {
-	my ( $self, %arg ) = @_;
+	# TODO: Value massaging (see ups-query.tag )
+	my ( $self ) = @_;
 	
-	$self->{'event_handlers'}->{'debug'} = delete $arg{'event_handler_debug'} if $arg{'event_handler_debug'};
-	$self->{'event_handlers'}->{'error'} = delete $arg{'event_handler_error'} if $arg{'event_handler_error'};
+	# Translate service values.
 	
-	# Set valid args and find unrecongnized ones.
-	for ( @{$self->{all_options}} ) {
-		$self->{opt}->{$_} = delete $arg{$_} if exists $arg{$_};
+	# Is the passed mode alpha ('1DA') or numeric ('02')?
+	my $alpha = 1 unless ( $self->service() =~ /\d\d/ );
+	
+	my %default_package_map = (
+		qw/
+		1DM	02
+		1DML	01
+		1DA	02
+		1DAL	01
+		2DM	02
+		2DA	02
+		2DML	01
+		2DAL	01
+		3DS	02
+		GNDCOM	02
+		GNDRES	02
+		XPR	02
+		UPSSTD	02
+		XDM	02
+		XPRL	01
+		XDML	01
+		XPD	02
+		/
+	);
+
+	# Automatically assign a package type if none given, for backwards compatibility.
+	unless ( $self->packaging() ) {
+		if ( $alpha and $default_package_map{ $self->service() } ) {
+			$self->packaging( $default_package_map{ $self->service() } );
+		} else {
+			$self->packaging( '02' );
+		}
 	}
 	
-	if ( %arg ) {
-		$self->error( "Unrecognized options: @{[sort keys %arg]}" );
-		return ( undef );
+	my %mode_map = (
+		qw/
+			1DM	14
+			1DML	14
+			1DA	01
+			1DAL	01
+			2DM	59
+			2DA	02
+			2DML	59
+			2DAL	02
+			3DS	12
+			GNDCOM	03
+			GNDRES	03
+			XPR	07
+			XDM	54
+			UPSSTD	11
+			XPRL	07
+			XDML	54
+			XPD	08
+		/
+	);
+	
+	# Map names to codes for backward compatibility.
+	$self->service( $mode_map{ $self->service() } )		if $alpha;
+	
+	# Default values for residential addresses.
+	unless ( $self->to_residential() ) {
+		$self->to_residential( 1 )		if $self->service() == $mode_map{ 'GNDRES' };
+		$self->to_residential( 0 )		if $self->service() == $mode_map{ 'GNDCOM' };
 	}
-	else {
-		return ( 1 );
+	
+	# UPS requires weight is at least 0.1 pounds.
+	foreach my $package ( @{ $self->packages() } ) {
+		$package->weight( 0.1 )			if ( $package->weight() < 0.1 );
 	}
+
+	# In the U.S., UPS only wants the 5-digit base ZIP code, not ZIP+4
+	$self->to_country() eq 'US' and $self->to_zip() =~ /^(\d{5})/ and $self->to_zip( $1 );
+	
+	# UPS prefers 'GB' instead of 'UK'
+	$self->to_country( 'GB' ) if $self->to_country() eq 'UK';
+
+	return;
 }
-
-sub debug {
-    my ( $self, $msg ) = @_;
-    return $self->_log( 'debug', $msg );
-}
-
-sub error {
-    my ( $self, $msg ) = @_;
-
-        # Return the most recent error message if that is all they want
-        return ( pop @{$self->{'errors'}} ) unless ( $msg );
-
-        $msg .= "\n" unless ( $msg =~ /\n$/ );
-    return $self->_log( 'error', $msg );
-}
-
-sub _log
-{
-    my $self = shift;
-    my ( $type, $msg ) = @_;
-        my( $package, $filename, $line, $sub ) = caller(2);
-        $msg  = "$sub: $msg";
-        if ( $type eq 'error' ) {
-                push @{$self->{'errors'}}, $msg;
-        }
-
-        foreach my $eh ( keys %{$self->{'event_handlers'}} ) {
-                my $eh_value = $self->{'event_handlers'}->{$eh};
-                if ( $type eq $eh and $eh_value ) {
-                        print STDERR $msg if $eh_value eq "STDERR";
-                        print STDOUT $msg if $eh_value eq "STDOUT";
-                        Carp::carp   $msg if $eh_value eq "carp";
-                        Carp::croak  $msg if $eh_value eq "croak";
-                }
-        }
-
-        return ( $msg );
-}
-
-
 
 sub validate
 {
 	my ( $self ) = shift;
-	
+=pod
+	# TODO: implement required_options() function, and use in new()
 	# Find missing arguments
 	my @missing_args;
 	for ( @{$self->{required_options}} ) {
@@ -299,6 +353,8 @@ sub validate
     else {
         return 1;
     }
+=cut
+	return 1;
 }
 	
 # _gen_request_xml()
@@ -307,13 +363,18 @@ sub _gen_request_xml
 {
 	my ( $self ) = shift;
 
+	die "No packages defined internally." unless ref $self->packages();
+	foreach my $package ( @{$self->packages()} ) {
+		print "package $package\n";
+	}
+		
 	my $access_tree = {
 		'AccessRequest' => [
 			{
 				'xml:lang' => 'en-US',
-				'AccessLicenseNumber' => [ $self->{opt}->{access_license_number} ],
-				'UserId' => [ $self->{opt}->{user_id} ],
-				'Password' => [ $self->{opt}->{password} ],
+				'AccessLicenseNumber' => [ $self->license() ],
+				'UserId' => [ $self->user_id() ],
+				'Password' => [ $self->password() ],
 			}
 		]
 	};
@@ -323,32 +384,39 @@ sub _gen_request_xml
 	my %shipment_tree = (
 		'Shipper' => [ {
 			'Address' => [ {
-				'CountryCode' => [ $self->{opt}->{shipper_country_code} ],
-				'PostalCode' => [ $self->{opt}->{shipper_postal_code} ],
+				'CountryCode' => [ $self->from_country() ],
+				'PostalCode' => [ $self->from_zip() ],
 			} ],
 		} ],
 		'ShipTo' => [ {
 			'Address' => [ {
-				'ResidentialAddress' => [ $self->{opt}->{ship_to_residential_address} ],
-				'CountryCode' => [ $self->{opt}->{ship_to_country_code} ],
-				'PostalCode' => [ $self->{opt}->{ship_to_postal_code} ],
+				'ResidentialAddress' => [ $self->to_residential() ],
+				'CountryCode' => [ $self->to_country() ],
+				'PostalCode' => [ $self->to_zip() ],
 			} ],
 		} ],
 		'Service' => [ {
-			'Code' => [ $self->{opt}->{service_code} ],
-		} ],
-		'Package' => [ {
-			'PackagingType' => [ {
-				'Code' => [ $self->{opt}->{packaging_type_code} ],
-				'Description' => [ 'Package' ],
-			} ],
-			'Description' => [ 'Rate Lookup' ],
-			'PackageWeight' => [ {
-				'Weight' => [ $self->{opt}->{weight} ],
-			} ],
+			'Code' => [ $self->service() ],
 		} ],
 		'ShipmentServiceSelfOptions' => { },
 	);
+	
+	my @packages;
+	foreach my $package ( @{$self->packages()} ) {
+		# TODO: Move to a different XML generation scheme, since all the packages 
+		# in a multi-package shipment will have the name "Package" 
+		$shipment_tree{ 'Package' } = [ {
+				'PackagingType' => [ {
+					'Code' => [ $package->packaging() ],
+					'Description' => [ 'Package' ],
+				} ],
+				'Description' => [ 'Rate Lookup' ],
+				'PackageWeight' => [ {
+					'Weight' => [ $package->weight() ],
+				} ],
+			} ],
+		
+	}
 	
 	my $request_tree = {
 		'RatingServiceSelectionRequest' => [ { 
@@ -360,7 +428,7 @@ sub _gen_request_xml
 				'RequestAction' => [ 'Rate' ],
 			} ],
 			'PickupType' => [ {
-				'Code' => [ $self->{opt}->{pickup_type_code} ]
+				'Code' => [ $self->pickup_type() ]
 			} ],
 			'Shipment' => [ {
 				%shipment_tree
@@ -380,28 +448,6 @@ sub _gen_request_xml
 }
 
 
-=item $ups->get_total_charges()
-
-This method returns the total charges.
-
-=cut
-
-sub get_total_charges
-{
-	my ( $self ) = shift;
-	return $self->{'total_charges'} if $self->{'total_charges'};
-	return 0;
-}
-
-sub _gen_url
-{
-	my ( $self ) = shift;
-	my $protocol = $self->{opt}->{no_ssl} 	? 'http://' : 'https://';
-	my $host = $self->{opt}->{test_server}	? 'wwwcie' : 'www';
-	my $url = $protocol . $host . '.ups.com/ups.app/xml/Rate';
-	return( $url );
-}
-
 sub _gen_request
 {
 	my ( $self ) = shift;
@@ -416,14 +462,42 @@ sub _gen_request
 	return ( $request );
 }
 
+
+
+=item $ups->get_total_charges()
+
+This method returns the total charges.
+
+=cut
+
+sub get_total_charges
+{
+	my ( $self ) = shift;
+	return $self->{'total_charges'} if $self->{'total_charges'};
+	return 0;
+}
+=pod
+old
+sub _gen_url
+{
+	my ( $self ) = shift;
+	my $protocol = $self->{opt}->{no_ssl} 	? 'http://' : 'https://';
+	my $host = $self->{opt}->{test_server}	? 'wwwcie' : 'www';
+	my $url = $protocol . $host . '.ups.com/ups.app/xml/Rate';
+	return( $url );
+}
+=cut
+
+
 =item $ups->run_query( [%args] )
 
 This method sets some values (optional), generates the request, then parses and
 the results and assigns the total_charges amount.
 
 =cut
-	
-sub run_query 
+
+=pod
+sub submit 
 {
 	my ( $self, %args ) = @_;
 	
@@ -450,25 +524,35 @@ sub run_query
 	$self->{'total_charges'} = $response_tree->{RatedShipment}->{TotalCharges}->{MonetaryValue}; 
 	return ( 1 );
 }
-
-=item $ups->clone;
-
-Returns a copy of the Business::Ship::UPS object
-
 =cut
 
-sub clone
+sub _handle_response
 {
-	my $self = shift;
-	my $copy = bless { %$self }, ref $self;
+	my ( $self ) = @_;
+	$self->trace( 'called.' );
 	
-	# Refs have special handling
-	$copy->{'opt'} = { %{$self->{'opt'}} };
+	my $response_tree = $self->{xs}->XMLin( 
+		$self->response()->content(), 
+		ForceArray => 0, 
+		KeepRoot => 0 
+	);
 	
-	return $copy;
+	my $status_code = $response_tree->{Response}->{ResponseStatusCode};
+	my $status_description = $response_tree->{Response}->{ResponseStatusDescription};
+	my $error = $response_tree->{Response}->{Error}->{ErrorDescription};
+	if ( $error and $error !~ /Success/ ) {
+		$self->error( "$status_description ($status_code): $error" );
+		return ( undef );
+	}
+	
+	$self->total_charges( $response_tree->{RatedShipment}->{TotalCharges}->{MonetaryValue} );
+	# for each RatedPackage
+		# set price package->id(?)
+
+	
+	
+	return ( 1 );
 }
-
-
 
 
 =back
