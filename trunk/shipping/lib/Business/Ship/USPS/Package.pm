@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.5 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.6 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship::Package;
 use Data::Dumper;
@@ -13,7 +13,6 @@ use Data::Dumper;
 my %options_defaults = (
 	id			=> undef,
 	service		=> undef,
-	pounds		=> undef,
 	ounces		=> 0,
 	container	=> 'None',
 	size		=> 'Regular',
@@ -45,8 +44,17 @@ sub weight
 {
 	my $self = shift;
 	$self->{'pounds'} = $self->_round_up( shift ) if @_;
+	
+	# USPS requires at least one pound.
+	if ( defined $self->{'pounds'} ) {
+		$self->{'pounds'} = 1 if $self->{'pounds'} < 1;
+	}
+	
 	return $self->{'pounds'};
 }
+
+# Alias pounds to 'weight'
+sub pounds { return shift->weight( @_ ) }
 
 sub _round_up
 {
@@ -71,6 +79,7 @@ sub get_unique_values
 	
 	return @unique_values;
 }
+
 
 sub get_unique_keys
 {

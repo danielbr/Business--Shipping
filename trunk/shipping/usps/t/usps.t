@@ -20,6 +20,18 @@ $shipment->set(
 $shipment->set( %intl_request_1 );
 # Testing alternate method:
 
+
+$shipment->set(
+		weight		=> 0.2,
+		ounces		=> 0,
+		mail_type	=> 'Package',
+		to_country	=> 'Great Britain',
+);
+
+$shipment->submit() or die 'error on submit: ' . $shipment->error();
+print "0.2 weight: " . $shipment->get_price('Airmail Parcel Post') . "\n";
+
+
 $shipment->set(
 		weight		=> 5.6,
 		ounces		=> 0,
