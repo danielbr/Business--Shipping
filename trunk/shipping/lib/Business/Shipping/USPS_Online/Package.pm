@@ -46,9 +46,10 @@ Default 'Package'.
 use Class::MethodMaker 2.0
     [
       new    => [ { -hash => 1 }, 'new' ],
+      new    => 'default_new',
       scalar => [ { -default => 'None'    }, 'container'  ],
       scalar => [ { -default => 'Regular' }, 'size'       ],
-      scalar => [ { -default => 'False'   }, 'machinable' ],
+      scalar => [ { -default => undef     }, 'machinable' ],
       scalar => [ { -default => 'Package' }, 'mail_type'  ],
       scalar => [ { -default => '0.00'    }, 'ounces'     ],
       scalar => [ { -default => '0.00'    }, 'pounds'     ],

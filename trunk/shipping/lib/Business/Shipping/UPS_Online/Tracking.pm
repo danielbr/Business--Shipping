@@ -99,6 +99,7 @@ use Clone;
 use Class::MethodMaker 2.0
     [ 
       new    => [qw/ -hash new / ],
+      scalar => [ 'access_key' ], 
       scalar => [ { -static => 1, -default => 'user_id, password, access_key' }, 'Required' ],
       scalar => [ { -static => 1, -default => 'prod_url, test_url' }, 'Optional' ],
       #
@@ -173,14 +174,16 @@ sub _gen_single_package_xml {
   my $request_xml =  $access_xml . '<?xml version="1.0"?>' . "\n"
     . XML::Simple::XMLout( $request_tree, KeepRoot => 1 );
     
-  
+
   # We only do this to provide a pretty, formatted XML doc for the debug. 
-  my $request_xml_tree = XML::Simple::XMLin( $request_xml, KeepRoot => 1, ForceArray => 1 );
+  # Commented out lines below, because XML::Parser complains 
+  #my $request_xml_tree = XML::Simple::XMLin( $request_xml, KeepRoot => 1, ForceArray => 1 );
+
   
   #
   # Large debug
   #
-  debug3( XML::Simple::XMLout( $request_xml_tree, KeepRoot => 1 ) );
+  #debug3( XML::Simple::XMLout( $request_xml_tree, KeepRoot => 1 ) );
   #
 
   return ($request_xml);
@@ -321,8 +324,9 @@ sub _handle_response
     $result_hash->{activity} = [];
 
     my $package = $response_tree->{Shipment}->{Package};    
+    my $activities = (ref $package->{Activity} eq 'ARRAY') ? $package->{Activity} : [ $package->{Activity} ];
     
-    foreach my $activity (@{$package->{Activity}}) {
+    foreach my $activity (@$activities) {
       my $activity_info = {
                    address => {
                        city => $activity->{ActivityLocation}->{Address}->{City},
@@ -351,7 +355,7 @@ sub _handle_response
 
     Business::Shipping::Tracking::_delete_undefined_keys($result_hash);
 
-    $self->results({$shipment_id => $result_hash});                     
+    $self->results($shipment_id => $result_hash);                     
 
     trace 'returning success';
     return $self->is_success( 1 );

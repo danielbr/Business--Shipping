@@ -74,7 +74,7 @@ use Class::MethodMaker 2.0
                   'Optional' 
                 ],
       scalar => [ { -type => 'LWP::UserAgent',
-                    -default_ctor => 'new',
+                    -default_ctor => sub { LWP::UserAgent->new(); },
                   }, 'user_agent'
                 ],
       scalar => [ { -type => 'HTTP::Response',

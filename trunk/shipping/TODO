@@ -1,6 +1,8 @@
 ################################################################################
 ##  General TODO
 ################################################################################
+
+
 * Class::MethodMaker 2.02 is the last working version.  2.03 and 2.04 have installation
   problems.  2.05 seems to have a problem with default_ctor (it calls new(), but passes
   an odd number of arguments?)
@@ -289,6 +291,8 @@ soon.  You are welcome to, of course.  ;-)
          File does not exist:  at .../USPS_Online/RateRequest.pm ...
 	 
    * [Enh] Printable labels
+   
+   * Change USPS error from 'charges are 0, error out' to something better.
    
 ################################################################################
 ##  UPS_Offline TODO

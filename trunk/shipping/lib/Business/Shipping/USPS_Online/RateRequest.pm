@@ -61,7 +61,7 @@ use Class::MethodMaker 2.0
       scalar => [ { -default => 'http://production.shippingapis.com/ShippingAPI.dll'  }, 'prod_url' ],
       scalar => [ { -default => 'http://testing.shippingapis.com/ShippingAPItest.dll' }, 'test_url' ],
       scalar => [ { -type    => 'Business::Shipping::USPS_Online::Shipment',
-                    -default_ctor => 'new',
+                    -default_ctor => 'default_new',
                     -forward => [ 
                                   'from_city',
                                   'to_city',
@@ -101,7 +101,7 @@ sub _gen_request_xml
     #
     my $rateReqDoc = XML::DOM::Document->new(); 
     my $rateReqEl = $rateReqDoc->createElement( 
-        $self->domestic() ? 'RateRequest' : 'IntlRateRequest' 
+        $self->domestic() ? 'RateV2Request' : 'IntlRateRequest' 
     );
     
     $rateReqEl->setAttribute('USERID', $self->user_id() ); 
@@ -158,10 +158,13 @@ sub _gen_request_xml
             $oversizeEl->appendChild($oversizeText); 
             $packageEl->appendChild($oversizeEl); 
             
-            my $machineEl = $rateReqDoc->createElement('Machinable'); 
-            my $machineText = $rateReqDoc->createTextNode( $package->machinable() ); 
-            $machineEl->appendChild($machineText); 
-            $packageEl->appendChild($machineEl);
+	    if( defined( $package->machinable() ) )
+	    {
+		my $machineEl = $rateReqDoc->createElement('Machinable'); 
+		my $machineText = $rateReqDoc->createTextNode( $package->machinable() ); 
+		$machineEl->appendChild($machineText); 
+		$packageEl->appendChild($machineEl);
+	    }
         }
         else {
             my $mailTypeEl = $rateReqDoc->createElement('MailType'); 
@@ -198,7 +201,7 @@ sub _gen_request
     
     my $request = $self->SUPER::_gen_request();
     # This is how USPS slightly varies from Business::Shipping
-    my $new_content = 'API=' . ( $self->domestic() ? 'Rate' : 'IntlRate' ) . '&XML=' . $request->content();
+    my $new_content = 'API=' . ( $self->domestic() ? 'RateV2' : 'IntlRate' ) . '&XML=' . $request->content();
     $request->content( $new_content );
     $request->header( 'content-length' => length( $request->content() ) );
 

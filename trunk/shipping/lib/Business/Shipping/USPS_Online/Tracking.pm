@@ -73,7 +73,12 @@ use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
 use Clone;
-use Class::MethodMaker 2.0 [ new => [ { -hash => 1, -init => 'this_init' }, 'new' ] ];
+use Class::MethodMaker 2.0 
+    [ 
+      new	=> [ { -hash => 1, -init => 'this_init' }, 'new' ],
+      scalar	=> [ 'prod_url' ],
+      scalar	=> [ 'test_url' ],
+      ];
  
 sub this_init
 {
@@ -290,7 +295,7 @@ sub _handle_response
 
         
         
-        $self->results({$id => $result});
+        $self->results($id => $result);
       }
     }
 

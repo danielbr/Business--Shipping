@@ -286,7 +286,7 @@ sub import
                     if ( lc $val eq lc $shipper ) {
                         push @to_load, ( 
                             @$mod_list, 
-                            'Business::Shipping::$shipper::RateRequest',
+                            'Business::Shipping::' . $shipper . '::RateRequest',
                         );
                     }
                 }

@@ -1,6 +1,36 @@
 Revision history for Business::Shipping
 =======================================
 
+1.57
+
+
+  General
+  
+    * All significant changes and bugfixes in this version were completed 
+      by Rubenstein Technology Group:  
+      - Martin H. Beauchamp <martin@rubensteintech.com>
+      - Jaron Rubenstein <jaron@rubensteintech.com>
+      - Ed Zborowski <ed@rubensteintech.com> 
+    
+    * [Fixed] Class::MethodMaker 2.05 has a different default_ctor() usage.
+    
+    * Store results using hash instead of a hash ref.
+  
+  USPS_Online
+  
+    * Use version 2 of the protocol.
+    
+    * Only pass machinable information if the user stated it.
+  
+  USPS_Online::Tracking
+  
+    * Minor bug fixes.
+    
+  UPS_Online::Tracking
+  
+    * Minor bug fixes.
+    
+
 1.56  Jan 03 2005
 
 
@@ -10,7 +40,7 @@ Revision history for Business::Shipping
     
     * [Enh] Minor documentation updates
 
-  Offline_UPS
+  UPS_Offline
   
     * [Enh] 2005 Zones and Rates supported.
       - UPS changed the file format

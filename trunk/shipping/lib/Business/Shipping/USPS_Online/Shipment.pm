@@ -42,8 +42,9 @@ use Business::Shipping::USPS_Online::Package;
 use Class::MethodMaker 2.0 
     [ 
       new   =>  [ { -hash    => 1, -init => '_this_init' }, 'new' ],
+      new   =>  [ { -init    => '_this_init', }, 'default_new' ],
       array =>  [ { -type    => 'Business::Shipping::USPS_Online::Package',
-                    -default_ctor => 'new' }, 'packages' ],
+                    -default_ctor => 'default_new' }, 'packages' ],
       scalar => [ 'service' ],
       scalar => [ { -static  => 1, 
                     -default => 'packages=>Business::Shipping::USPS_Online::Package' 

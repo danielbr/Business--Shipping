@@ -1,6 +1,13 @@
 We greatly appreciate the assistance that all of the following individuals have 
 contributed.
 
+ * The Ruberubenstein Technology Group, Ed Zborowski<ed@rubensteintech.com>,
+   Martin H. Beauchamp <martin@rubensteintech.com>, and Jaron Rubenstein 
+   <jaron@rubensteintech.com> have contributed patches for the following: 
+   - Many bug fixes
+   - Several new features
+   - See changelog for 1.57.
+
  * Rusty Conover <rconover@infogears.com> contributed the following modules:
    - Tracking
    - Tracking::USPS
