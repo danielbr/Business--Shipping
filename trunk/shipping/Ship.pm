@@ -2,7 +2,7 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: Ship.pm,v 1.2 2003/06/01 07:31:02 db-ship Exp $
+# $Id: Ship.pm,v 1.3 2003/06/01 17:23:47 db-ship Exp $
 
 package Business::Ship;
 use strict;
@@ -24,42 +24,43 @@ Business::Ship - API for UPS and USPS
 	'weight' 		=> '',
 	'service'		=> '',
  );
- $shipment->submit() or print $shipment->error();
+ $shipment->submit() or die $shipment->error();
  print $shipment->total_charges();
 
 =head1 ABSTRACT
 
-Business::Ship is an API for implementing shipping calculators.  UPS and USPS
-are currently supported.
+Business::Ship is an API for implementing shipping-related functionality.
+Currently, the only implemented functionality is "shipping cost calculation".
+Currently, the only shipping carriers implemented are UPS and USPS.
 
 =head1 MULTI-PACKAGE API
 
-$shipment->set(
+ $shipment->set(
 	user_id		=> '',
 	password	=> '',
 	from_zip	=> '',
 	to_zip		=> '',
-);
+ );
 
-$shipment->add_package(
-	id			=> '0',
+ $shipment->add_package(
+	id		=> '0',
 	weight		=> '',
-);
+ );
 
-$shipment->add_package(
-	id			=> '1',
+ $shipment->add_package(
+	id		=> '1',
 	weight		=> '',
-);
+ );
 
-$shipment->submit() or print $shipment->error();
+ $shipment->submit() or print $shipment->error();
 
-print $shipment->get_package('0')->get_charges( 'Airmail Parcel Post' );
-print $shipment->get_package('1')->get_charges( 'Airmail Parcel Post' );
-print $shipment->get_total_price( 'Airmail Parcel Post' );
+ print $shipment->get_package('0')->get_charges( 'Airmail Parcel Post' );
+ print $shipment->get_package('1')->get_charges( 'Airmail Parcel Post' );
+ print $shipment->get_total_price( 'Airmail Parcel Post' );
 
 =head1 ERROR/DEBUG HANDLING
 
-The 'event_handlers' argument takes a hashref telling interchange what to do
+The 'event_handlers' argument takes a hashref telling Business::Ship what to do
 for error, debug, trace, and the like.  The value can be one of four options:
 
  * 'STDERR'
@@ -69,45 +70,59 @@ for error, debug, trace, and the like.  The value can be one of four options:
 
 For example:
 
-$shipment->set( 
-	'event_handlers'	=> ({ 
+ $shipment->set( 
+	'event_handlers' => ({ 
 		'debug' => undef,
 		'trace' => undef,
 		'error' => 'croak',
 	})
-);
+ );
  
 The default is 'STDERR' for error handling, and nothing for debug/trace handling.
 Note that you can still access error messages even with no handler, by accessing
 the return values of methods.  For example:
 
-	$shipment->set( %values ) or print $shipment->error();
+ $shipment->set( %values ) or print $shipment->error();
 	
 However, if you don't save the error value before the next call, it could be
 overwritten by a new error.
 
+=head1 METHODS
+
+=over 4 
+
 =cut
 
 use vars qw($VERSION);
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Data::Dumper;
 use Carp;
 use Cache::FileCache;
 use HTTP::Request;
 
-# Pull them in now to avoid runtime requires (in hopes of compatibility with
-# Safe.pm sometime in the future. 
+# Pull in the known modules now to avoid runtime requires (in hopes of 
+# compatibility with Safe.pm sometime in the future. 
 use Business::Ship::UPS;
 use Business::Ship::USPS;
 
-# This new() does a little magic so that it can be called as:
-# my $shipment = new Business::Ship::USPS;
-#  - or -
-# my $shipment = new Business::Ship( 'shipper' => 'USPS' );
-# If called with a 'shipper' argument, then return a sub object (like Ship::USPS)
-# If called without one, then return a Ship object 
-#  - Like when a sub-class is calling as SUPER->new().
+=item $shipment->new( [%args] )
+
+The constructor can be used as:
+ my $shipment = new Business::Ship::USPS;
+ - or -
+ my $shipment = new Business::Ship( 'shipper' => 'USPS' );
+
+This design was chosen so that the user could utilize child objects that aren't
+known until runtime, without doing an eval.  
+ 
+If called with a 'shipper' argument, then return a sub object (e.g.
+Business::Ship::USPS).
+
+If called without a 'shipper' argument, then return a Ship object (e.g. when a 
+sub-class is calling as SUPER->new() )
+
+=cut
 sub new 
 {
 	my( $class, %args ) = @_;
@@ -239,22 +254,6 @@ sub validate
 	}
 }
 	
-=pod Old one
-sub validate 
-{
-	my( $self, @fields ) = @_;
-	
-	foreach( $self->required_vals() ) {
-		unless ( $self->can( $_ ) and $self->$_() ) {
-			$self->error( "missing required field $_" );
-			return undef;
-		}
-	}
-	
-	return 1;
-}
-=cut
-
 sub get_unique_keys
 {
 	my $self = shift;
@@ -378,8 +377,8 @@ sub _get_response
 
 =item $shipment->submit( [%args] )
 
-This method sets some values (optional), generates the request, then parses and
-the results and assigns the total_charges amount.
+This method sets some values (optional), generates the request, then parses the
+results.
 
 =cut
 sub submit
@@ -432,8 +431,6 @@ sub add_package
 	
 	return 1;
 }
-
-
 
 ###########################################################################
 ##  Helper methods
