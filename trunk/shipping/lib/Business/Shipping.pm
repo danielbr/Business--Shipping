@@ -182,7 +182,7 @@ sub import
             if ( @to_load ) 
                 { $Business::Shipping::RuntimeLoad = 0 };
             
-            foreach my $module ( @to_load ) {
+            foreach my $module ( Business::Shipping::Util::unique( @to_load ) ) {
                 eval "use $module;";
                 die $@ if $@;
             }

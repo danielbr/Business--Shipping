@@ -25,6 +25,14 @@
       - Add to documentation as an alternative to Business::Shipping
       - Maybe utilize the Parser code?
 
+    * [Enh] Profile the application
+      - How long does it take just to load the prerequisites?  Maybe some can be
+        replaced.
+      - What are the longest operations?
+      - Memory usage:
+        + 6.5 MB at the time of "use Business::Shipping::UPS_Offline::RateRequest"
+        + 1.5 MB at the time of submit() for an UPS_Offline::RateRequest. 
+
 * [Enh] Unit tests for each class.
   
 * [Enh] Conform to coding style: private methods should be prefixed with an
@@ -38,60 +46,6 @@
 
 * [Enh] Consider using Locale::Country (5.8.x+) & Locale::SubCountry (CPAN), or 
    Geography::States & Geography::Countries.
-
-* [Enh] Profile the application
-  - How long does it take just to load the prerequisites?  Maybe some can be
-    replaced.
-  - What are the longest operations?
-  
-* [Enh] Memory footprint information: 
-   8+ MB when Offline is used (and stays).
-   ---> 6.5 mb happens at the time of 
-        "use Business::Shipping::RateRequest::Offline::UPS"
-   ---> Which module is taking up 6.5mb memory?
-   ---> At any rate, make a note for users of mod_perl to preload those modules
-        once, instead of letting the runtime include load them for each
-	process.
-
-Yes, but it should only be loading the ones it needs (and then keeping them in
-memory).  For example, if you do a shipment *from* a certain zip code,
-it should load that zone file (e.g. 986.csv), then keep it in memory, so the
-next request will be faster.
-
-The internal representation is at least twice as big as the file is (probably
-more).
-
-I think that for regular usage (one origination, multiple destinations), the KB
-of files actually used probably does not go over 500K.  So the memory used for
-500K should only be 2MB or less.  Since you are seeing 8MB, I wonder where it
-is coming from.
-
-It could be a bug in my code (that really is loading more tables than it
-should), or it could be the extra modules that the Offline::UPS uses.  But I
-don't think so, they are pretty small: 
-
-use Data::Dumper;
-use File::Find;
-use File::Copy;
-use Math::BaseCnv;
-use Scalar::Util 1.10;
-
-Anyway, I think I need to investigate it some more.
- 
-   -  "optimize for smaller memory footprint, slower execution speed"
-   or
-   -  "optimize for faster execution speed, larger memory footprint"
-
-  Files are stored on the disk in a way that is easy to restore to in-memory 
-  representation (perhaps Storable).
-  
-  If it is optimized for memory footprint, then it will read the representation
-  off the disk, (getting a benefit from OS filesystem cache, probably), then run
-  calculation, then delete the in-memory representation (which perl may or may 
-  not free immediately).
-  
-  If optimized for speed, then it will read the representation off the disk and
-  keep it in memory.
 
 * [Enh] KLogging: Allow error format to specified 
   - With/without caller, line numbers.
@@ -184,7 +138,7 @@ Anyway, I think I need to investigate it some more.
   - Perhaps via a Filter object?
 
 ################################################################################
-##  Offline::USPS TODO
+##  USPS_Offline TODO
 ################################################################################
  
  * [Enh] Add First-Class Mail
@@ -192,10 +146,10 @@ Anyway, I think I need to investigate it some more.
    - Can be done via an off-line calculation.
 
 ################################################################################
-##  Online::USPS TODO
+##  USPS_Online TODO
 ################################################################################
 
-    * [Bug] USPS EMS bug reported by Micah Gersten <micah@davka.com>
+    * [Bug] USPS_Online EMS bug reported by Micah Gersten <micah@davka.com>
       > It is using the 'Economy (Surface) Parcel Post' rate instead of 'Global 
       > Express Mail (EMS)'.
 
@@ -218,8 +172,25 @@ Anyway, I think I need to investigate it some more.
      - http://pe.usps.gov/cpim/ftp/manuals/Imm/Immctry.pdf
  
 ################################################################################
-##  Offline::UPS TODO
+##  UPS_Offline TODO
 ################################################################################
+
+    * [Enh] Generate advanced table representations from source material
+      - Convert the files that are recieved from shippers into a format that 
+        provides a faster lookup mechanism, such as SQLLite, Storable, etc.
+      - The converted version of the files will be the ones that are distributed
+        with Business::Shipping::Data.
+    
+    * [Enh] Allow customization of memory usage / execution speed 
+      -  "optimize for smaller memory footprint, slower execution speed"
+      -  "optimize for faster execution speed, larger memory footprint"
+      -  If it is optimized for memory footprint, then it will read the 
+         representation off the disk, (getting a benefit from OS filesystem 
+	 cache, probably), then run the calculation, then delete the in-memory
+	 representation (which perl may or may not free immediately).
+  
+      -  If optimized for speed, then it will read the representation off the 
+	 disk and keep it in memory.
 
  * [Bug] Delivery Area Surcharge: check xarea table instead of always applying.
    
@@ -300,7 +271,7 @@ Anyway, I think I need to investigate it some more.
  * [Enh] Utilize GDBM or SQL, if available, to speed up lookups.
 
 ################################################################################
-##  Online::UPS TODO
+##  UPS_Online TODO
 ################################################################################
  
  * [Bug] Return error message if trying to ship to military americas:
@@ -325,7 +296,6 @@ Anyway, I think I need to investigate it some more.
 ################################################################################
 
 * [Enh] Test for ability to use within Safe?
-  - Make runtime requires into optional startup or runtime requires.
    
 ################################################################################
 ##  Online::FedEx 
