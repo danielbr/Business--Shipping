@@ -2,7 +2,7 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: UPS.pm,v 1.3 2003/06/04 20:18:55 db-ship Exp $
+# $Id: UPS.pm,v 1.1 2003/06/04 21:41:08 db-ship Exp $
 
 package Business::Shipping::UPS;
 use strict;
@@ -21,7 +21,7 @@ The following methods are available:
 =cut
 
 use vars qw( @ISA $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping;
 use Business::Shipping::UPS::Package;

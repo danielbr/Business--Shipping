@@ -2,14 +2,14 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: Package.pm,v 1.2 2003/06/04 20:18:56 db-ship Exp $
+# $Id: Package.pm,v 1.1 2003/06/04 21:41:09 db-ship Exp $
 
 package Business::Shipping::UPS::Package;
 use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping::Package;
 use Data::Dumper;

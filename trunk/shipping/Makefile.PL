@@ -10,12 +10,17 @@ WriteMakefile(
     'NAME'		=> 'Business::Shipping',
     'VERSION_FROM'	=> 'Makefile.PL', # finds $VERSION
     'PREREQ_PM'		=>	{
-							'XML::DOM' 			=> '1.0',
-							'LWP::UserAgent'	=> '1.0',
+							'LWP::UserAgent'	=> 0,
+							'XML::DOM' 			=> 0,
 							'XML::Simple'		=> '2.05',
+							'Crypt::SSLeay'		=> 0,
+							'Digest::SHA1'		=> 0,
+							'Error'				=> 0,
+							'Cache::FileCache'	=> 0,
+							'Data::Dumper'		=> 0,
 						},
     ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM => 'Ship.pm', # retrieve abstract from module
+      (ABSTRACT_FROM => 'Shipping.pm', # retrieve abstract from module
        AUTHOR     => 'Dan Browning <db@kavod.com>') : ()),
 );
 

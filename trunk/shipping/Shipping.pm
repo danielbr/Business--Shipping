@@ -2,7 +2,7 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: Ship.pm,v 1.4 2003/06/04 20:18:55 db-ship Exp $
+# $Id: Shipping.pm,v 1.1 2003/06/04 21:41:07 db-ship Exp $
 
 package Business::Shipping;
 use strict;
@@ -94,7 +94,7 @@ overwritten by a new error.
 =cut
 
 use vars qw($VERSION);
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Data::Dumper;
 use Carp;
