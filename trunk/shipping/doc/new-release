@@ -34,7 +34,7 @@ new-release - the Business::Shipping release script.
  doc/new-release Business-Shipping-*.tar.gz
 
  # Update to the next verision in Makefile.PL (if you haven't already)
- export NEW=0.78
+ export NEW=0.79
  perl -pi -e "s/\$VERSION = \'.\...\'/\$VERSION = \'${NEW}\'/g" Makefile.PL
  
 =cut 

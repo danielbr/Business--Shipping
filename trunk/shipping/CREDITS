@@ -1,4 +1,4 @@
-We greatly appreciate the help that all of the following individuals have 
+We greatly appreciate the assistance that all of the following individuals have 
 contributed.
 
  * Kevin Old <kold@carolina.rr.com> got the USPS XML generator working.
@@ -8,5 +8,7 @@ contributed.
  * bbfu on PerlMonks.org got Class::MethodMaker working with SUPER.
  
  * Mike Castle <dalgoda@ix.netcom.com> reported a POD nit.
+ 
+ * Mark Stosberg <mark@stosberg.com> contributed documentation patches.
  
 Thank you.

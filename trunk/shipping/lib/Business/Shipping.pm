@@ -1,6 +1,6 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.7 2003/11/12 21:41:23 db-ship Exp $
+# $Id: Shipping.pm,v 1.8 2003/11/13 23:11:34 db-ship Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Carp;
 use Business::Shipping::Debug;
@@ -138,9 +138,9 @@ Example usage for a rating request:
 		from_zip		=> '98682',
 		to_zip			=> '98270',
 		weight			=> 5.00,
-	};
+	);
 	
-	$rate_request->submit() or die $shipping->error();
+	$rate_request->submit() or die $rate_request->error();
 	
 	print $rate_request->total_charges();
 
@@ -153,6 +153,54 @@ availability, and other services are planned for future addition.
 
 UPS and USPS have been implemented so far, but FedEX and perhaps others are 
 planned for future support.
+
+=head1 CLASS METHODS
+
+=head2 rate_request()
+
+This method is used to request shipping rate information from online provides.
+Later querying offline databases may be supported as well. A hash is accepted as input with
+the following key values:
+
+=over 4
+
+=item * shipper
+
+The name of the shipper to use. Must correspond to a module by the name of:
+C<Business::Shipping::RateRequest::SHIPPER>.
+
+=item * user_id
+
+A user_id, if required by the provider. USPS requires this.
+
+=item * password
+
+A password,  if required by the provider. USPS requires this.
+
+=item * service
+
+A valid service name for the provider. See the corresponding module declared
+through the C<shipper> option above for a complete list for each provider.
+
+=item * from_zip
+
+The origin zipcode.
+
+=item * to_zip
+
+The destination zipcode.
+
+=item * weight
+
+Weight of the shipment, in pounds, as a decimal number
+
+=item * test_mode
+
+If true, connects to a test server instead of a live server, if possible. Defaults to 'true'.
+
+=back
+
+A rate request object is returned if the query is successful, or 'undef' otherweise.
 
 =head1 MULTI-PACKAGE API
 
