@@ -1,0 +1,36 @@
+# My stuff
+
+^todo/
+
+# Version control files and dirs.
+
+\bRCS\b
+\bCVS\b
+,v$
+\.cvsignore$
+\.empty$
+\.svn
+
+# Log files
+
+^log/.*\.log$
+
+# Makemaker generated files and dirs.
+
+^MANIFEST\.
+^Makefile$
+^blib/
+^MakeMaker-\d
+^pm_to_blib$
+\.gz$
+\.tar$
+\.tgz$
+
+# Temp, old, backup and emacs backup files.
+
+~$
+\.old$
+\.bak$
+^#.*#$
+^\.#
+\.tmp$

@@ -5,7 +5,7 @@ use strict;
 
 =head1 NAME
 
-Business::Shipping::DataFiles - Tables for offline cost estimation via Business::Shipping 
+Business::Shipping::DataFiles - Offline rate tables for Business::Shipping 
 
 =head1 VERSION
 
@@ -14,6 +14,10 @@ Version 0.01
 =cut
 
 our $VERSION = '0.01';
+
+1;
+
+__END__
 
 =head1 SYNOPSIS
 
@@ -24,24 +28,12 @@ frequently than Business::Shipping.
 
 =head1 AUTHOR
 
-Dan Browning, C<< <db@kavod.com> >>
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
 
-=head1 BUGS
+=head1 COPYRIGHT AND LICENCE
 
-Please report any bugs or feature requests to
-C<bug-business-shipping-datafiles@rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org>.  I will be notified, and then you'll automatically
-be notified of progress on your bug as I make changes.
-
-=head1 ACKNOWLEDGEMENTS
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2004 Dan Browning, All Rights Reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.  See LICENSE for more info.
 
 =cut
-
-1; # End of Business::Shipping::DataFiles
