@@ -47,7 +47,7 @@ new-release - the Business::Shipping release script.
 my ( $file ) = @ARGV;
 
 print "Usage: $PROGRAM_NAME Business-Shipping-n.nn.tar.gz\n" and exit 
-	unless $file;
+    unless $file;
 
 $file =~ m/^(Business-Shipping-\d\.\d\d)\.tar\.gz$/;
 my $version = $1;
@@ -90,8 +90,8 @@ myexec( $cmd );
 
 sub myexec
 {
-	my $cmd = shift;
-	print "Going to execute \"$cmd\"...\n";
-	return system ( $cmd );
+    my $cmd = shift;
+    print "Going to execute \"$cmd\"...\n";
+    return system ( $cmd );
 }
 

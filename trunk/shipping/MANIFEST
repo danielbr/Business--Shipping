@@ -703,7 +703,6 @@ data/wweas.csv
 data/wyoming.csv
 data/xarea
 doc/Artistic
-doc/cvs.pod
 doc/GPL
 doc/INSTALL.html
 doc/INSTALL.pod
@@ -742,7 +741,6 @@ MANIFEST			This list of files
 META.yml
 pm_to_blib
 README
-README.perl583
 t/10_init.t
 t/20_business_shipping.t
 t/30_usps.t

@@ -1,6 +1,6 @@
 # Business::Shipping::Tracking - Abstract class
 # 
-# $Id: Tracking.pm,v 1.2 2004/03/03 03:36:31 danb Exp $
+# $Id: Tracking.pm,v 1.3 2004/03/03 04:07:51 danb Exp $
 # 
 # Copyright (c) 2004 Infogears Inc.  All rights reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights 
@@ -44,7 +44,7 @@ Business::Tracking is an API for tracking shipments
 =cut
 
 
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -62,17 +62,17 @@ use Business::Shipping::CustomMethodMaker
   boolean => [ 'test_mode' ],
   get_set => [ 'user_id', 'password', 'cache_time' ],
   grouped_fields_inherit => [
-			     required => [ 'user_id', 'password'],
-			     optional => [ 'prod_url', 'test_url'],
-			    ],
+                 required => [ 'user_id', 'password'],
+                 optional => [ 'prod_url', 'test_url'],
+                ],
   object => [
-	     'LWP::UserAgent' => {
-				  slot => 'user_agent',
-				 },
-	     'HTTP::Response' => {
-				  slot => 'response',
-				 }
-	    ];
+         'LWP::UserAgent' => {
+                  slot => 'user_agent',
+                 },
+         'HTTP::Response' => {
+                  slot => 'response',
+                 }
+        ];
 
 
 sub _delete_undefined_keys($) {
@@ -82,13 +82,13 @@ sub _delete_undefined_keys($) {
     if(defined($hash_ref->{$_}) && ref($hash_ref->{$_}) eq 'HASH') {
       _delete_undefined_keys($hash_ref->{$_});
       if(scalar(keys %{$hash_ref->{$_}}) == 0) {
-	delete $hash_ref->{$_};
+    delete $hash_ref->{$_};
       }
     } elsif(defined($hash_ref->{$_}) && ref($hash_ref->{$_}) eq 'ARRAY') {
       foreach my $element (@{$hash_ref->{$_}}) {
-	if(ref($element) eq 'HASH') {
-	  _delete_undefined_keys($element);
-	}
+    if(ref($element) eq 'HASH') {
+      _delete_undefined_keys($element);
+    }
       }
     } elsif(!defined($hash_ref->{$_})) {
       delete $hash_ref->{$_};
@@ -116,135 +116,135 @@ Licensed under the GNU Public License (GPL).  See COPYING for more info.
 
 sub submit
 {
-	my ( $self, %args ) = @_;
-	trace( "( " . uneval( %args ) . " )" );
-	
-	
-	$self->init( %args ) if %args;
-	$self->validate() or return;
+    my ( $self, %args ) = @_;
+    trace( "( " . uneval( %args ) . " )" );
+    
+    
+    $self->init( %args ) if %args;
+    $self->validate() or return;
 
-	
- 	my $cache = Cache::FileCache->new() if $self->cache();
- 	if ( $self->cache() ) {
-	  trace( 'cache enabled' );	
-	  
-	  my $cache_results;
+    
+     my $cache = Cache::FileCache->new() if $self->cache();
+     if ( $self->cache() ) {
+      trace( 'cache enabled' );    
+      
+      my $cache_results;
 
-	  foreach my $id (@{$self->tracking_ids}) {
-	    my $key = $self->gen_unique_key($id);
-	    debug "cache key = $key\n";
-	    
-	    my $cache_result = $cache->get($key);
-	    
-	    if(defined($cache_result)) {
-	      $cache_results->{$id} = $cache_result;
-	    } else {
-	      trace( 'Cache miss on id $id, running request manually, then add to cache.' );
-	    }
-	    $self->results($cache_results);
-	  }
-	} else {
-	  trace( 'cache disabled' );
-	}
-	
+      foreach my $id (@{$self->tracking_ids}) {
+        my $key = $self->gen_unique_key($id);
+        debug "cache key = $key\n";
+        
+        my $cache_result = $cache->get($key);
+        
+        if(defined($cache_result)) {
+          $cache_results->{$id} = $cache_result;
+        } else {
+          trace( 'Cache miss on id $id, running request manually, then add to cache.' );
+        }
+        $self->results($cache_results);
+      }
+    } else {
+      trace( 'cache disabled' );
+    }
+    
 
-	
+    
 
 
-	my @requests = $self->_gen_request();
-	
-	while(my $request = shift @requests) {
-	  trace( 'Please wait while we get a response from the server...' );
-	  $self->response( $self->_get_response( $request ) );
-	  debug3( "response content = " . $self->response()->content() );
-	  
-	  if ( ! $self->response()->is_success() ) { 
-	    
-	    # If we're getting http errors we should bomb out.
+    my @requests = $self->_gen_request();
+    
+    while(my $request = shift @requests) {
+      trace( 'Please wait while we get a response from the server...' );
+      $self->response( $self->_get_response( $request ) );
+      debug3( "response content = " . $self->response()->content() );
+      
+      if ( ! $self->response()->is_success() ) { 
+        #
+        # If we're getting http errors we should bomb out.
+        #
+        $self->error(     
+             "HTTP Error. Status line: " . $self->response->status_line .
+             "Content: " . $self->response->content() 
+            ); 
+        $self->is_success(0);
+        last;
+      }
+    
+      # Only cache if there weren't any errors.
 
-	    $self->error( 	
-			 "HTTP Error. Status line: " . $self->response->status_line .
-			 "Content: " . $self->response->content() 
-			); 
-	    $self->is_success(0);
-	    last;
-	  }
-	
-	  # Only cache if there weren't any errors.
+      $self->_handle_response();
 
-	  $self->_handle_response();
-
-	  if(scalar(@requests) > 0) {
-	    # Sleep 2 seconds between requests, due to recommendation in USPS tracking document.
-	    # Seems to be prudent for other providers too.
-	    trace 'sleeping for 2 seconds';
-	    sleep 2;
-	  }
-	}
+      if(scalar(@requests) > 0) {
+        # Sleep 2 seconds between requests, due to recommendation in USPS tracking document.
+        # Seems to be prudent for other providers too.
+        trace 'sleeping for 2 seconds';
+        sleep 2;
+      }
+    }
        
-	if ($self->cache() ) {	
-	  trace( 'cache enabled, saving results.' );
-	  #TODO: Allow setting of cache properties (time limit, enable/disable, etc.)
-	  
-	  my $new_cache = Cache::FileCache->new();
-	  
-	  foreach my $id ($self->results_keys) {
-	    my $key = $self->gen_unique_key($id);
-	    
-	    my $value = $self->results($id);
-	    
-	    $new_cache->set( $key, $value, ($self->cache_time() || "12 hours"));
-	  }
-	}
-	else {
-	  trace( 'cache disabled, not saving results.' );
-	}
-	
-	
+    if ($self->cache() ) {    
+      trace( 'cache enabled, saving results.' );
+      #TODO: Allow setting of cache properties (time limit, enable/disable, etc.)
+      
+      my $new_cache = Cache::FileCache->new();
+      
+      foreach my $id ($self->results_keys) {
+        my $key = $self->gen_unique_key($id);
+        
+        my $value = $self->results($id);
+        
+        $new_cache->set( $key, $value, ($self->cache_time() || "12 hours"));
+      }
+    }
+    else {
+      trace( 'cache disabled, not saving results.' );
+    }
+    
+    
 
 
-	$self->is_success(1);
+    $self->is_success(1);
 
-	
-	return $self->is_success();
+    
+    return $self->is_success();
 }
 
 
 
 sub validate
 {
-	my ( $self ) = @_;
-	trace '()';
-	
-	
-	if(scalar(@{$self->{tracking_ids}}) == 0) {
-	  $self->invalid( 1 );
-	  $self->error( "No tracking ids passed to track" );
-	  return 0;
-	}
+    my ( $self ) = @_;
+    trace '()';
+    
+    
+    if(scalar(@{$self->{tracking_ids}}) == 0) {
+      $self->invalid( 1 );
+      $self->error( "No tracking ids passed to track" );
+      return 0;
+    }
 
-	if(!defined($self->user_id)) {
-	  $self->invalid( 1 );
-	  $self->error( "No user_id specified" );
-	  return 0;
+    if(!defined($self->user_id)) {
+      $self->invalid( 1 );
+      $self->error( "No user_id specified" );
+      return 0;
 
-	}
+    }
 
-	if(!defined($self->password)) {
-	  $self->invalid( 1 );
-	  $self->error( "No password specified" );
-	  return 0;
+    if(!defined($self->password)) {
+      $self->invalid( 1 );
+      $self->error( "No password specified" );
+      return 0;
 
-	}
+    }
 
-		
-	return 1;
+        
+    return 1;
 }
 
 sub _get_response
 {
-	trace '()';
-	return $_[0]->user_agent->request( $_[1] );
+    trace '()';
+    return $_[0]->user_agent->request( $_[1] );
 }
 
 

@@ -1,6 +1,6 @@
 # Business::Shipping::Package - Abstract class
 # 
-# $Id: Package.pm,v 1.5 2004/03/03 03:36:31 danb Exp $
+# $Id: Package.pm,v 1.6 2004/03/03 04:07:51 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Package - Abstract class
 
 =head1 VERSION
 
-$Revision: 1.5 $      $Date: 2004/03/03 03:36:31 $
+$Revision: 1.6 $      $Date: 2004/03/03 04:07:51 $
 
 =head1 DESCRIPTION
 
@@ -28,7 +28,7 @@ implementation.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -43,12 +43,12 @@ Package ID (for unique identification in a list of packages).
 
 =cut
 use Business::Shipping::CustomMethodMaker
-	new_hash_init => 'new',
-	grouped_fields_inherit => [
-		required => [ 'weight' ],
-		optional => [ 'id', 'charges' ],
-		unique   => [ 'weight' ],
-	];
+    new_hash_init => 'new',
+    grouped_fields_inherit => [
+        required => [ 'weight' ],
+        optional => [ 'id', 'charges' ],
+        unique   => [ 'weight' ],
+    ];
 
 #
 # TODO: How do charges() and set_price()/get_charges() interplay?
@@ -57,15 +57,15 @@ use Business::Shipping::CustomMethodMaker
 #
 sub set_price
 {
-	my ( $self, $service, $price ) = @_;
-	$self->{'price'}->{$service} = $price;
-	return $self->{'price'}->{$service};	
+    my ( $self, $service, $price ) = @_;
+    $self->{'price'}->{$service} = $price;
+    return $self->{'price'}->{$service};    
 }
 
 sub get_charges
 {
-	my ( $self, $service ) = @_;	
-	return $self->{ 'price' }->{ $service };	
+    my ( $self, $service ) = @_;    
+    return $self->{ 'price' }->{ $service };    
 }
 
 =item * $self->is_empty()
@@ -80,8 +80,8 @@ Returns 1 if true, 0 if false.
 =cut
 sub is_empty
 {
-	my ( $self ) = @_;
-	
+    my ( $self ) = @_;
+    
     for ( $self->required ) {
         if ( $self->$_() ) {
             return 0;

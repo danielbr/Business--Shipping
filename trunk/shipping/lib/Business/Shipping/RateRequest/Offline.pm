@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline
 #
-# $Id: Offline.pm,v 1.6 2004/03/03 03:36:31 danb Exp $
+# $Id: Offline.pm,v 1.7 2004/03/03 04:07:51 danb Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. 
 #
@@ -18,7 +18,7 @@ disables the cache feature, and has a few miscellaneous function.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -28,8 +28,8 @@ use Business::Shipping::Shipment;
 use Business::Shipping::Package;
 use Business::Shipping::Debug;
 use Business::Shipping::CustomMethodMaker
-	new_with_init => 'new',
-	new_hash_init => 'hash_init';
+    new_with_init => 'new',
+    new_hash_init => 'hash_init';
 
 # We don't have online things to request.
 sub perform_action {}
@@ -51,16 +51,16 @@ Shorten to three digits.  If the input doesn't have leading zeros, add them.
 =cut
 sub make_three 
 {
-	my ( $self, $zip ) = @_;
-	return unless $zip;
-	trace( '( ' . ( $zip ? $zip : 'undef' ) . ' )' );
-	
-	$zip = substr( $zip, 0, 3 );
-	while ( length( $zip ) < 3 ) {
-		$zip = "0$zip";
-	}
-	
-	return $zip;
+    my ( $self, $zip ) = @_;
+    return unless $zip;
+    trace( '( ' . ( $zip ? $zip : 'undef' ) . ' )' );
+    
+    $zip = substr( $zip, 0, 3 );
+    while ( length( $zip ) < 3 ) {
+        $zip = "0$zip";
+    }
+    
+    return $zip;
 }
 
 1;

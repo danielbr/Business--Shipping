@@ -20,10 +20,10 @@ $rate_request->submit(
         shipper =>              'Offline::UPS',
         cache =>                '1',
 
-	event_handlers => {
-		debug 	=> 'STDERR',
-		error	=> 'STDERR',
-	},
+    event_handlers => {
+        debug     => 'STDERR',
+        error    => 'STDERR',
+    },
 ) or die $rate_request->error();
 
 print "offline = " . $rate_request->total_charges() . "\n";

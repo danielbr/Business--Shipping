@@ -15,23 +15,23 @@ my $shipment = new Business::Shipping( 'shipper' => 'USPS' );
 # try calling enw with parameters
 
 my $shipment3 = new Business::Shipping( 
-	'user_id' 		=> $ENV{USPS_USER_ID},
-	'password' 		=> $ENV{USPS_PASSWORD},
-	'tx_type' 		=> 'rate', 
-	'test_mode'		=> 0,
+    'user_id'         => $ENV{USPS_USER_ID},
+    'password'         => $ENV{USPS_PASSWORD},
+    'tx_type'         => 'rate', 
+    'test_mode'        => 0,
 );
 
 $shipment->set( 'event_handlers' => ({ 
-	'debug' => 'STDOUT', 
-	'trace' => 'STDOUT', 
-	'error' => 'STDOUT', 
-	})
+    'debug' => 'STDOUT', 
+    'trace' => 'STDOUT', 
+    'error' => 'STDOUT', 
+    })
 );
 $shipment->set(
-	'user_id' 		=> $ENV{USPS_USER_ID},
-	'password' 		=> $ENV{USPS_PASSWORD},
-	'tx_type' 		=> 'rate', 
-	'test_mode'		=> 0,
+    'user_id'         => $ENV{USPS_USER_ID},
+    'password'         => $ENV{USPS_PASSWORD},
+    'tx_type'         => 'rate', 
+    'test_mode'        => 0,
 );
 
 #mail_type: "package", "postcards or aerogrammes", "matter for the blind", "envelope"
@@ -39,10 +39,10 @@ $shipment->set( %intl_request_1 );
 # Testing alternate method:
 
 $shipment->set(
-		weight		=> 0.2,
-		ounces		=> 0,
-		mail_type	=> 'Package',
-		to_country	=> 'Great Britain',
+        weight        => 0.2,
+        ounces        => 0,
+        mail_type    => 'Package',
+        to_country    => 'Great Britain',
 );
 
 #print Dumper( $shipment );
@@ -53,82 +53,82 @@ print "0.2 weight: " . $shipment->get_charges('Airmail Parcel Post') . "\n";
 exit;
 
 $shipment->set(
-		weight		=> 5.6,
-		ounces		=> 0,
-		mail_type	=> 'Package',
-		to_country	=> 'Great Britain',
+        weight        => 5.6,
+        ounces        => 0,
+        mail_type    => 'Package',
+        to_country    => 'Great Britain',
 );
 
 my @countries_to_test = (
-	'Great Britain',
-	'Canada',
-	'New Zealand',
-	'Australia',
+    'Great Britain',
+    'Canada',
+    'New Zealand',
+    'Australia',
 );
 
 foreach my $country ( @countries_to_test ) {
-	$shipment->submit( 'to_country' => $country );
-	print "$country = " . $shipment->default_package()->get_charges( 'Airmail Parcel Post' ) . "\n";
-	
+    $shipment->submit( 'to_country' => $country );
+    print "$country = " . $shipment->default_package()->get_charges( 'Airmail Parcel Post' ) . "\n";
+    
 }
 
 #$shipment->add_package(
-#		weight		=> 5.6,
-#		ounces		=> 0,
-#		mail_type	=> 'Package',
-#		to_country	=> 'Germany',
+#        weight        => 5.6,
+#        ounces        => 0,
+#        mail_type    => 'Package',
+#        to_country    => 'Germany',
 #);
 
 my %test_request_1 = (qw/
-	test_mode	1
-	service		EXPRESS
-	from_zip	20770
-	to_zip		20852
-	weight		10
+    test_mode    1
+    service        EXPRESS
+    from_zip    20770
+    to_zip        20852
+    weight        10
 /);
 
 my %test_request_2 = (qw/
-	test_mode	1
-	service		Priority
-	from_zip	20770
-	to_zip		90210
-	pounds		5
-	ounces		1
-	container	0-1096
-	size		Regular
-	machinable	False
+    test_mode    1
+    service        Priority
+    from_zip    20770
+    to_zip        90210
+    pounds        5
+    ounces        1
+    container    0-1096
+    size        Regular
+    machinable    False
 /);
 
 
 my %intl_request_2 = (qw/
-	test_mode	1
-	pounds		0
-	ounces		1
-	mail_type	Postcards or Aerogrammes
-	to_country	Algeria
+    test_mode    1
+    pounds        0
+    ounces        1
+    mail_type    Postcards or Aerogrammes
+    to_country    Algeria
 /);
 
 my %intl_production_request_1 = (
-	test_mode	=> 0,
-	pounds		=> 1,
-	ounces		=> 1,
-	mail_type	=> 'Package',
-	to_country	=> 'France',
+    test_mode    => 0,
+    pounds        => 1,
+    ounces        => 1,
+    mail_type    => 'Package',
+    to_country    => 'France',
 );
 
 #$shipment->set( %intl_request_1 );
-	
+    
 =pod
 $shipment->set(
-	'event_handlers' => ({ 'debug' => 'STDOUT' }),
-	'user_id' 		=> $ENV{USPS_USER_ID},
-	'password' 		=> $ENV{USPS_PASSWORD},
-	'tx_type' 		=> 'rate',
-	'test_mode'		=> 0,
-	'service'		=> 'BPM',
-	'weight'		=> 3,
-	'from_zip'		=> '98682',
-	'to_zip'		=> '98270',
+    'event_handlers' => ({ 'debug' => 'STDOUT' }),
+    'user_id'         => $ENV{USPS_USER_ID},
+    'password'         => $ENV{USPS_PASSWORD},
+    'tx_type'         => 'rate',
+    'test_mode'        => 0,
+    'service'        => 'BPM',
+    'weight'        => 3,
+    'from_zip'        => '98682',
+    'to_zip'        => '98270',
 );
 =cut
 
@@ -144,7 +144,7 @@ print "Airmail Parcel Post = " . $shipment->packages()->[0]->get_charges( 'Airma
 
 #print "total_charges = " . $shipment->total_charges();
 #$shipment->set(
-#	'event_handlers' => ({ 'debug' => 'croak' })
+#    'event_handlers' => ({ 'debug' => 'croak' })
 #);
 
 #print "shipment = " . Dumper( $shipment );
@@ -163,49 +163,49 @@ http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="
 
 Request #1 in better form:
 <IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx">
-	< Package ID="0">
-		<Pounds>2</Pounds>
-		<Ounces>0</Ounces>
-		<MailType>Package</MailType>
-		<Country>Albania</Country>
-	</Package>
+    < Package ID="0">
+        <Pounds>2</Pounds>
+        <Ounces>0</Ounces>
+        <MailType>Package</MailType>
+        <Country>Albania</Country>
+    </Package>
 </IntlRateRequest>
 
 
 Response #1:
 <?xml version="1.0" ?>
 <IntlRateResponse>
-	<Package ID="0">
-		<Prohibitions>Currency of the Albanian State Bank (Banknotes in lek). Extravagant clothes and other articles contrary to Albanians' taste. Items sent by political emigres.</Prohibitions>
-		<Restrictions>Hunting arms require an import permit. Medicines for personal use are admitted provided the addressee has a medical certificate.</Restrictions>
-		International Rates Calculator API 13
-		USPS Web Tool Kit User�s Guide <Observations>1. Letter packages may not contain dutiable articles. 2. Parcel post service extends only to: Berat Konispol Milot Bilisht Korce Peqin</Observations>
-		<CustomsForms>Postal Union Mail (LC/AO): PS Form 2976 or 2976-A (see 123.61) Parcel Post: PS Form 2976-A inside 2976-E (envelope)</CustomsForms>
-		<ExpressMail>Country Code AL Reciprocal Service Name EMS Required Customs Form/Endorsement 1. For correspondence and business papers: PS Form 2976, Customs - CN 22 (Old C 1) and Sender's Declaration (green label). Endorse item clearly next to mailing label as BUSINESS PAPERS.</ExpressMail>
-		<AreasServed>Tirana.</AreasServed>
-		<Service ID="0">
-		<Pounds>2</Pounds>
-		<Ounces>0</Ounces>
-		<MailType>Package</MailType>
-		<Country>ALBANIA</Country>
-		<Postage>87</Postage>
-		<SvcCommitments>See Service Guide</SvcCommitments>
-		<SvcDescription>Global Express Guaranteed (GXG) Document Service</SvcDescription>
-		<MaxDimensions>Max. length 46", depth 35", height 46" and max. girth 108"</MaxDimensions>
-		<MaxWeight>22</MaxWeight>
-		</Service>
-		<Service ID="1">
-		<Pounds>2</Pounds>
-		<Ounces>0</Ounces>
-		<MailType>Package</MailType>
-		<Country>ALBANIA</Country>
-		<Postage>96</Postage>
-		<SvcCommitments>See Service Guide</SvcCommitments>
-		<SvcDescription>Global Express Guaranteed (GXG) Non-Document Service</SvcDescription>
-		<MaxDimensions>Max. length 46", depth 35", height 46" and max. girth 108"</MaxDimensions>
-		<MaxWeight>22</MaxWeight>
-		</Service>
-	</Package>
+    <Package ID="0">
+        <Prohibitions>Currency of the Albanian State Bank (Banknotes in lek). Extravagant clothes and other articles contrary to Albanians' taste. Items sent by political emigres.</Prohibitions>
+        <Restrictions>Hunting arms require an import permit. Medicines for personal use are admitted provided the addressee has a medical certificate.</Restrictions>
+        International Rates Calculator API 13
+        USPS Web Tool Kit User�s Guide <Observations>1. Letter packages may not contain dutiable articles. 2. Parcel post service extends only to: Berat Konispol Milot Bilisht Korce Peqin</Observations>
+        <CustomsForms>Postal Union Mail (LC/AO): PS Form 2976 or 2976-A (see 123.61) Parcel Post: PS Form 2976-A inside 2976-E (envelope)</CustomsForms>
+        <ExpressMail>Country Code AL Reciprocal Service Name EMS Required Customs Form/Endorsement 1. For correspondence and business papers: PS Form 2976, Customs - CN 22 (Old C 1) and Sender's Declaration (green label). Endorse item clearly next to mailing label as BUSINESS PAPERS.</ExpressMail>
+        <AreasServed>Tirana.</AreasServed>
+        <Service ID="0">
+        <Pounds>2</Pounds>
+        <Ounces>0</Ounces>
+        <MailType>Package</MailType>
+        <Country>ALBANIA</Country>
+        <Postage>87</Postage>
+        <SvcCommitments>See Service Guide</SvcCommitments>
+        <SvcDescription>Global Express Guaranteed (GXG) Document Service</SvcDescription>
+        <MaxDimensions>Max. length 46", depth 35", height 46" and max. girth 108"</MaxDimensions>
+        <MaxWeight>22</MaxWeight>
+        </Service>
+        <Service ID="1">
+        <Pounds>2</Pounds>
+        <Ounces>0</Ounces>
+        <MailType>Package</MailType>
+        <Country>ALBANIA</Country>
+        <Postage>96</Postage>
+        <SvcCommitments>See Service Guide</SvcCommitments>
+        <SvcDescription>Global Express Guaranteed (GXG) Non-Document Service</SvcDescription>
+        <MaxDimensions>Max. length 46", depth 35", height 46" and max. girth 108"</MaxDimensions>
+        <MaxWeight>22</MaxWeight>
+        </Service>
+    </Package>
 </IntlRateResponse>
 
 
@@ -235,16 +235,16 @@ Http://SERVERNAME/ShippingAPITest.dll?API=Rate&XML=<RateRequest USERID="xxxxxxxx
 
 Valid Test Request #1 Pretty XML:
 <RateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx">
-	<Package ID="0">
-		<Service> EXPRESS</Service>
-		<ZipOrigination>20770</ZipOrigination>
-		<ZipDestination>20852</ZipDestination>
-		<Pounds>10</Pounds>
-		<Ounces>0</Ounces>
-		<Container>None</Container>
-		<Size>REGULAR</Size>
-		<Machinable></Machinable>
-	</Package>
+    <Package ID="0">
+        <Service> EXPRESS</Service>
+        <ZipOrigination>20770</ZipOrigination>
+        <ZipDestination>20852</ZipDestination>
+        <Pounds>10</Pounds>
+        <Ounces>0</Ounces>
+        <Container>None</Container>
+        <Size>REGULAR</Size>
+        <Machinable></Machinable>
+    </Package>
 </RateRequest>
 
 

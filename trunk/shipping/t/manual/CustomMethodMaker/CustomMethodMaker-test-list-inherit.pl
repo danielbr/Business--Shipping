@@ -16,26 +16,26 @@ that's maybe a good avenue to explore.
 ###############################################################################
 package Bug;
 use CustomMethodMaker
-	new_with_init => 'new',
-	new_hash_init => 'hash_init',
-	grouped_fields_inherit => [
-		'required' => [ 'id', 'type' ],
-		'unique' => [ 'id', 'type', 'description' ]
-	];
-	#list => [ 'unique' ];
-	
+    new_with_init => 'new',
+    new_hash_init => 'hash_init',
+    grouped_fields_inherit => [
+        'required' => [ 'id', 'type' ],
+        'unique' => [ 'id', 'type', 'description' ]
+    ];
+    #list => [ 'unique' ];
+    
 #use constant INSTANCE_DEFAULTS => (
-#	unique => [ 'id', 'type', 'description' ]
+#    unique => [ 'id', 'type', 'description' ]
 #);
  
 sub init
 {
-	my $self   = shift;
-	#my %values = ( INSTANCE_DEFAULTS, @_ );
-	my %values = ( @_ );
-	$self->hash_init( %values );
-	return;
-}	
+    my $self   = shift;
+    #my %values = ( INSTANCE_DEFAULTS, @_ );
+    my %values = ( @_ );
+    $self->hash_init( %values );
+    return;
+}    
 
 ###############################################################################
 ##  FixedBug
@@ -43,24 +43,24 @@ sub init
 package FixedBug;
 use base ( 'Bug' );
 use CustomMethodMaker
-	new_with_init => 'new',
-	new_hash_init => 'hash_init',
-	grouped_fields_inherit => [
-		'unique' => [ 'date_fixed', 'repairer' ]
-	];
-	#list_inherit => [ 'unique' ];
-	
+    new_with_init => 'new',
+    new_hash_init => 'hash_init',
+    grouped_fields_inherit => [
+        'unique' => [ 'date_fixed', 'repairer' ]
+    ];
+    #list_inherit => [ 'unique' ];
+    
 #use constant INSTANCE_DEFAULTS => (
-	#unique => [ 'date_fixed', 'repairer' ]
+    #unique => [ 'date_fixed', 'repairer' ]
 #);
  
 sub init
 {
-	my $self   = shift;
-	#my %values = ( INSTANCE_DEFAULTS, @_ );
-	my %values = ( @_ );
-	$self->hash_init( %values );
-	return;
+    my $self   = shift;
+    #my %values = ( INSTANCE_DEFAULTS, @_ );
+    my %values = ( @_ );
+    $self->hash_init( %values );
+    return;
 }
 
 ###############################################################################

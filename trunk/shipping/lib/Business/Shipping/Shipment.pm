@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment - Abstract class
 # 
-# $Id: Shipment.pm,v 1.7 2004/03/03 03:36:31 danb Exp $
+# $Id: Shipment.pm,v 1.8 2004/03/03 04:07:51 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # This program is free software; you may redistribute it and/or modify it under
@@ -9,7 +9,7 @@
 
 package Business::Shipping::Shipment;
 
-$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 =head1 NAME
 
@@ -17,7 +17,7 @@ Business::Shipping::Shipment - Abstract class
 
 =head1 VERSION
 
-$Revision: 1.7 $      $Date: 2004/03/03 03:36:31 $
+$Revision: 1.8 $      $Date: 2004/03/03 04:07:51 $
 
 =head1 DESCRIPTION
 
@@ -59,36 +59,36 @@ Has-A: Object list: Business::Shipping::Package.
 
 =cut
 use Business::Shipping::CustomMethodMaker
-	new_hash_init => 'new',
-	get_set => [ 'current_package_index', ],
-	grouped_fields_inherit => [
-		'required' => [
-			'service',
-			'from_zip',
-			'shipper',
-		],
-		'optional' => [ 
-			'from_country',
-			'to_country',
-			'to_zip',
-			'from_city',
-			'to_city',
-		],
-		'unique' => [
-			'service',
-			'from_zip',
-			'from_country',
-			'to_zip',
-			'from_city',
-			'to_city',
-		],
-	],
-	object_list => [ 
-		'Business::Shipping::Package' => {
-			'slot'		=> 'packages',
-		},
-	];
-	
+    new_hash_init => 'new',
+    get_set => [ 'current_package_index', ],
+    grouped_fields_inherit => [
+        'required' => [
+            'service',
+            'from_zip',
+            'shipper',
+        ],
+        'optional' => [ 
+            'from_country',
+            'to_country',
+            'to_zip',
+            'from_city',
+            'to_city',
+        ],
+        'unique' => [
+            'service',
+            'from_zip',
+            'from_country',
+            'to_zip',
+            'from_city',
+            'to_city',
+        ],
+    ],
+    object_list => [ 
+        'Business::Shipping::Package' => {
+            'slot'        => 'packages',
+        },
+    ];
+    
 =item * weight
 
 Forward the weight to the current package.
@@ -103,13 +103,13 @@ Returns the weight of all packages within the shipment.
 =cut
 sub total_weight
 {
-	my $self = shift;
-	
-	my $total_weight;
-	foreach my $package ( @{ $self->packages() } ) {
-		$total_weight += $package->weight();
-	}
-	return $total_weight;
+    my $self = shift;
+    
+    my $total_weight;
+    foreach my $package ( @{ $self->packages() } ) {
+        $total_weight += $package->weight();
+    }
+    return $total_weight;
 }
 
 =item * to_zip( $to_zip )
@@ -122,22 +122,22 @@ Redefines the MethodMaker implementation of this attribute.
 no warnings 'redefine';
 sub to_zip
 {
-	my $self = shift;
-	
-	if ( $_[ 0 ] ) {
-		my $to_zip = shift;
-		
-		#
-		# U.S. only: need to throw away the "plus four" of zip+four.
-		#
-		if ( $self->domestic and $to_zip and length( $to_zip ) > 5 ) {
-			$to_zip = substr( $to_zip, 0, 5 );
-		}
-		
-		$self->{ 'to_zip' } = $to_zip;
-	}
-	
-	return $self->{ 'to_zip' };
+    my $self = shift;
+    
+    if ( $_[ 0 ] ) {
+        my $to_zip = shift;
+        
+        #
+        # U.S. only: need to throw away the "plus four" of zip+four.
+        #
+        if ( $self->domestic and $to_zip and length( $to_zip ) > 5 ) {
+            $to_zip = substr( $to_zip, 0, 5 );
+        }
+        
+        $self->{ 'to_zip' } = $to_zip;
+    }
+    
+    return $self->{ 'to_zip' };
 }
 use warnings; # end 'redefine'
 
@@ -157,15 +157,15 @@ Redefines the MethodMaker implementation of this attribute.
 no warnings 'redefine';
 sub to_country
 {
-	my ( $self, $to_country ) = @_;
-	
-	if ( defined $to_country ) {
-		my $abbrevs = $self->config_to_hash( cfg()->{ ups_information }->{ abbrev_to_country } );
-		$to_country = $abbrevs->{ $to_country } || $to_country;
-	}
-	$self->{ to_country } = $to_country if defined $to_country;
-	
-	return $self->{ to_country };
+    my ( $self, $to_country ) = @_;
+    
+    if ( defined $to_country ) {
+        my $abbrevs = $self->config_to_hash( cfg()->{ ups_information }->{ abbrev_to_country } );
+        $to_country = $abbrevs->{ $to_country } || $to_country;
+    }
+    $self->{ to_country } = $to_country if defined $to_country;
+    
+    return $self->{ to_country };
 }
 use warnings; # end 'redefine'
 
@@ -178,13 +178,13 @@ Redefines the MethodMaker implementation of this attribute.
 =cut
 sub to_country_abbrev
 {
-	my ( $self ) = @_;
-	
-	my $country_abbrevs = $self->config_to_hash( 
-		cfg()->{ ups_information }->{ country_to_abbrev } 
-	);
-	
-	return $country_abbrevs->{ $self->to_country } or $self->to_country;
+    my ( $self ) = @_;
+    
+    my $country_abbrevs = $self->config_to_hash( 
+        cfg()->{ ups_information }->{ country_to_abbrev } 
+    );
+    
+    return $country_abbrevs->{ $self->to_country } or $self->to_country;
 }
 
 
@@ -196,15 +196,15 @@ Redefines the MethodMaker implementation of this attribute.
 no warnings 'redefine';
 sub from_country
 {
-	my ( $self, $from_country ) = @_;
-	
-	if ( defined $from_country ) {
-		my $abbrevs = $self->config_to_hash( cfg()->{ ups_information }->{ abbrev_to_country } );
-		$from_country = $abbrevs->{ $from_country } || $from_country;
-	}
-	$self->{ from_country } = $from_country if defined $from_country;
-	
-	return $self->{ from_country };
+    my ( $self, $from_country ) = @_;
+    
+    if ( defined $from_country ) {
+        my $abbrevs = $self->config_to_hash( cfg()->{ ups_information }->{ abbrev_to_country } );
+        $from_country = $abbrevs->{ $from_country } || $from_country;
+    }
+    $self->{ from_country } = $from_country if defined $from_country;
+    
+    return $self->{ from_country };
 }
 use warnings;
 
@@ -214,13 +214,13 @@ use warnings;
 =cut
 sub from_country_abbrev
 {
-	my ( $self ) = @_;
-	return unless $self->from_country;
-	
-	my $countries = $self->config_to_hash( cfg()->{ ups_information }->{ country_to_abbrev } );
-	my $from_country_abbrev = $countries->{ $self->from_country };
-	
-	return $from_country_abbrev;
+    my ( $self ) = @_;
+    return unless $self->from_country;
+    
+    my $countries = $self->config_to_hash( cfg()->{ ups_information }->{ country_to_abbrev } );
+    my $from_country_abbrev = $countries->{ $self->from_country };
+    
+    return $from_country_abbrev;
 }
 
 
@@ -229,11 +229,11 @@ sub from_country_abbrev
 =cut
 sub from_state
 {
-	my ( $self, $from_state ) = @_;
-	
-	$self->{ from_state } = $from_state if defined $from_state;
-	
-	return $self->{ from_state };
+    my ( $self, $from_state ) = @_;
+    
+    $self->{ from_state } = $from_state if defined $from_state;
+    
+    return $self->{ from_state };
 }
 
 =item * from_state_abbrev()
@@ -243,13 +243,13 @@ Returns the abbreviated form of 'from_state'.
 =cut
 sub from_state_abbrev
 {
-	my ( $self ) = @_;
-	
-	my $state_abbrevs = $self->config_to_hash( 
-		cfg()->{ ups_information }->{ state_to_abbrev } 
-	);
-	
-	return $state_abbrevs->{ $self->from_state } or $self->from_state;
+    my ( $self ) = @_;
+    
+    my $state_abbrevs = $self->config_to_hash( 
+        cfg()->{ ups_information }->{ state_to_abbrev } 
+    );
+    
+    return $state_abbrevs->{ $self->from_state } or $self->from_state;
 }
 
 =item * current_package()
@@ -262,30 +262,30 @@ Not completely impemented yet.
 
 =cut
 sub current_package {
-	my ( $self ) = @_;
-	
-	my $current_package_index = $self->current_package_index || 0;
-	if ( not defined $self->packages_index( $current_package_index ) ) {
-		debug( 'Current package (index: $current_package_index) not defined yet, creating one...' );
-		$self->packages_push( Business::Shipping::Package->new( id => $current_package_index ) );
-	}
-	
-	return $self->packages_index( $current_package_index ); 
+    my ( $self ) = @_;
+    
+    my $current_package_index = $self->current_package_index || 0;
+    if ( not defined $self->packages_index( $current_package_index ) ) {
+        debug( 'Current package (index: $current_package_index) not defined yet, creating one...' );
+        $self->packages_push( Business::Shipping::Package->new( id => $current_package_index ) );
+    }
+    
+    return $self->packages_index( $current_package_index ); 
 }
 
 #
 # TODO: default_package(): remove?
 #
 sub default_package {
-	
-	my $self = shift;
-	
-	if ( not defined $self->packages_index( 0 ) ) {
-		debug( 'No default package defined yet, creating one...' );
-		$self->packages_push( Business::Shipping::Package->new() );
-	}
-	
-	return $self->packages_index( 0 ); 
+    
+    my $self = shift;
+    
+    if ( not defined $self->packages_index( 0 ) ) {
+        debug( 'No default package defined yet, creating one...' );
+        $self->packages_push( Business::Shipping::Package->new() );
+    }
+    
+    return $self->packages_index( 0 ); 
 }
 
 =item * domestic_or_ca()
@@ -298,11 +298,11 @@ Returns 1 if to_country is not set.
 =cut
 sub domestic_or_ca
 {
-	my ( $self ) = @_;
-	
-	return 1 if not $self->to_country;
-	return 1 if $self->to_canada or $self->domestic;
-	return 0;
+    my ( $self ) = @_;
+    
+    return 1 if not $self->to_country;
+    return 1 if $self->to_canada or $self->domestic;
+    return 0;
 }
 
 =item * intl()
@@ -314,15 +314,15 @@ Returns 1 or 0 (true or false).
 =cut
 sub intl
 {
-	my ( $self ) = @_;
-	
-	if ( $self->to_country ) {
-		if ( $self->to_country !~ /(US)|(United States)/) {
-			return 1;
-		}
-	}
-	
-	return 0;
+    my ( $self ) = @_;
+    
+    if ( $self->to_country ) {
+        if ( $self->to_country !~ /(US)|(United States)/) {
+            return 1;
+        }
+    }
+    
+    return 0;
 }
 
 =item * domestic()
@@ -340,15 +340,15 @@ UPS treats Canada differently.
 =cut
 sub from_canada
 {
-	my ( $self ) = @_;
-	
-	if ( $self->from_country ) {
-		if ( $self->from_country =~ /^((CA)|(Canada))$/i ) {
-			return 1;
-		}
-	}
-	
-	return 0;
+    my ( $self ) = @_;
+    
+    if ( $self->from_country ) {
+        if ( $self->from_country =~ /^((CA)|(Canada))$/i ) {
+            return 1;
+        }
+    }
+    
+    return 0;
 }
 
 =item * to_canada()
@@ -358,15 +358,15 @@ UPS treats Canada differently.
 =cut
 sub to_canada
 {
-	my ( $self ) = @_;
-	
-	if ( $self->to_country ) {
-		if ( $self->to_country =~ /^((CA)|(Canada))$/i ) {
-			return 1;
-		}
-	}
-	
-	return 0;
+    my ( $self ) = @_;
+    
+    if ( $self->to_country ) {
+        if ( $self->to_country =~ /^((CA)|(Canada))$/i ) {
+            return 1;
+        }
+    }
+    
+    return 0;
 }
 
 
@@ -377,14 +377,14 @@ Alaska and Hawaii are treated differently by many shippers.
 =cut
 sub from_ak_or_hi
 {
-	my ( $self ) = @_;
-	return unless $self->from_state;
-	
-	if ( $self->from_state =~ /(AK)|(HI)/i ) {
-		return 1;
-	}
-	
-	return 0;
+    my ( $self ) = @_;
+    return unless $self->from_state;
+    
+    if ( $self->from_state =~ /(AK)|(HI)/i ) {
+        return 1;
+    }
+    
+    return 0;
 }
 
 =item * from_ak_or_hi()
@@ -394,28 +394,28 @@ Alaska and Hawaii are treated differently by many shippers.
 =cut
 sub to_ak_or_hi
 {
-	my ( $self ) = @_;
+    my ( $self ) = @_;
 
-	return unless $self->to_zip;
-	
-	my @ak_hi_zip_config_params = ( 
-		qw/ 
-		hi_special_zipcodes_124_224
-		hi_special_zipcodes_126_226
-		ak_special_zipcodes_124_224
-		ak_special_zipcodes_126_226
-		/
-	);
-	
-	for ( @ak_hi_zip_config_params ) {
-		my $zips = cfg()->{ ups_information }->{ $_ };
-		my $to_zip = $self->to_zip;
-		if ( $zips =~ /$to_zip/ ) { 
-			return 1;
-		}
-	}
-	
-	return;
+    return unless $self->to_zip;
+    
+    my @ak_hi_zip_config_params = ( 
+        qw/ 
+        hi_special_zipcodes_124_224
+        hi_special_zipcodes_126_226
+        ak_special_zipcodes_124_224
+        ak_special_zipcodes_126_226
+        /
+    );
+    
+    for ( @ak_hi_zip_config_params ) {
+        my $zips = cfg()->{ ups_information }->{ $_ };
+        my $to_zip = $self->to_zip;
+        if ( $zips =~ /$to_zip/ ) { 
+            return 1;
+        }
+    }
+    
+    return;
 }
 
 1;

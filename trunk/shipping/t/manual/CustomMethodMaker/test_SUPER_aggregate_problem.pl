@@ -9,8 +9,8 @@ package Bug;
 sub new { bless {}, shift }
 sub required
 { 
-	my @required = ( 'id', 'type', 'description' ); 
-	return @required;
+    my @required = ( 'id', 'type', 'description' ); 
+    return @required;
 }
 
 #####################################################################
@@ -21,11 +21,11 @@ use base ( 'Bug' );
 sub new { bless {}, shift }
 sub required
 {
-	my @required = ( 
-					'date_fixed', 'repairer', 
-					shift->SUPER::required() 
-				   );
-	return @required;
+    my @required = ( 
+                    'date_fixed', 'repairer', 
+                    shift->SUPER::required() 
+                   );
+    return @required;
 }
 
 #####################################################################

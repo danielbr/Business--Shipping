@@ -2,10 +2,6 @@
 ##  General TODO
 ######################################################
 
- * [ENH] Coding style: tabs are four spaces.
- 
- * [ENH] Coding style: non-public methods are prefixed with "_". 
- 
  * [BUG] Why does Business::Shipping::Debug include Business::Shipping?
 
  * [BUG] The "don't send if required field is missing" does work in the 
@@ -23,6 +19,8 @@
  
  * [DOC] Any UPS shipment originating in Canada must use UPS Standard or UPS
    Worldwide method.
+ 
+ * [ENH] Coding style: non-public methods are prefixed with "_". 
  
  * [ENH] Make some kind of allowance for alternate units (kilograms, etc.).
 

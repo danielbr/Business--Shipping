@@ -1,6 +1,6 @@
 # Business::Shipping::Tracking::USPS - Abstract class for tracking shipments
 # 
-# $Id: USPS.pm,v 1.1 2004/02/15 19:41:19 db-ship Exp $
+# $Id: USPS.pm,v 1.2 2004/03/03 04:07:52 danb Exp $
 # 
 # Copyright (c) 2004 InfoGears Inc.  All Rights Reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
@@ -59,7 +59,7 @@ Licensed under the GNU Public License (GPL).  See COPYING for more info.
 
 package Business::Shipping::Tracking::USPS;
 
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -76,101 +76,101 @@ use Business::Shipping::CustomMethodMaker
   new_hash_init => 'hash_init';
 
 use constant INSTANCE_DEFAULTS => (
-	'prod_url'		=> 'http://production.shippingapis.com/ShippingAPI.dll',
-	'test_url'		=> 'http://testing.shippingapis.com/ShippingAPItest.dll',
+    'prod_url'        => 'http://production.shippingapis.com/ShippingAPI.dll',
+    'test_url'        => 'http://testing.shippingapis.com/ShippingAPItest.dll',
 );
  
 sub init
 {
-	#trace '( ' . uneval( @_ ) . ' )';
-	my $self   		= shift;
-	my %values 		= ( INSTANCE_DEFAULTS, @_ );
-	
-	$self->hash_init( %values );
-	return;
+    #trace '( ' . uneval( @_ ) . ' )';
+    my $self           = shift;
+    my %values         = ( INSTANCE_DEFAULTS, @_ );
+    
+    $self->hash_init( %values );
+    return;
 }
 
 # _gen_request_xml()
 # Generate the XML document.
 sub _gen_request_xml
 {
-	trace '()';
-	my $self = shift;
-	
-	if(!grep { !$self->results_exists($_) } @{$self->tracking_ids}) {
-	  # All results were found in the cache
-	  return;
-	}
+    trace '()';
+    my $self = shift;
+    
+    if(!grep { !$self->results_exists($_) } @{$self->tracking_ids}) {
+      # All results were found in the cache
+      return;
+    }
 
-	# Note: The XML::Simple hash-tree-based generation method wont work with USPS,
-	# because they enforce the order of their parameters (unlike UPS).
-	#
-	my $trackReqDoc = XML::DOM::Document->new(); 
+    # Note: The XML::Simple hash-tree-based generation method wont work with USPS,
+    # because they enforce the order of their parameters (unlike UPS).
+    #
+    my $trackReqDoc = XML::DOM::Document->new(); 
 
-	my $trackReqEl = $trackReqDoc->createElement('TrackFieldRequest'); 
+    my $trackReqEl = $trackReqDoc->createElement('TrackFieldRequest'); 
 
-	
-	
-	$trackReqEl->setAttribute('USERID', $self->user_id() ); 
-	$trackReqEl->setAttribute('PASSWORD', $self->password() ); 
-	$trackReqDoc->appendChild($trackReqEl);
+    
+    
+    $trackReqEl->setAttribute('USERID', $self->user_id() ); 
+    $trackReqEl->setAttribute('PASSWORD', $self->password() ); 
+    $trackReqDoc->appendChild($trackReqEl);
 
 
-	# Could already have some responses cached so don't pull them from the server.
+    # Could already have some responses cached so don't pull them from the server.
 
-	foreach my $tracking_id (grep { !$self->results_exists($_) } @{$self->tracking_ids}) {
-	  my $trackIDEl = $trackReqDoc->createElement("TrackID");
-	  $trackIDEl->setAttribute('ID', $tracking_id);
-	  $trackReqEl->appendChild($trackIDEl);
-	}
-	
-	my $request_xml = $trackReqDoc->toString();
-	
-	# We only do this to provide a pretty, formatted XML doc for the debug. 
-	my $request_xml_tree = XML::Simple::XMLin( $request_xml, KeepRoot => 1, ForceArray => 1 );
-	
-	#
-	# Large debug
-	#
-	debug3( XML::Simple::XMLout( $request_xml_tree, KeepRoot => 1 ) );
-	#
-	
-	return ( $request_xml );
+    foreach my $tracking_id (grep { !$self->results_exists($_) } @{$self->tracking_ids}) {
+      my $trackIDEl = $trackReqDoc->createElement("TrackID");
+      $trackIDEl->setAttribute('ID', $tracking_id);
+      $trackReqEl->appendChild($trackIDEl);
+    }
+    
+    my $request_xml = $trackReqDoc->toString();
+    
+    # We only do this to provide a pretty, formatted XML doc for the debug. 
+    my $request_xml_tree = XML::Simple::XMLin( $request_xml, KeepRoot => 1, ForceArray => 1 );
+    
+    #
+    # Large debug
+    #
+    debug3( XML::Simple::XMLout( $request_xml_tree, KeepRoot => 1 ) );
+    #
+    
+    return ( $request_xml );
 }
 
 sub _gen_url
 {
-	trace '()';
-	my ( $self ) = shift;
-	
-	return( $self->test_mode() ? $self->test_url() : $self->prod_url() );
+    trace '()';
+    my ( $self ) = shift;
+    
+    return( $self->test_mode() ? $self->test_url() : $self->prod_url() );
 }
 
 
 sub _gen_request
 {
-	my ( $self ) = shift;
-	trace( 'called' );
+    my ( $self ) = shift;
+    trace( 'called' );
 
-	my $request_xml = $self->_gen_request_xml();
-	if(!$request_xml) {
-	  return undef;
-	}
-	my $request = HTTP::Request->new('POST', $self->_gen_url());
+    my $request_xml = $self->_gen_request_xml();
+    if(!$request_xml) {
+      return undef;
+    }
+    my $request = HTTP::Request->new('POST', $self->_gen_url());
 
-	$request->header( 'content-type' => 'application/x-www-form-urlencoded' );
-	$request->header( 'content-length' => length( $request_xml ) );
+    $request->header( 'content-type' => 'application/x-www-form-urlencoded' );
+    $request->header( 'content-length' => length( $request_xml ) );
 
-	# This is how USPS slightly varies from Business::Shipping
-	my $new_content = 'API=TrackV2' . '&XML=' . $request_xml;
-	$request->content( $new_content );
-	$request->header( 'content-length' => length( $request->content() ) );
-	#
-	# Large debug
-	#
-	debug( 'HTTP Request: ' . $request->as_string() );
-	#
-	return ( $request );
+    # This is how USPS slightly varies from Business::Shipping
+    my $new_content = 'API=TrackV2' . '&XML=' . $request_xml;
+    $request->content( $new_content );
+    $request->header( 'content-length' => length( $request->content() ) );
+    #
+    # Large debug
+    #
+    debug( 'HTTP Request: ' . $request->as_string() );
+    #
+    return ( $request );
 }
 
 
@@ -182,128 +182,128 @@ sub cleanup_xml_hash($) {
 
 sub _handle_response
 {
-	trace '()';
-	my $self = shift;
-	
-	my $response_tree = XML::Simple::XMLin( 
-		$self->response()->content(), 
-		ForceArray => 0, 
-		KeepRoot => 1, 
-	);
-	
-	# TODO: Handle multiple packages errors.
-	# (this doesn't seem to handle multiple packagess errors very well)
-	if ( $response_tree->{Error} ) {
-		my $error = $response_tree->{Error};
-		my $error_number 		= $error->{Number};
-		my $error_source 		= $error->{Source};
-		my $error_description	= $error->{Description};
-		$self->error( "$error_source: $error_description ($error_number)" );
-		return( undef );
-	}
-	
-	#
-	# This is a "large" debug.
-	#
-	debug3( 'response = ' . $self->response->content );
-	#
+    trace '()';
+    my $self = shift;
+    
+    my $response_tree = XML::Simple::XMLin( 
+        $self->response()->content(), 
+        ForceArray => 0, 
+        KeepRoot => 1, 
+    );
+    
+    # TODO: Handle multiple packages errors.
+    # (this doesn't seem to handle multiple packagess errors very well)
+    if ( $response_tree->{Error} ) {
+        my $error = $response_tree->{Error};
+        my $error_number         = $error->{Number};
+        my $error_source         = $error->{Source};
+        my $error_description    = $error->{Description};
+        $self->error( "$error_source: $error_description ($error_number)" );
+        return( undef );
+    }
+    
+    #
+    # This is a "large" debug.
+    #
+    debug3( 'response = ' . $self->response->content );
+    #
 
-	$response_tree = $response_tree->{TrackResponse};
+    $response_tree = $response_tree->{TrackResponse};
 
-	my $results;
+    my $results;
 
-	foreach my $trackInfo (
-			       ((ref($response_tree->{TrackInfo}) eq 'ARRAY') ? (@{$response_tree->{TrackInfo}}) : $response_tree->{TrackInfo})
-			      ) {
-	  my $id = $trackInfo->{'ID'};
-
-
-	  
-	  if(exists($trackInfo->{'Error'})) {
-	    $self->results({$id => {
-					error => 1,
-					error_description => $trackInfo->{Error}->{Description},
-					error_source => $trackInfo->{Error}->{Source},
-				       }});
-	  } else {
-	    cleanup_xml_hash($trackInfo->{TrackSummary});
+    foreach my $trackInfo (
+                   ((ref($response_tree->{TrackInfo}) eq 'ARRAY') ? (@{$response_tree->{TrackInfo}}) : $response_tree->{TrackInfo})
+                  ) {
+      my $id = $trackInfo->{'ID'};
 
 
-	    my @activity_array;
-
-	    
-	    
-	    
-	    if(ref($trackInfo->{TrackDetail}) eq 'ARRAY') {
-	      @activity_array = @{$trackInfo->{TrackDetail}};
-	    } else {
-	      @activity_array = ($trackInfo->{TrackDetail});
-	    }
-
-	    if(exists($trackInfo->{TrackSummary})) {
-	      unshift @activity_array, $trackInfo->{TrackSummary};
-	    }
-	    
-	    my $i = 1;
-	    my %month_name_hash = map { ($_ => sprintf("%0.2d", $i++)) } qw(January February March April May June July August September October November December);
-	    
-	    my @activity_entries;
-
-	    foreach my $activity (@activity_array) {
-	      my $date = $activity->{EventDate};
-	      
-	      $date =~ s/([A-z]+)\s+(\d+),\s+(\d+)/$3 . $month_name_hash{$1} . sprintf("%0.2d", $2)/e;
-	      
-
-	      my $time = $activity->{EventTime};
-	      
-	      $time =~ s/(\d+):(\d+)\s+(am|pm)/
-		my $h = $1;
-		if($3 eq 'pm') {
-		  $h += 12;
-		}
-	      sprintf("%0.2d", $h) . $2 . "00"/e;
-
-	      my $activity_hash = {
-				   address => {
-					       zip => $activity->{EventZIPCode},
-					       state => $activity->{EventState},
-					       country => $activity->{EventCountry},
-					       city => $activity->{EventCity},
-					       signedforbyname => $activity->{Name},
-					       company => $activity->{FirmName},
-					      },
-				   date => $date,
-				   status_description => $activity->{Event},
-				   time => $time,
-				  };
-	      
-	      push @activity_entries, $activity_hash;
-	      
-	    }
-	    
-
-	    my $summary;
-	    if(scalar(@activity_entries) > 0) {
-	      $summary = Clone::clone($activity_entries[0]);
-	    }
-
-	    my $result = {
-			  (($summary) ? (summary => $summary) : ()),
-			  activity => \@activity_entries,
-			 };
+      
+      if(exists($trackInfo->{'Error'})) {
+        $self->results({$id => {
+                    error => 1,
+                    error_description => $trackInfo->{Error}->{Description},
+                    error_source => $trackInfo->{Error}->{Source},
+                       }});
+      } else {
+        cleanup_xml_hash($trackInfo->{TrackSummary});
 
 
-	    Business::Shipping::Tracking::_delete_undefined_keys($result);
+        my @activity_array;
 
-	    
-	    
-	    $self->results({$id => $result});
-	  }
-	}
+        
+        
+        
+        if(ref($trackInfo->{TrackDetail}) eq 'ARRAY') {
+          @activity_array = @{$trackInfo->{TrackDetail}};
+        } else {
+          @activity_array = ($trackInfo->{TrackDetail});
+        }
 
-	trace 'returning success';
-	return $self->is_success( 1 );
+        if(exists($trackInfo->{TrackSummary})) {
+          unshift @activity_array, $trackInfo->{TrackSummary};
+        }
+        
+        my $i = 1;
+        my %month_name_hash = map { ($_ => sprintf("%0.2d", $i++)) } qw(January February March April May June July August September October November December);
+        
+        my @activity_entries;
+
+        foreach my $activity (@activity_array) {
+          my $date = $activity->{EventDate};
+          
+          $date =~ s/([A-z]+)\s+(\d+),\s+(\d+)/$3 . $month_name_hash{$1} . sprintf("%0.2d", $2)/e;
+          
+
+          my $time = $activity->{EventTime};
+          
+          $time =~ s/(\d+):(\d+)\s+(am|pm)/
+        my $h = $1;
+        if($3 eq 'pm') {
+          $h += 12;
+        }
+          sprintf("%0.2d", $h) . $2 . "00"/e;
+
+          my $activity_hash = {
+                   address => {
+                           zip => $activity->{EventZIPCode},
+                           state => $activity->{EventState},
+                           country => $activity->{EventCountry},
+                           city => $activity->{EventCity},
+                           signedforbyname => $activity->{Name},
+                           company => $activity->{FirmName},
+                          },
+                   date => $date,
+                   status_description => $activity->{Event},
+                   time => $time,
+                  };
+          
+          push @activity_entries, $activity_hash;
+          
+        }
+        
+
+        my $summary;
+        if(scalar(@activity_entries) > 0) {
+          $summary = Clone::clone($activity_entries[0]);
+        }
+
+        my $result = {
+              (($summary) ? (summary => $summary) : ()),
+              activity => \@activity_entries,
+             };
+
+
+        Business::Shipping::Tracking::_delete_undefined_keys($result);
+
+        
+        
+        $self->results({$id => $result});
+      }
+    }
+
+    trace 'returning success';
+    return $self->is_success( 1 );
 }
 
 sub gen_unique_key {

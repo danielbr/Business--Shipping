@@ -5,7 +5,9 @@ Revision history for Business::Shipping.
   
     Compatibility
       - Clone module now required (for Tracking).
-
+      - Require that Class::MethodMaker be less than 2.0 (2.0 does not have
+        all of the features of 1.x yet).
+        
     Tracking
       - Rusty Conover <rconover@infogears.com> contributed the following:
           Tracking
@@ -17,8 +19,7 @@ Revision history for Business::Shipping.
       - Changed hosting from kavod.com to sf.net.
 	  - Code cleanup all over the place.
       - Major documentation updates.
-      - Require that Class::MethodMaker be less than 2.0 (2.0 does not have
-        all of the features of 1.x yet).
+      - Change tabs to four spaces
     
     Offline::UPS
       - Bug fixed: Zip+4 not handled correctly (should drop the four).

@@ -7,11 +7,11 @@ use warnings;
 ###############################################################################
 package Bug;
 use Class::MethodMaker
-	new_hash_init => 'new',
-	grouped_fields => [ 
-		'required' => [ 'id', 'type', 'description' ],
-		'optional' => [ 'severity' ],
-	];
+    new_hash_init => 'new',
+    grouped_fields => [ 
+        'required' => [ 'id', 'type', 'description' ],
+        'optional' => [ 'severity' ],
+    ];
 
 ###############################################################################
 ##  FixedBug
@@ -19,11 +19,11 @@ use Class::MethodMaker
 package FixedBug;
 use base ( 'Bug' );
 use Class::MethodMaker
-	new_hash_init => 'new',
-	grouped_fields => [ 
-		'required' => [ 'date_fixed', 'repairer'  ],
-		'optional' => [ 'repair_notes', 'patch_file' ],
-	];
+    new_hash_init => 'new',
+    grouped_fields => [ 
+        'required' => [ 'date_fixed', 'repairer'  ],
+        'optional' => [ 'repair_notes', 'patch_file' ],
+    ];
 
 ###############################################################################
 ##  Main

@@ -1,6 +1,6 @@
 # Business::Shipping::Config - Configuration functions
 # 
-# $Id: Config.pm,v 1.4 2004/03/03 03:36:31 danb Exp $
+# $Id: Config.pm,v 1.5 2004/03/03 04:07:51 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Config - Configuration functions
 
 =head1 VERSION
 
-$Revision: 1.4 $      $Date: 2004/03/03 03:36:31 $
+$Revision: 1.5 $      $Date: 2004/03/03 04:07:51 $
 
 =head1 DESCRIPTION
 
@@ -28,7 +28,7 @@ Config::IniFiles module.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT = qw( cfg cfg_obj );
 
 use strict;
@@ -44,7 +44,7 @@ my $main_config_file;
 # Try the current directory first.
 #
 if ( -f "config/config.ini" ) {
-	$support_files_dir = ".";
+    $support_files_dir = ".";
 }
 
 #
@@ -58,12 +58,12 @@ $support_files_dir ||= $ENV{ BUSINESS_SHIPPING_SUPPORT_FILES };
 $support_files_dir ||= "/var/perl/Business-Shipping";
 
 $main_config_file = "$support_files_dir/config/config.ini";
-tie my %cfg, 'Config::IniFiles', ( 		-file => $main_config_file );
-my $cfg_obj = Config::IniFiles->new(	-file => $main_config_file );
+tie my %cfg, 'Config::IniFiles', (         -file => $main_config_file );
+my $cfg_obj = Config::IniFiles->new(    -file => $main_config_file );
 
-sub cfg 			{ return \%cfg; 				}
-sub cfg_obj			{ return $cfg_obj;				}
-sub support_files 	{ return $support_files_dir;	}
+sub cfg             { return \%cfg;                 }
+sub cfg_obj         { return $cfg_obj;              }
+sub support_files   { return $support_files_dir;    }
 
 =item * config_to_hash( $ary, $del )
 
@@ -72,28 +72,28 @@ sub support_files 	{ return $support_files_dir;	}
 
 Builds a hash from an array of lines containing key / value pairs, like so:
 
- key1	value1
- key2	value2
- key3	value3
+ key1    value1
+ key2    value2
+ key3    value3
 
 =cut
 sub config_to_hash
 {
-	my ( $self, $ary, $delimiter ) = @_;
-	return unless $ary;
-	#
-	# TODO: check ref( $ary ) eq 'ARRAY'
-	#
-	
-	$delimiter ||= "\t";
-	
-	my $hash = {};
-	foreach my $line ( @$ary ) {
-		my ( $key, $val ) = split( $delimiter, $line );
-		$hash->{ $key } = $val;
-	}
-	
-	return $hash;	
+    my ( $self, $ary, $delimiter ) = @_;
+    return unless $ary;
+    #
+    # TODO: check ref( $ary ) eq 'ARRAY'
+    #
+    
+    $delimiter ||= "\t";
+    
+    my $hash = {};
+    foreach my $line ( @$ary ) {
+        my ( $key, $val ) = split( $delimiter, $line );
+        $hash->{ $key } = $val;
+    }
+    
+    return $hash;    
 }
 
 =item * config_to_ary_of_hashes( 'configuration_parameter' )
@@ -105,8 +105,8 @@ This:
 
  [invalid_rate_requests]
  invalid_rate_requests_ups=<<EOF
- service=XDM	to_country=Canada	reason=Not available.
- service=XDM	to_country=Brazil
+ service=XDM    to_country=Canada    reason=Not available.
+ service=XDM    to_country=Brazil
  EOF
 
 When called with this:
@@ -131,35 +131,35 @@ Returns this:
 =cut
 sub config_to_ary_of_hashes
 {
-	my ( $self, $cfg ) = @_;
-		
-	my @ary;
-	foreach my $line ( @$cfg ) {
-		#
-		# Convert multiple tabs into one tab.
-		# Remove the leading tab.
-		# split on the tabs to get key=val pairs.
-		# split on the '='.
-		#
-		$line =~ s/\t+/\t/g;
-		$line =~ s/^\t//;
-		my @key_val_pairs = split( "\t", $line );
-		next unless @key_val_pairs;
+    my ( $self, $cfg ) = @_;
+        
+    my @ary;
+    foreach my $line ( @$cfg ) {
+        #
+        # Convert multiple tabs into one tab.
+        # Remove the leading tab.
+        # split on the tabs to get key=val pairs.
+        # split on the '='.
+        #
+        $line =~ s/\t+/\t/g;
+        $line =~ s/^\t//;
+        my @key_val_pairs = split( "\t", $line );
+        next unless @key_val_pairs;
 
-		#
-		# Each line becomes a hash.
-		#
-		my $hash = {};
-		foreach my $key_val_pair ( @key_val_pairs ) {
-			my ( $key, $val ) = split( '=', $key_val_pair );
-			next unless ( defined $key and defined $val );
-			$hash->{ $key } = $val;
-		}
+        #
+        # Each line becomes a hash.
+        #
+        my $hash = {};
+        foreach my $key_val_pair ( @key_val_pairs ) {
+            my ( $key, $val ) = split( '=', $key_val_pair );
+            next unless ( defined $key and defined $val );
+            $hash->{ $key } = $val;
+        }
 
-		push @ary, $hash if ( %$hash );
-	}
+        push @ary, $hash if ( %$hash );
+    }
 
-	return @ary;
+    return @ary;
 }
 
 1;

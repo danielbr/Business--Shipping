@@ -1,6 +1,6 @@
 package Business::Shipping::CustomMethodMaker;
 
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -18,31 +18,31 @@ sub grouped_fields_inherit {
   foreach (keys %args) {
     my @slots = @{$args{$_}};
     $class->get_set(@slots);
-	my $method_name = $_;
-	my $caller = $class->find_target_class();
-	$methods{$_} = sub {
-		my $self = shift;
-		#
-		#print "installing $method_name() in $caller...\n";
-		#
-		# Without $caller and eval, the following line causes this error:
-		# 
-		# Can't locate auto/CustomMethodMaker/SUPER/[METHOD].al in @INC
-		#
-		no strict 'subs';
-		my @parent_slots = eval "
-			package $caller;
-			if ( \$self->can( SUPER::$method_name ) ) {
-				return \$self->SUPER::$method_name( \@_ );
-			}
-			else {
-				return ( );
-			}
-			1;
-		";
-		die $@ if $@;
-		return ( @parent_slots, @slots );
-	};
+    my $method_name = $_;
+    my $caller = $class->find_target_class();
+    $methods{$_} = sub {
+        my $self = shift;
+        #
+        #print "installing $method_name() in $caller...\n";
+        #
+        # Without $caller and eval, the following line causes this error:
+        # 
+        # Can't locate auto/CustomMethodMaker/SUPER/[METHOD].al in @INC
+        #
+        no strict 'subs';
+        my @parent_slots = eval "
+            package $caller;
+            if ( \$self->can( SUPER::$method_name ) ) {
+                return \$self->SUPER::$method_name( \@_ );
+            }
+            else {
+                return ( );
+            }
+            1;
+        ";
+        die $@ if $@;
+        return ( @parent_slots, @slots );
+    };
   }
   $class->install_methods(%methods);
 }

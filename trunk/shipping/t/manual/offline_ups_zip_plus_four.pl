@@ -17,10 +17,10 @@ $rate_request->submit(
         from_zip =>             '98682',
         weight =>               '4.25',
         to_zip =>               '96720-1749',
-	event_handlers => {
-		debug 	=> 'STDERR',
-		error	=> 'STDERR',
-	},
+    event_handlers => {
+        debug     => 'STDERR',
+        error    => 'STDERR',
+    },
 ) or die $rate_request->error();
 
 print "offline = " . $rate_request->total_charges() . "\n";

@@ -16,6 +16,6 @@ ok( defined $ups_online_rate_request, 'Business::Shipping::RateRequest::Online::
 
 
 my @countries = (
-	'Afghanistan',
+    'Afghanistan',
 );
 

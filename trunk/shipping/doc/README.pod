@@ -35,19 +35,19 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
  * For USPS: Sign up online for free:
  
     - http://www.uspswebtools.com/registration/
-	
-	- (More info at http://www.uspswebtools.com)
+    
+    - (More info at http://www.uspswebtools.com)
 
     - The online signup will result in a testing-only account (only a small
-	  sample of queries will work).  
-	  
-	- To activate the "production" use of your USPS account, you must follow the
-	  USPS documentation.  Currently, that means contacting the Internet 
-	  Customer Care Center by e-mail or phone:
-	  
-	    icustomercare@usps.com
-		
-		1-800-344-7779
+      sample of queries will work).  
+      
+    - To activate the "production" use of your USPS account, you must follow the
+      USPS documentation.  Currently, that means contacting the Internet 
+      Customer Care Center by e-mail or phone:
+      
+        icustomercare@usps.com
+        
+        1-800-344-7779
     
  * For UPS: Sign up online for free:
 

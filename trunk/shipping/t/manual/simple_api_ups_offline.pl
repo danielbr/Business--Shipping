@@ -10,25 +10,25 @@ use Business::Shipping::RateRequest::Offline;
 use Business::Shipping::RateRequest::Offline::UPS;
 
 my $rate_request = Business::Shipping->rate_request(
-	shipper 		=> 'UPS',
-	offline			=> 1,
-	service 		=> 'UPSSTD',
-	
-	cache			=> 0,
-	
-	from_zip		=> '98682',
-	to_zip			=> 'H3B3A7',
-	to_country		=> 'CA',
-	
-	weight			=> '7.50',
-	
-	event_handlers	=> {
-			'debug' => 'STDERR',
-			'debug3' => 'STDERR',
-			'trace' => 'STDERR', 
-			'error' => 'STDERR',
-	},
-	
+    shipper         => 'UPS',
+    offline            => 1,
+    service         => 'UPSSTD',
+    
+    cache            => 0,
+    
+    from_zip        => '98682',
+    to_zip            => 'H3B3A7',
+    to_country        => 'CA',
+    
+    weight            => '7.50',
+    
+    event_handlers    => {
+            'debug' => 'STDERR',
+            'debug3' => 'STDERR',
+            'trace' => 'STDERR', 
+            'error' => 'STDERR',
+    },
+    
 );
 
 not defined $rate_request and die $@;

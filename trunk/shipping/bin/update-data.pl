@@ -6,7 +6,7 @@ update-data.pl - Updates data tables for Business::Shipping.
 
 =head1 VERSION
 
-$Revision: 1.2 $
+$Revision: 1.3 $
 
 =head1 SYNOPSIS
 
@@ -51,19 +51,19 @@ Getopt::Mixed::getOptions( 'd:i debug>d t:i' );
 
 my %rr_params;
 if ( $opt_d ) {
-	%rr_params = (
-		%rr_params,
-		event_handlers => {
-			debug	=> 'STDERR',
-			trace	=> 'STDERR',
-			error	=> 'croak',
-		}
-	);
+    %rr_params = (
+        %rr_params,
+        event_handlers => {
+            debug    => 'STDERR',
+            trace    => 'STDERR',
+            error    => 'croak',
+        }
+    );
 }
 
 my $rate_request = Business::Shipping->rate_request( 
-	shipper	=> "Offline::UPS",
-	%rr_params,
+    shipper    => "Offline::UPS",
+    %rr_params,
 );
 
 $rate_request->auto_update();

@@ -56,19 +56,19 @@ show_ary( $ups_online_rate_request->required2() );
 
 sub show_ary
 {
-	return print "\t" . join( ', ', @_ ) . "\n";
+    return print "\t" . join( ', ', @_ ) . "\n";
 }
 
 sub show
 {
-	my $class = shift;
-	my $self = eval "require $class; $class->new()";
-	die $@ if $@;
-	my $name = scalar( $self );
-	( $name ) = split ( '=', $name ); 
-	print "$name\n";
-	print "\tRequired = " . join( ', ', $self->required() ) . "\n";
-	#print "\tOptional = " . join( ', ', $self->optional() ) . "\n";
-	#return;
-	return print "\t" . join( ', ', @_ ) . "\n\n\n";
+    my $class = shift;
+    my $self = eval "require $class; $class->new()";
+    die $@ if $@;
+    my $name = scalar( $self );
+    ( $name ) = split ( '=', $name ); 
+    print "$name\n";
+    print "\tRequired = " . join( ', ', $self->required() ) . "\n";
+    #print "\tOptional = " . join( ', ', $self->optional() ) . "\n";
+    #return;
+    return print "\t" . join( ', ', @_ ) . "\n\n\n";
 }

@@ -1,6 +1,6 @@
 # Business::Shipping::Tracking::UPS - Abstract class for tracking shipments
 # 
-# $Id: UPS.pm,v 1.1 2004/02/15 19:41:19 db-ship Exp $
+# $Id: UPS.pm,v 1.2 2004/03/03 04:07:52 danb Exp $
 # 
 # Copyright (c) 2004 InfoGears Inc.  All Rights Reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
@@ -84,7 +84,7 @@ Licensed under the GNU Public License (GPL).  See COPYING for more info.
 
 package Business::Shipping::Tracking::UPS;
 
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -100,24 +100,24 @@ use Business::Shipping::CustomMethodMaker
   new_with_init => 'new',
   new_hash_init => 'hash_init',
   grouped_fields_inherit => [
-			     required => [ 'user_id', 'password', 'access_key' ],
-			     optional => [ 'prod_url', 'test_url'],
-			    ];
+                 required => [ 'user_id', 'password', 'access_key' ],
+                 optional => [ 'prod_url', 'test_url'],
+                ];
 
 
 use constant INSTANCE_DEFAULTS => (
-	prod_url => 'https://www.ups.com/ups.app/xml/Track', 
-	test_url => 'https://wwwcie.ups.com/ups.app/xml/Track',
+    prod_url => 'https://www.ups.com/ups.app/xml/Track', 
+    test_url => 'https://wwwcie.ups.com/ups.app/xml/Track',
 );
  
 sub init
 {
-	#trace '( ' . uneval( @_ ) . ' )';
-	my $self   		= shift;
-	my %values 		= ( INSTANCE_DEFAULTS, @_ );
-	
-	$self->hash_init( %values );
-	return;
+    #trace '( ' . uneval( @_ ) . ' )';
+    my $self           = shift;
+    my %values         = ( INSTANCE_DEFAULTS, @_ );
+    
+    $self->hash_init( %values );
+    return;
 }
 
 
@@ -147,44 +147,44 @@ sub _gen_single_package_xml {
   my $trackReqDoc = XML::DOM::Document->new(); 
   
   my $access_tree = {
-		     'AccessRequest' => [
-					 {
-					  'xml:lang' => 'en-US',
-					  'AccessLicenseNumber' => [ $self->access_key() ],
-					  'UserId' => [ $self->user_id() ],
-					  'Password' => [ $self->password() ],
-					 }
-					]
-		    };
+             'AccessRequest' => [
+                     {
+                      'xml:lang' => 'en-US',
+                      'AccessLicenseNumber' => [ $self->access_key() ],
+                      'UserId' => [ $self->user_id() ],
+                      'Password' => [ $self->password() ],
+                     }
+                    ]
+            };
   
   
   
   my $request_tree = {
-		      'TrackRequest' => [ {
-					   Request => [
-						       {
-							TransactionReference => [
-										 {
-										  CustomerContext => ["Tracking Request"],
-										  XpciVersion => [1.0001],
-										 },
-										],
-							RequestAction => ["Track"], 
-							RequestOption => ["activity"],
-						       },
-						      ],
-					   TrackingNumber => [$tracking_id],
-					  } ]
-		     };
+              'TrackRequest' => [ {
+                       Request => [
+                               {
+                            TransactionReference => [
+                                         {
+                                          CustomerContext => ["Tracking Request"],
+                                          XpciVersion => [1.0001],
+                                         },
+                                        ],
+                            RequestAction => ["Track"], 
+                            RequestOption => ["activity"],
+                               },
+                              ],
+                       TrackingNumber => [$tracking_id],
+                      } ]
+             };
   
-	
+    
   my $access_xml = '<?xml version="1.0"?>' . "\n" 
     . XML::Simple::XMLout( $access_tree, KeepRoot => 1 );
   
 
   my $request_xml =  $access_xml . '<?xml version="1.0"?>' . "\n"
     . XML::Simple::XMLout( $request_tree, KeepRoot => 1 );
-	
+    
   
   # We only do this to provide a pretty, formatted XML doc for the debug. 
   my $request_xml_tree = XML::Simple::XMLin( $request_xml, KeepRoot => 1, ForceArray => 1 );
@@ -204,50 +204,50 @@ sub _gen_single_package_xml {
 # Generate a list of XML documents that need to be processed.
 sub _gen_request_xml
 {
-	trace '()';
-	my $self = shift;
-	my @xml_documents = grep { defined($_) } map { $self->_gen_single_package_xml($_) } @{$self->tracking_ids};
-	return \@xml_documents
+    trace '()';
+    my $self = shift;
+    my @xml_documents = grep { defined($_) } map { $self->_gen_single_package_xml($_) } @{$self->tracking_ids};
+    return \@xml_documents
 }
 
 sub _gen_url
 {
-	trace '()';
-	my ( $self ) = shift;
-	
-	return( $self->test_mode() ? $self->test_url() : $self->prod_url() );
+    trace '()';
+    my ( $self ) = shift;
+    
+    return( $self->test_mode() ? $self->test_url() : $self->prod_url() );
 }
 
 
 sub _gen_request
 {
-	my ( $self ) = shift;
-	trace( 'called' );
+    my ( $self ) = shift;
+    trace( 'called' );
 
-	my $request_xml = $self->_gen_request_xml();
+    my $request_xml = $self->_gen_request_xml();
 
-	if(!defined($request_xml) || scalar(@$request_xml) == 0) {
-	  return undef;
-	}
+    if(!defined($request_xml) || scalar(@$request_xml) == 0) {
+      return undef;
+    }
 
-	# Return an array of http request objects with the 
-	
-	return map { 
-	  my $request = HTTP::Request->new('POST', $self->_gen_url());
-	  $request->header( 'content-type' => 'application/x-www-form-urlencoded' );
-	  $request->header( 'content-length' => length( $_ ) );
-	  $request->content($_);
-	  $_ = $request;
+    # Return an array of http request objects with the 
+    
+    return map { 
+      my $request = HTTP::Request->new('POST', $self->_gen_url());
+      $request->header( 'content-type' => 'application/x-www-form-urlencoded' );
+      $request->header( 'content-length' => length( $_ ) );
+      $request->content($_);
+      $_ = $request;
 
-	  #
-	  # Large debug
-	  #
-	  debug( 'HTTP Request: ' . $request->as_string() );
-	  #
+      #
+      # Large debug
+      #
+      debug( 'HTTP Request: ' . $request->as_string() );
+      #
 
-	  $_;
+      $_;
 
-	} @$request_xml;
+    } @$request_xml;
 
 }
 
@@ -255,118 +255,118 @@ sub _gen_request
 
 sub _handle_response
 {
-	trace '()';
-	my $self = shift;
-	
-	my $response_tree = XML::Simple::XMLin( 
-		$self->response()->content(), 
-		ForceArray => 0, 
-		KeepRoot => 0, 
-	);
+    trace '()';
+    my $self = shift;
+    
+    my $response_tree = XML::Simple::XMLin( 
+        $self->response()->content(), 
+        ForceArray => 0, 
+        KeepRoot => 0, 
+    );
 
-	my $status_code = $response_tree->{Response}->{ResponseStatusCode};
-	my $status_description = $response_tree->{Response}->{ResponseStatusDescription};
-	my $error = $response_tree->{Response}->{Error}->{ErrorDescription};
-	my $err_location = $response_tree->{Response}->{Error}->{ErrorLocation}->{ErrorLocationElementName} || '';
-	if ( $error and $error !~ /Success/ ) {
-	  my $combined_error_msg = "$status_description ($status_code): $error @ $err_location"; 
-	  $combined_error_msg =~ s/\s{3,}/ /g;
-	  $self->error( $combined_error_msg );
-	  return ( undef );
-	}
-	
-	
-	
-	#
-	# This is a "large" debug.
-	#
-	debug3( 'response = ' . $self->response->content );
-	#
+    my $status_code = $response_tree->{Response}->{ResponseStatusCode};
+    my $status_description = $response_tree->{Response}->{ResponseStatusDescription};
+    my $error = $response_tree->{Response}->{Error}->{ErrorDescription};
+    my $err_location = $response_tree->{Response}->{Error}->{ErrorLocation}->{ErrorLocationElementName} || '';
+    if ( $error and $error !~ /Success/ ) {
+      my $combined_error_msg = "$status_description ($status_code): $error @ $err_location"; 
+      $combined_error_msg =~ s/\s{3,}/ /g;
+      $self->error( $combined_error_msg );
+      return ( undef );
+    }
+    
+    
+    
+    #
+    # This is a "large" debug.
+    #
+    debug3( 'response = ' . $self->response->content );
+    #
 
-	my $shipment_id = $response_tree->{Shipment}->{ShipmentIdentificationNumber};
+    my $shipment_id = $response_tree->{Shipment}->{ShipmentIdentificationNumber};
 
-	
-	
-
-
-	
-	my $result_hash;
-
-	$result_hash->{pickup_date} = $response_tree->{Shipment}->{PickupDate};
-	$result_hash->{scheduled_delivery_date} = $response_tree->{Shipment}->{ScheduledDeliveryDate};
-	$result_hash->{scheduled_delivery_time} = $response_tree->{Shipment}->{ScheduledDeliveryTime};
-
-	$result_hash->{rescheduled_delivery_date} = $response_tree->{Shipment}->{RescheduledDeliveryDate};
-	$result_hash->{rescheduled_delivery_time} = $response_tree->{Shipment}->{RescheduledDeliveryTime};
+    
+    
 
 
-	my $shipper = $response_tree->{Shipment}->{Shipper};
-	if($shipper) {
-	  $result_hash->{shipper} = {
-				     shipper_number => $shipper->{ShipperNumber},
-				     address1 => $shipper->{Address}->{AddressLine1},
-				     address2 => $shipper->{Address}->{AddressLine2},
-				     city => $shipper->{Address}->{City},
-				     state => $shipper->{Address}->{StateProvinceCode},
-				     zip => $shipper->{Address}->{PostalCode},
-				     country => $shipper->{Address}->{CountryCode},
-				    };
-	}
+    
+    my $result_hash;
 
-	my $ship_to = $response_tree->{Shipment}->{ShipTo};
-	
-	if($shipper) {
-	  $result_hash->{ship_to} = {
-				     address1 => $ship_to->{Address}->{AddressLine1},
-				     address2 => $ship_to->{Address}->{AddressLine2},
-				     city => $ship_to->{Address}->{City},
-				     state => $ship_to->{Address}->{StateProvinceCode},
-				     zip => $ship_to->{Address}->{PostalCode},
-				     country => $ship_to->{Address}->{CountryCode},
-				    };
-	}
+    $result_hash->{pickup_date} = $response_tree->{Shipment}->{PickupDate};
+    $result_hash->{scheduled_delivery_date} = $response_tree->{Shipment}->{ScheduledDeliveryDate};
+    $result_hash->{scheduled_delivery_time} = $response_tree->{Shipment}->{ScheduledDeliveryTime};
+
+    $result_hash->{rescheduled_delivery_date} = $response_tree->{Shipment}->{RescheduledDeliveryDate};
+    $result_hash->{rescheduled_delivery_time} = $response_tree->{Shipment}->{RescheduledDeliveryTime};
 
 
-	$result_hash->{service_code} = $response_tree->{Shipment}->{Service}->{Code};
-	$result_hash->{service_description} = $response_tree->{Shipment}->{Service}->{Description};
+    my $shipper = $response_tree->{Shipment}->{Shipper};
+    if($shipper) {
+      $result_hash->{shipper} = {
+                     shipper_number => $shipper->{ShipperNumber},
+                     address1 => $shipper->{Address}->{AddressLine1},
+                     address2 => $shipper->{Address}->{AddressLine2},
+                     city => $shipper->{Address}->{City},
+                     state => $shipper->{Address}->{StateProvinceCode},
+                     zip => $shipper->{Address}->{PostalCode},
+                     country => $shipper->{Address}->{CountryCode},
+                    };
+    }
 
-	$result_hash->{activity} = [];
+    my $ship_to = $response_tree->{Shipment}->{ShipTo};
+    
+    if($shipper) {
+      $result_hash->{ship_to} = {
+                     address1 => $ship_to->{Address}->{AddressLine1},
+                     address2 => $ship_to->{Address}->{AddressLine2},
+                     city => $ship_to->{Address}->{City},
+                     state => $ship_to->{Address}->{StateProvinceCode},
+                     zip => $ship_to->{Address}->{PostalCode},
+                     country => $ship_to->{Address}->{CountryCode},
+                    };
+    }
 
-	my $package = $response_tree->{Shipment}->{Package};	
-	
-	foreach my $activity (@{$package->{Activity}}) {
-	  my $activity_info = {
-			       address => {
-					   city => $activity->{ActivityLocation}->{Address}->{City},
-					   state => $activity->{ActivityLocation}->{Address}->{StateProvinceCode},
-					   zip => $activity->{ActivityLocation}->{Address}->{PostalCode},
-					   country => $activity->{ActivityLocation}->{Address}->{CountryCode},
-					   description => $activity->{ActivityLocation}->{Address}->{Description},
-					   signedforbyname => $activity->{ActivityLocation}->{Address}->{SignedForByName},
-					   code => $activity->{ActivityLocation}->{Address}->{code},
-					  },
-			       status_code => $activity->{Status}->{StatusType}->{Code},
-			       status_description => $activity->{Status}->{StatusType}->{Description},
-			       date => $activity->{Date},
-			       time => $activity->{Time}
-			      };
-	  
-	  push @{$result_hash->{activity}}, $activity_info;
-	}
 
-	# If there is more then one activity we should take the first one as the summary so we're consistent with USPS.pm
-	# Have to use Clone::clone here due to caching and making references simple
+    $result_hash->{service_code} = $response_tree->{Shipment}->{Service}->{Code};
+    $result_hash->{service_description} = $response_tree->{Shipment}->{Service}->{Description};
 
-	if(defined(scalar(@{$result_hash->{activity}}) > 0)) {
-	  $result_hash->{summary} = Clone::clone($result_hash->{activity}->[0]);
-	}
+    $result_hash->{activity} = [];
 
-	Business::Shipping::Tracking::_delete_undefined_keys($result_hash);
+    my $package = $response_tree->{Shipment}->{Package};    
+    
+    foreach my $activity (@{$package->{Activity}}) {
+      my $activity_info = {
+                   address => {
+                       city => $activity->{ActivityLocation}->{Address}->{City},
+                       state => $activity->{ActivityLocation}->{Address}->{StateProvinceCode},
+                       zip => $activity->{ActivityLocation}->{Address}->{PostalCode},
+                       country => $activity->{ActivityLocation}->{Address}->{CountryCode},
+                       description => $activity->{ActivityLocation}->{Address}->{Description},
+                       signedforbyname => $activity->{ActivityLocation}->{Address}->{SignedForByName},
+                       code => $activity->{ActivityLocation}->{Address}->{code},
+                      },
+                   status_code => $activity->{Status}->{StatusType}->{Code},
+                   status_description => $activity->{Status}->{StatusType}->{Description},
+                   date => $activity->{Date},
+                   time => $activity->{Time}
+                  };
+      
+      push @{$result_hash->{activity}}, $activity_info;
+    }
 
-	$self->results({$shipment_id => $result_hash});					 
+    # If there is more then one activity we should take the first one as the summary so we're consistent with USPS.pm
+    # Have to use Clone::clone here due to caching and making references simple
 
-	trace 'returning success';
-	return $self->is_success( 1 );
+    if(defined(scalar(@{$result_hash->{activity}}) > 0)) {
+      $result_hash->{summary} = Clone::clone($result_hash->{activity}->[0]);
+    }
+
+    Business::Shipping::Tracking::_delete_undefined_keys($result_hash);
+
+    $self->results({$shipment_id => $result_hash});                     
+
+    trace 'returning success';
+    return $self->is_success( 1 );
 }
 
 sub gen_unique_key {

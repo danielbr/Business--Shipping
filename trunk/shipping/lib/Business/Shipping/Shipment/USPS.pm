@@ -1,4 +1,4 @@
-# $Id: USPS.pm,v 1.8 2004/03/03 03:36:32 danb Exp $
+# $Id: USPS.pm,v 1.9 2004/03/03 04:07:52 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,7 +13,7 @@ usiness::Shipping::Shipment::USPS
 
 =head1 VERSION
 
-$Revision: 1.8 $      $Date: 2004/03/03 03:36:32 $
+$Revision: 1.9 $      $Date: 2004/03/03 04:07:52 $
 
 =head1 DESCRIPTION
 
@@ -27,7 +27,7 @@ Move the country translator data into configuration.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -36,20 +36,20 @@ use Business::Shipping::Debug;
 use Business::Shipping::Config;
 use Business::Shipping::Package;
 use Business::Shipping::CustomMethodMaker
-	new_with_init => 'new',
-	new_hash_init => 'hash_init';
+    new_with_init => 'new',
+    new_hash_init => 'hash_init';
 
 use constant INSTANCE_DEFAULTS => (
-	shipper => 'USPS',
-	from_country => 'US',
+    shipper => 'USPS',
+    from_country => 'US',
 );
  
 sub init
 {
-	my $self   = shift;
-	my %values = ( INSTANCE_DEFAULTS, @_ );
-	$self->hash_init( %values );
-	return;
+    my $self   = shift;
+    my %values = ( INSTANCE_DEFAULTS, @_ );
+    $self->hash_init( %values );
+    return;
 }
 
 =item * from_country
@@ -67,25 +67,25 @@ own translations.  The former may not be necessary, but the latter is.
 =cut
 sub to_country
 {
-	trace '( ' . uneval( \@_ ) . ' )';
-	my ( $self, $to_country ) = @_;	
-	
-	if ( defined $to_country ) {
-		#
-		# Apply any Shipping::Shipment conversions, then apply our own.
-		#
-		$to_country = $self->SUPER::to_country( $to_country );
-		my $countries = $self->config_to_hash(
-			cfg()->{ usps_information }->{ usps_country_name_translations }
-		);
-		$to_country = $countries->{ $to_country } || $to_country; 
-		
-		debug3( "setting to_country to \'$to_country\'" );
-		$self->{ to_country } = $to_country;
-	} 
-	debug3( "SUPER::to_country now is " . ( $self->SUPER::to_country() || '' ) );
-	
-	return $self->{ to_country };
+    trace '( ' . uneval( \@_ ) . ' )';
+    my ( $self, $to_country ) = @_;    
+    
+    if ( defined $to_country ) {
+        #
+        # Apply any Shipping::Shipment conversions, then apply our own.
+        #
+        $to_country = $self->SUPER::to_country( $to_country );
+        my $countries = $self->config_to_hash(
+            cfg()->{ usps_information }->{ usps_country_name_translations }
+        );
+        $to_country = $countries->{ $to_country } || $to_country; 
+        
+        debug3( "setting to_country to \'$to_country\'" );
+        $self->{ to_country } = $to_country;
+    } 
+    debug3( "SUPER::to_country now is " . ( $self->SUPER::to_country() || '' ) );
+    
+    return $self->{ to_country };
 }
 
 1;
