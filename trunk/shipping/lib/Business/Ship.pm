@@ -2,10 +2,14 @@
 # All rights reserved. This program is free software; you can 
 # redistribute it and/or modify it under the same terms as Perl 
 # itself.
-# $Id $
+# $Id: Ship.pm,v 1.6 2003/04/23 00:45:07 db-ship Exp $
 package Business::Ship;
 use strict;
 use warnings;
+
+use vars qw($VERSION);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.6 $ =~ /(\d+)\.(\d+)/);
+
 
 =pod
 
