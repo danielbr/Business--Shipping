@@ -2,12 +2,10 @@
 ##  General TODO
 ######################################################
 
- * [BUG] Why does Business::Shipping::Debug include Business::Shipping?
-
- * [BUG] The "don't send if required field is missing" does work in the 
+ * [BUG] The "don't send if required field is missing" doesn't work in the 
    "send incident report code" feature -- it sends it even if to_zip is missing.
 
- * [DOC] Add some notices to all subclasses: 
+ * [DOC] Add some notices to all subclasses? 
    - This class is for internal implementation only. It is not a public API.
    
  * [DOC] Look into OODoc or Pod::Tree
