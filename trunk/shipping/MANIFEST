@@ -770,6 +770,9 @@ t/manual/CustomMethodMaker/test_one_file.pl
 t/manual/CustomMethodMaker/test_SUPER_aggregate_problem.pl
 t/manual/CustomMethodMaker/test_SUPER_aggregate_problem_using_MethodMaker.pl
 t/manual/dbd-csv.pl
+t/manual/event_handlers.pl
+t/manual/event_handlers2.pl
+t/manual/log4perl.conf
 t/manual/misc_find_required_fields.pl
 t/manual/misc_find_unique_fields.pl
 t/manual/misc_method_maker.pl
@@ -835,6 +838,7 @@ t/old/ups_old_tests.pl
 t/old/ups_tester.pl
 t/old/usps_old_tests.pl
 t/old/usps_tester.pl
+testlogfile
 TODO
 UserTag/business-shipping.tag
 UserTag/incident.tag
