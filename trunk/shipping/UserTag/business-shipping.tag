@@ -1,13 +1,13 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.19 2004/01/30 00:56:46 db-ship Exp $
+# $Id: business-shipping.tag,v 1.20 2004/01/30 18:46:54 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
-ifndef BUSINESS_SHIPPING
-Variable BUSINESS_SHIPPING	 1 
+ifndef USERTAG_BUSINESS_SHIPPING
+Variable USERTAG_BUSINESS_SHIPPING	 1 
 Message -i Loading [business-shipping] usertag...
 Require Module Business::Shipping
 UserTag  business-shipping  Order					shipper
@@ -214,6 +214,7 @@ sub {
 	# They usually indicate a problem on the shipper's server.
 	#
 	my @retry_errors = (
+		'HTTP Error',
 		'HTTP Error. Status line: 500',
 		'HTTP Error. Status line: 500 Server Error',		
 		'HTTP Error. Status line: 500 read timeout',
@@ -308,7 +309,7 @@ sub {
 
 		
 		my $error = $rate_request->error();
-		$error = $error ? "errors: $error." : 'errors: none.';
+		$error = $error ? "Error: $error." : 'errors: none.';
 		
 		#
 		# Ignore errors if [incident] is missing or misbehaves.
@@ -316,8 +317,8 @@ sub {
 		eval {
 			$Tag->incident(
 				{
-					subject => "[business-shipping]: $shipper $error", 
-					content => "$vars_out"
+					subject => $shipper . ( $error ? " Error: $error" : '' ), 
+					content => ( $error ? "Error:\t$error\n" : '' ) . $vars_out
 				}
 			);
 		};

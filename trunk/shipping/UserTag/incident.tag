@@ -1,3 +1,6 @@
+ifndef USERTAG_INCIDENT
+Variable USERTAG_INCIDENT 1
+Message -i Loading [incident] usertag...
 UserTag incident AddAttr
 UserTag incident Routine 	<<EOR
 =head1 NAME
@@ -48,3 +51,5 @@ sub
 	);
 }
 EOR
+Message ...done.
+endif

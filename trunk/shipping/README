@@ -2,6 +2,8 @@ NAME
     Business::Shipping - Shipping cost calculator for UPS and USPS
 
 INSTALLATION
+     See INSTALL file for more details.
+ 
      perl Makefile.PL
      make
      make test
@@ -18,6 +20,7 @@ REQUIRED MODULES
      Devel::Required (0.03)
      Error (any)
      LWP::UserAgent (any)
+     Math::BaseCnv (any)
      XML::DOM (any)
      XML::Simple (2.05)
 
@@ -45,17 +48,26 @@ GETTING STARTED
    
        - (More info at http://www.ec.ups.com)
    
-       - You will get a User Id, Password, and Access Key from UPS.
+       - Once you get a User Id and Password from UPS, you will need to login and
+         select "Get Access Key", then "Get XML Access Key".
  
 USAGE EXAMPLES
      * See Shipping.pm POD documentation for API and usage examples.
 
-     * This module is used by the Interchange E-Commerce software 
+     * Business::Shipping is used by the Interchange E-Commerce software 
        (http://www.icdevgroup.org).  For a reference implementation of 
        Business::Shipping, see the UserTag/business-shipping.tag file, it implements
        a function that takes shipping-related arguments, builds a Business::Shipping
        object, then returns the calculated cost.
+   
+     * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman 
+       <andy@kahncentral.net>.
+       http://www.plainblack.com/wobjects?wid=1143&func=viewSubmission&sid=654
+       http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz
  
+     * Let the author know if you are using Business::Shipping in your website, 
+       application, etc. so it can be mentioned here.
+
 WEBSITE
      http://www.kavod.com/Business-Shipping
  

@@ -12,6 +12,7 @@ REQUIRED MODULES
      Devel::Required (0.03)
      Error (any)
      LWP::UserAgent (any)
+     Math::BaseCnv (any)
      XML::DOM (any)
      XML::Simple (2.05)
 
@@ -35,15 +36,87 @@ SYNOPSIS
 ABSTRACT
     Business::Shipping is an API for shipping-related tasks.
 
-  Shipping Tasks Implemented at this time:
+  Shipping Tasks Implemented at this time
      * Shipping cost calculation
      * Tracking, availability, and other services are planned for future addition.
 
-  Shipping Vendors Implemented at this time:
+  Shipping Vendors Implemented at this time
      * Online UPS (using the Internet and UPS servers)
      * Offline UPS (using tables stored locally)
      * Online USPS
      * Offline FedEX and USPS are planned for support in the future.
+
+    An object is returned if the operation is successful, or 'undef'
+    otherwise.
+
+MULTI-PACKAGE API
+  Online::UPS Example
+     use Business::Shipping;
+     use Business::Shipping::Shipment::UPS;
+ 
+     my $shipment = Business::Shipping::Shipment::UPS->new();
+ 
+     $shipment->init(
+            from_zip        => '98682',
+            to_zip          => '98270',
+            service         => 'GNDRES',
+            #
+            # user_id, etc. needed here.
+            #
+     );
+
+     $shipment->add_package(
+            id              => '0',
+            weight          => 5,
+     );
+
+     $shipment->add_package(
+            id              => '1',
+            weight          => 3,
+     );
+ 
+     my $rate_request = Business::Shipping::rate_request( shipper => 'Online::UPS' );
+     #
+     # Add the shipment to the rate request.
+     #
+     $rate_request->shipment( $shipment );
+     $rate_request->submit() or ie $rate_request->error();
+
+     print $rate_request->package('0')->get_charges( 'GNDRES' );
+     print $rate_request->package('1')->get_charges( 'GNDRES' );
+     print $rate_request->get_total_price( 'GNDRES' );
+
+ERROR/DEBUG HANDLING
+    The 'event_handlers' argument takes a hashref telling Business::Shipping
+    what to do for error, debug, trace, and the like. The value can be one
+    of four options:
+
+     * 'STDERR'
+     * 'STDOUT'
+     * 'carp'
+     * 'croak'
+
+    For example:
+
+     $rate_request->event_handlers(
+            { 
+                    'error' => 'STDERR',
+                    'debug' => 'STDERR',
+                    'trace' => undef,
+                    'debug3' => undef,
+            }
+     );
+ 
+    The default is 'STDERR' for error handling, and nothing for debug/trace
+    handling. The option 'debug3' adds additional debugging messages that
+    are not included in the normal 'debug'. Note that you can still access
+    error messages even without an 'error' handler, by accessing the return
+    values of methods. For example:
+
+     $rate_request->init( %values ) or print $rate_request->error();
+        
+    However, if you don't save the error value before the next call, it
+    could be overwritten by a new error.
 
 CLASS METHODS
   rate_request()
@@ -83,79 +156,12 @@ CLASS METHODS
     * weight
         Weight of the shipment, in pounds, as a decimal number.
 
-    * test_mode
-        If true, connects to a test server instead of a live server, if
-        possible. Defaults to 0.
+    * config_to_hash( $ary, $del )
+                $ary    Key/value pairs
+                $del    Delimiter for the above array (tab is default)
 
-    An object is returned if the operation is successful, or 'undef'
-    otherwise.
+        Builds a hash from an array of lines containing key / value pairs,
+        like so:
 
-MULTI-PACKAGE API
-  Online::UPS Example
-     use Business::Shipping;
-     use Business::Shipping::Shipment::UPS;
- 
-     my $shipment = Business::Shipping::Shipment::UPS->new();
- 
-     $shipment->init(
-            from_zip        => '98682',
-            to_zip          => '98270',
-            service         => 'GNDRES',
-            #
-            # user_id, etc. needed here.
-            #
-     );
-
-     $shipment->add_package(
-            id              => '0',
-            weight          => 5,
-     );
-
-     $shipment->add_package(
-            id              => '1',
-            weight          => 3,
-     );
- 
-     my $rate_request = Business::Shipping::rate_request( shipper => 'Online::UPS' );
-     #
-     # Add the shipment to the rate request.
-     #
-     $rate_request->shipment( $shipment );
-     $rate_request->submit() or print $rate_request->error();
-
-     print $rate_request->package('0')->get_charges( 'GNDRES' );
-     print $rate_request->package('1')->get_charges( 'GNDRES' );
-     print $rate_request->get_total_price( 'GNDRES' );
-
-ERROR/DEBUG HANDLING
-    The 'event_handlers' argument takes a hashref telling Business::Shipping
-    what to do for error, debug, trace, and the like. The value can be one
-    of four options:
-
-     * 'STDERR'
-     * 'STDOUT'
-     * 'carp'
-     * 'croak'
-
-    For example:
-
-     $rate_request->init( 
-            'event_handlers' => ({ 
-                    'error' => 'STDOUT',
-                    'debug' => undef,
-                    'trace' => undef,
-                    'debug3' => undef,
-            })
-     );
- 
-    The default is 'STDERR' for error handling, and nothing for debug/trace
-    handling. The option 'debug3' adds additional debugging messages that
-    are not included in the normal 'debug'. Note that you can still access
-    error messages even without an 'error' handler, by accessing the return
-    values of methods. For example:
-
-     $rate_request->init( %values ) or print $rate_request->error();
-        
-    However, if you don't save the error value before the next call, it
-    could be overwritten by a new error.
+        key1 value1 key2 value2 key3 value3
 

@@ -2,6 +2,8 @@
 ##  General TODO
 ######################################################
 
+ * [ENH] Allow error format to specified: With/without caller, line numbers.
+
  * [ENH] Add scripts/ directory somewhere.
 
  * [ENH] Use fields.pm to guard against autovivification. 
@@ -107,6 +109,9 @@
  * [ENH] Is there a way to overload the '=' operator to make some code prettier?
    We could do "$self->weight = 5" instead of "$self->set_weight( 5 )".
  
+ * [ENH] Setup a proper "announce", "cvs", and "users" mailing list where users
+   can sign up for updates and get information.   
+   
 ######################################################
 ##  USPS ONLINE TODO
 ######################################################

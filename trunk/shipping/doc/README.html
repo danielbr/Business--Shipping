@@ -16,6 +16,7 @@
 	<li><a href="#installation">INSTALLATION</a></li>
 	<li><a href="#required_modules">REQUIRED MODULES</a></li>
 	<li><a href="#getting_started">GETTING STARTED</a></li>
+	<li><a href="#website">WEBSITE</a></li>
 	<li><a href="#copyright_and_licence">COPYRIGHT AND LICENCE</a></li>
 	<li><a href="#author">AUTHOR</a></li>
 	<li><a href="#credits">CREDITS</a></li>
@@ -32,6 +33,8 @@
 <hr />
 <h1><a name="installation">INSTALLATION</a></h1>
 <pre>
+ See INSTALL file for more details.
+ 
  perl Makefile.PL
  make
  make test
@@ -51,6 +54,7 @@
  Devel::Required (0.03)
  Error (any)
  LWP::UserAgent (any)
+ Math::BaseCnv (any)
  XML::DOM (any)
  XML::Simple (2.05)</pre>
 <p>
@@ -81,22 +85,35 @@
    
    - (More info at <a href="http://www.ec.ups.com">http://www.ec.ups.com</a>)
    
-   - You will get a User Id, Password, and Access Key from UPS.
+   - Once you get a User Id and Password from UPS, you will need to login and
+     select &quot;Get Access Key&quot;, then &quot;Get XML Access Key&quot;.
  
 =head1 USAGE EXAMPLES
  
  * See Shipping.pm POD documentation for API and usage examples.</pre>
 <pre>
- * This module is used by the Interchange E-Commerce software 
+ * Business::Shipping is used by the Interchange E-Commerce software 
    (<a href="http://www.icdevgroup.org">http://www.icdevgroup.org</a>).  For a reference implementation of 
    Business::Shipping, see the UserTag/business-shipping.tag file, it implements
    a function that takes shipping-related arguments, builds a Business::Shipping
    object, then returns the calculated cost.
+   
+ * The &quot;Shopping Cart&quot; Wobject for the WebGUI project, by Andy Grundman 
+   &lt;andy@kahncentral.net&gt;.
+   <a href="http://www.plainblack.com/wobjects?wid=1143&amp;func=viewSubmission&amp;sid=654">http://www.plainblack.com/wobjects?wid=1143&amp;func=viewSubmission&amp;sid=654</a>
+   <a href="http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz">http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz</a>
  
-=head1 WEBSITE
- 
- <a href="http://www.kavod.com/Business-Shipping">http://www.kavod.com/Business-Shipping</a>
- 
+ * Let the author know if you are using Business::Shipping in your website, 
+   application, etc. so it can be mentioned here.</pre>
+<p>
+</p>
+<hr />
+<h1><a name="website">WEBSITE</a></h1>
+<pre>
+
+ <a href="http://www.kavod.com/Business-Shipping">http://www.kavod.com/Business-Shipping</a></pre>
+<pre>
+
 The website carries the most recent version, as well as instructions for
 accessing the anonymous CVS repository.</pre>
 <p>
@@ -119,7 +136,9 @@ Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.</p>
 <hr />
 <h1><a name="credits">CREDITS</a></h1>
 <pre>
- * See CREDITS file.</pre>
+ * See CREDITS file. 
+
+</pre>
 
 </body>
 

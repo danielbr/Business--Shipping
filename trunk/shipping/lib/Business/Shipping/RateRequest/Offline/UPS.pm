@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS
 #
-# $Id: UPS.pm,v 1.12 2004/01/30 00:56:47 db-ship Exp $
+# $Id: UPS.pm,v 1.13 2004/01/30 18:46:55 db-ship Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003,2004 Kavod Technologies, Dan Browning. 
@@ -16,7 +16,7 @@
 
 package Business::Shipping::RateRequest::Offline::UPS;
 
-$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.13 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -72,6 +72,14 @@ sub init
 =head1 NAME
 
 Offline::UPS - Calculates UPS rates from tables.
+
+=head1 SPECIAL INFO
+
+Countries that do not have Express Plus:
+
+CA  Canada (it is possible to calculate the rate, but you have to call UPS to 
+           find out if it is available).
+NO  Norway
 
 =head1 METHODS
 
@@ -913,6 +921,7 @@ Hawaii and Alaska have special per-zipcode zone exceptions for 1da/2da.
 sub special_zone_hi_ak
 {
 	my ( $self, $type, $zone ) = @_;
+	trace( "( $type, $zone )" );
 	
 	return $zone unless $type and ( $type eq 'NextDayAir' or $type eq '2ndDayAir' ); 
 	

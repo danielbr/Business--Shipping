@@ -1,6 +1,6 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.13 2004/01/30 00:56:47 db-ship Exp $
+# $Id: Shipping.pm,v 1.14 2004/01/30 18:46:55 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 #
@@ -62,57 +62,6 @@ Business::Shipping is an API for shipping-related tasks.
  * Offline UPS (using tables stored locally)
  * Online USPS
  * Offline FedEX and USPS are planned for support in the future.
-
-=head1 CLASS METHODS
-
-=head2 rate_request()
-
-This method is used to request shipping rate information from online providers
-or offline tables.  A hash is accepted as input with the following key values:
-
-=over 4
-
-=item * shipper
-
-The name of the shipper to use. Must correspond to a module by the name of:
-C<Business::Shipping::RateRequest::SHIPPER>.  For example, "Offline::UPS".
-
-=item * user_id
-
-A user_id, if required by the provider. Online::USPS and Online::UPS require
-this, while Offline::UPS does not.
-
-=item * password
-
-A password,  if required by the provider. Online::USPS and Online::UPS require
-this, while Offline::UPS does not.
-
-=item * service
-
-A valid service name for the provider. See the corresponding module 
-documentation for a list of services compatible with the shipper.
-
-=item * from_zip
-
-The origin zipcode.
-
-=item * from_state
-
-The origin state.  Required for Offline::UPS.
-
-=item * to_zip
-
-The destination zipcode.
-
-=item * to_country
-
-The destination country.  Required for international shipments only.
-
-=item * weight
-
-Weight of the shipment, in pounds, as a decimal number.
-
-=back
 
 An object is returned if the operation is successful, or 'undef' otherwise.
 
@@ -187,9 +136,58 @@ example:
 However, if you don't save the error value before the next call, it could be
 overwritten by a new error.
 
+=head1 CLASS METHODS
+
+=head2 rate_request()
+
+This method is used to request shipping rate information from online providers
+or offline tables.  A hash is accepted as input with the following key values:
+
+=over 4
+
+=item * shipper
+
+The name of the shipper to use. Must correspond to a module by the name of:
+C<Business::Shipping::RateRequest::SHIPPER>.  For example, "Offline::UPS".
+
+=item * user_id
+
+A user_id, if required by the provider. Online::USPS and Online::UPS require
+this, while Offline::UPS does not.
+
+=item * password
+
+A password,  if required by the provider. Online::USPS and Online::UPS require
+this, while Offline::UPS does not.
+
+=item * service
+
+A valid service name for the provider. See the corresponding module 
+documentation for a list of services compatible with the shipper.
+
+=item * from_zip
+
+The origin zipcode.
+
+=item * from_state
+
+The origin state.  Required for Offline::UPS.
+
+=item * to_zip
+
+The destination zipcode.
+
+=item * to_country
+
+The destination country.  Required for international shipments only.
+
+=item * weight
+
+Weight of the shipment, in pounds, as a decimal number.
+
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.13 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.14 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -372,5 +370,9 @@ sub config_to_hash
 	
 	return $hash;	
 }
+
+=back
+
+=cut
 
 1;
