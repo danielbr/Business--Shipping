@@ -30,9 +30,12 @@ else {
 
 use Carp;
 
-my %vals = (
+my %required_vals = (
 	user_id				=> undef,
 	password			=> undef,
+);
+
+my %optional_vals = (
 	is_success			=> undef,
 	tx_type				=> undef,
 	error				=> undef,
@@ -41,11 +44,6 @@ my %vals = (
 	protocol			=> undef,
 	path				=> undef,
 );
-
-my @required_fields = qw/
-	user_id
-	password
-/;
 
 my %rate_vals = (
 	origination_zip		=> undef,
@@ -67,7 +65,7 @@ sub new {
 	}
 	
 	my $self = bless {shipper => $shipper}, $subclass;
-	$self->build_subs(keys %vals);
+	$self->build_subs(keys %required_vals, keys %optional_vals );
 	
 	if($self->can("set_defaults")) {
 		$self->set_defaults();
@@ -98,7 +96,7 @@ sub required_fields {
     my( $self, @fields ) = @_;
 
     my %vals = $self->set();
-    foreach( @required_fields ) {
+    foreach( keys %required_vals ) {
         Carp::croak("missing required field $_") unless exists $vals{$_};
     }
 }
