@@ -42,8 +42,6 @@ use Business::Shipping::Util;
 
 =item * from_country
 
-=item * from_state
-
 =item * from_zip
 
 =item * from_city

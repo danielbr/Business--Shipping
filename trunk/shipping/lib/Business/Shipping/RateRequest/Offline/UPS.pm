@@ -1296,7 +1296,7 @@ sub calc_zone_info
         }
         debug( "from_zip = " . $self->from_zip );
         $zone = $self->make_three( $self->from_zip );
-        debug( "!!!!!!!!!!!!!") ;
+        #debug( "!!!!!!!!!!!!!") ;
         $zone_file = "/data/$zone.csv";
     }
     elsif ( $self->to_canada ) {
@@ -1315,9 +1315,7 @@ sub calc_zone_info
             }
             my $state_to_upsstd_zone_file = cfg()->{ ups_information }->{ state_to_upsstd_zone_file };
             my $states = config_to_hash( $state_to_upsstd_zone_file );
-            use Data::Dumper;
-            debug( "states = " . Dumper( $states ) );
-            debug( "my from_state = " . ( $self->from_state || 'undef' ) );
+
             if ( $self->from_state_abbrev and $states->{ $self->from_state_abbrev } ) {
                 $zone_file = "/data/" . $states->{ $self->from_state_abbrev };    
                 debug3(    "Found state in the state to upsstd_zone_file configuration "

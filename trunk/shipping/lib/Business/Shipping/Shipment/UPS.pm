@@ -3,7 +3,6 @@
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
-# 
 
 package Business::Shipping::Shipment::UPS;
 
@@ -152,7 +151,7 @@ sub from_state_abbrev
         cfg()->{ ups_information }->{ state_to_abbrev } 
     );
     
-    return $state_abbrevs->{ $self->from_state } or $self->from_state;
+    return $state_abbrevs->{ $self->from_state } || $self->from_state;
 }
 
 =item * from_ak_or_hi()

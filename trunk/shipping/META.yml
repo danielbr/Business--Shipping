@@ -11,13 +11,11 @@ requires:
     Clone:                         0
     Config::IniFiles:              0
     Crypt::SSLeay:                 0
-    Error:                         0
     Getopt::Mixed:                 0
     Log::Log4perl:                 0
     LWP::UserAgent:                0
     Math::BaseCnv:                 0
     Scalar::Util:                  1.10
-    Test::More:                    0
     XML::DOM:                      0
     XML::Simple:                   2.05
 

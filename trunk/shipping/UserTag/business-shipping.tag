@@ -75,7 +75,7 @@ XPS_FROM_COUNTRY	US	Shipping
 XPS_FROM_STATE	WA	Shipping
 XPS_FROM_ZIP	98682	Shipping
 XPS_TO_COUNTRY_FIELD	country	Shipping
-XPS_TO_CITY_FIELD	country	Shipping
+XPS_TO_CITY_FIELD	city	Shipping
 XPS_TO_ZIP_FIELD	zip	Shipping
 UPS_ACCESS_KEY	AB12CDEF345G6	Shipping 
 UPS_USER_ID	userid	Shipping
@@ -111,7 +111,7 @@ use Business::Shipping;
 sub {
     my ( $shipper, $opt ) = @_;
     
-    my $debug = delete $opt->{ debug } || 0;
+    my $debug = delete $opt->{ debug } || $Variable->{ BS_DEBUG } || 0;
     ::logDebug( "[business-shipping " . uneval( $opt ) ) if $debug;
     my $try_limit = delete $opt->{ 'try_limit' } || 2;
     

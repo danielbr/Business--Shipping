@@ -1,6 +1,9 @@
 Revision history for Business::Shipping
 =======================================
 
+1.51  CVS
+
+  * [Enh] Die if path to support files is missing files.
 
 1.50  CVS
 

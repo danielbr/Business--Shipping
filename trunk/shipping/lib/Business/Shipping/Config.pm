@@ -5,7 +5,6 @@
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
-# 
 
 package Business::Shipping::Config;
 
@@ -28,10 +27,11 @@ Config::IniFiles module.
 
 =cut
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
-@EXPORT = qw/ cfg cfg_obj config_to_hash config_to_ary_of_hashes /;
 use constant DEFAULT_SUPPORT_FILES_DIR => '/var/perl/Business-Shipping';
 #use constant DEFAULT_SUPPORT_FILES_DIR => '~_~SUPPORT_FILES_DIR~_~';
+
+$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+@EXPORT = qw/ cfg cfg_obj config_to_hash config_to_ary_of_hashes /;
 
 use strict;
 use warnings;
@@ -57,6 +57,11 @@ $support_files_dir ||= $ENV{ BUSINESS_SHIPPING_SUPPORT_FILES };
 $support_files_dir ||= DEFAULT_SUPPORT_FILES_DIR;
 
 $main_config_file = "$support_files_dir/config/config.ini";
+
+if ( ! -f $main_config_file ) {
+    die "Could not open main configuration file: $main_config_file: $!";
+}
+
 tie my %cfg, 'Config::IniFiles', (      -file => $main_config_file );
 my $cfg_obj = Config::IniFiles->new(    -file => $main_config_file );
 
@@ -80,14 +85,11 @@ Builds a hash from an array of lines containing key / value pairs, like so:
 sub config_to_hash
 {
     my ( $ary, $delimiter ) = @_;
-    return unless $ary;
-    #
-    # TODO: check ref( $ary ) eq 'ARRAY'
-    #
+    return unless $ary and ref( $ary ) eq 'ARRAY';
     
     $delimiter ||= "\t";
-    
     my $hash = {};
+    
     foreach my $line ( @$ary ) {
         my ( $key, $val ) = split( $delimiter, $line );
         $hash->{ $key } = $val;

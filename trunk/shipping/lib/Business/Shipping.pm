@@ -91,7 +91,7 @@ config/log4perl.conf.
 
 =cut
 
-$VERSION = '1.50';
+$VERSION = '1.51';
 
 use strict;
 use warnings;

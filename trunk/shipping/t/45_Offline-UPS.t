@@ -449,6 +449,33 @@ SKIP: {
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );    
 }
 
+###################
+##  UPS Standard to Canada
+###################
+
+%test = (
+        from_zip =>     '98682',
+        from_state =>   'Washington',
+        shipper =>      'Offline::UPS',
+        service =>      'UPSSTD',
+        to_country =>   'CA',
+        weight =>       '20',
+        to_zip =>       'N2H6S9',
+);
+$this_test_desc = "Canada UPS Standard: ";
+
+$shipment = test( %test );
+ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
+print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
+
+SKIP: {
+    skip( $ups_online_msg, 1 ) 
+        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+
+    $shipment_online = test_online( %test );
+    ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );    
+}
+    
 ########################################################################
 ##  Make sure that it handles zip+4 zip codes correctly (by throwing
 ##  away the +4.

@@ -125,13 +125,13 @@ caller_depth:
 If you are using one wrapper on top of this module, the caller_depth should be
 set to 2.  For example:
 
- Log4perl
+ Log::Log4perl
   |
   |
- KLogging
+ Business::Shipping::KLogging
   |
   |
- Logging
+ MyNameSpace::Logging
  
 once:
  
@@ -153,21 +153,14 @@ sub init
         return;
     }
     
-    if ( -f $file ) 
-    { 
-        if ( $once ) 
-        {
-            Log::Log4perl::init_once( $file );
-        }
+    if ( -f $file ) { 
+        if ( $once )
+          { Log::Log4perl::init_once( $file ); }
         else 
-        {
-            Log::Log4perl::init( $file );
-        }
+          { Log::Log4perl::init( $file ); }
     }
     else
-    { 
-        croak "Could not get log4perl config file: $file"; 
-    }
+        { croak "Could not get log4perl config file: $file"; }
         
     ${Log::Log4perl::caller_depth} = $caller_depth if $caller_depth;
     
@@ -178,8 +171,7 @@ sub init
 
 Private function.
 
-Automatically uses the package name and subroutine (e.g. 
-Business::Shipping::Shipment::UPS::submit ) as the log4perl 'category'.
+Automatically uses the package name and subroutine as the log4perl 'category'.
 
 =cut
 
@@ -223,14 +215,11 @@ sub _log
     return $return; 
 }
 
-
 =item * uneval( ... )
 
-Takes any built-in object and returns a string of text representing the perl 
-representation of it.  
-
-It was copied from Interchange L<http://www.icdevgroup.org>, written by Mike 
-Heins  E<lt>F<mike@perusion.com>E<gt>.
+Takes any built-in object and returns the perl representation of it as a string
+of text.  It was copied from Interchange L<http://www.icdevgroup.org>, written 
+by Mike Heins E<lt>F<mike@perusion.com>E<gt>.  
 
 =cut
 
@@ -267,7 +256,6 @@ sub uneval {
     $s;
 }
 
-    
 1;
 
 __END__
@@ -283,5 +271,7 @@ Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.c
 Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 This program is free software; you may redistribute it and/or modify it under
 the same terms as Perl itself. See LICENSE for more info.
+
+Sub uneval copyright (c) 2002-2003 Interchange Development Group.
 
 =cut

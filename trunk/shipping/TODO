@@ -2,6 +2,40 @@
 ##  General TODO
 ################################################################################
 
+* [Enh] Restructure:
+   - Keep everything the same, except the "lowest level":
+         "Online::UPS"  => "UPS_Online"
+	 "Offline::UPS" => "UPS_Offline"
+	 "Online::USPS" => "USPS_Online"
+	 new            => "UPS_Online_Old"
+         Shipping::RateRequest::Online::UPS --> Shipping::UPS_Online::RateRequest
+	 Shipping::Shipment::UPS --> Shipping::UPS_Online::Shipment
+	 Shipping::RateRequest::Online::USPS --> Shipping::USPS_Online::RateRequest
+	 Shipping::Tracking::UPS --> Shipping::UPS_Online::Tracking
+   - Benefits:
+     All of the vendor-related code is in one directory (UPS/, FedEx/, etc.).
+     All of the abstract code is in neutral directories.
+   - Optional: Move the neutral code to Shipping::All:: to signify the fact that
+     all code is derived from them.
+
+* [Bug] For Micah Gersten <micah@davka.com>, Business.pm was 'require'd.
+  - Probably a bug in ClassInfo
+  - See stack trace for more information
+
+* [Bug] USPS Global Express Mail bug reported by Micah Gersten <micah@davka.com>
+  > It is using the 'Economy (Surface) Parcel Post' rate instead of 'Global 
+  > Express Mail (EMS)'.
+
+  Aha.  I will investigate that at the earliest opportunity.  I'm not sure when
+  that will be, however (tomorrow?  next week?).  If you want to look into it
+  yourself, I'm sure the bug is somewhere near this:
+
+  File: lib/Business/Shipping/RateRequest/Online/USPS.pm
+  Line: 300
+
+* [Enh] Build a replacement for ClassInfo and ClassAttribs that will be more 
+  simple, efficient, and portable.
+  
 * [Enh] Resurrect the event_handlers() method.  Log4perl configuration should 
   allow manual overrides via event_handlers.
 
@@ -16,7 +50,7 @@
 * [Enh] Conform to coding style: private methods should be prefixed with an
    underscore. 
  
-* [Enh] Make some kind of allowance for alternate units (kilograms, etc.).
+* [Enh] Handle alternate units (kilograms, etc.).
 
 * [Enh] Look into Params::Validate and/or Class::Contract
  
@@ -68,33 +102,27 @@ Anyway, I think I need to investigate it some more.
   
   If it is optimized for memory footprint, then it will read the representation
   off the disk, (getting a benefit from OS filesystem cache, probably), then run
-  calculation, then delete the in-memory representation.
+  calculation, then delete the in-memory representation (which perl may or may 
+  not free immediately).
   
   If optimized for speed, then it will read the representation off the disk and
   keep it in memory.
 
 * [Enh] Split the data into its own package, and add it to the bundle.
-   - Business::Shipping::Data
+  - Business::Shipping::Data
+  - Benefits: 
+    + Allows data to be updated separately from the code.
+    + It changes less often, so frequent code updates will not result it long
+      downloads.
+    + Update scripts can just do a CPAN install of the latest data module.
 
-* [Enh] Use Log::Dispatch::Email for incident notifications?
-
-* [Enh] Allow error format to specified: With/without caller, line numbers.
-
-* [Enh] Evaluate fields.pm as a guard against autovivification. 
-
-* [Enh] Update to more recent C:MM syntax, like '-default', etc.
- 
-* [Enh] Allow users to set path to support files.
-
-* [Enh] Need to check for support_files() config param, and exit if files
-   are missing.
+* [Enh] KLogging: Allow error format to specified 
+  - With/without caller, line numbers.
 
 * [Enh] Allow the user to set the timeout for http requests.  Sometimes 30
    seconds is too long.
 
-* [Enh] Evaluate Log4Perl.
-
-* [Enh] Is non-ssl communication with either Online provider possible?
+* [Enh] Is non-ssl communication with either online provider possible?
  
 * [Enh] Migrate the "retry on failure" code from business-shipping.tag to 
    Business::Shipping proper.  Default to tries=2, but allow that to be
@@ -104,9 +132,6 @@ Anyway, I think I need to investigate it some more.
     - Doesn't require signup (no username/password, etc.)
     - Utilize the new Business::UPS 2.0.
  
-* [Enh] Additional module flexibility
-  - Allow the use of Net::SSLeay as well as Crypt::SSLeay
-
 * [Enh] New feature ideas:
  	- Address Verification
 	- Shipping status (package tracking)
@@ -134,25 +159,13 @@ Anyway, I think I need to investigate it some more.
   
 * [Doc] Need to create a list of common errors that will be encountered.
  
-* [Enh] Change the many occurrences of $self->weight( 5 ) to 
-  $self->set_weight( 5 ) (and their like) for readability.
+* [Enh] Setup a proper "announce", "commits", and "discussion" mailing list 
+  where users can sign up for updates and get information.
  
-* [Enh] Setup a proper "announce", "cvs", and "users" mailing list where users
-  can sign up for updates and get information.   
- 
-* [Enh] Build a more advanced configuration system, with more config-file
+* [Enh] Build/use a more advanced configuration system, with more config-file
   flexibility.
  
-* [Enh] [UNDER CONSIDERATION] Upgrade to Class::MethodMaker 2.00?
-  - It does not support several features, like 'grouped_fields'.
-  - It does not support grouped_fields_inherit
-  - It is prettier.
-
 * [Enh] Test for thread-safety-ness.
-
-* [Enh] New feature for MethodMaker: parent_defaults => [ 'shipper' => 'UPS' ].
-  After initialization, calls parent methods with default values so the user 
-  does not have to write an "-init" method.
 
 * [Enh] Add support back in for multi-package API.
 
@@ -188,29 +201,9 @@ Anyway, I think I need to investigate it some more.
    Look into OODoc or Pod::Tree
    Use Pod::HtmlEasy to generate CPAN-style (i.e. pretty) HTML docs.
  
-* [Enh] Restructure:
-   - Keep everything the same, except the "lowest level":
-         "Online::UPS"  => "UPS_Online"
-	 "Offline::UPS" => "UPS_Offline"
-	 "Online::USPS" => "USPS_Online"
-	 new            => "UPS_Online_Old"
-         Shipping::RateRequest::Online::UPS --> Shipping::UPS_Online::RateRequest
-	 Shipping::Shipment::UPS --> Shipping::UPS_Online::Shipment
-	 Shipping::RateRequest::Online::USPS --> Shipping::USPS_Online::RateRequest
-	 Shipping::Tracking::UPS --> Shipping::UPS_Online::Tracking
-   - Benefits:
-     All of the vendor-related code is in one directory (UPS/, FedEx/, etc.).
-     All of the abstract code is in neutral directories.
-   - Optional: Move the neutral code to Shipping::All:: to signify the fact that
-     all code is derived from them.
-
 * [Enh] Log4Perl enhancement
   - Remove "Business::Shipping" from the first part of logging output.
-  - Perhaps a Filter object?
-
-* [Enh] Test different Perl versions:
-  - 5.6.2
-  - Fedora Core 2 standard perl (5.8.3)  
+  - Perhaps via a Filter object?
 
 ################################################################################
 ##  Offline::USPS TODO
@@ -219,7 +212,7 @@ Anyway, I think I need to investigate it some more.
  * [Enh] Add First-Class Mail
    - http://www.usps.com/consumers/domestic.htm#first
    - Can be done via an off-line calculation, I believe.
-   
+
 ################################################################################
 ##  Online::USPS TODO
 ################################################################################
@@ -345,18 +338,26 @@ Anyway, I think I need to investigate it some more.
 ################################################################################
 
 * [Enh] Test for ability to use within Safe?
-  - Remove runtime requires.
+  - Make runtime requires into optional startup or runtime requires.
    
 ################################################################################
 ##  Online::FedEx 
 ################################################################################
-		 
+
+* http://www.fedex.com/us/solutions/wis/index.html/
+
 * [Enh] FedEx module: Christopher L Wenham from Synesmedia has created an 
   Interchange usertag that uses FedEx::DirectConnect for various functions.
 
 * [Enh] Francois Belanger, francois@sitepak.com has also created a FedEx module
   (see FedEx.pm).
-   
+
+* See FedEx::DirectConnect
+  
+################################################################################
+##  Online::DHL 
+################################################################################
+
 ################################################################################
 ##  Tracking
 ################################################################################
