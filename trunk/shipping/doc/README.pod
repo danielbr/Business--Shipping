@@ -70,5 +70,6 @@ under the same terms as Perl itself.
 
  * Kevin Old <kold@carolina.rr.com> got the USPS XML generator working.
  * sauoq on PerlMonks.org provided valuable commentary and ideas. 
+ * bbfu on PerlMonks.org got Class::MethodMaker working with SUPER. 
 
 =cut
