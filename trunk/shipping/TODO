@@ -2,8 +2,8 @@
 ##  General TODO
 ######################################################
  
-NOTE: Online::UPS expects 'GB' not 'UK'
-
+ * [ENH] Update to more recent C:MM syntax, like '-default', etc.
+ 
  * [ENH] Allow users to set path to support files.
 
  * [ENH] Need to check for support_files() config param, and exit if files
@@ -92,7 +92,15 @@ NOTE: Online::UPS expects 'GB' not 'UK'
    "current" shipment, not the entire rate request as a whole.  They happen to 
    work because the RateRequest object aliases those functions (using 
    'comp_mthds') to the 'shipment' object, slotted in the RateRequest object.
+ 
+ * [ENH] Find or create some module that will automatically update the "=head1 
+   VERSION" POD based on the $VERSION in the same file.
    
+ * [DOC] Need to create a list of common errors that will be encountered.
+ 
+ * [ENH] Is there a way to overload the '=' operator to make some code prettier?
+   We could do "$self->weight = 5" instead of "$self->set_weight( 5 )".
+ 
 ######################################################
 ##  USPS ONLINE TODO
 ######################################################
@@ -113,6 +121,8 @@ NOTE: Online::UPS expects 'GB' not 'UK'
 ######################################################
 ##  UPS OFFLINE TODO
 ######################################################
+
+ * [ENH] For Canada, only the first shipping method works.
 
  * [ENH] Change from_state to a Shipment function, which will calculate and set 
    the is_from_west_coast() value, instead of doing from within 

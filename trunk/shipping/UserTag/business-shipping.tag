@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.13 2004/01/21 23:18:29 db-ship Exp $
+# $Id: business-shipping.tag,v 1.14 2004/01/22 23:00:46 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -111,6 +111,11 @@ sub {
 		Log ( "mode, weight, and service required" );
 		return;
 	}
+	
+	#
+	# TODO: If the user didn't specify the "Online::" or "Offline::" 
+	# prefix of the shipper variable, change it to "Online::" automatically?
+	#
 	
 	#
 	# We pass the options mostly unmodifed to the underlying library, so here we

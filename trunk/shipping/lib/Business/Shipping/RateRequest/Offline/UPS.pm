@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS
 #
-# $Id: UPS.pm,v 1.8 2004/01/22 15:28:29 db-ship Exp $
+# $Id: UPS.pm,v 1.9 2004/01/22 23:00:47 db-ship Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003,2004 Kavod Technologies, Dan Browning. 
@@ -16,7 +16,7 @@
 
 package Business::Shipping::RateRequest::Offline::UPS;
 
-$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -51,8 +51,13 @@ use Business::Shipping::CustomMethodMaker
 		],
 		required => [
 			'from_state',
-		],
-	];
+		],		
+	],
+	#
+	# Class Attributes
+	#
+	hash => [ '-static', 'Zones' ],
+	;
 
 use constant INSTANCE_DEFAULTS => ();
 sub init
@@ -80,10 +85,6 @@ Offline::UPS - Calculates UPS rates from tables.
   
 =cut
 
-#
-# Class attributes
-#
-my $Zones = {};
 
 sub to_residential { return shift->shipment->to_residential( @_ ); }
 sub is_from_east_coast { return not shift->is_from_west_coast(); }
@@ -536,9 +537,9 @@ sub ups_name_to_table
 
 =item * calc_zone_data()
 
-* Modifies the class attribute $Zones, and adds data for the zone like so...
+* Modifies the class attribute Zones(), and adds data for the zone like so...
 
-	$Zones => {
+	$self->Zones() = (
 		'Canada' => {
 			'zone_data' => [
 				'first line of zone file',
@@ -546,12 +547,8 @@ sub ups_name_to_table
 				'etc.',
 			]
 		}
-	}
+	)
 	
-TODO:
-
-Just modify the class-level %Zones.
-
 =cut
 sub calc_zone_data
 {
@@ -559,11 +556,16 @@ sub calc_zone_data
 	my ( $self ) = @_;
 	
 	my $zone_name = $self->zone_name;
+	if ( ! $zone_name ) {
+		$self->error( "No $zone_name, exiting..." );
+		return;
+	}
+	
 	#
 	# Don't recalculate it if it already exists, unless overridden by configuration.
 	#
 	if 	(	
-				$Zones->{ $zone_name } 
+				$self->Zones( $zone_name ) 
 			and ! cfg()->{ ups_information }->{ always_calc_zone_data }
 		)
 	{
@@ -574,7 +576,7 @@ sub calc_zone_data
 	#
 	# Initialize this zone
 	#
-	$Zones->{ $zone_name } = {},
+	$self->Zones( $zone_name => {} );
 	
 	#
 	# World-wide:  instead of 130-139,123,345, we have:
@@ -582,16 +584,16 @@ sub calc_zone_data
 	#
 	debug( 'looking for zone_name: ' . $zone_name . ", with zone_file: " . $self->zone_file );
 	
-	for ( keys %$Zones ) {
-		my $this_zone = $Zones->{$_};
-		if ( ! $this_zone->{zone_data} ) {
-			$this_zone->{zone_data} = Business::Shipping::Util::readfile( $self->zone_file() );
+	for ( keys %{ $self->Zones() } ) {
+		my $this_zone = $self->Zones( $_ );
+		if ( ! $this_zone->{ zone_data } ) {
+			$this_zone->{ zone_data } = Business::Shipping::Util::readfile( $self->zone_file() );
 		}
-		if ( ! $this_zone->{zone_data} ) {
+		if ( ! $this_zone->{ zone_data } ) {
 			$self->error( "Bad shipping file for zone " . $_ . ", lookup disabled." );
 			next;
 		}
-		my ( @zone ) = grep /\S/, split /[\r\n]+/, $this_zone->{zone_data};
+		my ( @zone ) = grep /\S/, split /[\r\n]+/, $this_zone->{ zone_data };
 		shift @zone while @zone and $zone[0] !~ /^(Postal|Dest\. ZIP|Country)/;
 		if ( $zone[ 0 ] and $zone[ 0 ] =~ /^Postal/ ) {
 			debug3( 'this zone (' . $zone[ 0 ] . ') =~ ^Postal' );
@@ -617,7 +619,15 @@ sub calc_zone_data
 				s/\s*,\s*/\t/g;
 			}
 		}
-		$this_zone->{zone_data} = \@zone;
+		$this_zone->{ zone_data } = \@zone;
+		
+		#
+		# TODO: Do I need to copy the $this_zone back into the Zones() hash?
+		# Or does copying the reference, then modifying the reference do the
+		# same thing?
+		#
+		# $self->Zones( $zone_name => $this_zone )
+		#
 	}
 	
 	return;
@@ -710,7 +720,7 @@ sub calc_cost
 	my ( $self ) = @_;
 	
 	my $zone_name 	= $self->zone_name;
-	my $zref 		= $Zones->{ $zone_name };
+	my $zref 		= $self->Zones( $zone_name );
 	my $type 		= $self->service_code_to_ups_name(	$self->service()	);
 	my $table 		= $self->ups_name_to_table(			$type 				);
 	$table 			= $self->rate_table_exceptions( $type, $table );

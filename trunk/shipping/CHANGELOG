@@ -18,6 +18,10 @@ Revision history for Business::Shipping.
 	- Aesthetic updates to most modules.
 	- Documentation updates for several modules.
 	- More tests for Offline::UPS.
+	- France, Russia, and other countries fixed for Offline::UPS.
+	- Fix "Multiple shipments to Canada return 0 except the first" bug, caused
+	  by poorly implemented Zones class attribute: now correctly implement as a
+	  static hash, accessed by function.
 
 1.02  Jan 06 2004
 	- Update all data tables from UPS (Jan 05 2004)
