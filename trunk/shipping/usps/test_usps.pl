@@ -12,7 +12,8 @@ $shipment->set(
 	'password' => 'fdjkasl',
 );
 
-print Dumper( $shipment );
+print "shipment = " . Dumper( $shipment );
+
 print "\n";
 
 1;

@@ -17,7 +17,7 @@ Documentation forthcoming.
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.2 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.3 $ =~ /(\d+)\.(\d+)/);
 use Business::Ship;
 use LWP::UserAgent ();
 use HTTP::Request ();
@@ -25,7 +25,9 @@ use HTTP::Response ();
 use XML::Simple ();
 use Carp ();
 
-@ISA = ('Business::Ship');
+use Data::Dumper;
+
+@ISA = qw( Business::Ship );
 
 sub set_defaults
 {
@@ -38,7 +40,6 @@ sub set_defaults
 	return;
 }
 
-
 # _gen_request_xml()
 # Generate the XML document.
 sub _gen_request_xml
@@ -47,11 +48,11 @@ sub _gen_request_xml
 
 	my $request_tree = {
 		'RateRequest' => [{
-			'USERID' => $self->{opt}->{user_id},
-			'PASSWORD' => $self->{opt}->{password},
+			'USERID' => $self->user_id(),
+			'PASSWORD' => $self->password(),
 			'Package' => [{
 				'ID' => '0',
-				'Service' => [ $self->{opt}->{service} ],
+				'Service' => [ $self->service() ],
 				'ZipOrigination' => [ '98682' ],
 				'ZipDestination' => [ '98270' ],
 				'Pounds' => [ '5' ],
@@ -71,18 +72,21 @@ sub _gen_request_xml
 	return ( $request_xml );
 }
 
-
-=item $ups->get_total_charges()
-
-This method returns the total charges.
-
-=cut
-
-sub get_total_charges
+sub build_subs
 {
-	my ( $self ) = shift;
-	return $self->{'total_charges'} if $self->{'total_charges'};
-	return 0;
+	my $self = shift;
+	
+	my @usps_required_vals = qw/
+		usps_custom1
+		usps_custom2
+	/;
+	
+	my @usps_optional_vals = qw/
+		usps_custom3
+		usps_custom4
+	/;
+	
+	$self->SUPER::build_subs( @_, @usps_required_vals, @usps_optional_vals );
 }
 
 =head1 SEE ALSO

@@ -67,7 +67,7 @@ The following methods are available:
 =cut
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.4 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.5 $ =~ /(\d+)\.(\d+)/);
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
@@ -387,43 +387,7 @@ sub clone
 	return $copy;
 }
 
-sub debug {
-    my ( $self, $msg ) = @_;
-    return $self->_log( 'debug', $msg );
-}
 
-sub error {
-    my ( $self, $msg ) = @_;
-	
-	# Return the most recent error message if that is all they want
-	return ( pop @{$self->{'errors'}} ) unless ( $msg );
-	
-	$msg .= "\n" unless ( $msg =~ /\n$/ );
-    return $self->_log( 'error', $msg );
-}
-
-sub _log
-{
-    my $self = shift;
-    my ( $type, $msg ) = @_;
-	my( $package, $filename, $line, $sub ) = caller(2);
-	$msg  = "$sub: $msg";
-	if ( $type eq 'error' ) {
-		push @{$self->{'errors'}}, $msg;
-	}
-	
-	foreach my $eh ( keys %{$self->{'event_handlers'}} ) {
-		my $eh_value = $self->{'event_handlers'}->{$eh};
-		if ( $type eq $eh and $eh_value ) {
-			print STDERR $msg if $eh_value eq "STDERR";
-			print STDOUT $msg if $eh_value eq "STDOUT";
-			Carp::carp   $msg if $eh_value eq "carp";
-			Carp::croak  $msg if $eh_value eq "croak";
-		}
-	}
-	
-	return ( $msg );
-}	
 
 
 =back
