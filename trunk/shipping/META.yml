@@ -2,7 +2,6 @@
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         Business-Shipping
 version:      1.52
-license:      perl
 version_from: lib/Business/Shipping.pm
 installdirs:  site
 requires:

@@ -1,24 +1,29 @@
 ################################################################################
 ##  General TODO
 ################################################################################
+    
+    * [Enh] Split the data into its own distribution, and add it to the bundle.
+      - Business::Shipping::Data
+      - Benefits: 
+        + Allows data to be updated separately from the code.
+        + It changes less often
+        + Update scripts can just do a CPAN install of the latest data module.
+      - Issues:
+        + Chicken and Egg problem.  Can't install data first, because it needs
+	  Business::Shipping to know where to install.  Can't install Shipping
+	  first because it needs data in order to test.  Solution?  Ask for the 
+	  path during data installation, then use it for Shipping installation.
+	  OR, ask during both.
+    
+    * [Enh] Test on Sourceforge Compile Farm systems.
+      - Also test using older perl versions (e.g. 5.6.x).
 
-* [Enh] Split the data into its own package, and add it to the bundle.
-  - Business::Shipping::Data
-  - Benefits: 
-    + Allows data to be updated separately from the code.
-    + It changes less often, so frequent code updates will not result it long
-      downloads.
-    + Update scripts can just do a CPAN install of the latest data module.
-
-* [Enh] Test on Sourceforge Compile Farm systems.
-  - Also test using older perl versions (e.g. 5.6.x).
-
-* [Enh] Build a replacement for ClassInfo and ClassAttribs that will be more 
-  simple, efficient, and portable.
+    * [Enh] Build a replacement for ClassInfo and ClassAttribs that will be more 
+      simple, efficient, and portable.
   
-* [Enh] Business::Shipping::UPS_XML
-  - Add to documentation as an alternative to Business::Shipping
-  - Maybe utilize the Parser code?
+    * [Enh] Business::Shipping::UPS_XML
+      - Add to documentation as an alternative to Business::Shipping
+      - Maybe utilize the Parser code?
 
 * [Enh] Unit tests for each class.
   
@@ -321,9 +326,6 @@ Anyway, I think I need to investigate it some more.
 
 * [Enh] Test for ability to use within Safe?
   - Make runtime requires into optional startup or runtime requires.
-  - Allow an optional "use Business::Shipping 'preload_all'", which will preload
-    all modules that will ever be needed.  Other options (such as 
-    "preload_Online_UPS" could be implemented as well).
    
 ################################################################################
 ##  Online::FedEx 

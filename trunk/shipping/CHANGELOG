@@ -2,6 +2,24 @@ Revision history for Business::Shipping
 =======================================
 
 
+1.53  SCM
+
+
+  General
+    * [Fixed] [Doc] Reference to logdie in Shipping.pm.
+    * [Done] [Enh] Allow preloading of modules
+      - New optional syntax: 
+        use Business::Shipping { preload => 'All' };
+        use Business::Shipping { preload => 'USPS_Online' };
+      - Without preloading, some modules will be loaded at runtime.  Normally, 
+        runtime loading is the best mode of operation.  However, there are some
+	circumstances when preloading is advantagous (see docs).   
+   
+  Tracking
+    * [Enh] More progress on upgrade of tracking modules to C:MM 2.0. 
+    
+
+
 1.52  Sep 14 2004 
   
   

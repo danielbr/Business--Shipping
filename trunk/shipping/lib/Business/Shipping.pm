@@ -26,7 +26,7 @@ Business::Shipping - Cost estimation and tracking for UPS and USPS
         weight    =>  5.00,
     );    
     
-    $rate_request->submit() or logdie $rate_request->user_error();
+    $rate_request->submit() or die $rate_request->user_error();
     
     print $rate_request->total_charges();
 
@@ -87,12 +87,37 @@ See the INSTALL file for more information.
 Log4perl is used for logging error, debug, etc. messages.  See 
 config/log4perl.conf.  For simple manipulation of the current log level, use
 the Business::Shipping->log_level( $log_level ) class method (below).
+
+=head1 Preloading Modules
+
+To preload all modules, call Business::Shipping with this syntax:
+
+ use Business::Shipping { preload => 'All' };
+
+To preload the modules for just one certain shipper:
+
+ use Business::Shipping { preload => 'USPS_Online' };
  
+Without preloading, some modules will be loaded at runtime.  Normally, runtime
+loading is the best mode of operation.  However, there are some circumstances 
+when preloading is advantagous.  For example:
+
+ * For mod_perl, to load the modules only once at startup instead of at startup
+   and then additional modules later on.  (Thanks to Chris Ochs 
+   <chris@paymentonline.com> for contributing to this information).
+ 
+ * For compatibilty with some security modules (e.g. Safe).  Note that we have
+   not tested Safe, but this would be a prerequisite for someone to do so.
+   
+ * To move the delay that would normally occur with the first request into 
+   startup time.  That way, it takes longer to start up, but the first user
+   will not notice any delay.
+   
 =head1 METHODS
 
 =cut
 
-$VERSION = '1.52';
+$VERSION = '1.53';
 
 use strict;
 use warnings;
@@ -106,6 +131,64 @@ use Class::MethodMaker 2.0
       scalar => [ 'tx_type', 'shipper', '_user_error_msg'             ],
       scalar => [ { -static => 1, -default => 'tx_type' }, 'Optional' ],
     ];
+
+$Business::Shipping::RuntimeLoad = 1;
+
+sub import 
+{
+    return unless @_;
+        
+    my ( $class_name, $record ) = @_;
+    
+    while ( my ( $key, $val ) = each %$record ) {
+        if ( lc $key eq 'preload' ) {
+            
+            # Required modules lists
+            # TODO: each of these modules does a compile-time require of all 
+            # the modules that it needs.  If, in the future, any of these
+            # modules switch to a run-time require, then update this list with
+            # the modules that may be run-time required.
+            
+            my $module_list = {
+                'USPS_Online' => [
+                    'Business::Shipping::USPS_Online::Tracking',
+                ],
+                'UPS_Online' => [
+                    'Business::Shipping::UPS_Online::Tracking',
+                ],
+                'UPS_Offline' => [
+                ],
+            };
+                    
+            my @to_load;
+                
+            if ( lc $val eq 'all' ) {
+                for ( keys %$module_list ) {
+                    my $aryref = $module_list->{ $_ };
+                    push @to_load, @$aryref;
+                }
+            }
+            else {
+                while ( my ( $shipper, $mod_list ) = each %$module_list ) {
+                    if ( lc $val eq lc $shipper ) {
+                        push @to_load, ( 
+                            @$mod_list, 
+                            'Business::Shipping::$shipper::RateRequest',
+                        );
+                    }
+                }
+            }
+            
+            if ( @to_load ) 
+                { $Business::Shipping::RuntimeLoad = 0 };
+            
+            foreach my $module ( @to_load ) {
+                eval "use $module;";
+                die $@ if $@;
+            }
+        }
+    }
+}
 
 =head2 $self->init( %args )
 
@@ -291,7 +374,10 @@ sub new_subclass
     Carp::croak( "Error before new_subclass was called: $@" ) if $@;
     
     my $new_class = $class . '::' . $subclass;
-    eval "use $new_class";
+    
+    if ( $Business::Shipping::RuntimeLoad )
+        { eval "use $new_class"; }
+        
     Carp::croak( "Error when trying to use $new_class: \n\t$@" ) if $@;
     
     my $new_sub_object = eval "$new_class->new()";
