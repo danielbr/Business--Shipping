@@ -249,10 +249,6 @@ sub _gen_request_xml
     
     my @packages;
     foreach my $package ( $shipment->packages() ) {
-        #
-        # TODO: Move to a different XML generation scheme,  since all the packages 
-        # in a multi-package shipment will have the name "Package"
-        #
         
         my %package_service_options;
         
@@ -271,7 +267,8 @@ sub _gen_request_xml
             );
         }
         
-        $shipment_tree{ 'Package' } = [ {
+        push( @packages, {
+
                 'PackagingType' => [ {
                     'Code' => [ $package->packaging() ], 
                     'Description' => [ 'Package' ], 
@@ -283,8 +280,9 @@ sub _gen_request_xml
                 } ],
                 
                 %package_service_options
-            } ], 
+ 	      }, );
     }
+    $shipment_tree{Package} = \@packages if( @packages > 0 );
     
     my $req_option = ucfirst $shipment->service if ucfirst $shipment->service eq 'Shop';
     

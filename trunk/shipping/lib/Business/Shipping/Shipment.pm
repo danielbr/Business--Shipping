@@ -385,7 +385,7 @@ sub add_package
     }
     
     my $package;
-    eval { $package  = Business::Shipping->_new_subclass( 'Package::'  . $self->shipper ); };
+    eval { $package  = Business::Shipping->_new_subclass( $self->shipper . '::Package' ); };
     logdie "Error when creating Package subclass: $@" if $@;
     logdie "package was undefined."  if not defined $package;
     
