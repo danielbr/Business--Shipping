@@ -3,6 +3,7 @@ Revision history for Business::Shipping.
 1.04  CVS
 	- Compatibility
 		+ Scalar::Util 1.10 is now required (to pretty up the code a little).
+		+ Created a Bundle::Business::Shipping module, uploaded to CPAN.
 	
 	- Offline::UPS
 		+ Major fix to the low/high number/name scheme.  For international, it 
@@ -10,6 +11,7 @@ Revision history for Business::Shipping.
 		  of the country names.  This was causing many zip code combinations
 		  (that had lost their "high" in the last update), as well as some 
 		  countries, to fail.
+		+ Another fix for number range scheme.
 		+ Sense validity for several combinations of service and country/zip.
 		  (Ground Residential to Hawaii is now "invalid").
 		+ New test for the Netherlands.

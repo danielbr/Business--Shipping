@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS
 #
-# $Id: UPS.pm,v 1.14 2004/02/03 01:51:12 db-ship Exp $
+# $Id: UPS.pm,v 1.15 2004/02/03 14:49:33 db-ship Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003,2004 Kavod Technologies, Dan Browning. 
@@ -16,7 +16,7 @@
 
 package Business::Shipping::RateRequest::Offline::UPS;
 
-$VERSION = do { my @r=(q$Revision: 1.14 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.15 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -639,37 +639,31 @@ sub calc_zone_data
 			my $count;
 			for(@zone[1 .. $#zone]) {
 				#debug( "before = $_" );
-				#
-				# This doesn't work with names that have spaces and/or parenthesis.
-				# "601" =>		"601,601"
-				# "601-605" =>	"601,605"
-				# ","		=>	"	"
-				# /e means "equation"
-				#
-				
-				if ( /\-/ ) {
-					s/^\s*(\w+)\s*-\s*(\w+),/$1 . ',' . $2 . ','/e;
+				my @columns = split( ',', $_ );
+				if ( $columns[ 0 ] =~ /-/ ) {
+					#
+					# "601-605" =>	"601,605"
+					#
+					my ( $low, $high ) = split( '-', $columns[ 0 ] );
+					splice( @columns, 0, 0, ( $low, $high ) );
+
 				}
 				else {
-					if ( $self->intl ) {
-						#s/^(.+)/$1 \, $1 \,/;
-						
-						my @columns = split( ',', $_ );
-						
-						#
-						# Copy the country name into the second field.
-						#
-						splice( @columns, 1, 0, ( $columns[ 0 ]) );
-						
-						$_ = join( ',', @columns );
-						
-					}
-					else {
-						s/^\s*(\w+)\s*,/$1 . ',' . $1 . ','/e;
-					}
+					#
+					# Copy the country name (or zip with no range) into the second field.
+					# "601" =>		"601,601"
+					#
+					splice( @columns, 1, 0, ( $columns[ 0 ]) );
 				}
+				$_ = join( ',', @columns );
+				
+				#
+				# ","		=>	"	"
+				#
 				s/\s*,\s*/\t/g;
+
 				#debug( "after = $_" );
+				
 				
 			}
 		}
@@ -886,7 +880,7 @@ sub calc_cost
 				$high	= cnv( $high, 36, 10 );
 				$goal	= cnv( $goal, 36, 10 );
 			}
-			
+			#debug( "checking if $goal is between $low and $high" );
 			next unless $goal and $low and $high;
 			next unless $goal ge $low and $goal le $high;
 			debug( "setting zone to $data[$point] (the line was: " . join( ',', @data ) . ")" );

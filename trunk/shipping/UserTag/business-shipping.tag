@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.21 2004/02/03 01:51:11 db-ship Exp $
+# $Id: business-shipping.tag,v 1.22 2004/02/03 14:49:33 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -21,8 +21,8 @@ UserTag  business-shipping  Documentation 	<<EOD
 
 =head1 VERSION
 
-[business-shipping] usertag:	1.21
-Requires Business::Shipping:	1.04
+[business-shipping] usertag:	$Revision: 1.22 $
+Requires Business::Shipping:	 Revision: 1.04
 
 =head1 AUTHOR 
 

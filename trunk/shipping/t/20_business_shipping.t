@@ -32,3 +32,12 @@ $rate_request->to_country( 'US' );
 print "\tto_country = " . $rate_request->to_country() . "\n";
 ok( $rate_request->to_country,			'UPS to_country() works' );
 
+#$rate_request = new Business::Shipping->rate_request();
+#$rate_request->submit();
+#ok( 1, "calling submit() on an empty object doesn't die" );
+
+#$rate_request = new Business::Shipping->rate_request( 'shipper' => 'Offline::UPS' );
+#$rate_request->submit();
+#ok( $rate_request->invalid, "invalid sense works correctly." );
+
+

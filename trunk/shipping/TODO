@@ -122,7 +122,7 @@
 ######################################################
 ##  USPS ONLINE TODO
 ######################################################
- 
+
  * [BUG] Find a better way to correlate "Air mail" with all the various names
    it is called by each country.
  
@@ -140,6 +140,9 @@
 ##  UPS OFFLINE TODO
 ######################################################
 
+ * [ENH] Performance enhancement: instead of transforming the data with
+   calc_zone_data() everytime, just re-write the data file.
+ 
  * [DOC] Refer to Express for Express Plus.  To determine whether Express Plus
    service is available to your destination postal code, call 800-782-7892.
 
