@@ -275,13 +275,14 @@ sub {
         my $error = $rate_request->user_error();
         
         # Ignore errors if [incident] is missing or misbehaves.
-
+        eval {
             $Tag->incident(
                 {
                     subject => $shipper . ( $error ? ": $error" : '' ), 
                     content => ( $error ? "Error:\t$error\n" : '' ) . $vars_out
                 }
             );
+        };
         
     }
     ::logDebug( "[business-shipping] returning " . ( $charges || 'undef' ) ) if $debug;
