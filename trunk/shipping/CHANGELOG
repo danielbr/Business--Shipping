@@ -28,29 +28,39 @@ Revision history for Business::Shipping
       - New tests added to cover the shop feature.
       - Example Usage:   
       
-	 my $rr_shop = Business::Shipping->rate_request( 
-	     service      => 'shop',    
-	     shipper      => 'UPS_Online',
-	     from_zip     => '98682',
-	     to_zip       => '98270',
-	     weight       => 5.00,
-	     user_id      => $ENV{ UPS_USER_ID },
-	     password     => $ENV{ UPS_PASSWORD },
-	     access_key   => $ENV{ UPS_ACCESS_KEY }
-	 );
-	 
-	 $rr_shop->go() or die $rr_shop->user_error();
-	 
-	 foreach my $shipper ( @$results ) {
-	     print "Shipper: $shipper->{name}\n\n";
-	     foreach my $rate ( @{ $shipper->{ rates } } ) {
-		 print "  Service:  $rate->{name}\n";
-		 print "  Charges:  $rate->{charges_formatted}\n";
-		 print "  Delivery: $rate->{deliv_date_formatted}\n" 
-		     if $rate->{ deliv_date_formatted };
-		 print "\n";
-	     }
-	 }
+         my $rr_shop = Business::Shipping->rate_request( 
+             service      => 'shop',    
+             shipper      => 'UPS_Online',
+             from_zip     => '98682',
+             to_zip       => '98270',
+             weight       => 5.00,
+             user_id      => $ENV{ UPS_USER_ID },
+             password     => $ENV{ UPS_PASSWORD },
+             access_key   => $ENV{ UPS_ACCESS_KEY }
+         );
+         
+         $rr_shop->go() or die $rr_shop->user_error();
+         
+         foreach my $shipper ( @$results ) {
+             print "Shipper: $shipper->{name}\n\n";
+             foreach my $rate ( @{ $shipper->{ rates } } ) {
+                 print "  Service:  $rate->{name}\n";
+                 print "  Charges:  $rate->{charges_formatted}\n";
+                 print "  Delivery: $rate->{deliv_date_formatted}\n" 
+                     if $rate->{ deliv_date_formatted };
+                 print "\n";
+             }
+         }
+    
+    * [Enh] C.O.D. (Cash On Delivery) contributed by Selena Brewington
+      <computers@chrisking.com>, with minor modifications.
+      - To use, add these parameters to your rate request:
+        
+        cod            => 1,      # Enable C.O.D.
+        cod_funds_code => 0,      # 0 = All funds allowed, 
+	                          # 8 = money order only.
+        cod_value      => 400.00, # C.O.D. value in USA dollars.
+
     
 
 1.54  Sep 21 2004
@@ -96,8 +106,8 @@ Revision history for Business::Shipping
         use Business::Shipping { preload => 'USPS_Online' };
       - Without preloading, some modules will be loaded at runtime.  Normally, 
         runtime loading is the best mode of operation.  However, there are some
-	circumstances when preloading is advantagous (see docs).
-	
+        circumstances when preloading is advantagous (see docs).
+        
     * [Enh] Split the data into its own distribution, and add it to the bundle.
       - Business::Shipping::DataFiles - Offline cost estimation tables
       - Benefits: 
@@ -106,11 +116,11 @@ Revision history for Business::Shipping
         + Update scripts can just do a CPAN install of the latest data module.
       - Issues:
         + Chicken and Egg problem.  Can't install data first, because it needs
-	  Business::Shipping to know where to install.  Can't install Shipping
-	  first because it needs data in order to test.  Solution:  Check for
-	  pre-installed Business::Shipping and use that as the default, but ask
-	  anyway (for both).
-	  
+          Business::Shipping to know where to install.  Can't install Shipping
+          first because it needs data in order to test.  Solution:  Check for
+          pre-installed Business::Shipping and use that as the default, but ask
+          anyway (for both).
+          
     * [Enh] Add Business::Shipping::DataTools 
       - Converts shipper files into a format usable by Business::Shipping.
       - Most methods were removed from UPS_Offline::RateRequest where they were
@@ -126,7 +136,7 @@ Revision history for Business::Shipping
         http_proxy=http://proxy.my.place/
         no_proxy="localhost,my.domain"
         export http_proxy no_proxy
-	
+        
     * [Done] [Enh] Provide multiple bundles (in the same distribution)
       - Bundle::Business::Shipping
       - Bundle::Business::Shipping::UPS_Offline
@@ -164,7 +174,7 @@ Revision history for Business::Shipping
     * [Fixed] Missing module bugs
       - List of errors:
         "Can't locate Business/Shipping/Package/USPS.pm in @INC"
-	"Can't locate Business/Shipping/Shipment/USPS.pm in @INC"
+        "Can't locate Business/Shipping/Shipment/USPS.pm in @INC"
       - Caused by module name restructure in 1.51.
       - Reported by Micah Gersten <micah@davka.com>.
 
@@ -187,16 +197,16 @@ Revision history for Business::Shipping
     * [Enh] Restructure all of the modules
       - Keep everything the same, except the "lowest level":
           "RateRequest::Online::UPS"   => "UPS_Online::RateRequest"
-	  "RateRequest::Offline::UPS"  => "UPS_Offline::RateRequest"
-	  "RateRequest::Online::USPS"  => "USPS_Online::RateRequest"
-	  "Tracking::UPS" => "UPS_Online::Tracking"
+          "RateRequest::Offline::UPS"  => "UPS_Offline::RateRequest"
+          "RateRequest::Online::USPS"  => "USPS_Online::RateRequest"
+          "Tracking::UPS" => "UPS_Online::Tracking"
       - Benefits:
         All of the related code is in one directory.
         All of the abstract code is in neutral directories.
       - Note: This will totally break the ClassInfo/ClassAttribs system, because 
         that system just uses the names, instead of actually checking the 
         inheritance trees.
-	
+        
     * [Enh] Update the ClassInfo/ClassAttribs system to handle the restructured
       module system.  Should use ISA instead of breaking down the name 
       components.  
@@ -280,9 +290,9 @@ Revision history for Business::Shipping
     - [Fixed] [Bug] France XPR
     - [Fixed] [bug] 'make test' generates warnings
       - t/45_Offline-UPS..........Argument "Letter" isn't numeric in numeric eq
-	(==) at [...]/SQL/Statement.pm line 1120, <GEN3> chunk 2.  Argument 
-	"Multiplier" isn't numeric in numeric eq (==) at [...]/SQL/Statement.pm
-	line 1120, <GEN3> chunk 153.
+        (==) at [...]/SQL/Statement.pm line 1120, <GEN3> chunk 2.  Argument 
+        "Multiplier" isn't numeric in numeric eq (==) at [...]/SQL/Statement.pm
+        line 1120, <GEN3> chunk 153.
       - 'use diagnostics;' was removed to solve the problem.
 
   Online::USPS
@@ -306,7 +316,7 @@ Revision history for Business::Shipping
     - Remove Bundle::Business::Shipping (now in its own distro, where it should 
       be).
   
-	  
+          
 1.05  Feb 10 2004
 
 
@@ -315,7 +325,7 @@ Revision history for Business::Shipping
     - Remove unneeded .zip files from data/
     - Minor documentation updates
    
-	
+        
 1.04  Feb 07 2004
 
 
@@ -358,7 +368,7 @@ Revision history for Business::Shipping
           generator.
         + Pretty up the incident e-mail a little.
 
-		
+                
 1.03  Jan 30 2004
 
 
@@ -410,7 +420,7 @@ Revision history for Business::Shipping
         - Minor UserTag compatibility updates (from_state)
         - Add a mechanism for ignoring simple errors.
 
-		
+                
 1.02  Jan 06 2004
 
 
@@ -420,7 +430,7 @@ Revision history for Business::Shipping
     - Rename the update functions.
     - Sample "auto update" script that will update the data files.
 
-	
+        
 1.01  Jan 02 2004
 
 
@@ -433,7 +443,7 @@ Revision history for Business::Shipping
     - Some data format changes (east coast/west coast data update, add 'letter'
       to 1da chart, rename several of the files).
 
-	  
+          
 1.00  Dec 21 2003
 
 
@@ -457,7 +467,7 @@ Revision history for Business::Shipping
       - Gracefully handles more 500 errors from the servers.
       - Performs Business-Shipping tasks within an eval.
 
-	  
+          
 0.78  Nov 12 2003
 
 
@@ -467,7 +477,7 @@ Revision history for Business::Shipping
     - Moved credits to its own file.
     - Text and HTML versions of documentation now in doc/
 
-	
+        
 0.77  Nov 11 2003
 
 
@@ -475,7 +485,7 @@ Revision history for Business::Shipping
     - Cleanup TODO list.
     - Add COPYING file.
 
-	
+        
 0.76  Oct 13 2003
 
 
@@ -497,7 +507,7 @@ Revision history for Business::Shipping
     - Online::UPS thinned.
     - Additional test for UPS Letter post to Canda.
 
-	
+        
 0.75  Aug 25 2003
 
 

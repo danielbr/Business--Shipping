@@ -78,6 +78,25 @@ Gets rates for all the services in one request:
      }
  }
 
+=item * C.O.D. (Cash On Delivery)
+
+#DeliveryConfirmation and COD cannot coexist on a single Pakcage (DeliveryConfirmation is not yet implemented in Business::Shiping).
+#cod_code: The code associated with the type of COD.  Values: 1 = Regular COD, 2 = Express COD, 3 = Tagless COD
+
+Add these options to your rate request for C.O.D.:
+
+cod: enable C.O.D.
+
+cod_funds_code:  The code that indicates the type of funds that will be used for the COD payment.  Required if CODCode is 1, 2, or 3.  Valid Values: 0 = All Funds Allowed.  8 = cashier's check or money order, no cash allowed.
+
+cod_value: The COD value for the package.  Required if COD option is present.  Valid values: 0.01 - 50000.00
+ 
+For example:
+
+	cod            => 1,
+	cod_funds_code => 0,
+	cod_value      => 400.00,
+
 =back
 
 =head2 UPS_Offline: United Parcel Service

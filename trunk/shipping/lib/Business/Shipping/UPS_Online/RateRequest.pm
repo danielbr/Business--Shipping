@@ -115,7 +115,6 @@ use Class::MethodMaker 2.0
                     -forward => [ 
                                   'from_city', 
                                   'to_city', 
-                                  'service',  
                                   'from_country', 
                                   'from_country_abbrev', 
                                   'to_country', 
@@ -133,7 +132,8 @@ use Class::MethodMaker 2.0
                                   'to_canada', 
                                   'from_ak_or_hi', 
                                   'packaging', 
-                                  'to_residential', 
+                                  'to_residential',
+                                  'cod', 'cod_funds_code', 'cod_value',
                                 ], 
                    }, 
                    'shipment'
@@ -245,12 +245,32 @@ sub _gen_request_xml
         'ShipmentServiceSelfOptions' => { }, 
     );
     
+    my $shipment = $self->shipment;
+    
     my @packages;
-    foreach my $package ( $self->shipment->packages() ) {
+    foreach my $package ( $shipment->packages() ) {
         #
         # TODO: Move to a different XML generation scheme,  since all the packages 
         # in a multi-package shipment will have the name "Package"
         #
+        
+        my %package_service_options;
+        
+        if ( $shipment->cod ) {
+            %package_service_options = (
+                'PackageServiceOptions' => [ {
+                    'COD' => [ {
+                        'CODFundsCode' => [ $shipment->cod_funds_code ],
+                        'CODCode' => [ 3 ], # Only valid value is 3
+                        'CODAmount'=> [ {
+                            'CurrencyCode' => [ 'USD' ],
+                            'MonetaryValue' => [ $shipment->cod_value() ],
+                        } ],
+                    }],
+                } ],
+            );
+        }
+        
         $shipment_tree{ 'Package' } = [ {
                 'PackagingType' => [ {
                     'Code' => [ $package->packaging() ], 
@@ -260,11 +280,13 @@ sub _gen_request_xml
                 'Description' => [ 'Rate Lookup' ], 
                 'PackageWeight' => [ {
                     'Weight' => [ $package->weight() ], 
-                } ], 
+                } ],
+                
+                %package_service_options
             } ], 
     }
     
-    my $req_option = ucfirst $self->service if ucfirst $self->service eq 'Shop';
+    my $req_option = ucfirst $shipment->service if ucfirst $shipment->service eq 'Shop';
     
     my $request_tree = {
         'RatingServiceSelectionRequest' => [ { 
