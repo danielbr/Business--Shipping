@@ -4,7 +4,7 @@ sub
 {
 	my ( $error ) = @_;
 	
-	return unless $Variable->{ SYSTEMS_SUPPORT_EMAIL }
+	return unless $Variable->{ SYSTEMS_SUPPORT_EMAIL };
 	
 	my $timestamp = $Tag->time();
 	my $dump = $Tag->dump();		
