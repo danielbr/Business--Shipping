@@ -40,7 +40,7 @@ use Scalar::Util 'blessed';
     
 =item * $object->get_grouped_attrs( $attribute_group_name, %options  )
 
-Its recommended that you create an object of the desired class, then call it as 
+It's recommended that you create an object of the desired class, then call it as 
 above. 
 
 Returns a list of attributes for a certain group.  For example, if several 
@@ -64,11 +64,10 @@ class_name is for the old feature
     
 =cut
 
-#
 # TODO: automatically notice when called as "$self->" or not, 
 # and adjust accordingly.  If $self *AND* object => ... are specified,
 # then object => ... overrules.
-#
+
 sub get_grouped_attrs
 {
     my ( $self, $attribute_group_name, %options ) = @_;

@@ -79,7 +79,7 @@ use base ( 'Business::Shipping::RateRequest::Online' );
 use Business::Shipping::RateRequest::Online;
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
-use Business::Shipping::Package::UPS;
+use Business::Shipping::Package;
 use XML::Simple 2.05;
 use Cache::FileCache;
 use LWP::UserAgent;

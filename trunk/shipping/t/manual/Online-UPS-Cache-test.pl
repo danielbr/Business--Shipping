@@ -27,52 +27,37 @@ sub test
 {
     my ( %args ) = @_;
     my $shipment = Business::Shipping->rate_request( 
-        'shipper' => 'UPS',
-        'user_id'        => $ENV{ UPS_USER_ID },
-        'password'        => $ENV{ UPS_PASSWORD },
-        'access_key'    => $ENV{ UPS_ACCESS_KEY }, 
-        'cache'    => 0,
-        event_handlers => {
-            #trace => 'STDERR', 
-        }
+        'shipper'    => 'UPS_Online',
+        'user_id'    => $ENV{ UPS_USER_ID },
+        'password'   => $ENV{ UPS_PASSWORD },
+        'access_key' => $ENV{ UPS_ACCESS_KEY }, 
+        'cache'      => 0,
     );
     $shipment->submit( %args ) or die $shipment->user_error();
     return $shipment;
 }
 
-
+    my %similar = (
+        'service'        => '1DA',
+        'from_zip'       => '98682',
+        'to_zip'         => '98270',
+    );
     my $rr1 = test(
-        'cache'        => 1,
-        'pickup_type'         => 'daily pickup',
-        'from_zip'            => '98682',
-        'from_country'        => 'US',
-        'to_country'        => 'US',    
-        'service'            => '1DA',
-        'to_residential'    => '1',
-        'to_zip'            => '98270',
-        'weight'            => 2,
-        'packaging'         => '02',
+        %similar,
+        'cache'          => 1,
+        'weight'         => 2,
     );
     $rr1->submit() or die $rr1->user_error();
     my $total_charges_2_pounds = $rr1->total_charges();
     debug( "Cache test. 2 pounds = $total_charges_2_pounds" ); 
     
     my $rr2 = test(
-        'cache'                => 1,
-        'pickup_type'         => 'daily pickup',
-        'from_zip'            => '98682',
-        'from_country'        => 'US',
-        'to_country'        => 'US',    
-        'service'            => '1DA',
-        'to_residential'    => '1',
-        'to_zip'            => '98270',
-        'weight'            => 9,
-        'packaging'         => '02',
+        %similar,
+        'cache'          => 1,
+        'weight'         => 12,
     );
     $rr2->submit() or die $rr2->user_error();
-    my $total_charges_9_pounds = $rr2->total_charges();
-    debug( "Cache test. 9 pounds = $total_charges_9_pounds" );
-    ok( $total_charges_2_pounds != $total_charges_9_pounds, 'UPS domestic cache, sequential charges are different' );
- 
-
-
+    my $total_charges_12_pounds = $rr2->total_charges();
+    debug( "Cache test. 12 pounds = $total_charges_12_pounds" );
+    ok( $total_charges_2_pounds != $total_charges_12_pounds, 'UPS domestic cache, sequential charges are different' );
+    

@@ -10,25 +10,11 @@ INSTALLATION
      make install
 
 REQUIRED MODULES
-
-Archive::Zip (any)
-Bundle::DBD::CSV (any)
-Cache::FileCache (any)
-Class::MethodMaker::Engine (any)
-Clone (any)
-Config::IniFiles (any)
-Crypt::SSLeay (any)
-Data::Dumper (any)
-Devel::Required (0.03)
-Error (any)
-Getopt::Mixed (any)
-Log::Log4perl (any)
-LWP::UserAgent (any)
-Math::BaseCnv (any)
-Scalar::Util (1.10) 
-Test::More (any)
-XML::DOM (any)
-XML::Simple (2.05)
+    Bundle::DBD::CSV (any) Cache::FileCache (any) Class::MethodMaker::Engine
+    (any) Clone (any) Config::IniFiles (any) Crypt::SSLeay (any)
+    Getopt::Mixed (any) Log::Log4perl (any) LWP::UserAgent (any)
+    Math::BaseCnv (any) Scalar::Util (1.10) XML::DOM (any) XML::Simple
+    (2.05)
 
 GETTING STARTED
     Be careful to read, understand, and comply with the terms of use for the

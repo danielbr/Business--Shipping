@@ -71,7 +71,7 @@ use Class::MethodMaker 2.0
                   'Optional' 
                 ],
       scalar => [ { -static => 1, 
-                    -default => 'service, from_zip, from_country, to_zip, from_city, to_city' 
+                    -default => 'service, from_zip, from_country, to_zip, from_city, to_city, weight' 
                   },
                   'Unique' 
                 ]

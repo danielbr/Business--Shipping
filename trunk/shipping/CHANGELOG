@@ -25,7 +25,11 @@ Revision history for Business::Shipping
       - Note: This will totally break the ClassInfo/ClassAttribs system, because 
         that system just uses the names, instead of actually checking the 
         inheritance trees.
-
+    * [Enh] Update the ClassInfo/ClassAttribs system to handle the restructured
+      module system.  Should use @{ $class::ISA } instead of breaking down the 
+      name components.  
+    * [Fixed] [Bug] For Micah Gersten <micah@davka.com>, Business.pm was 
+      'require'd.
 
 1.50  CVS
 

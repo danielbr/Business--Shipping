@@ -1,12 +1,3 @@
-# Business::Shipping::ClassInfo - Used by ClassAttribs
-# 
-# $Id$
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-# 
-
 package Business::Shipping::ClassInfo;
 
 =head1 NAME
@@ -31,10 +22,7 @@ use Scalar::Util 'blessed';
 use Business::Shipping::Util;
 use Business::Shipping::Logging;
 
-use Class::MethodMaker 2.0 
-    [ 
-      new    => [ { -init => 'this_init' }, 'new' ],
-    ];
+use Class::MethodMaker 2.0 [ new => [ { -init => 'this_init' }, 'new' ] ];
 
 sub this_init
 {
@@ -44,6 +32,7 @@ sub this_init
 
 sub get_classes_str { return "\n    " . join( "\n    ", $_[ 0 ]->get_classes_ary ); }
 sub get_classes_ary { return ( sort keys %{ $_[ 0 ]->classes } ); }
+
 =item * classes
 
 Returns $self->{ classes }, which is:
@@ -224,15 +213,12 @@ sub recursive_find_Has_a
                 $Has_a_classes_objects{ $new_class_name } = $new_class_object
                     if defined $new_class_object;
                 
-                #
-                #   - For each Has_a Object found, search that tree too, perhaps it has parents 
-                #     that we haven't added yet.  For example:
-                #     - Shipment::UPS     Has_a     Package::UPS
-                #     - Normally, we just add Package::UPS::Group() ('packaging').
-                #     - What we should do is also add Package::Group() ('weight').
-                #
-                my @tree_class_names = $self->get_tree_class_names( $new_class_name );
-                %parent_classes_objects = $self->get_classes_objects_for_classes( @tree_class_names );
+                # We no longer user class name components in the search.
+                my @class_names = ( 
+                    #$self->get_tree_class_names( $new_class_name ),
+                    $self->get_parent_class_names( $new_class_name )
+                );
+                %parent_classes_objects = $self->get_classes_objects_for_classes( @class_names );
                 
                 #debug3( "Checking slot $slot.  Found new_class_name = $new_class_name, with new class_object = $new_class_object" );
             }
@@ -389,7 +375,50 @@ sub add_missing_objects
     return;
 }
 
+=item * get_parent_class_names( $class_name )
+
+Searches @ISA for parent classes
+
+=cut
+
+sub get_parent_class_names
+{
+    my ( $self, $class_name ) = @_;
+    
+    my @parent_class_names;
+    eval {
+        eval "use $class_name";
+    };
+    if ( $@ ) {
+        #error "Died when using class $class_name\n"; 
+        return; 
+    }
+    eval {
+        @parent_class_names = eval "@" . "$class_name" . '::' . 'ISA';
+    };
+    if ( $@ ) { 
+        # error "Died when getting ISA for class $class_name: $@\n"; 
+        return;
+    }
+    #error "parents of $class_name are: " . join( ', ', @parent_class_names );
+    
+    # Recursive search.
+    foreach my $new_class_name ( @parent_class_names ) {
+        if ( $new_class_name ne 'Business' ) {
+            push @parent_class_names, $self->get_parent_class_names( $new_class_name );
+        }
+    }
+    
+    return ( @parent_class_names );
+}
+
 =item * get_tree_class_names( $class_name )
+
+For each Has_a Object found, search that tree too, perhaps it has parents 
+that we haven't added yet.  For example:
+- UPS_Online::Shipment     Has_a     UPS_Online::Package
+- Normally, we just add UPS_Online::Package::Group() ('packaging').
+- What we should do is also add Package::Group() ('weight').
 
 =cut
 
@@ -401,7 +430,12 @@ sub get_tree_class_names
     my @full_tree_class_names;
     
     for ( my $i = 0; $i < @tree_class_names; $i++ ) {
-        push @full_tree_class_names, join( '::', @tree_class_names[ 0 .. $i ] );
+        my $full_tree_class_name = join( '::', @tree_class_names[ 0 .. $i ] );
+        if (     $full_tree_class_name ne 'Business' 
+             and $full_tree_class_name ne 'Business::Shipping' ) 
+        {
+            push @full_tree_class_names, $full_tree_class_name;
+        }
     }
 
     return @full_tree_class_names;

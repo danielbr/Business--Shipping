@@ -20,7 +20,7 @@ new-release - the Business::Shipping release script.
  # Make sure all the files (documentation, etc.) are up to date.
  #
  # Make sure that the manifest didn't get any extra stuff:
- # rm MANIFEST; make manifest; cvs diff MANIFEST | more
+ # rm MANIFEST; make manifest; svn diff MANIFEST | more
  #
  # UPDATE META.yml
  #
@@ -28,14 +28,14 @@ new-release - the Business::Shipping release script.
  #
  perl Makefile.PL
  make docs && make && make test
- cvs commit
+ svn commit
  
  #
  # Delete old file, make new file, and upload to server.
  # Upload the new version to CPAN, for PAUSE
  # Update to the next verision in Makefile.PL (if you haven't already)
  #
- export VERSION_AFTER_THIS_UPLOAD=1.07
+ export VERSION_AFTER_THIS_UPLOAD=1.52
  rm Business-Shipping-*.tar.gz
  make tardist
  bin/new-release.pl Business-Shipping-*.tar.gz

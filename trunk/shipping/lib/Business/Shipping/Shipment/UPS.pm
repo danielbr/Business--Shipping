@@ -44,8 +44,9 @@ use Class::MethodMaker 2.0
       scalar => [ 'offline' ],
       scalar => [ { -static => 1, -default => 'to_residential' }, 'Optional' ],
       scalar => [ { -static => 1, -default => 'to_residential' }, 'Unique' ],
-      array  => [ { -type => 'Business::Shipping::Package::UPS' }, 'packages' ],      
-      scalar => [ { -static => 1, -default => 'packages=>Business::Shipping::Package::UPS' }, 'Has_a' ],
+      array  => [ { -type => 'Business::Shipping::Package', 
+                    -default_ctor => 'new' }, 'packages' ],      
+      scalar => [ { -static => 1, -default => 'packages=>Business::Shipping::Package' }, 'Has_a' ],
     ];
 
 sub this_init

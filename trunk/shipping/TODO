@@ -2,25 +2,6 @@
 ##  General TODO
 ################################################################################
 
-* [Enh] Update the ClassInfo/ClassAttribs system to handle the restructured
-  module system.  Should use @class::ISA instead of breaking down the name 
-  components.  
-     
-* [Bug] For Micah Gersten <micah@davka.com>, Business.pm was 'require'd.
-  - Probably a bug in ClassInfo
-  - See stack trace for more information
-
-* [Bug] USPS Global Express Mail bug reported by Micah Gersten <micah@davka.com>
-  > It is using the 'Economy (Surface) Parcel Post' rate instead of 'Global 
-  > Express Mail (EMS)'.
-
-  Aha.  I will investigate that at the earliest opportunity.  I'm not sure when
-  that will be, however (tomorrow?  next week?).  If you want to look into it
-  yourself, I'm sure the bug is somewhere near this:
-
-  File: lib/Business/Shipping/RateRequest/Online/USPS.pm
-  Line: 300
-
 * [Enh] Build a replacement for ClassInfo and ClassAttribs that will be more 
   simple, efficient, and portable.
   
@@ -47,7 +28,12 @@
 * [Enh] Consider using Locale::Country (5.8.x+) & Locale::SubCountry (CPAN), or 
    Geography::States & Geography::Countries.
 
-* [DOC] Memory footprint information: 
+* [Enh] Profile the application
+  - How long does it take just to load the prerequisites?  Maybe some can be
+    replaced.
+  - What are the longest operations?
+  
+* [Doc] Memory footprint information: 
    8+ MB when Offline is used (and stays).
    ---> 6.5 mb happens at the time of 
         "use Business::Shipping::RateRequest::Offline::UPS"
@@ -199,24 +185,33 @@ Anyway, I think I need to investigate it some more.
  
  * [Enh] Add First-Class Mail
    - http://www.usps.com/consumers/domestic.htm#first
-   - Can be done via an off-line calculation, I believe.
+   - Can be done via an off-line calculation.
 
 ################################################################################
 ##  Online::USPS TODO
 ################################################################################
 
- * [Bug] Find a better way to correlate "Air mail" with all the various names
-   it is called by each country.
- 
- * [Bug] Not correctly realizing when there is an error (<Error><Number>...)
-   - Perhaps because we don't ( KeepRoot => 1, ) on the XMLin()?
+    * [Bug] USPS EMS bug reported by Micah Gersten <micah@davka.com>
+      > It is using the 'Economy (Surface) Parcel Post' rate instead of 'Global 
+      > Express Mail (EMS)'.
 
- * [Enh] Enable Cache for USPS.
- 
- * [Enh] Support get_charges( 'service' ) for domestic types.
+      The bug is somewhere near this:
 
- * [Enh] Use the International Country Listing
-	- http://pe.usps.gov/cpim/ftp/manuals/Imm/Immctry.pdf
+      File: lib/Business/Shipping/RateRequest/Online/USPS.pm
+      Line: 300
+
+   * [Bug] Find a better way to correlate "Air mail" with all the various names
+     it is called by each country.
+ 
+   * [Bug] Not correctly realizing when there is an error (<Error><Number>...)
+     - Perhaps because we don't ( KeepRoot => 1, ) on the XMLin()?
+
+   * [Enh] Enable Cache for USPS.
+  
+   * [Enh] Support get_charges( 'service' ) for domestic types.
+
+   * [Enh] Use the International Country Listing
+     - http://pe.usps.gov/cpim/ftp/manuals/Imm/Immctry.pdf
  
 ################################################################################
 ##  Offline::UPS TODO
@@ -349,7 +344,5 @@ Anyway, I think I need to investigate it some more.
 ################################################################################
 ##  Tracking
 ################################################################################
-
-* Upgrade to C:MM 2.02.
 
 * Tests
