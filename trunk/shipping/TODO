@@ -2,10 +2,17 @@
 ##  General TODO
 ######################################################
  
+ * Move 500 error handlers from business-shipping.tag into RateRequest::Online.
+ 
+ * Enable Cache for USPS.
+ 
  * Find a better way to correlate "Air mail" with all the various names
    it is called by each country.
 
- * Fix the multi-package API for UPS.
+ * Fix the multi-package API for UPS.  
+   # TODO: Move to a different XML generation scheme, since all the packages 
+   #       in a multi-package shipment will have the name "Package".
+   # TODO: multi-package support: loop over the packages
  
  * Migrate the "retry on failure" code from business-shipping.tag to 
    Business::Shipping proper.  Default to tries=2, but allow that to be
@@ -14,8 +21,6 @@
  * Only Cache the response if it was a success (very important)
  
  * Error on missing arguments isn't working very well ( user_id, password)
- 
- * Include the terms of use for each module.
  
  * The Shipping module itself should be able to be queried for what shippers it
    handles. Each shipper should be able to be queried for what services it 
@@ -51,6 +56,8 @@
  * Upgrade the debugging/error handling features: allow user to pass in a callback ref.
  
  * Documentation
+   - Explain what else is out there (Business::UPS, FedEx, static table lookup)
+   - Include the terms of use for each module.
  
  * Business::Shipping::FedEx module
  	- Utilize the recently released Business::FedEx::DirectConnect module.
@@ -58,9 +65,8 @@
  * More flexible handling of SSL?
 	- Allow the use of Net::SSLeay as well as Crypt::SSLeay?
 
- * Business::Shipping::OldUPS interface?
- 	- Utilize Business::UPS?  Advantage:  no username/id...
-	- Or utilize the new Business::Shipping::UPS?
+ * Business::Shipping::OldUPS?
+	- Utilize the new Business::Shipping::UPS?
 	
  * New feature ideas:
  	- Address Verification
@@ -72,13 +78,9 @@
 	- Shipping time (how long till it gets there)?
 	- Delivery/Signature confirmation?
  	
- * Testing code needs a lot of work.
- 
  * Use Params::Validate for parameter validation?
  
  * List Prerequisites in a Bundle module
- 
- * Documentation: explain what else is out there (Business::UPS, FedEx, static table lookup)
  
  * So, it sounds like a "shipment" is another useful abstraction. It would be 
    shipper-specific and so you probably would have a 
@@ -98,14 +100,6 @@
      information (customs, etc.) wouldn't be saved (kb on disk).
    - More efficient methods besides FileCache?
 
-
-######################################################
-##  Interchange usertags TODO
-######################################################
-
- * Test for ability to use within Safe?
-	([perl]$Tag->ups_query('', '', '');[/perl]) 
-	
 ######################################################
 ##  Business::Shipping::USPS TODO
 ######################################################
@@ -129,18 +123,16 @@
 ##  Business::Shipping::UPS TODO
 ######################################################
  
- * Implement "to_city"
- 
  * Allow better names, like "One Day Air" instead of 1DA.
    Better names for packaging too (instead of numbers).
  
- * Tests that *I* should run:
+ * Tests:
 
 	- All types (ground, air, etc.) 
 	- World wide (several countries, states (Hawaii, Alaska), etc.)
 	- Confirm that price returned > 0, and no error.  (If error, fail test and dispaly error).
 
- * Confirm thread-safety-ness.
+ * Test for thread-safety-ness.
 
  * Is non-ssl communication with either provider possible?	
 
@@ -150,3 +142,10 @@
  * UPS support for sending multiple simultaneous requests
 	- (USPS had built-in support in the API for Intl)
  	- If they don't support it, try LWP::Parallel::UserAgent.
+
+######################################################
+##  Interchange usertags TODO
+######################################################
+
+ * Test for ability to use within Safe?
+	([perl]$Tag->ups_query('', '', '');[/perl]) 

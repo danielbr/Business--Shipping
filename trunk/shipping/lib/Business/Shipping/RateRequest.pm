@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest - Abstract class for shipping cost rating.
 # 
-# $Id: RateRequest.pm,v 1.2 2003/07/10 07:38:19 db-ship Exp $
+# $Id: RateRequest.pm,v 1.3 2003/08/20 12:58:47 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -15,7 +15,7 @@ use warnings;
 use vars ( '$VERSION' );
 #@ISA = ( 'Business::Shipping' );
 use base ( 'Business::Shipping' );
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping::Debug;
 use Cache::FileCache;
@@ -149,11 +149,6 @@ sub total_charges
 	my $self = shift;
 	my $total;
 	
-	# See note in Shipping::RateRequest::Online::UPS::_handle_response() about
-	# both methods.  For now, we're using the foreach package method.
-	#
-	# TODO: Select one method.
-	#
 	my $shippers = $self->results();
 	foreach my $shipper ( keys %$shippers ) {
 		debug "\tshipper: $shipper\n";

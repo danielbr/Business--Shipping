@@ -1,10 +1,18 @@
 Revision history for Business::Shipping.
 
+0.74  Aug 19 2003
+	- Clean up the business-shipping usertag a little bit.
+	- Other misc. cleanups.
+	- Re-write the pounds/ounces calculator.
+	- Remove lots of cruft.
+
+
 0.73  Aug 15 2003
 	- More tests
 	- Fix USPS International shipping: new "service matching" method.
 	- Documentation Updates
 
+	
 0.72  Aug 09 2003
 	- Many more tests.
 	- USPS Updates:

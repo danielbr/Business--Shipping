@@ -11,7 +11,7 @@ UserTag  business-shipping  Documentation 	<<EOD
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: business-shipping.tag,v 1.2 2003/07/10 07:38:18 db-ship Exp $
+# $Id: business-shipping.tag,v 1.3 2003/08/20 12:58:47 db-ship Exp $
 
 =head1 NAME
 
@@ -170,20 +170,12 @@ sub {
 		'from_zip'			=> $Variable->{ XPS_FROM_ZIP },
 	);
 	
-	# I'm not sure if the cache feature is safe enough to enable yet, but...
-	#$opt{ 'cache_enabled' } = 1 unless defined( $opt{ 'cache_enabled' } );
-	$opt{ 'cache' } = 1 unless defined( $opt{ 'cache' } );
+	# Cache enabled by default.
+	if ( not defined $opt{ 'cache' } ) { $opt{ 'cache' } = 1; }
 	
-	# USPS extras.
-	
-	if ( $shipper eq 'USPS' ) {
-		if ( $opt{ 'weight' } < 1.0 ) {
-			$opt{ 'weight' } = 1;
-		}
+	if ( $shipper eq 'UPS' ) {
+		$defaults{ 'access_key' } = $Variable->{ "${shipper}_ACCESS_KEY" } if ( $Variable->{ "${shipper}_ACCESS_KEY" } );
 	}
-	
-	# UPS extras.
-	$defaults{ 'access_key' } = $Variable->{ "${shipper}_ACCESS_KEY" } if ( $Variable->{ "${shipper}_ACCESS_KEY" } );
 	
 	for ( %defaults ) {
 		$opt{ $_ } ||= $defaults{ $_ } if ( $_ and defined $defaults{ $_ } ); 
@@ -226,16 +218,16 @@ sub {
 	}
 	return undef unless $success;
 	
+	my $charges;
+	
 	#my $charges = $rate_request->get_charges( $opt{ 'service' } );
-	my $charges = $rate_request->total_charges();
+	#$charges = $rate_request->total_charges();
 	
 	# get_charges() *should* be implemented for all use cases, in the future.
 	# For now, we just fall back on total_charges()
-	#$charges ||= $rate_request->total_charges();
+	$charges ||= $rate_request->total_charges();
 	
 	if ( ! $charges ) {
-		#$Values->{ 'shipping_ok' } = '';
-		
 		# This is a debugging / support tool.  Set the XPS_GEN_INCIDENTS and
 		# SYSTEMS_SUPPORT_EMAIL variables to enable.
 		if ( $Variable->{ 'XPS_GEN_INCIDENTS' } ) {

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::UPS - Abstract class for shipping cost rating.
 # 
-# $Id: UPS.pm,v 1.5 2003/08/10 17:08:14 db-ship Exp $
+# $Id: UPS.pm,v 1.6 2003/08/20 12:58:48 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 #@ISA = ( 'Business::Shipping::RateRequest::Online' );
 use base ( 'Business::Shipping::RateRequest::Online' );
 
@@ -112,7 +112,6 @@ sub _gen_unique_values
 sub _massage_values
 {
 	trace( 'called' );
-	# TODO: Value massaging (see ups-query.tag )
 	my ( $self ) = @_;
 	
 	# Translate service values.
@@ -244,8 +243,10 @@ sub _gen_request_xml
 	
 	my @packages;
 	foreach my $package ( @{$self->packages()} ) {
+		#
 		# TODO: Move to a different XML generation scheme, since all the packages 
-		# in a multi-package shipment will have the name "Package" 
+		# in a multi-package shipment will have the name "Package"
+		#
 		$shipment_tree{ 'Package' } = [ {
 				'PackagingType' => [ {
 					'Code' => [ $package->packaging() ],
@@ -342,7 +343,7 @@ sub _handle_response
 	# 'return' method:
 	# 1. Save a "results" hash.
 	#
-	# TODO: loop over the packages
+	# TODO: multi-package support: loop over the packages
 	#
 	my $packages = [
 		{ 

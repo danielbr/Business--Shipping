@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment::USPS
 # 
-# $Id: USPS.pm,v 1.4 2003/08/10 17:08:14 db-ship Exp $
+# $Id: USPS.pm,v 1.5 2003/08/20 12:58:48 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -14,7 +14,7 @@ use warnings;
 
 use vars qw( @ISA $VERSION );
 @ISA = ( 'Business::Shipping::Shipment' );
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping::Debug;
 use Business::Shipping::Package;
@@ -90,7 +90,7 @@ sub to_country
 }
 
 #
-# TODO: Remove all this.  Separate code from data.
+# TODO: Separate code from data.
 #
 # Translate common usages (Great Britain) into the USPS proper name
 # (Great Britain and Northern Ireland).

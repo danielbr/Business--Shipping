@@ -15,10 +15,11 @@ new-release - the Business::Shipping release script.
  # Test it
  make test
  
- # Update the verision in Makefile.PL
+ # Update the verision in Makefile.PL (if you haven't already)
  vi Makefile.PL
  
  # Update the CHANGELOG
+ cvs diff | more
  vi CHANGELOG
  
  # Update the README

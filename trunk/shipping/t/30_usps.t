@@ -204,7 +204,7 @@ SKIP: {
 		to_zip		=> 27713,
 		from_zip	=> 98682,
 	);
-	print "total charges = " . $shipment->total_charges() . "\n";
+	print "\ttotal charges = " . $shipment->total_charges() . "\n";
 	ok( $shipment->total_charges() > 20.00,		'USPS high weight is high price' );
 	
 	#simple_test(

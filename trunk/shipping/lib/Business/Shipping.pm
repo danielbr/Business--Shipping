@@ -1,6 +1,6 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.4 2003/08/16 12:33:45 db-ship Exp $
+# $Id: Shipping.pm,v 1.5 2003/08/20 12:58:47 db-ship Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Carp;
 use Business::Shipping::Debug;
@@ -65,7 +65,6 @@ sub validate
 	}
 	
 	if ( @missing ) {
-		# TODO: error handling.
 		$self->error( "Missing required argument " . join ", ", @missing );
 		debug( "returning undef" );
 		return undef;

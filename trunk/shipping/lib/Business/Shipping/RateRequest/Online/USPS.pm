@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::USPS - Abstract class for shipping cost rating.
 # 
-# $Id: USPS.pm,v 1.4 2003/08/16 12:33:45 db-ship Exp $
+# $Id: USPS.pm,v 1.5 2003/08/20 12:58:48 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( @ISA $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @ISA = ( 'Business::Shipping::RateRequest::Online' );
 
 
@@ -181,7 +181,7 @@ sub _gen_request
 sub _massage_values
 {
 	my $self = shift;
-	#$self->_set_pounds_ounces();
+	
 	$self->_domestic_or_intl();
 	
 	# Round up if United States... international can have less than 1 pound.
@@ -191,8 +191,6 @@ sub _massage_values
 		}
 	}
 	
-	# TODO: If some packages don't have a to_zip, from_zip, etc., then map from teh default assignment. 
-	# Should it be done at the Package level?
 	return;
 }
 
@@ -295,17 +293,6 @@ sub _handle_response
 	return $self->is_success( 1 );
 }
 
-sub _set_pounds_ounces
-{
-	my $self = shift;
-	unless( $self->pounds() ) {
-		$self->pounds( $self->weight() );
-	}
-	
-	# 'pounds' cannot be a fraction.
-	# TODO: Calculate 'ounces' from a fractional pound.
-	return;
-}
 
 # Decide if we are domestic or international for this run...
 sub _domestic_or_intl
@@ -323,52 +310,6 @@ sub _domestic_or_intl
 	debug( $self->domestic() ? 'Domestic' : 'International' );
 	return;
 }
-
-# TODO: see if any of the following is useful information... 
-#
-#		'alias_to_default_package' => {
-#			service 	=> undef,
-#			pounds		=> undef,
-#			ounces		=> 0,
-#			container	=> 'None',
-#			size		=> 'Regular',
-#			machinable	=> 'False',
-#			mail_type	=> 'Package',
-#			from_zip	=> undef,
-#			to_zip		=> undef,
-#			to_country	=> undef,
-#		},
-#
-#
-#		'unique_values' => {
-#			pickup_type				=> undef,
-#			from_country			=> undef,
-#			from_zip				=> undef,
-#			to_residential			=> undef,
-#			to_country				=> undef,
-#			to_zip					=> undef,
-#			service					=> undef,
-#		},
-#
-#
-#
-# TODO: Remove (legacy)
-# 
-# This is to redirect calls to the package level (so that
-# people who wont ever ship multiple packages don't have to
-# deal with the complexity of it.
-sub build_subs_packages
-{
-	my $self = shift;
-    foreach( @_ ) {
-		unless ( $self->can( $_ ) ) {
-			eval "sub $_ { my \$self = shift; if(\@_) { \$self->{'packages'}->[0]->$_( shift ); } return \$self->{'packages'}->[0]->$_(); }";
-		}
-    }
-	return;
-}
-
-
 
 =pod
 

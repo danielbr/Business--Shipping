@@ -2,7 +2,7 @@ use 5.006000;
 use ExtUtils::MakeMaker;
 
 # Version for Business-Shipping as a whole.
-$VERSION = '0.73';
+$VERSION = '0.74';
 
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
