@@ -11,7 +11,7 @@ Require Module Business::Shipping
 UserTag  business-shipping  Order         shipper
 UserTag  business-shipping  AttrAlias     mode    shipper
 UserTag  business-shipping  AttrAlias     carrier shipper
-UserTag  business-shipping  Addattr
+UserTag  business-shipping  AddAttr
 UserTag  business-shipping  Documentation <<EOD
 =head1 NAME
 
@@ -29,11 +29,11 @@ Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.c
 =head1 SYNOPSIS
 
 [business-shipping 
-    shipper='UPS_Offline'
-    service='GNDRES'
-    from_zip='98682'
-    to_zip='98270'
-    weight='5.00'
+    shipper=UPS_Offline
+    service='Ground Residential'
+    from_zip=98682
+    to_zip=98270
+    weight=5.00
 ]
     
 =head1 REQUIRED MODULES
@@ -72,6 +72,7 @@ Here is a general outline for installing [business-shipping] in Interchange.
    Note that "BS" is used to denote fields that can be used for any 
    Business::Shipping shipper.  Note that the spaces below are one tab.
 
+BS_DEBUG	0	Shipping
 BS_FROM_COUNTRY	US	Shipping
 BS_FROM_STATE	WA	Shipping
 BS_FROM_ZIP	98682	Shipping
@@ -81,7 +82,7 @@ BS_TO_ZIP_FIELD	zip	Shipping
 UPS_ACCESS_KEY	AB12CDEF345G6	Shipping 
 UPS_USER_ID	userid	Shipping
 UPS_PASSWORD	mypassword	Shipping
-UPS_PICKUPTYPE	Daily Pickup	Shipping
+UPS_PICKUP_TYPE	Daily Pickup	Shipping
 USPS_USER_ID	123456ABCDE7890	Shipping
 USPS_PASSWORD	abcd1234d5	Shipping
     
@@ -114,8 +115,13 @@ sub {
     my ( $shipper, $opt ) = @_;
     
     my $debug = delete $opt->{ debug } || $Variable->{ BS_DEBUG } || 0;
-    ::logDebug( "[business-shipping " . uneval( $opt ) ) if $debug;
+    
+    $shipper ||= delete $opt->{ shipper } || '';
+    
+    ::logDebug( "[business-shipping $shipper" . Vend::Util::uneval_it( $opt ) . " ]") if $debug;
     my $try_limit = delete $opt->{ 'try_limit' } || 2;
+    
+    delete $opt->{ shipper };
     
     unless ( $shipper and $opt->{weight} and $opt->{ 'service' }) {
         Log ( "mode, weight, and service required" );
@@ -126,7 +132,7 @@ sub {
     # take out anything Interchange-specific that isn't necessary using a hash
     # slice.
 
-    delete @{ $opt }{ 'reparse', 'mode', 'hide' };
+    delete @{ $opt }{ 'reparse', 'mode', 'hide', 'shipper' };
     
     # Business::Shipping takes a hash.
 
@@ -141,7 +147,7 @@ sub {
     # Defaults: Cache enabled.  Log errors only.
     
     my $defaults = {
-        'all' => {
+        'All' => {
             'to_country'        => $Values->{ 
                 $Variable->{ BS_TO_COUNTRY_FIELD } || 'country' 
             },
@@ -149,7 +155,7 @@ sub {
             'to_city'           => $Values->{ $Variable->{ BS_TO_CITY_FIELD } || 'city' },
             'from_country'      => $Variable->{ BS_FROM_COUNTRY },
             'from_zip'          => $Variable->{ BS_FROM_ZIP },
-            'cache'             => ( defined $opt{ cache } ? $opt{ cache } : 1 ),
+            'cache'             => ( defined $opt{ cache } ? $opt{ cache } : 1 ), # Allow 0
         },
         'USPS_Online' => {
             'user_id'           => $Variable->{ "USPS_USER_ID" },
@@ -176,7 +182,7 @@ sub {
     # For example, USPS_Online overrides the to_country method.
 
     foreach my $shipper_key ( sort keys %$defaults ) {
-        if ( $shipper_key eq $shipper or $shipper_key eq 'all' ) {
+        if ( $shipper_key eq $shipper or $shipper_key eq 'All' ) {
             #::logDebug( "shipper_key $shipper_key matched shipper $shipper, or was \'all\'.  Looking into defualts..." ) if $debug;
             
             my $shipper_defaults = $defaults->{ $shipper_key };
@@ -188,25 +194,34 @@ sub {
             }
         }
     }
-    ::logDebug( "After processing all defaults, the options are now: " . uneval( \%opt ) ) if $debug;
     
     my $rate_request;
-    eval {
-        $rate_request = Business::Shipping->rate_request( 'shipper' => $shipper );
-    };
-     
+    eval { $rate_request = Business::Shipping->rate_request( 'shipper' => $shipper ); };
     if ( ! defined $rate_request or $@ ) {
-        Log( "[business-shipping] failure when calling Business::Shipping->rate_request(): $@ " );
+        Log( "[business-shipping] Error: failure to get Business::Shipping object: $@ " );
         return;
     }
     
-    ::logDebug( "calling Business::Shipping::RateRequest::${shipper}->submit( " . uneval( \%opt ) . " )" ) if $debug;
-    $rate_request->init( %opt );
-    my $success;
+    ::logDebug( "Initializing rate_request object with: " . Vend::Util::uneval_it( \%opt ) ) if $debug;
+    
+    eval { $rate_request->init( %opt ); };
+    if ( $@ ) {
+        Log( "[business-shipping] Error: failure to initialize object with parameters: $@ " );
+        return;
+    }
+    
+    ::logDebug( "calling \$rate_request->go()" ) if $debug;
 
-    eval { $submit_results = $rate_request->submit(); };
+    my $success;
+    my $submit_results;
+
+    eval { $submit_results = $rate_request->go( %opt ); };
     if ( not $submit_results or $@ ) { 
-        Log( "Error: " . $rate_request->error() . "$@" );
+        Log( "[business-shipping] Error: " . $rate_request->user_error() . "$@" );
+        
+        # Prevent 500 error on some systems?
+        $@ = '';
+        
         return;
     }
         
@@ -272,7 +287,7 @@ sub {
         };
         $@ = '';
     }
-    ::logDebug( "[business-shipping] returning " . uneval( $charges ) ) if $debug;
+    ::logDebug( "[business-shipping] returning " . ( $charges || 'undef' ) ) if $debug;
     
     return $charges;
 }

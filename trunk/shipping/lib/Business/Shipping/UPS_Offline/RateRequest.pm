@@ -508,7 +508,7 @@ sub calc_zone_data
     for ( keys %{ $self->Zones } ) {
         my $this_zone = $self->Zones->{ $_ };
         if ( ! $this_zone->{ zone_data } ) {
-            $this_zone->{ zone_data } = Business::Shipping::Util::readfile( $self->zone_file() );
+            $this_zone->{ zone_data } = Business::Shipping::UPS_Offline::RateRequest::readfile( $self->zone_file() );
         }
         if ( ! $this_zone->{ zone_data } ) {
             $self->user_error( "Bad shipping file for zone " . $_ . ", lookup disabled." );
@@ -675,8 +675,12 @@ sub calc_cost
 {
     my ( $self ) = @_;
     
-    if ( ! $self->zone_name or ! $self->service_nick2 ) {
-        $self->user_error( "Need zone_name and service" );
+    if ( ! $self->zone_name ) {
+        $self->user_error( "Need zone_name" );
+        return;
+    }
+    if ( ! $self->shipment->service_nick2 ) {
+        $self->user_error( "Need service" );
         return;
     }
     
@@ -867,12 +871,8 @@ sub special_zone_hi_ak
     my @ak_special_zipcodes_126_226 = split( ',', ( cfg()->{ups_information}->{ak_special_zipcodes_126_226} or '' ) );
     debug3( "zip=" . $self->to_zip . ".  Hawaii special zip codes = " . join( ",\t", @hi_special_zipcodes_124_224 ) );
 
-    if ( 
-            element_in_array( $self->to_zip(), @hi_special_zipcodes_124_224 )
-        or
-            element_in_array( $self->to_zip(), @ak_special_zipcodes_124_224 )
-        ) 
-    {
+    my $to_zip = $self->to_zip;
+    if ( grep( /^$to_zip$/, @hi_special_zipcodes_124_224, @ak_special_zipcodes_124_224 ) ) {
         if ( $type eq 'NextDayAir' ) {
             $zone = '124';
         }
@@ -880,12 +880,7 @@ sub special_zone_hi_ak
             $zone = '224';
         }
     }
-    if ( 
-            element_in_array( $self->to_zip(), @hi_special_zipcodes_126_226 )
-        or
-            element_in_array( $self->to_zip(), @ak_special_zipcodes_126_226 )
-        ) 
-    {
+    if ( grep( /^$to_zip$/, @hi_special_zipcodes_126_226, @ak_special_zipcodes_126_226 ) ) {
         if ( $type eq 'NextDayAir' ) {
             $zone = '126';
         }
@@ -1022,7 +1017,27 @@ sub determine_coast
     return;
 }
 
+=head2 * readfile( $file )
+
+Note: this is not an object-oriented method.
+
+=cut
+
+sub readfile
+{
+    my ( $file ) = @_;
     
+    return undef unless open( READIN, "< $file" );
+    
+    # TODO: Use English;
+    
+    undef $/;
+    
+    my $contents = <READIN>;
+    close( READIN );
+    
+    return $contents;
+}
 
 =head2 _massage_values()
 

@@ -17,12 +17,22 @@ Revision history for Business::Shipping
       - Make room for new UPS_Online 'Shop' service.
       - Not backwards-compatible, but results() was not intended to be public
         before.
-      
+    
     * Misc code cleanups
   
+    * Remove some old utility functions.
+    
+    * [Fixed] Tests tried to load Cache::FileCache, even when the module was not 
+      installed.  Now it tries to detect the module first.
+    
+    * [Fixed] Business::Shipping::RateRequest loaded Cache::FileCache even though
+      it is not needed at that level anymore.
+    
+    * [Enh] Tests: check for username/password more consistently.
+    
   UPS_Online
   
-    * New 'Shop' service.  Retrieve all the rates in one request.  Original 
+    * [Enh] New 'Shop' service.  Retrieve all the rates in one request.  Original 
       implementation by Selena Brewington <computers@chrisking.com>, later
       updated and modified. 
       - New tests added to cover the shop feature.
@@ -57,18 +67,15 @@ Revision history for Business::Shipping
       - To use, add these parameters to your rate request:
         
         cod            => 1,      # Enable C.O.D.
+        cod_value      => 400.00, # C.O.D. value in USA dollars.
         cod_funds_code => 0,      # 0 = All funds allowed, 
 	                          # 8 = money order only.
-        cod_value      => 400.00, # C.O.D. value in USA dollars.
 
-    
 
 1.54  Sep 21 2004
 
 
   General
-    
-    * [Fixed] Business::Shipping requiring too many modules.  Switched to Basic.
     
     * [Enh] Major documentation updates and fixes
       - Added Test::Pod tests as well as Test::Pod::Coverage
@@ -82,16 +89,18 @@ Revision history for Business::Shipping
     * [Enh] Skip tests that are for shippers that do not have their required
       modules installed.    
     
+    * [Enh] Add "use_defaults=1" option to "perl Makefile.PL"
+      - New options: -u=1 or --use_defaults=1: Use default values, do not ask 
+        for values.
+    
+    * [Fixed] Business::Shipping requiring too many modules.  Switched to Basic.
+    
     * [Fixed] Business::Shipping tests will fail if someone only installed
       Bundle::Business::Shipping::UPS_Offline, because the testing scripts
       will not notice.
       - New system checks to see if prerequisite modules were installed before
         testing functionality that depends on them. 
 
-    * [Done] [Enh] Add "use_defaults=1" option to "perl Makefile.PL"
-      - New options: -u=1 or --use_defaults=1: Use default values, do not ask 
-        for values.
-    
 
 1.53  Sep 17 2004
 

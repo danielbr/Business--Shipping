@@ -2,6 +2,26 @@
 ##  General TODO
 ################################################################################
 
+    * [Bug] New 'Ground Residential' service name doesn't work for UPS_Offline:
+      Error: Zone 'u' lookup failed, type 'Ground Residential' not found
+
+    * [Bug] Bundle::Business::Shipping::*
+      - It tries to build and install Business::Shipping before anything else,
+        when that should be the last module that it installs.  If CPAN is set 
+        to install modules that are listed in the makefile, then it will proceed
+        
+    * [Bug] On a clean 5.8.5, trying to install Bundle::Business::Shipping::UPS_Offline
+      results in:
+        - tests that try to load Cache::FileCache:
+          10
+          21
+          22
+        t/10_init    tries to load Cache::FileCache (un-necessary for UPS_Offline).
+        t/21_preload tries to load Cache::FileCache.
+        (because of Business::Shipping::Tracking, perhaps?)
+     
+    * [Enh] Move main documentation into 'Business::Shipping::Manual'
+    
     * [Enh] Allow a "Company" name to be placed in the results.  So that the user
       sees "UPS" instead of "UPS_Online".
 

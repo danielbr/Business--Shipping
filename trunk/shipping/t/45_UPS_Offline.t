@@ -1,4 +1,3 @@
-#!/usr/bin/perl
 use strict;
 use warnings;
 
@@ -8,7 +7,8 @@ use Business::Shipping;
 plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'UPS_Offline' );
 plan 'no_plan';
 $::UPS_Online = 1 if Business::Shipping::Config::calc_req_mod( 'UPS_Online' ); 
-$::UPS_Online = 0 unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+$::UPS_Online = 0 unless $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY };
+
 use constant CLOSE_ENOUGH_PERCENT   => 10;
 
 my %user = (

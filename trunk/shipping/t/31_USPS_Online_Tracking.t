@@ -6,20 +6,18 @@ use Carp;
 use Business::Shipping;
 
 plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'USPS_Online' );
+plan skip_all => 'No credentials' unless $ENV{ USPS_USER_ID } and $ENV{ USPS_PASSWORD };
 plan 'no_plan';
 
 sub test
 {
     my ( %args ) = @_;
     my $shipment = Business::Shipping->rate_request( 
-        'shipper' => 'UPS',
-        'user_id'        => $ENV{ UPS_USER_ID },
-        'password'        => $ENV{ UPS_PASSWORD },
-        'access_key'    => $ENV{ UPS_ACCESS_KEY }, 
-        'cache'    => 0,
-        event_handlers => {
-            #trace => 'STDERR', 
-        }
+        'shipper'    => 'UPS',
+        'user_id'    => $ENV{ UPS_USER_ID },
+        'password'   => $ENV{ UPS_PASSWORD },
+        'access_key' => $ENV{ UPS_ACCESS_KEY }, 
+        'cache'      => 0,
     );
     $shipment->submit( %args ) or die $shipment->user_error();
     return $shipment;

@@ -94,8 +94,8 @@ cod_value: The COD value for the package.  Required if COD option is present.  V
 For example:
 
 	cod            => 1,
-	cod_funds_code => 0,
 	cod_value      => 400.00,
+	cod_funds_code => 0,
 
 =back
 

@@ -19,7 +19,6 @@ Misc functions, some others.
 package Business::Shipping::Util;
 
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
-@EXPORT  = ( 'element_in_array' );
 
 use strict;
 use warnings;
@@ -48,100 +47,6 @@ sub currency
     $amount = "\$$amount" unless $opt->{ no_format };
     
     return $amount;
-}
-
-
-=item * remove_elements_of_x_that_are_in_y( $x, $y )
-
-=cut
-
-sub remove_elements_of_x_that_are_in_y
-{
-    my ( $x, $y ) = @_;
-    
-    my @new_x;
-    foreach my $x_item ( @$x ) {
-        my $match = 0;
-        foreach my $y_item ( @$y ) {
-            if ( $x_item eq $y_item ) {
-                $match = 1;
-            }
-        }
-        if ( ! $match ) {
-            push @new_x, $x_item;
-        }
-        else {
-            debug3( "removing $x_item" );
-        }
-    }
-    
-    return @new_x;
-}
-
-=item * readfile( $file )
-
-=cut
-
-sub readfile
-{
-    my ( $file ) = @_;
-    
-    return undef unless open( READIN, "< $file" );
-    
-    # TODO: Use English;
-    
-    undef $/;
-    
-    my $contents = <READIN>;
-    close( READIN );
-    
-    return $contents;
-}
-
-=item * element_in_array( $element, @array )
-
-TODO: Replace with List::Util?
-
-=cut
-
-sub element_in_array
-{
-    my ( $e, @a ) = @_;
-    return unless $e and @a;
-    
-    for ( @a ) {
-        return 1 if $_ eq $e;
-    }
-    
-    return 0;
-}
-
-=item * get_fh( $filename )
-
-=cut
-
-sub get_fh
-{
-    my ( $filename ) = @_;
-
-    my $file_handle;
-    open $file_handle, "$filename" 
-        || carp "could not open file: $filename.  Error: $!";
-    
-    return $file_handle;
-}
-
-=item * close_fh( $file_handle )
-
-=cut
-
-sub close_fh
-{
-    my ( $file_handle ) = @_;
-    
-    close $file_handle;
-    
-    return;
 }
 
 =item * unique( @ary )

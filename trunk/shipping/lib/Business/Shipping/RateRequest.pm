@@ -31,7 +31,6 @@ use Data::Dumper;
 use Business::Shipping::Util;
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
-use Cache::FileCache;
 
 =head2 $rate_request->is_success()
 

@@ -18,7 +18,7 @@ package Business::Shipping::USPS_Offline::RateRequest;
 
 =head1 NAME
 
-Business::Shipping::USPS_Offline::RateRequest - Rates
+Business::Shipping::USPS_Offline::RateRequest
 
 =head1 SYNOPSIS
 

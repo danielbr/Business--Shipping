@@ -6,7 +6,8 @@ use Carp;
 use Business::Shipping;
 
 plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'USPS_Online' );
-plan skip_all => 'No credentials' unless $ENV{ USPS_USER_ID } and $ENV{ USPS_PASSWORD };
+plan skip_all => 'No credentials' 
+    unless $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY };
 plan 'no_plan';
 
 my $rr_shop = Business::Shipping->rate_request( 
@@ -23,7 +24,7 @@ my $rr_shop = Business::Shipping->rate_request(
     cod_funds_code => 0,
     cod_value      => 400.00,    
 );
-
+        
 ok( defined $rr_shop, 'Business::Shipping->rate_request returned an object for \'COD\'.' );
 
 $rr_shop->go() or die $rr_shop->user_error();

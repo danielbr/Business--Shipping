@@ -5,6 +5,8 @@ use Test::More;
 use Carp;
 use Business::Shipping;
 plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'UPS_Online' );
+plan skip_all => 'No credentials' 
+    unless $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY };
 plan 'no_plan';
 
 $::debug = 0;

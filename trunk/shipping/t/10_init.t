@@ -1,4 +1,3 @@
-#!/usr/bin/perl
 use Test::More 'no_plan';
 use strict;
 use warnings;
@@ -24,10 +23,14 @@ BEGIN {
         ok( 1, "Required modules installed for: $shippers2" );
     }
     
-    # This simulates the way that we use Cache::FileCache
+    eval "use Cache::FileCache";
     
-    use_ok( 'Cache::FileCache' );
+    
     if ( ! $@ ) {
+    
+        # This simulates the way that we use Cache::FileCache
+        
+        use_ok( 'Cache::FileCache' );
         my $cache = Cache::FileCache->new;
         my $key = join( "|", ( 'Parcel Post', 'Germany', '5', 'Package' ) ); 
         my $rate = $cache->get( $key );
@@ -38,8 +41,9 @@ BEGIN {
             $cache->set( $key, $rate, "30 minutes" );
         }
         
-        ok( 1,        'Cache::FileCache works as expected.' );
+        ok( 1, 'Cache::FileCache works as expected.' );
+    }
+    else {
+        ok( 1, 'Skip test for Cache::FileCache, because it is not installed.' );
     }
 }
-
-ok( 1, 'Supporting modules exist and are the right versions' );
