@@ -1,6 +1,11 @@
 Revision history for Business::Shipping.
 
-0.04
+0.70  Jul 02
+	- Complete rewrite of the entire system
+	- Now more modular and object oriented.
+	- License changed to GPL
+
+0.04  Jun 24 2003
 	- Interchange usertag bugfixes
 	- Some USPS bugfixes.
 	- Additional debugging information.
@@ -11,7 +16,7 @@ Revision history for Business::Shipping.
 	- Handle a few more countries correctly ("France,Metropolitan")
 	- Add some 'retry' support to the xps-query usertag
 
-0.03
+0.03  Jun 04 2003
 	- Changed name to Business::Shipping.
 	- Fixed POD for the Ship.pm file.
 	- Add dependency requirements

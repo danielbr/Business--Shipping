@@ -129,8 +129,10 @@ SKIP: {
 	ok( $shipment->total_charges(),	'UPS intl multi-package API total_charges > 0' );
 	
 	
-	# Cache Test
-	# - Multiple sequential queries should give *different* results.
+	###########################################################################
+	##  Cache Test
+	##  Multiple sequential queries should give *different* results.
+	###########################################################################
 	$shipment = test(
 		'cache_enabled'		=> 1,
 		'pickup_type'	 	=> 'daily pickup',
@@ -160,7 +162,26 @@ SKIP: {
 	);
 	$shipment->submit() or die $shipment->error();
 	my $total_charges_5_pounds = $shipment->total_charges();
-	
 	ok( $total_charges_1_pound != $total_charges_5_pounds, 'UPS intl cache, sequential charges are different' );
+	
+	
+	###########################################################################
+	##  World Wide Expedited
+	###########################################################################
+	$shipment = test(
+		'pickup_type'	 	=> 'daily pickup',
+		'from_zip'			=> '98682',
+		'from_country'		=> 'US',
+		'to_country'		=> 'GB',	
+		'service'			=> 'XPD',
+		'to_residential'	=> '1',
+		'to_city'			=> 'Godstone',
+		'to_zip'			=> 'RH98AX',
+		'weight'			=> '3.45',
+		'packaging' 		=> '02',
+	);
+	$shipment->submit() or die $shipment->error();
+	ok( $shipment->total_charges(),		'UPS World Wide Expedited > 0' );
+	
 	
 }

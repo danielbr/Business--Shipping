@@ -1,0 +1,84 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use English;
+
+=pod
+
+=head1 DESCRIPTION
+
+new-release - the Business::Shipping release script.
+
+=head1 RELEASE STEPS
+
+ # Test it
+ make test
+ 
+ # Update the verision in Makefile.PL
+ vi Makefile.PL
+ 
+ # Update the CHANGELOG
+ vi CHANGELOG
+ 
+ # Update the README
+ make readme
+ 
+ # Commit to CVS
+ cvs commit
+ 
+ # Upload to server.
+ make tardist
+ ./new-release Business-Shipping-*.tar.gz
+ 
+ # Update the versions in Makefile.PL and CHANGELOG
+
+=cut 
+
+my ( $file ) = @ARGV;
+
+print "Usage: $PROGRAM_NAME Business-Shipping-n.nn.tar.gz\n" and exit 
+	unless $file;
+
+$file =~ m/^(Business-Shipping-\d\.\d\d)\.tar\.gz$/;
+my $version = $1;
+
+#print "version = $version\n";
+#print "file=$file\n";
+
+myexec( "scp $file kavod\@kavod\.com:html/" );
+
+my $cmd = qq{ssh kavod\@kavod\.com \<\<EOF
+cd html/Business-Shipping
+
+# Move old releases to the 'older' folder
+rm Business-Shipping-latest
+rm Business-Shipping-latest.tar.gz
+mv Business-Shipping-* older/
+
+# Pull in the new file.
+cd ..
+mv $file Business-Shipping
+cd Business-Shipping
+
+# Unpack it and make links
+tar zxf $file
+ln -s $file Business-Shipping-latest.tar.gz
+ln -s $version Business-Shipping-latest
+
+# Update CVS
+cd CVS-Business-Shipping
+cvs up
+
+EOF
+};
+
+myexec( $cmd );
+
+sub myexec
+{
+	my $cmd = shift;
+	print "Going to execute \"$cmd\"...\n";
+	return system ( $cmd );
+}
+

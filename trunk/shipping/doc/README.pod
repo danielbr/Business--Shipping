@@ -42,7 +42,7 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
 
 This module is used by the Interchange E-Commerce software 
 (http://www.icdevgroup.org).  For a reference implementation of Business::Shipping,
-see the doc/xps-query.tag file, it implements a function that takes 
+see the UserTag/business-shipping.tag file, it implements a function that takes 
 shipping-related arguments, builds a Business::Shipping object, then returns the 
 calculatd cost.
  

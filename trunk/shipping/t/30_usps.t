@@ -130,5 +130,47 @@ SKIP: {
 	
 	ok( $total_charges_1_pound != $total_charges_5_pounds,	'USPS intl cache saves results separately' ); 
 
+	
+	###########################################################################
+	##  Zip Code Testing
+	###########################################################################
+	# Vancouver, Vermont, Alaska, Hawaii
+	my @several_very_different_zip_codes = ( '98682', '22182', '99501', '96826' );
+	my %charges;
+	foreach my $zip ( @several_very_different_zip_codes ) {
+		$shipment = test(
+			'cache_enabled'	=> 1,
+			'test_mode'		=> 0,
+			'service' 		=> 'Priority',
+			'weight'		=> 5,
+			'to_zip'		=> $zip,
+			'from_zip'		=> 98682
+		);
+		$charges{ $zip } = $shipment->total_charges();
+	}
+	
+	# Somehow make sure that all the values in %charges are unique.
+	my $found_duplicate;
+	foreach my $zip ( keys %charges ) {
+		foreach my $zip2 ( keys %charges ) {
+			
+			# Skip this zip code, only testing the others.
+			next if $zip2 eq $zip;
+			
+			if ( $charges{ $zip } == $charges{ $zip2 } ) {
+				$found_duplicate = $zip;
+			}
+		}
+	}
+	
+	ok( ! $found_duplicate, 'USPS different zip codes give different prices' );
+	
+		
+		
+		
+		
+	
+	
+	
 
 } # /skip

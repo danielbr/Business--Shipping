@@ -1,136 +1,95 @@
+# Business::Shipping::RateRequest::Online::USPS - Abstract class for shipping cost rating.
+# 
+# $Id: USPS.pm,v 1.1 2003/07/07 21:38:02 db-ship Exp $
+# 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
-# This program is free software; you can redistribute it and/or modify it 
-# under the same terms as Perl itself.
-#
-# $Id: USPS.pm,v 1.3 2003/06/24 22:59:57 db-ship Exp $
+# 
+# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+# 
 
-package Business::Shipping::USPS;
+package Business::Shipping::RateRequest::Online::USPS;
+
 use strict;
 use warnings;
 
-=head1 NAME
+use vars qw( @ISA $VERSION );
+$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+@ISA = ( 'Business::Shipping::RateRequest::Online' );
 
-Business::Shipping::USPS - A USPS module 
 
-Documentation forthcoming.
-
- * Register for the API here:
- 
-http://www.uspsprioritymail.com/et_regcert.html
-
- * You will need to call or e-mail to active the account for "Production" usage
- * Otherwise, it will only work with special test queries.
-
-#TODO: Utilize $self->_metadata( 'optionname' ) and $self->initialize(), like UPS. 
- 
-=cut
-
-use vars qw(@ISA $VERSION);
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-
-use Business::Shipping;
-use Business::Shipping::USPS::Package;
-
+use Business::Shipping::RateRequest::Online;
+use Business::Shipping::Debug;
+use Business::Shipping::Package::USPS;
+use XML::Simple 2.05;
+use XML::DOM;
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
-use XML::Simple 2.05;
-use XML::DOM;
-use Data::Dumper;
 
-@ISA = qw( Business::Shipping );
+use Class::MethodMaker
+	new_with_init => 'new',
+	new_hash_init => 'hash_init',
+	boolean => [ 'domestic' ];
+	#grouped_fields => [
+	#	required => [
+	#		'',
+	#	],
+	#	internal => [ 'intl' ],
+	#];
 
-sub new
+
+use constant INSTANCE_DEFAULTS => (
+	'prod_url'		=> 'http://production.shippingapis.com/ShippingAPI.dll',
+	'test_url'		=> 'http://testing.shippingapis.com/ShippingAPItest.dll',
+	'domestic'		=> 1,
+);
+ 
+sub init
 {
-	my($class, %args) = @_;	
-	my $self = $class->SUPER::new();
-	bless( $self, $class );
-
-	my $new_self = $self->initialize( %args );
-	
-	$new_self->debug( 'After self->initialize(), $self->packages() = ' . Dumper( $self->packages() ) ); 
-	
-	return $new_self;
-}
-
-
-sub _metadata
-{
-	my ( $self, $desired ) = @_;
-	
-	my $values = { 
-		'internal' => {
-			'ua'					=> LWP::UserAgent->new(),
-			'xs'					=> XML::Simple->new( ForceArray => 1, KeepRoot => 1 ),
-			'packages'				=> [ Business::Shipping::USPS::Package->new() ],
-			'package_subclass_name'	=> 'USPS::Package',
-			'intl'					=> undef,
-			'domestic'				=> undef,
-		},
-		'required' => {
-			# Everything is either in Business::Shipping, or in Business::Shipping::USPS::Package
-		},
-		'parent_defaults' => {
-			'test_url'		=> 'http://testing.shippingapis.com/ShippingAPItest.dll',
-			'prod_url'		=> 'http://production.shippingapis.com/ShippingAPI.dll',
-		},
-		# TODO: automatically pull in the values from Ship::USPS::Package, map whatever is used.
-		'alias_to_default_package' => {
-			service 	=> undef,
-			pounds		=> undef,
-			ounces		=> 0,
-			container	=> 'None',
-			size		=> 'Regular',
-			machinable	=> 'False',
-			mail_type	=> 'Package',
-			from_zip	=> undef,
-			to_zip		=> undef,
-			to_country	=> undef,
-		},
-		'optional'		=> {
-			# This is only a stub.  It will always be from the United States.
-			from_country	=> 'US',  # (to|from)_country are required, but they have defaults, so...?
-		},
-		'unique_values' => {
-			pickup_type				=> undef,
-			from_country			=> undef,
-			from_zip				=> undef,
-			to_residential			=> undef,
-			to_country				=> undef,
-			to_zip					=> undef,
-			service					=> undef,
-		},
-	};
-	
-	my %result = %{ $values->{ $desired } };
-	return wantarray ? keys( %result ) : \%result;
-}
-
-# This is to redirect calls to the package level (so that
-# people who wont ever ship multiple packages don't have to
-# deal with the complexity of it.
-sub build_subs_packages
-{
-	my $self = shift;
-    foreach( @_ ) {
-		unless ( $self->can( $_ ) ) {
-			eval "sub $_ { my \$self = shift; if(\@_) { \$self->{'packages'}->[0]->$_( shift ); } return \$self->{'packages'}->[0]->$_(); }";
-		}
-    }
+	#trace '( ' . uneval( @_ ) . ' )';
+	my $self   = shift;
+	my %values = ( INSTANCE_DEFAULTS, @_ );
+	$self->hash_init( %values );
 	return;
 }
+
+#sub domestic
+#{
+#	
+#	my $self = shift;
+#	if ( defined $_[ 0 ] and $_[ 0 ] ) {
+#		$self->{ 'domestic' } = 1;
+#		$self->{ 'intl' } = 0;
+#	}
+#	return $self->{ 'domestic' };
+#}
+#
+#sub intl
+#{
+#	
+#	my $self = shift;
+#	if ( defined $_[ 0 ] and $_[ 0 ] ) {
+#		$self->{ 'intl' } = 0;
+#		$self->{ 'domestic' } = 1;
+#	}
+#	return $self->{ 'intl' };
+#}
+
+
+
+
 
 # _gen_request_xml()
 # Generate the XML document.
 sub _gen_request_xml
 {
+	trace( '()' );
 	my $self = shift;
-	$self->trace( 'called' );
 	
 	# Note: The XML::Simple hash-tree-based generation method wont work with USPS,
 	# because they enforce the order of their parameters (unlike UPS).
-	
-	my $rateReqDoc = new XML::DOM::Document; 
+	#
+	my $rateReqDoc = XML::DOM::Document->new(); 
 	my $rateReqEl = $rateReqDoc->createElement( 
 		$self->domestic() ? 'RateRequest' : 'IntlRateRequest' 
 	);
@@ -141,8 +100,8 @@ sub _gen_request_xml
 	
 	my $package_count = 0;
 	
-	die "No packages defined internally." unless ref $self->packages();
-	foreach my $package ( @{$self->packages()} ) {
+	die "No packages defined internally." unless ref $self->shipment->packages();
+	foreach my $package ( @{ $self->shipment->packages() } ) {
 
 		my $id;
 		$id = $package->id();
@@ -156,23 +115,23 @@ sub _gen_request_xml
 		# page, then the USPS::Package will not get the 'service', 'to_zip', or 'from_zip' values
 		# BUT, they are still in $self.  How can that be, if it is supposed to be aliased to the\
 		# package?  Worse, how come it only occurs when UPS is first called?
-		for ( 'service', 'from_zip', 'to_zip' ) {
-			$package->$_( $self->$_() ) unless $package->$_();
-		}
+		#for ( 'service', 'from_zip', 'to_zip' ) {
+		#	$package->$_( $self->$_() ) unless $package->$_();
+		#}
 		
 		if ( $self->domestic() ) {
 			my $serviceEl = $rateReqDoc->createElement('Service'); 
-			my $serviceText = $rateReqDoc->createTextNode( $package->service() ); 
+			my $serviceText = $rateReqDoc->createTextNode( $self->shipment->service() ); 
 			$serviceEl->appendChild($serviceText); 
 			$packageEl->appendChild($serviceEl);
 		
 			my $zipOrigEl = $rateReqDoc->createElement('ZipOrigination'); 
-			my $zipOrigText = $rateReqDoc->createTextNode( $package->from_zip()); 
+			my $zipOrigText = $rateReqDoc->createTextNode( $self->shipment->from_zip()); 
 			$zipOrigEl->appendChild($zipOrigText); 
 			$packageEl->appendChild($zipOrigEl); 
 			
 			my $zipDestEl = $rateReqDoc->createElement('ZipDestination');
-			my $zipDestText = $rateReqDoc->createTextNode( $package->to_zip()); 
+			my $zipDestText = $rateReqDoc->createTextNode( $self->shipment->to_zip()); 
 			$zipDestEl->appendChild($zipDestText); 
 			$packageEl->appendChild($zipDestEl); 
 		}
@@ -210,7 +169,7 @@ sub _gen_request_xml
 			$packageEl->appendChild($mailTypeEl); 
 			
 			my $countryEl = $rateReqDoc->createElement('Country'); 
-			my $countryText = $rateReqDoc->createTextNode( $package->to_country() ); 
+			my $countryText = $rateReqDoc->createTextNode( $self->shipment->to_country() ); 
 			$countryEl->appendChild($countryText); 
 			$packageEl->appendChild($countryEl);
 		}
@@ -219,8 +178,13 @@ sub _gen_request_xml
 	my $request_xml = $rateReqDoc->toString();
 	
 	# We only do this to provide a pretty, formatted XML doc for the debug. 
-	my $request_xml_tree = $self->{xs}->XMLin( $request_xml, KeepRoot => 1, ForceArray => 1 );
-	$self->debug( $self->{xs}->XMLout( $request_xml_tree ) );
+	my $request_xml_tree = XML::Simple::XMLin( $request_xml, KeepRoot => 1, ForceArray => 1 );
+	
+	#
+	# Large debug
+	#
+	debug3( XML::Simple::XMLout( $request_xml_tree, KeepRoot => 1 ) );
+	#
 	
 	return ( $request_xml );
 }
@@ -228,14 +192,18 @@ sub _gen_request_xml
 sub _gen_request
 {
 	my ( $self ) = shift;
-	$self->trace( 'called' );
+	trace( 'called' );
 	
 	my $request = $self->SUPER::_gen_request();
 	# This is how USPS slightly varies from Business::Shipping
 	my $new_content = 'API=' . ( $self->domestic() ? 'Rate' : 'IntlRate' ) . '&XML=' . $request->content();
 	$request->content( $new_content );
 	$request->header( 'content-length' => length( $request->content() ) );
-	$self->debug( 'HTTP Request: ' . $request->as_string() );
+	#
+	# Large debug
+	#
+	#debug( 'HTTP Request: ' . $request->as_string() );
+	#
 	return ( $request );
 }
 
@@ -245,6 +213,13 @@ sub _massage_values
 	#$self->_set_pounds_ounces();
 	$self->_domestic_or_intl();
 	
+	# Round up if United States... international can have less than 1 pound.
+	if ( $self->to_country() and $self->to_country() =~ /(USA?)|(United States)/ ) {
+		foreach my $package ( @{ $self->shipment->packages() } ) {
+			$package->pounds( 1 ) if ( $package->pounds() < 1 );
+		}
+	}
+	
 	# TODO: If some packages don't have a to_zip, from_zip, etc., then map from teh default assignment. 
 	# Should it be done at the Package level?
 	return;
@@ -252,10 +227,10 @@ sub _massage_values
 
 sub _handle_response
 {
+	trace '()';
 	my $self = shift;
-	$self->trace( 'called.' );
 	
-	my $response_tree = $self->{xs}->XMLin( 
+	my $response_tree = XML::Simple::XMLin( 
 		$self->response()->content(), 
 		ForceArray => 0, 
 		KeepRoot => 0 
@@ -273,21 +248,49 @@ sub _handle_response
 		return( undef );
 	}
 	
-	$self->response_tree( $response_tree );
+	#
+	# This is a "large" debug.
+	#
+	debug3( 'response = ' . $self->response->content );
+	#
 	
+	#
+	# TODO: Get the pricing routines to work for multi-packages (not just
+	# the default_package()
+	#
 	if ( $self->domestic() ) {
-		$self->total_charges( $response_tree->{Package}->{Postage} );
-		$self->default_package()->set_price( $self->service(), $response_tree->{Package}->{Postage} );
+		#
+		# Domestic *doesn't* tell you the price of all services for that package
+		#
+		
+		#$self->total_charges( $response_tree->{Package}->{Postage} );
+		#$self->default_package()->set_price( $self->service(), $response_tree->{Package}->{Postage} );
+		#debug( 'postage is ' .  $response_tree->{Package}->{Postage} );
+		#use Data::Dumper;
+		#debug( Dumper( $response_tree ) );
+		debug( 'Setting charges to ' . $response_tree->{Package}->{Postage} );
+		$self->default_package()->charges( $response_tree->{Package}->{Postage} );
 	}
-	elsif ( $self->intl() ) {
-		# TODO: Sum the get_charges( $service ) for all packages to return to total_charges
-		$self->total_charges( $response_tree->{Package}->{Service}->[0]->{Postage} );
+	else {
+		#
+		# International *does* tell you the price of all services for each package
+		#
+		
+		#$self->total_charges( $response_tree->{Package}->{Service}->[0]->{Postage} );
 		foreach my $service ( @{ $response_tree->{Package}->{Service} } ) {
-			$self->debug( " Postage = " . $service->{Postage} );
+			debug( "Postage for $service->{SvcDescription} service = " . $service->{Postage} );
+			
 			# TODO: store the prices using $self->package_id( $id )->set_charges( $service->{Postage} )
-			$self->packages()->[0]->set_price( $service->{SvcDescription}, $service->{Postage} );
+			#$self->default_package->set_price( $service->{SvcDescription}, $service->{Postage} );
+			
+			if ( $service->{SvcDescription} =~ $self->service() ) {
+				$self->default_package->charges( $service->{ 'Postage' } );
+				debug( 'Setting charges to ' . $service->{Postage} );
+			}
 		}
 	}
+	
+	trace 'returning success';
 	
 	return $self->is_success( 1 );
 }
@@ -307,19 +310,65 @@ sub _set_pounds_ounces
 # Decide if we are domestic or international for this run...
 sub _domestic_or_intl
 {
+	trace '()';
+	
 	my $self = shift;
 	
-	if ( $self->to_country() and $self->to_country() !~ /(US)|(United States)/) {
-		$self->intl( 1 );
-		$self->domestic( 0 );
+	if ( $self->shipment->to_country() and $self->shipment->to_country() !~ /(US)|(United States)/) {
+		$self->clear_domestic();
 	}
 	else {
-		$self->intl( 0 );
-		$self->domestic( 1 );
+		$self->set_domestic();
 	}
-	$self->debug( $self->domestic() ? 'Domestic' : 'International' );
+	debug( $self->domestic() ? 'Domestic' : 'International' );
 	return;
 }
+
+# TODO: see if any of the following is useful information... 
+#
+#		'alias_to_default_package' => {
+#			service 	=> undef,
+#			pounds		=> undef,
+#			ounces		=> 0,
+#			container	=> 'None',
+#			size		=> 'Regular',
+#			machinable	=> 'False',
+#			mail_type	=> 'Package',
+#			from_zip	=> undef,
+#			to_zip		=> undef,
+#			to_country	=> undef,
+#		},
+#
+#
+#		'unique_values' => {
+#			pickup_type				=> undef,
+#			from_country			=> undef,
+#			from_zip				=> undef,
+#			to_residential			=> undef,
+#			to_country				=> undef,
+#			to_zip					=> undef,
+#			service					=> undef,
+#		},
+#
+#
+#
+# TODO: Remove (legacy)
+# 
+# This is to redirect calls to the package level (so that
+# people who wont ever ship multiple packages don't have to
+# deal with the complexity of it.
+sub build_subs_packages
+{
+	my $self = shift;
+    foreach( @_ ) {
+		unless ( $self->can( $_ ) ) {
+			eval "sub $_ { my \$self = shift; if(\@_) { \$self->{'packages'}->[0]->$_( shift ); } return \$self->{'packages'}->[0]->$_(); }";
+		}
+    }
+	return;
+}
+
+
 
 =pod
 
@@ -365,4 +414,23 @@ sub _domestic_or_intl
 
 =cut
 
+=head1 NAME
+
+Business::Shipping::USPS - A USPS module 
+
+Documentation forthcoming.
+
+ * Register for the API here:
+ 
+http://www.uspsprioritymail.com/et_regcert.html
+
+ * You will need to call or e-mail to active the account for "Production" usage
+ * Otherwise, it will only work with special test queries.
+
+#TODO: Utilize $self->_metadata( 'optionname' ) and $self->initialize(), like UPS. 
+ 
+=cut
+
+
 1;
+

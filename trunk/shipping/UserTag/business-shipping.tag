@@ -1,17 +1,21 @@
-Message Loading [xps-query] usertag from Business::Shipping module...
+ifndef BUSINESS_SHIPPING
+Variable BUSINESS_SHIPPING	 1 # Ensures that [business-shipping] is only included once.
+Message Loading [business-shipping] usertag from Business::Shipping module...
 Require Module Business::Shipping
-UserTag  xps-query  Order mode
-UserTag  xps-query  Addattr
-UserTag  xps-query  Documentation <<EOD
+UserTag  business-shipping  Order					shipper
+UserTag  business-shipping  AttrAlias 		mode	shipper
+UserTag  business-shipping  AttrAlias 		carrier	shipper
+UserTag  business-shipping  Addattr
+UserTag  business-shipping  Documentation 	<<EOD
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: xps-query.tag,v 1.5 2003/06/24 22:59:58 db-ship Exp $
+# $Id: business-shipping.tag,v 1.1 2003/07/07 21:37:56 db-ship Exp $
 
 =head1 NAME
 
-[xps-query] - Live rate lookup for UPS and USPS (using Business::Shipping)
+[business-shipping] - Live rate lookup for UPS and USPS (using Business::Shipping)
 
 =head1 AUTHOR 
 
@@ -21,14 +25,14 @@ UserTag  xps-query  Documentation <<EOD
 	
 =head1 SYNOPSIS
 
-[xps-query 
+[business-shipping 
 	mode="USPS"
 	service="Airmail Parcel Post"
 	weight="4"
 	to_country="Albania"
 ]
 
-[xps-query
+[business-shipping
 	mode="UPS"
 	service="GNDRES"
 	from_zip="98682"
@@ -44,7 +48,7 @@ Here is a general outline of the installation in interchange.
  * Follow installation instructions for Business::Shipping
     - http://www.kavod.com/Business-Shipping
  
- * Copy the xps-query.tag file into one of these directories:
+ * Copy the business-shipping.tag file into one of these directories:
 	- interchange/usertags (IC 4.8.x)
 	- interchange/code/UserTags (IC 4.9.x)
 
@@ -61,7 +65,7 @@ UPS_PICKUPTYPE	Daily Pickup	Shipping
 
 -or-
 
-USPS_USER_ID	349234KAVOD3243	Shipping
+USPS_USER_ID	143264KAVOD7241	Shipping
 USPS_PASSWORD	awji2398r2	Shipping
 
 XPS_FROM_COUNTRY	US	Shipping
@@ -89,22 +93,34 @@ USPS_AIRMAIL_POST: USPS International
 	
 	min			0
 	max			4
-	cost		f [xps-query mode="USPS" service="Airmail Parcel Post" weight="@@TOTAL@@"]
+	cost		f [business-shipping mode="USPS" service="Airmail Parcel Post" weight="@@TOTAL@@"]
 	
 	min			4
 	max			999999
-	cost		f [xps-query mode="USPS" service="Airmail Parcel Post" weight="@@TOTAL@@"]
+	cost		f [business-shipping mode="USPS" service="Airmail Parcel Post" weight="@@TOTAL@@"]
  
 =cut
 EOD
-UserTag  xps-query  Routine <<EOR
+UserTag  business-shipping  Routine <<EOR
+
 use Business::Shipping;
+use Business::Shipping::Shipment;
+use Business::Shipping::Shipment::UPS;
+use Business::Shipping::Shipment::USPS;
+use Business::Shipping::Package;
+use Business::Shipping::Package::UPS;
+use Business::Shipping::Package::USPS;
+use Business::Shipping::RateRequest;
+use Business::Shipping::RateRequest::Online;
+use Business::Shipping::RateRequest::Online::UPS;
+use Business::Shipping::RateRequest::Online::USPS;
+
 sub {
- 	my ( $mode, $opt ) = @_;
+ 	my ( $shipper, $opt ) = @_;
 	
-	#::logDebug( "[xps-query " . uneval( $opt ) );
+	#::logDebug( "[business-shipping " . uneval( $opt ) );
 	 
-	unless ( $mode and $opt->{weight} and $opt->{ 'service' }) {
+	unless ( $shipper and $opt->{weight} and $opt->{ 'service' }) {
 		Log ( "mode, weight, and service required" );
 		return ( undef );
 	}
@@ -123,10 +139,10 @@ sub {
 
 	my $to_country_default = $Values->{ $Variable->{ XPS_TO_COUNTRY_FIELD } || 'country' };
 	if ( $to_country_default ) {
-		if ( $mode eq 'USPS' ) {
+		if ( $shipper eq 'USPS' ) {
 			$to_country_default = $Tag->data( 'country', 'name', $to_country_default );
 		}
-		elsif ( $mode eq 'UPS' ) {
+		elsif ( $shipper eq 'UPS' ) {
 			# Leave the country as a code
 		}
 	}
@@ -135,19 +151,19 @@ sub {
 		
 		# For interchange, STDOUT will cause it to go to the IC debug.
 		'event_handlers'	=> ({ 
-			#'debug' => undef, 
-			'debug' => 'STDOUT',
+			'debug' => undef, 
+			#'debug' => 'STDOUT',
 			
-			#'error' => 'STDERR', 
-			'error' => 'STDOUT',
+			'error' => 'STDERR', 
+			#'error' => 'STDOUT',
 			
-			#'trace' => undef,		 
-			'trace' => 'STDOUT', 
+			'trace' => undef,		 
+			#'trace' => 'STDOUT', 
 		}),
 		#'tx_type'			=> 'rate',
 		
-		'user_id'			=> $Variable->{ "${mode}_USER_ID" },
-		'password'			=> $Variable->{ "${mode}_PASSWORD" },
+		'user_id'			=> $Variable->{ "${shipper}_USER_ID" },
+		'password'			=> $Variable->{ "${shipper}_PASSWORD" },
 		'to_country'		=> $to_country_default,
 		'to_zip'			=> $Values->{ $Variable->{ XPS_TO_ZIP_FIELD } || 'zip' },
 		'from_country'		=> $Variable->{ XPS_FROM_COUNTRY },
@@ -155,44 +171,44 @@ sub {
 	);
 	
 	# I'm not sure if the cache feature is safe enough to enable yet, but...
-	$opt{ 'cache_enabled' } = 1 unless defined( $opt{ 'cache_enabled' } );
+	#$opt{ 'cache_enabled' } = 1 unless defined( $opt{ 'cache_enabled' } );
 	
 	# USPS extras.
 	
-	if ( $mode eq 'USPS' ) {
+	if ( $shipper eq 'USPS' ) {
 		if ( $opt{ 'weight' } < 1.0 ) {
 			$opt{ 'weight' } = 1;
 		}
 	}
 	
 	# UPS extras.
-	$defaults{ 'access_key' } = $Variable->{ "${mode}_ACCESS_KEY" } if ( $Variable->{ "${mode}_ACCESS_KEY" } );
+	$defaults{ 'access_key' } = $Variable->{ "${shipper}_ACCESS_KEY" } if ( $Variable->{ "${shipper}_ACCESS_KEY" } );
 	
 	for ( %defaults ) {
-		$opt{ $_ } ||= $defaults{ $_ } if defined $defaults{ $_ }; 
+		$opt{ $_ } ||= $defaults{ $_ } if ( $_ and defined $defaults{ $_ } ); 
 	}
 
-	my $shipment = Business::Shipping->new( 'shipper' => $mode );
+	my $rate_request = Business::Shipping->rate_request( 'shipper' => $shipper );
 	 
-	if ( ! defined $shipment ) {
-		Log( "[xps-query] failure when calling Business::Shipping->new(): $@ " ) if $@;
+	if ( ! defined $rate_request ) {
+		Log( "[business-shipping] failure when calling Business::Shipping->new(): $@ " ) if $@;
 		return undef;
 	}
 	
-	#::logDebug( "calling Business::Shipping::${mode}->submit( " . uneval( \%opt ) . " )" );
+	#::logDebug( "calling Business::Shipping::${shipper}->submit( " . uneval( \%opt ) . " )" );
 	
-	$shipment->set( %opt );
+	$rate_request->init( %opt );
 	
 	my $tries = 0;
 	my $success;
 	for ( my $tries = 1; $tries <= $try_limit; $tries++ ) {
-		if ( $shipment->submit() ) {
+		if ( $rate_request->submit() ) {
 			# Success, no more retries
 			$success = 1;
 			last;
 		}
 		else {
-			Log( "Try $tries: " . $shipment->error() );
+			Log( "Try $tries: " . $rate_request->error() );
 			
 			for (	
 					'HTTP Error. Status line: 500 read timeout',
@@ -201,7 +217,7 @@ sub {
 					'HTTP Error. Status line: 500 Can\'t connect to production.shippingapis.com:80',
 				) {
 				
-				if ( $shipment->error() =~ /$_/ ) {
+				if ( $rate_request->error() =~ /$_/ ) {
 					Log( 'Error was on USPS server, trying again...' );
 				}
 			}
@@ -209,11 +225,12 @@ sub {
 	}
 	return undef unless $success;
 	
-	my $charges = $shipment->get_charges( $opt{ 'service' } );
+	#my $charges = $rate_request->get_charges( $opt{ 'service' } );
+	my $charges = $rate_request->total_charges();
 	
 	# get_charges() *should* be implemented for all use cases, in the future.
 	# For now, we just fall back on total_charges()
-	$charges ||= $shipment->total_charges();
+	#$charges ||= $rate_request->total_charges();
 	
 	if ( ! $charges ) {
 		#$Values->{ 'shipping_ok' } = '';
@@ -223,11 +240,11 @@ sub {
 		if ( $Variable->{ 'XPS_GEN_INCIDENTS' } ) {
 			
 			my $variables = uneval( \%opt ); 
-			my $error = $shipment->error();
+			my $error = $rate_request->error();
 			
 			# Not everyone has [incident], avoid errors.
 			eval {
-				$Tag->incident("[xps-query]: $mode error: $error. \n Options were: $variables");
+				$Tag->incident("[business-shipping]: $shipper error: $error. \n Options were: $variables");
 			};
 			
 			# Catch exception
@@ -235,8 +252,9 @@ sub {
 		}
 	}
 	
-	#::logDebug( "[xps-query] returning" . uneval( $charges ) );
+	::logDebug( "[business-shipping] returning" . uneval( $charges ) );
 	
 	return $charges;
 }
 EOR
+endif

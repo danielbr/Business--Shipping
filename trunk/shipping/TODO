@@ -21,10 +21,10 @@
    handles. Each shipper should be able to be queried for what services it 
    provides... maybe code would look like this:
 
-	use Business::Shippingping; 
+	use Business::Shipping; 
 	
 	# Query the module for installed shipper specific modules.
-	my @shippers = Business::Shippingping::available_shippers(); 
+	my @shippers = Business::Shipping::available_shippers(); 
 	
 	my %shipping_option; 
 	for my $shipper (@shippers) { 
@@ -43,10 +43,10 @@
  
  * Country name translator strings to data outside your program.
  
- * Perhaps pull the shipper-related stuff out of Business::Shipping into Business::Shippingper. 
+ * Perhaps pull the shipper-related stuff out of Business::Shipping into Business::Shipper. 
  	- Then Packages can inherit all of the sub building, debugging, etc. functions from
-	  Business::Shipping.  USPS and UPS will then inherit what they need from Business::Shippingper.
-	- Business::Shippingper would also be @ISA=Business::Shipping.
+	  Business::Shipping.  USPS and UPS will then inherit what they need from Business::Shipper.
+	- Business::Shipper would also be @ISA=Business::Shipping.
 	- Should be done without breaking backwards-compatibility.
  
  * Upgrade the debugging/error handling features: allow user to pass in a callback ref.
@@ -64,8 +64,13 @@
 	
  * New feature ideas:
  	- Address Verification
-	- Package Tracking
+	- Shipping status (package tracking)
 	- Service Availability
+	- Electronic Merchandise Return?
+	- Shipping label generation?
+	- Customs forms?
+	- Shipping time (how long till it gets there)?
+	- Delivery/Signature confirmation?
  	
  * Testing code needs a lot of work.
  
