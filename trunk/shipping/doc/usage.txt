@@ -42,6 +42,7 @@ REQUIRED MODULES
      Data::Dumper (any)
      Devel::Required (0.03)
      Error (any)
+     Getopt::Mixed (any)
      LWP::UserAgent (any)
      Math::BaseCnv (any)
      Scalar::Util (1.10)
@@ -155,45 +156,12 @@ CLASS METHODS
     * weight
         Weight of the shipment, in pounds, as a decimal number.
 
-  config_to_hash( $ary, $del )
-            $ary    Key/value pairs
-            $del    Delimiter for the above array (tab is default)
+AUTHOR
+     Dan Browning         <db@kavod.com>
+     Kavod Technologies   http://www.kavod.com
 
-    Builds a hash from an array of lines containing key / value pairs, like
-    so:
-
-     key1   value1
-     key2   value2
-     key3   value3
-
-  config_to_ary_of_hashes( 'configuration_parameter' )
-    Reads in the configuration hashref ( e.g. cfg()->{ primary }->{
-    secondary } ), then returns an array of hashes. For example:
-
-    This:
-
-     [invalid_rate_requests]
-     invalid_rate_requests_ups=<<EOF
-     service=XDM    to_country=Canada       reason=Not available.
-     service=XDM    to_country=Brazil
-     EOF
-
-    When called with this:
-
-     my @invalid_rate_requests_ups = $self->config_to_ary_of_hashes( 
-         cfg()->{ invalid_rate_requests }->{ invalid_rate_requests_ups }
-     );
-
-    Returns this:
-
-     [ 
-         {
-             to_country => 'Canada',
-             service    => 'XDM'
-         },
-         {
-             to_country => 'Brazil',
-             service    => 'XDM'
-         },
-     ]
+COPYRIGHT AND LICENCE
+    Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights
+    reserved. Licensed under the GNU Public Licnese (GPL). See COPYING for
+    more info.
 

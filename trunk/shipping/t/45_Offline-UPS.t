@@ -405,10 +405,8 @@ SKIP: {
 %test = (
 		from_zip	=> '98682',
 		from_state	=> 'Washington',
-        shipper =>      'Offline::UPS',
         service =>      'XPD',
         to_country =>   'NL',
-        to_zip =>       '3824ZD',
         weight =>       '12.75',
 );
 $this_test_desc = "Netherlands XPD: ";
@@ -417,20 +415,14 @@ $shipment = test( %test );
 ok( $shipment->total_charges(),	 "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
-SKIP: {
-	skip( $ups_online_msg, 1 ) 
-		unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
-
-	$shipment_online = test_online( %test );
-	ok( $shipment_online->total_charges(),	"UPS Online: " . $this_test_desc . $shipment_online->total_charges() );	
-}
-
 ###################
 ##  Israel 
 ###################
 
 %test = (
-        shipper =>      'Offline::UPS',
+        from_zip => '98682',
+		from_state => 'Washington',
+		shipper =>      'Offline::UPS',
         service =>      'XPR',
         to_country =>   'IL',
         weight =>       '1.75',

@@ -721,6 +721,7 @@ doc/INSTALL.pod
 doc/README.html
 doc/README.pod
 doc/USPS-Country-List.html
+doc/template.pod
 doc/usage.html
 doc/usage.txt
 lib/Bundle/Business/Shipping/.cvsignore
@@ -748,6 +749,7 @@ lib/Business/Shipping/Shipment.pm
 lib/Business/Shipping/Shipment/UPS.pm
 lib/Business/Shipping/Shipment/USPS.pm
 lib/Business/Shipping/Util.pm
+pm_to_blib
 t/10_init.t
 t/20_business_shipping.t
 t/30_usps.t

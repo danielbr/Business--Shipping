@@ -33,10 +33,10 @@
 	<ul>
 
 		<li><a href="#rate_request()"><code>rate_request()</code></a></li>
-		<li><a href="#config_to_hash(_$ary,_$del_)">config_to_hash( $ary, $del )</a></li>
-		<li><a href="#config_to_ary_of_hashes(_'configuration_parameter'_)">config_to_ary_of_hashes( 'configuration_parameter' )</a></li>
 	</ul>
 
+	<li><a href="#author">AUTHOR</a></li>
+	<li><a href="#copyright_and_licence">COPYRIGHT AND LICENCE</a></li>
 </ul>
 <!-- INDEX END -->
 
@@ -97,6 +97,7 @@
  Data::Dumper (any)
  Devel::Required (0.03)
  Error (any)
+ Getopt::Mixed (any)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
  Scalar::Util (1.10)
@@ -228,58 +229,21 @@ Weight of the shipment, in pounds, as a decimal number.
 <p></p></ul>
 <p>
 </p>
-<h2><a name="config_to_hash(_$ary,_$del_)">config_to_hash( $ary, $del )</a></h2>
+<hr />
+<h1><a name="author">AUTHOR</a></h1>
 <pre>
-        $ary    Key/value pairs
-        $del    Delimiter for the above array (tab is default)</pre>
-<p>Builds a hash from an array of lines containing key / value pairs, like so:</p>
-<pre>
- key1   value1
- key2   value2
- key3   value3</pre>
+ Dan Browning         &lt;db@kavod.com&gt;
+ Kavod Technologies   <a href="http://www.kavod.com">http://www.kavod.com</a>
+
+</pre>
 <p>
 </p>
-<h2><a name="config_to_ary_of_hashes(_'configuration_parameter'_)">config_to_ary_of_hashes( 'configuration_parameter' )</a></h2>
-<p>Reads in the configuration hashref ( e.g. cfg()-&gt;{ primary }-&gt;{ secondary } ),
-then returns an array of hashes.  For example:
+<hr />
+<h1><a name="copyright_and_licence">COPYRIGHT AND LICENCE</a></h1>
+<p>Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
+Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 
 </p>
-<p>This:
-
-</p>
-<pre>
- [invalid_rate_requests]
- invalid_rate_requests_ups=&lt;&lt;EOF
- service=XDM    to_country=Canada       reason=Not available.
- service=XDM    to_country=Brazil
- EOF
-
-</pre>
-<p>When called with this:
-
-</p>
-<pre>
- my @invalid_rate_requests_ups = $self-&gt;config_to_ary_of_hashes( 
-     cfg()-&gt;{ invalid_rate_requests }-&gt;{ invalid_rate_requests_ups }
- );
-
-</pre>
-<p>Returns this:
-
-</p>
-<pre>
- [ 
-     {
-         to_country =&gt; 'Canada',
-         service    =&gt; 'XDM'
-     },
-     {
-         to_country =&gt; 'Brazil',
-         service    =&gt; 'XDM'
-     },
- ]
-
-</pre>
 
 </body>
 
