@@ -12,7 +12,10 @@ Revision history for Business::Shipping
 
   Offline_UPS
   
-    * [Fixed] Fuel surcharge auto-update bugs.
+    * [Enh] Fuel surcharge auto-update
+      - [Enh] Updated to work with new format introduced on 12/1/2004, which 
+        now includes 2005 rates, and applies ground services as well as air.
+      - [Fixed] Fuel surcharge auto-update bugs.
     
     * [Enh] Minor enhancements
       - [Enh] Preparation for the 2005 data.

@@ -1,2 +1,4 @@
-Fuel Surcharge: 11
-Good Through Date: 20041205
+Ground Fuel Surcharge: 0
+Ground Good Through Date: 20050102
+Air and International Fuel Surcharge: 13
+Air and International Good Through Date: 20050102

@@ -47,8 +47,6 @@ sub check_for_updates
 {
     my ( $self ) = @_;
     
-    print "Checking for updates...\n";
-
     # Check last updated date, and see if the first monday of the next month has passed.
     
     my $fuel_surcharge_filename = Business::Shipping::Config::support_files 
@@ -57,7 +55,7 @@ sub check_for_updates
     my $fuel_surcharge_contents = readfile( $fuel_surcharge_filename );
     
     my ( undef, $line2 ) = split( "\n", $fuel_surcharge_contents );
-    my ( undef, $good_through_date ) = split( ': ', $line2 );
+    my ( undef, $g_good_through_date ) = split( ': ', $line2 );
     
     # Determine today's date, and see if it is past the $good_through_date.  
     
@@ -65,9 +63,12 @@ sub check_for_updates
     
     my $get_new_update;
     
-    if ( $today <= $good_through_date ) {
+    if ( $today <= $g_good_through_date ) {
         print "Update not necessary\n";
         exit;
+    }
+    else {
+        print "Update is necessary.  Requesting new rates from the UPS website...\n";
     }
     
     my $ua = LWP::UserAgent->new;
@@ -79,11 +80,24 @@ sub check_for_updates
     
     my $content = $response->content;
     
-    $content =~ m|Current Fuel Surcharge Rate:<br></strong>Through\&nbsp\;(\w+) (\d+), (\d+): (\d+)|;
-    my ( $month, $day, $year, $rate ) = ( $1, $2, $3, $4 );
+    #<strong>Current Fuel Surcharge Rate:</strong><br><br><strong>Ground<br></strong>
+    #Through&nbsp;January 2, 2005: 0.00%.<br>Effective&nbsp;January 3, 2005: 2.00%.<br>
+    #<br><strong>Air and International<br></strong>Through&nbsp;January 2, 2005: 13.00%.<br>
+    #Effective&nbsp;January 3, 2005: 9.50%.<br>    
+    
+    # First get the Ground value.
+    $content =~ m|Ground<br></strong>Through\&nbsp\;(\w+) (\d+), (\d+): (\d+)|;
+    my ( $g_month, $g_day, $g_year, $g_rate ) = ( $1, $2, $3, $4 );
 
+    # Then get the Air and International value.
+    $content =~ m|Air and International<br></strong>Through\&nbsp\;(\w+) (\d+), (\d+): (\d+)|;
+    my ( $a_month, $a_day, $a_year, $a_rate ) = ( $1, $2, $3, $4 );
+
+    print "INFO: $g_month, $g_day, $g_year, $g_rate\n$a_month, $a_day, $a_year, $a_rate\n\n";
+    
     die "Could not determine the date and rate from the UPS fuel surcharge page" 
-        unless $month and $day and $year and $rate;
+        unless $g_month and $g_day and $g_year and defined $g_rate
+           and $a_month and $a_day and $a_year and defined $a_rate;
     
     # convert month names ('December') to the number
     
@@ -94,20 +108,30 @@ sub check_for_updates
     
     my $count = 1;
     for ( @month_names ) {
-        if ( $month eq $_ ) {
-            $month = $count;
+        if ( $g_month eq $_ ) {
+            $g_month = $count;
+        }
+        if ( $a_month eq $_ ) {
+            $a_month = $count;
         }
         $count++;
     }
     
-    die "Could not convert month name ($month) into the month number." if $month !~ /\d+/;
+    die "Could not convert month name ($g_month and $a_month) into the month number." 
+        if $g_month !~ /\d+/ or $a_month !~ /\d+/;
     
     # Add leading zeros to month and day:
     
-    $month = "0$month" if length $month == 1;
-    $day   = "0$day"   if length $day   == 1;
+    $g_month = "0$g_month" if length $g_month == 1;
+    $a_month = "0$a_month" if length $a_month == 1;
+    $g_day   = "0$g_day"   if length $g_day   == 1;
+    $a_day   = "0$a_day"   if length $a_day   == 1;
     
-    my $new_rate_file = "Fuel Surcharge: $rate\nGood Through Date: $year$month$day\n";
+    my $new_rate_file = 
+          "Ground Fuel Surcharge: $g_rate\n"
+        . "Ground Good Through Date: $g_year$g_month$g_day\n"
+        . "Air and International Fuel Surcharge: $a_rate\n"
+        . "Air and International Good Through Date: $a_year$a_month$a_day\n";
     
     print "Going to write new values:\n";
     print "==========================\n$new_rate_file==========================\n";
