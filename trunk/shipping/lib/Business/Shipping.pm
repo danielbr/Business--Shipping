@@ -149,7 +149,13 @@ provider that you will use.
 
 =head2 UPS_Offline: For United Parcel Service (UPS) offline rate requests
 
-No signup required.  C<Business::Shipping::DataFiles> has all of rate tables.
+No signup required.  C<Business::Shipping::DataFiles> has all of rate tables, 
+which are usually updated only once per year.
+
+We recommend that you run the following program to update your fuel surcharge
+every first monday of the month.
+
+ Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
 
 =head2 UPS_Online: For United Parcel Service (UPS) Online XML: Free signup
 

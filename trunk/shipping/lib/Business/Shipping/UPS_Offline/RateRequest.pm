@@ -47,7 +47,7 @@ use Business::Shipping::Data;
 use Business::Shipping::Util;
 use Business::Shipping::Config;
 use Data::Dumper;
-use POSIX;
+use POSIX ( 'ceil' );
 use Fcntl ':flock';
 use File::Find;
 use File::Copy;
@@ -189,25 +189,8 @@ sub validate
     return 1;
 }
 
-=head2 check_for_updates()
-
-    * [Enh] Determine the upcoming fuel surcharge changes from UPS website, then 
-      check to see if that date has passed.  If so, automatically update the fuel 
-      surcharge.
-
-=cut
-
-sub check_for_updates
-{
-    my ( $self ) = @_;
-    
-    
-    
-    return;
-}
-
 =head2 _handle_response
-
+    
 =cut
 
 sub _handle_response
@@ -219,7 +202,6 @@ sub _handle_response
         $out .= "$_ = " . $self->$_();
     }
     #error( $out );
-    
     
     my $total_charges;
     $self->calc_zone_data();
@@ -412,10 +394,19 @@ sub calc_fuel_surcharge
     /;
     return 0 if grep /$ups_service_name/i, @exempt_services;
     
-    my $fuel_surcharge = cfg()->{ ups_information }->{ fuel_surcharge } || do { 
-        $self->user_error( "fuel surcharge rate not found" ); 
-        return 0; 
-    };
+    my $fuel_surcharge_filename = Business::Shipping::Config::support_files 
+    . '/config/fuel_surcharge.txt';
+    
+    my $fuel_surcharge_contents = readfile( $fuel_surcharge_filename );
+    
+    my ( $line1 ) = split( "\n", $fuel_surcharge_contents );
+    my ( undef, $fuel_surcharge ) = split( ': ', $line1 );
+    
+    # Old method of calculating fuel surcharge:
+    #my $fuel_surcharge = cfg()->{ ups_information }->{ fuel_surcharge } || do { 
+    #    $self->user_error( "fuel surcharge rate not found" ); 
+    #    return 0; 
+    #};
     
     $fuel_surcharge =~ s/\%//;
     $fuel_surcharge *= .01;
@@ -1038,6 +1029,28 @@ sub readfile
     
     return $contents;
 }
+
+=head2 * writefile( $filename, $filecontents )
+
+Note: this is not an object-oriented method.
+
+=cut
+
+sub writefile
+{
+    my ( $filename, $contents ) = @_;
+    
+    return unless open( OUT, "> $filename" );
+    
+    # TODO: Use English;
+    
+    undef $/;
+    
+    print OUT $contents;
+    
+    return $contents;
+}
+
 
 =head2 _massage_values()
 

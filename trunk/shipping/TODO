@@ -2,6 +2,22 @@
 ##  General TODO
 ################################################################################
 
+    * [Enh] Prepare for 2005 Updates
+    
+Atlanta-based United Parcel Services (UPS) said it is increasing both package shipping rates and its fuel surcharge structure effective January 3, 2005.
+    
+The carrier said rates for UPS Ground, UPS Next Day Air, UPS 2nd Day Air, UPS 3 Day Select and U.S. international services will increase 2.9%. UPS Hundredweight Service – what it considers an “alternative” to LTL service – will increase by 5.9%.
+
+Also beginning in January, UPS will reduce the fuel surcharge currently applied to UPS Next Day Air, UPS 2nd Day Air and UPS 3 Day Select and international services by setting a maximum cap of 9.5%. This surcharge will continue to be calculated from an index based on the average price for a gallon of kerosene-type jet fuel.
+
+However, a fuel surcharge of 2% on UPS Ground, UPS Ground Hundredweight and UPS Standard To Canada will be applied that will fluctuate after January based on the Department of Energy’s on-highway diesel price.
+
+Other pricing changes include an increase of $0.25 for the delivery area surcharge on both residential and commercial services to more remote ZIP codes. The residential surcharge will increase $0.10 for UPS Ground services and $0.35 for UPS Next Day Air, UPS 2nd Day Air and UPS 3 Day Select. 
+
+    * [Enh] Determine the upcoming fuel surcharge changes from UPS website, then 
+      check to see if that date has passed.  If so, automatically update the fuel 
+      surcharge.  Record the time and date that it was tried.
+    
     * [Bug] New 'Ground Residential' service name doesn't work for UPS_Offline:
       Error: Zone 'u' lookup failed, type 'Ground Residential' not found
 
@@ -48,10 +64,6 @@
     * [Enh] Switch to Config::General
     
     * [Enh] Evaluate OODoc
-    
-    * [Enh] Determine the upcoming fuel surcharge changes from UPS website, then 
-      check to see if that date has passed.  If so, automatically update the fuel 
-      surcharge.
     
     * Build up Business::Shipping::DataTools
 
@@ -286,8 +298,6 @@
                        access_key       => 'XXXXXX',
                );
 				
- * [Enh] Confirm that the auto-update feature works well.
- 
  * [Enh] Performance enhancement: instead of transforming the data with
    calc_zone_data() everytime, just re-write the data file.
  

@@ -71,6 +71,14 @@ Revision history for Business::Shipping
         cod_funds_code => 0,      # 0 = All funds allowed, 
 	                          # 8 = money order only.
 
+  UPS_Offline
+  
+    * [Enh] New program to update fuel surcharge automatically.
+      - Run every first Monday of the month to get the new fuel surcharge
+        from the UPS website.  
+      - See bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl for
+        more information.
+
 
 1.54  Sep 21 2004
 

@@ -53,6 +53,9 @@ WriteMakefile(
         'Scalar::Util'               => 1.10,
         'Test::More'                 => 0.40,
     },
+    EXE_FILES       => [
+        'bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl',
+    ]
 );
 
 # Override the standard "install" target, so that it calls "support_files_install"
