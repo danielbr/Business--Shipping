@@ -1,0 +1,25 @@
+Bundle::Business::Shipping
+=====================================
+
+REQUIRED MODULES
+
+     Archive::Zip 
+     Bundle::DBD::CSV 
+     Cache::FileCache 
+     Class::MethodMaker 
+     Config::IniFiles 
+     Crypt::SSLeay 
+     Data::Dumper 
+     Devel::Required 0.03
+     Error 
+     LWP::UserAgent 
+     Math::BaseCnv 
+     XML::DOM 
+     XML::Simple 2.05
+
+COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+
+Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+

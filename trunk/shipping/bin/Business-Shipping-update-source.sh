@@ -8,7 +8,7 @@
 # cd $SOURCE_PATH
 # cvs -q -z3 -d :pserver:anonymous@cvs.kavod.com/home/ship/rep co -d Business-Shipping-CVS ship
 # mkdir -p ~/bin
-# ln -s $SOURCE_PATH/doc/Business-Shipping-update-source.sh ~/bin
+# ln -s $SOURCE_PATH/bin/Business-Shipping-update-source.sh ~/bin
 #
 # Required if you want to update the Interchange usertag too
 #
