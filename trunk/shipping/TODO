@@ -2,11 +2,11 @@
 ##  General TODO
 ######################################################
  
- * Implement a "update on commit" trigger for
-   http://www.kavod.com/Business-Shipping/Business-Shipping-CVS
-   
- * General consensus seems to be that Business::Shippingping is better.
-   http://www.perlmonks.org/index.pl?node_id=262176
+ * Only Cache the response if it was a success (very important)
+ 
+ * Re-do the self meta-data, I think it's buggy.
+ 
+ * Error on missing arguments isn't working very well ( user_id, password)
  
  * include the terms of use for each module.
  
@@ -98,6 +98,9 @@
 ######################################################
 ##  Business::Shipping::USPS TODO
 ######################################################
+
+ * Not correctly realizing when there is an error (<Error><Number>...)
+   - Perhaps because we don't ( KeepRoot => 1, ) on the XMLin()?
 
  * Pull the test cases & responses out of the PDF docs and program them so 
    that they are a test case (commonly in the /t directory in most CPAN  

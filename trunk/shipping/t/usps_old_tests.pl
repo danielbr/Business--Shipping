@@ -232,6 +232,23 @@ Domestic Test rate requests from USPS...
 
 Valid Test Request #1
 Http://SERVERNAME/ShippingAPITest.dll?API=Rate&XML=<RateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx"><Package ID="0"><Service> EXPRESS</Service><ZipOrigination>20770</ZipOrigination><ZipDestination>20852</ZipDestination><Pounds>10</Pounds><Ounces>0</Ounces><Container>None</Container><Size>REGULAR</Size><Machinable></Machinable></Package></RateRequest>
+
+Valid Test Request #1 Pretty XML:
+<RateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx">
+	<Package ID="0">
+		<Service> EXPRESS</Service>
+		<ZipOrigination>20770</ZipOrigination>
+		<ZipDestination>20852</ZipDestination>
+		<Pounds>10</Pounds>
+		<Ounces>0</Ounces>
+		<Container>None</Container>
+		<Size>REGULAR</Size>
+		<Machinable></Machinable>
+	</Package>
+</RateRequest>
+
+
+
 Valid Test Request #2
 Http://SERVERNAME/ShippingAPITest.dll?API=Rate&XML=<RateRequest USERID= "xxxxxxxx" PASSWORD="xxxxxxxx"><Package ID="0"><Service>Priority</Service>
 <ZipOrigination>20770</ZipOrigination><ZipDestination>90210</ZipDestination><Pounds>5</Pounds><Ounces>1</Ounces><Container>0-1096</Container><Size>

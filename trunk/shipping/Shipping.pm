@@ -2,7 +2,7 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: Shipping.pm,v 1.1 2003/06/04 21:41:07 db-ship Exp $
+# $Id: Shipping.pm,v 1.2 2003/06/05 05:24:11 db-ship Exp $
 
 package Business::Shipping;
 use strict;
@@ -94,7 +94,7 @@ overwritten by a new error.
 =cut
 
 use vars qw($VERSION);
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Data::Dumper;
 use Carp;
@@ -222,15 +222,39 @@ sub required_vals
 sub build_alias_subs
 {
 	my $self = shift;
+	$self->trace( 'called' );
+	$self->debug( 'with these args: ( ' . Dumper( @_ ) . ' )' );
 	foreach( @_ ) {
 		unless ( $self->can( $_ ) ) {
+			$self->debug( "building sub for $_" ); 
 			eval "sub $_ { return shift->default_package()->$_( \@_ ); }";
 		}
     }
 	return;
 }
 
-sub default_package { return shift->packages()->[0]; }
+sub default_package { 
+	# TODO: remove this workaround
+	# Apparently, calling set with the [ Business::Shipping::<carrier>::Package->new() ]
+	# isn't enough.  Sometimes that fails (I guess).  
+	# So, if it did fail, create a new one.
+	my $self = shift;
+	return $self->packages()->[0];
+	
+	#if ( 
+	#	defined $self->packages()
+	#	and
+	#	defined $self->packages()->[0]
+	#	)
+	#{
+	#	return $self->packages()->[0];
+	#}
+	#else
+	#{
+	#	# Do nothing?  Perhaps it's being called before creation.
+	#	# $self->error( 'default_package() was called, and it didn't have any value to return!' );
+	#}
+}
 sub get_package { return shift->packages()->[ @_ ]; }
 
 sub validate
@@ -366,8 +390,8 @@ sub _get_response
 		return $response;
 	}
 	else {
-		$self->trace( 'cache disabled.' );
-		$self->debug( "sending this request: " . Dumper( $request ) );
+		$self->trace( 'cache disabled. Sending request...' );
+		#$self->debug( "sending this request: " . Dumper( $request ) );
 		return $self->{'ua'}->request( $request );
 	}	
 }
@@ -401,7 +425,7 @@ sub add_package
 	my $self = shift;
 	$self->trace('called with' . $self->uneval( @_ ) );
 	
-	my $new = new Business::Shipping( 'package' => $self->package_subclass_name() );
+	my $new = Business::Shipping->new( 'package' => $self->package_subclass_name() );
 	$new->set( @_ );
 	
 	# If the passed package has an ID, then use that.

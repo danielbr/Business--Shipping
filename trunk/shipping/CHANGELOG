@@ -1,5 +1,12 @@
 Revision history for Business::Shipping.
 
+0.04
+	- Interchange usertag bugfixes
+	- Some USPS bugfixes.
+	- Additional debugging information.
+	- Reducing indirect notation.
+	- Experiencing some problems with xps-query.
+
 0.03
 	- Changed name to Business::Shipping.
 	- Fixed POD for the Ship.pm file.

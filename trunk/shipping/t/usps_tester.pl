@@ -51,3 +51,5 @@ sub test
 		'to_country'	=>	'Algeria',
 	);
 	print $shipment->total_charges();
+
+	

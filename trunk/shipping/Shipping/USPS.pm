@@ -2,7 +2,7 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: USPS.pm,v 1.1 2003/06/04 21:41:08 db-ship Exp $
+# $Id: USPS.pm,v 1.2 2003/06/05 05:24:12 db-ship Exp $
 
 package Business::Shipping::USPS;
 use strict;
@@ -26,7 +26,7 @@ http://www.uspsprioritymail.com/et_regcert.html
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping;
 use Business::Shipping::USPS::Package;
@@ -71,19 +71,19 @@ sub _metadata
 		},
 		# TODO: automatically pull in the values from Ship::USPS::Package, map whatever is used.
 		'alias_to_default_package' => {
+			service 	=> undef,
 			pounds		=> undef,
 			ounces		=> 0,
 			container	=> 'None',
 			size		=> 'Regular',
 			machinable	=> 'False',
 			mail_type	=> 'Package',
-			service 	=> undef,
 			from_zip	=> undef,
 			to_zip		=> undef,
 			to_country	=> undef,
 		},
 		'optional'		=> {
-			#none.
+			# This is only a stub.  It will always be from the United States.
 			from_country	=> 'US',  # (to|from)_country are required, but they have defaults, so...?
 		},
 		'unique_values' => {
@@ -100,7 +100,6 @@ sub _metadata
 	my %result = %{ $values->{ $desired } };
 	return wantarray ? keys( %result ) : \%result;
 }
-
 
 # This is to redirect calls to the package level (so that
 # people who wont ever ship multiple packages don't have to
@@ -146,6 +145,15 @@ sub _gen_request_xml
 		my $packageEl = $rateReqDoc->createElement('Package'); 
 		$packageEl->setAttribute('ID', $id); 
 		$rateReqEl->appendChild($packageEl); 
+
+		# TODO: Get rid of this bug workaround.
+		# When using xps-query, and you call UPS, then USPS on the same
+		# page, then the USPS::Package will not get the 'service', 'to_zip', or 'from_zip' values
+		# BUT, they are still in $self.  How can that be, if it is supposed to be aliased to the\
+		# package?  Worse, how come it only occurs when UPS is first called?
+		for ( 'service', 'from_zip', 'to_zip' ) {
+			$package->$_( $self->$_() ) unless $package->$_();
+		}
 		
 		if ( $self->domestic() ) {
 			my $serviceEl = $rateReqDoc->createElement('Service'); 
@@ -205,6 +213,7 @@ sub _gen_request_xml
 	} #/foreach package
 	my $request_xml = $rateReqDoc->toString();
 	
+	# We only do this to provide a pretty, formatted XML doc for the debug. 
 	my $request_xml_tree = $self->{xs}->XMLin( $request_xml, KeepRoot => 1, ForceArray => 1 );
 	$self->debug( $self->{xs}->XMLout( $request_xml_tree ) );
 	
@@ -277,9 +286,6 @@ sub _handle_response
 	
 	return $self->is_success( 1 );
 }
-
-# Do nothing, this is just to support the interface, but we're always from US.
-sub from_country { return; }
 
 sub _set_pounds_ounces
 {

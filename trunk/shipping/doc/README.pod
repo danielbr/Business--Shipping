@@ -36,16 +36,12 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
 	 
 	https://www.ups.com/servlet/registration?loc=en_US_EC
 	 
-	 * When you recieve your information from UPS, you can enter into IC
-	   via catalog variables.  You can add these to your products/variables.txt
-	   file, like the following example, or you can add them using the Admin UI.
-
- * See Business::Shipping POD documentation for API notes.
+ * See Shipping.pm POD documentation for API notes.
 
 =head1 EXAMPLES
 
 This module is used by the Interchange E-Commerce software 
-(http://www.icdevgroup.org).  For a reference implementation of Business::UPS,
+(http://www.icdevgroup.org).  For a reference implementation of Business::Shipping,
 see the doc/xps-query.tag file, it implements a function that takes 
 shipping-related arguments, builds a Business::Shipping object, then returns the 
 calculatd cost.

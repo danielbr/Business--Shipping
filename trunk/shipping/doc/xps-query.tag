@@ -7,7 +7,7 @@ UserTag  xps-query  Documentation <<EOD
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: xps-query.tag,v 1.2 2003/06/04 20:18:57 db-ship Exp $
+# $Id: xps-query.tag,v 1.3 2003/06/05 05:24:12 db-ship Exp $
 
 =head1 NAME
 
@@ -33,6 +33,7 @@ UserTag  xps-query  Documentation <<EOD
 	service="GNDRES"
 	from_zip="98682"
 	to_zip="98270"
+	to_residential=1
 	weight="3.5"
 ]
 	
@@ -53,7 +54,7 @@ Here is a general outline of the installation in interchange.
    
 Note that "XPS" is used to denote fields that can be used for UPS or USPS.
 
-UPS_ACCESSKEY	FJ28AWJN328A3	Shipping 
+UPS_ACCESS_KEY	FJ28AWJN328A3	Shipping 
 UPS_USER_ID	userid	Shipping
 UPS_PASSWORD	mypassword	Shipping
 UPS_PICKUPTYPE	Daily Pickup	Shipping
@@ -101,11 +102,10 @@ use Business::Shipping;
 sub {
  	my ( $mode, $opt ) = @_;
 	
-	::logDebug( "[xps-query mode=$mode " . uneval( $opt ) );
-	
-	# TODO: handle unpassed mode and weight in a better fashion (with Log(), etc.). 
-	unless ( $mode and $opt->{weight} ) {
-		Log ( "mode and weight required" );
+	::logDebug( "[xps-query " . uneval( $opt ) );
+	 
+	unless ( $mode and $opt->{weight} and $opt->{ 'service' }) {
+		Log ( "mode, weight, and service required" );
 		return ( undef );
 	}
 	
@@ -113,11 +113,12 @@ sub {
 	# take out anything that might confuse it.
 	delete $opt->{ 'reparse' };
 	delete $opt->{ 'mode' };
+	delete $opt->{ 'hide' };
 	
 	# Business::Shipping takes a hash anyway, we might as well deref it now.
 	my %opt = %$opt;
 
-	my $to_country_default = $Values->{ $Variable->{ XPS_TO_COUNTRY_FIELD } or 'country' };
+	my $to_country_default = $Values->{ $Variable->{ XPS_TO_COUNTRY_FIELD } || 'country' };
 	if ( $to_country_default ) {
 		if ( $mode eq 'USPS' ) {
 			$to_country_default = $Tag->data( 'country', 'name', $to_country_default );
@@ -128,49 +129,50 @@ sub {
 	}
 
 	my %defaults = (
+		
+		# For interchange, STDOUT will cause it to go to the IC debug.
 		'event_handlers'	=> ({ 
-			#'debug' => 'STDOUT', 
-			#'error' => 'STDOUT', 
-			#'trace' => 'STDOUT', 
+			#'debug' => undef, 
+			#'error' => 'STDERR', 
+			#'trace' => undef,
+			'debug' => 'STDOUT', 
+			'error' => 'STDOUT', 
+			'trace' => 'STDOUT', 
 		}),
-		'tx_type'			=> 'rate',
+		#'tx_type'			=> 'rate',
+		
 		'user_id'			=> $Variable->{ "${mode}_USER_ID" },
 		'password'			=> $Variable->{ "${mode}_PASSWORD" },
 		'to_country'		=> $to_country_default,
-		'to_zip'			=> $Values->{ $Variable->{ XPS_TO_ZIP_FIELD } or 'zip' },
+		'to_zip'			=> $Values->{ $Variable->{ XPS_TO_ZIP_FIELD } || 'zip' },
 		'from_country'		=> $Variable->{ XPS_FROM_COUNTRY },
 		'from_zip'			=> $Variable->{ XPS_FROM_ZIP },
 	);
 	
+	# This must be done manually, because of the non-true (0) value.
+	$opt{ 'cache_enabled' } ||= 0;
+	
 	# UPS extras.
-	$defaults{ 'access_key' } = $Variable->{ "${mode}_ACCESS_KEY" } if $Variable->{ "${mode}_ACCESS_KEY" };
-
-	$opt{ 'cache_enabled' } = 0;
+	$defaults{ 'access_key' } = $Variable->{ "${mode}_ACCESS_KEY" } if ( $Variable->{ "${mode}_ACCESS_KEY" } );
 	
 	for ( %defaults ) {
-		$opt{ $_ } ||= $defaults{ $_ } if $defaults{ $_ }; 
+		$opt{ $_ } ||= $defaults{ $_ } if defined $defaults{ $_ }; 
 	}
 
-	my $shipment = new Business::Shipping( 'shipper' => $mode );
-	
-	Log( "[xps-query]: $@ " ) and return undef if $@;
-	
-	my @opt_description;
-	for ( keys %opt ) {
-		push @opt_description, "$_ => $opt{$_}";
+	my $shipment = Business::Shipping->new( 'shipper' => $mode );
+	 
+	unless ( defined $shipment ) {
+		Log( "[xps-query] failure when calling Business::Shipping->new(): $@ " ) if $@;
+		return undef;
 	}
-	my $opt_description = join( ', ', @opt_description );
 	
-	::logDebug( "calling Business::Shipping::${mode}->submit( $opt_description )" );
+	::logDebug( "calling Business::Shipping::${mode}->submit( " . uneval( \%opt ) . " )" );
 	
 	$shipment->submit( %opt ) or ( Log $shipment->error() and return undef );
-	
 	my $charges = $shipment->get_charges( $opt{ 'service' } );
 	$charges ||= $shipment->total_charges();
 	
-	Log( "[xps-query] returning zero for shipping charges." ) if ( $charges == 0 );
-	
-	::logDebug( "[xps-query] returning $charges" );
+	::logDebug( "[xps-query] returning" . uneval( $charges ) );
 	
 	return $charges;
 }
