@@ -12,6 +12,14 @@ package Business::Shipping;
 
 Business::Shipping - Cost estimation and tracking for UPS and USPS
 
+=head1 VERSION
+
+1.53
+
+=cut
+
+$VERSION = '1.53';
+
 =head1 SYNOPSIS
 
 =head2 Rate request example
@@ -116,8 +124,6 @@ when preloading is advantagous.  For example:
 =head1 METHODS
 
 =cut
-
-$VERSION = '1.53';
 
 use strict;
 use warnings;
