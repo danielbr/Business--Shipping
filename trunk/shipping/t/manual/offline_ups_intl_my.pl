@@ -19,7 +19,7 @@ $rate_request->submit(
 	},
 	
         shipper =>      'Offline::UPS',
-        service =>      'XDM',
+        service =>      'XPR',
         to_country =>   'MY',
         weight =>       '7',
         to_zip =>       '98000',

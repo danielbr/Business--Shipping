@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS
 #
-# $Id: UPS.pm,v 1.15 2004/02/03 14:49:33 db-ship Exp $
+# $Id: UPS.pm,v 1.16 2004/02/03 14:53:34 db-ship Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003,2004 Kavod Technologies, Dan Browning. 
@@ -16,7 +16,7 @@
 
 package Business::Shipping::RateRequest::Offline::UPS;
 
-$VERSION = do { my @r=(q$Revision: 1.15 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.16 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -645,7 +645,7 @@ sub calc_zone_data
 					# "601-605" =>	"601,605"
 					#
 					my ( $low, $high ) = split( '-', $columns[ 0 ] );
-					splice( @columns, 0, 0, ( $low, $high ) );
+					splice( @columns, 0, 1, ( $low, $high ) );
 
 				}
 				else {
@@ -863,7 +863,7 @@ sub calc_cost
 	debug( "point = $point, looking in zone data..." );
 	for ( @{ $zdata }[ 1.. $#{ $zdata } ] ) {
 		@data = split /\t/, $_;
-		debug3( "data = " . join( ',', @data ) );
+		#debug3( "data = " . join( ',', @data ) );
 		if ( $self->current_shipment->domestic_or_ca ) {
 
 			my $low		= $data[0];

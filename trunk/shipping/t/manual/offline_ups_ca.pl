@@ -6,6 +6,7 @@ use diagnostics;
 
 use Business::Shipping;
 
+my $enable_online = 0;
 my $rate_request = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
 
 $rate_request->submit(
@@ -27,6 +28,8 @@ $rate_request->submit(
 ) or die $rate_request->error();
 
 print "offline = " . $rate_request->total_charges() . "\n";
+
+exit unless $enable_online;
 
 my $rate_request_online = Business::Shipping->rate_request( shipper => 'Online::UPS' );
 
