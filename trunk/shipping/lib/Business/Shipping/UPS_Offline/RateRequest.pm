@@ -52,7 +52,6 @@ use Fcntl ':flock';
 use File::Find;
 use File::Copy;
 use Math::BaseCnv;
-use Scalar::Util 1.10;
 
 =head2 update
 
@@ -959,7 +958,7 @@ sub calc_zone_info
     #
     # Only apply if the zone is purly numeric.
 
-    if ( Scalar::Util::looks_like_number( $zone ) ) {
+    if ( Business::Shipping::Util::looks_like_number( $zone ) ) {
         for ( my $c = 10; $c >= 1; $c-- ) {
             if ( ! -f $zone_file ) {
                 debug( "zone_file $zone_file doesn't exist, trying others nearby..." );

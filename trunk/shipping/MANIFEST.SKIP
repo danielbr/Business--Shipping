@@ -20,6 +20,7 @@
 ^MANIFEST\.
 ^Makefile$
 ^blib/
+^blibdirs
 ^MakeMaker-\d
 ^pm_to_blib$
 \.gz$

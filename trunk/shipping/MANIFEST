@@ -1,6 +1,7 @@
-bin/Business-Shipping-update-source.sh
+bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
 CHANGELOG
 config/config.ini
+config/fuel_surcharge.txt
 config/log4perl.conf
 configure
 CREDITS
@@ -57,6 +58,8 @@ t/22_Version.t
 t/30_USPS_Online.t
 t/31_USPS_Online_Tracking.t
 t/40_UPS_Online.t
+t/41_UPS_Online_Shop.t
+t/42_UPS_Online_COD.t
 t/45_UPS_Offline.t
 t/61_Log4perl.t
 t/70_countries.t
@@ -129,6 +132,8 @@ t/manual/test-data/bench
 t/manual/test.pl
 t/manual/testlib.pm
 t/manual/Unique-test.pl
+t/manual/UPS-Online-cod.pl
+t/manual/UPS-Online-shop_rates.pl
 t/manual/usps_tester_simple.pl
 t/manual/xps-query-simulator-new.pl
 t/manual/xps-query-simulator-smallest.pl

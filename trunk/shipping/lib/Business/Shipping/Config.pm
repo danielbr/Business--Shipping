@@ -227,7 +227,6 @@ sub get_req_mod
     
     my $req_mod = {
         'Minimum' => [ qw/
-            Scalar::Util
             Class::MethodMaker::Engine              
             Log::Log4perl                           
             Business::Shipping                      

@@ -138,7 +138,7 @@ file for more information.
  Log::Log4perl (any)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
- Scalar::Util (1.10)
+ Scalar::Util (any)
  XML::DOM (any)
  XML::Simple (2.05)
 
@@ -233,6 +233,7 @@ use strict;
 use warnings;
 use Carp;
 use Business::Shipping::Logging;
+use Business::Shipping::Util 'unique';
 use Business::Shipping::ClassAttribs;
 use Class::MethodMaker 2.0
     [ 

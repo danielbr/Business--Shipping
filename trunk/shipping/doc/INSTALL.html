@@ -17,8 +17,6 @@
 	<ul>
 
 		<li><a href="#getting_started">Getting Started</a></li>
-		<li><a href="#forcing_installation">Forcing installation</a></li>
-		<li><a href="#forcing_version_2_x_of_class__methodmaker">Forcing version 2.x of Class::MethodMaker</a></li>
 		<li><a href="#choosing_your_bundle">Choosing your bundle</a></li>
 	</ul>
 
@@ -43,24 +41,6 @@
 <p>Be sure to read the ``GETTING STARTED'' section of the README, because some 
 services (e.g. online rate requests) require that the user signup for a username
 and password.</p>
-<p>
-</p>
-<h2><a name="forcing_installation">Forcing installation</a></h2>
-<p>As of Sept 16, 2004, the following CPAN modules in Bundle::Business::Shipping 
-did not pass their own tests on the author's system:</p>
-<ul>
-<li><strong><a name="item_dbd_3a_3acsv_3a_failed_1_2f14_test_scripts_2c_92_2">DBD::CSV: Failed 1/14 test scripts, 92.86% okay.</a></strong><br />
-</li>
-<li><strong><a name="item_xml_3a_3adom_3a_failed_5_2f21_test_scripts_2c_76_2">XML::DOM: Failed 5/21 test scripts, 76.19% okay.</a></strong><br />
-</li>
-</ul>
-<p>Even so, they seem to work fine after installation, but CPAN will not install 
-them unless the ``force'' command prefix is used.</p>
-<p>
-</p>
-<h2><a name="forcing_version_2_x_of_class__methodmaker">Forcing version 2.x of Class::MethodMaker</a></h2>
-<p>Class::MethodMaker::Engine is used as a prerequisite because it forces CPAN to 
-retreive version 2.x of Class::MethodMaker.</p>
 <p>
 </p>
 <h2><a name="choosing_your_bundle">Choosing your bundle</a></h2>
@@ -105,7 +85,7 @@ tarball, execute this command:</p>
  perl Makefile.PL &amp;&amp; make &amp;&amp; make test &amp;&amp; make install</pre>
 <p>Or, expressed as separate commands:</p>
 <pre>
- perl Makefile.PL
+ perl Makefile.PL [--use_defaults=&lt;1|0&gt;]
  make
  make test
  make install</pre>
@@ -127,7 +107,6 @@ combined list:</p>
  Log::Log4perl (any)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
- Scalar::Util (1.10)
  XML::DOM (any)
  XML::Simple (2.05)</pre>
 

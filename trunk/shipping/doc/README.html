@@ -148,8 +148,8 @@ Gets rates for all the services in one request:
 For example:</pre>
 <pre>
         cod            =&gt; 1,
-        cod_funds_code =&gt; 0,
-        cod_value      =&gt; 400.00,</pre>
+        cod_value      =&gt; 400.00,
+        cod_funds_code =&gt; 0,</pre>
 <p></p></ul>
 <p>
 </p>
@@ -191,7 +191,7 @@ file for more information.</p>
  Log::Log4perl (any)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
- Scalar::Util (1.10)
+ Scalar::Util (any)
  XML::DOM (any)
  XML::Simple (2.05)</pre>
 <p>
@@ -203,7 +203,12 @@ provider that you will use.</p>
 <p>
 </p>
 <h2><a name="ups_offline__for_united_parcel_service__ups__offline_rate_requests">UPS_Offline: For United Parcel Service (UPS) offline rate requests</a></h2>
-<p>No signup required.  <code>Business::Shipping::DataFiles</code> has all of rate tables.</p>
+<p>No signup required.  <code>Business::Shipping::DataFiles</code> has all of rate tables, 
+which are usually updated only once per year.</p>
+<p>We recommend that you run the following program to update your fuel surcharge
+every first monday of the month.</p>
+<pre>
+ Business-Shipping-UPS_Offline-update-fuel-surcharge.pl</pre>
 <p>
 </p>
 <h2><a name="ups_online__for_united_parcel_service__ups__online_xml__free_signup">UPS_Online: For United Parcel Service (UPS) Online XML: Free signup</a></h2>

@@ -28,7 +28,7 @@ use base ( 'Exporter' );
 use Business::Shipping::Logging;
 use Business::Shipping::ClassInfo;
 use Scalar::Util 'blessed';
-    
+
 =item * $object->get_grouped_attrs( $attribute_group_name, %options  )
 
 It's recommended that you create an object of the desired class, then call it as 
@@ -71,7 +71,7 @@ sub get_grouped_attrs
                     || obj_to_class_name( $self );
 
     if ( ! $class_name ) {
-        error_log( "Could not get class_name." );
+        error( "Could not get class_name." );
         return;
     }
 
@@ -140,8 +140,8 @@ sub obj_to_class_name
         #debug3( "Non-fatal error: no object passed." );
         return;
     }
-    
-    my $class_name = blessed $obj;
+
+    my $class_name = blessed( $obj );
     
     return $class_name;   
 }

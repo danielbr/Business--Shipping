@@ -7,21 +7,6 @@ NOTES
     some services (e.g. online rate requests) require that the user signup
     for a username and password.
 
-  Forcing installation
-    As of Sept 16, 2004, the following CPAN modules in
-    Bundle::Business::Shipping did not pass their own tests on the author's
-    system:
-
-    * DBD::CSV: Failed 1/14 test scripts, 92.86% okay.
-    * XML::DOM: Failed 5/21 test scripts, 76.19% okay.
-
-    Even so, they seem to work fine after installation, but CPAN will not
-    install them unless the "force" command prefix is used.
-
-  Forcing version 2.x of Class::MethodMaker
-    Class::MethodMaker::Engine is used as a prerequisite because it forces
-    CPAN to retreive version 2.x of Class::MethodMaker.
-
   Choosing your bundle
     If you are planning on using all of the shipping methods, install
     "Bundle::Business::Shipping". However, if you would only like to install
@@ -60,7 +45,7 @@ MANUAL INSTALLATION
 
     Or, expressed as separate commands:
 
-     perl Makefile.PL
+     perl Makefile.PL [--use_defaults=<1|0>]
      make
      make test
      make install
@@ -80,7 +65,6 @@ All required modules
      Log::Log4perl (any)
      LWP::UserAgent (any)
      Math::BaseCnv (any)
-     Scalar::Util (1.10)
      XML::DOM (any)
      XML::Simple (2.05)
 

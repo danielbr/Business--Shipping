@@ -74,8 +74,8 @@ FEATURES
         For example:
 
                 cod            => 1,
-                cod_funds_code => 0,
                 cod_value      => 400.00,
+                cod_funds_code => 0,
 
   UPS_Offline: United Parcel Service
     * Shipment rate estimation using offline tables.
@@ -103,7 +103,7 @@ REQUIRED MODULES
      Log::Log4perl (any)
      LWP::UserAgent (any)
      Math::BaseCnv (any)
-     Scalar::Util (1.10)
+     Scalar::Util (any)
      XML::DOM (any)
      XML::Simple (2.05)
 
@@ -113,7 +113,12 @@ GETTING STARTED
 
   UPS_Offline: For United Parcel Service (UPS) offline rate requests
     No signup required. "Business::Shipping::DataFiles" has all of rate
-    tables.
+    tables, which are usually updated only once per year.
+
+    We recommend that you run the following program to update your fuel
+    surcharge every first monday of the month.
+
+     Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
 
   UPS_Online: For United Parcel Service (UPS) Online XML: Free signup
     * Read the legal terms and conditions:

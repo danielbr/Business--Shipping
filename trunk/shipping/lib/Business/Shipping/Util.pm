@@ -12,13 +12,12 @@ Misc functions, some others.
 
 =head1 METHODS
 
-=over 4
-
 =cut
 
 package Business::Shipping::Util;
 
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+@EXPORT_OK = qw( looks_like_number unique );
 
 use strict;
 use warnings;
@@ -31,7 +30,7 @@ use File::Copy;
 use Fcntl ':flock';
 use English;
 
-=item * currency( $opt, $amount )
+=head2 * currency( $opt, $amount )
 
 Formats a number for display as currency in the current locale (currently, the
 only locale supported is USD).
@@ -49,7 +48,7 @@ sub currency
     return $amount;
 }
 
-=item * unique( @ary )
+=head2 * unique( @ary )
 
 Removes duplicates (but leaves at least one).
 
@@ -68,11 +67,27 @@ sub unique
     return @unique;
 }
 
+=head2 * looks_like_number( $scalar )
+
+Shamelessly stolen from Scalar::Util 1.10 in order to reduce dependancies.
+
+=cut
+
+sub looks_like_number {
+  local $_ = shift;
+
+  # checks from perlfaq4
+  return $] < 5.009002 unless defined;
+  return 1 if (/^[+-]?\d+$/); # is a +/- integer
+  return 1 if (/^([+-]?)(?=\d|\.\d)\d*(\.\d*)?([Ee]([+-]?\d+))?$/); # a C float
+  return 1 if ($] >= 5.008 and /^(Inf(inity)?|NaN)$/i) or ($] >= 5.006001 and /^Inf$/i);
+
+  0;
+}
+
 1;
 
 __END__
-
-=back
 
 =head1 AUTHOR
 

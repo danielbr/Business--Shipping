@@ -1,7 +1,7 @@
 Revision history for Business::Shipping
 =======================================
 
-1.55  In Source Repository
+1.55  Nov 22 2004
 
   General
   
@@ -29,6 +29,9 @@ Revision history for Business::Shipping
       it is not needed at that level anymore.
     
     * [Enh] Tests: check for username/password more consistently.
+    
+    * [Enh] Remove dependancy on updated version of Scalar::Util (now older 
+      versions will work).
     
   UPS_Online
   

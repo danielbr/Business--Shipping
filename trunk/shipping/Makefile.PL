@@ -50,7 +50,7 @@ WriteMakefile(
     PREREQ_PM		=> { 
         'Class::MethodMaker::Engine' => 0,
         'Log::Log4perl'              => 0,
-        'Scalar::Util'               => 1.10,
+        'Scalar::Util'               => 0,
         'Test::More'                 => 0.40,
     },
     EXE_FILES       => [

@@ -18,8 +18,6 @@ $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
 use strict;
 use warnings;
-use Scalar::Util 'blessed';
-use Business::Shipping::Util;
 use Business::Shipping::Logging;
 
 use Class::MethodMaker 2.0 [ new => [ { -init => 'this_init' }, 'new' ] ];

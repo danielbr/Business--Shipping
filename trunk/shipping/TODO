@@ -14,10 +14,6 @@ However, a fuel surcharge of 2% on UPS Ground, UPS Ground Hundredweight and UPS 
 
 Other pricing changes include an increase of $0.25 for the delivery area surcharge on both residential and commercial services to more remote ZIP codes. The residential surcharge will increase $0.10 for UPS Ground services and $0.35 for UPS Next Day Air, UPS 2nd Day Air and UPS 3 Day Select. 
 
-    * [Enh] Determine the upcoming fuel surcharge changes from UPS website, then 
-      check to see if that date has passed.  If so, automatically update the fuel 
-      surcharge.  Record the time and date that it was tried.
-    
     * [Bug] New 'Ground Residential' service name doesn't work for UPS_Offline:
       Error: Zone 'u' lookup failed, type 'Ground Residential' not found
 
@@ -67,8 +63,6 @@ Other pricing changes include an increase of $0.25 for the delivery area surchar
     
     * Build up Business::Shipping::DataTools
 
-    * Remove dependency on Scalar::Util
-    
     * [Enh] Country Support
       - Which origin countries do UPS_Online and UPS_Offline support?
     
