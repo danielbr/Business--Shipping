@@ -1,6 +1,7 @@
 Revision history for Business::Shipping.
 
 1.03  Jan 21 2004
+	- NOTE: Math::BaseCnv now required (for Offline::UPS to Canada).
 	- Offline::UPS now supports all services to Canada, which completes all of 
 	  the Offline::UPS countries.
 	- Major UserTag enhancements.  Defaults now readable.  Bug fixes, too.

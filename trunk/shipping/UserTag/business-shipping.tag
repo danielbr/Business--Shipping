@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.9 2004/01/21 22:39:51 db-ship Exp $
+# $Id: business-shipping.tag,v 1.10 2004/01/21 23:00:36 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -132,7 +132,7 @@ sub {
 	#
 	# Defaults: Cache enabled.  Log errors only.
 	#	
-	;
+	
 	my $defaults = {
 		'all' => {
 			'user_id'			=> $Variable->{ "${shipper}_USER_ID" },
@@ -143,14 +143,12 @@ sub {
 			'to_zip'			=> $Values->{ $Variable->{ XPS_TO_ZIP_FIELD } || 'zip' },
 			'from_country'		=> $Variable->{ XPS_FROM_COUNTRY },
 			'from_zip'			=> $Variable->{ XPS_FROM_ZIP },
-			'event_handlers'	=> (
-				{
+			'event_handlers'	=> {
 					'error' => 'STDERR',
 					'debug' => ( $debug ? 'STDOUT' : undef ),
 					'trace' => undef,
 					'debug3' => undef,
-				}
-			),
+			},
 			'cache'				=> ( defined $opt{ cache } ? $opt{ cache } : 1 ),
 		},
 		'Online::USPS' => {
@@ -167,18 +165,22 @@ sub {
 			'from_state'		=> $Variable->{ XPS_FROM_STATE },
 			'cache'				=> 0,
 		},
-
-	}
+	};
+	
+	print STDERR $defaults;
 	
 	#
 	# Apply all of the above defaults.  Sorting the hash keys causes 'all' to
 	# be applied first, which allows each shipper to override the default.
 	# For example, Online::USPS overrides the to_country method.
 	#
-	foreach my $shipper_defaults ( sort keys %$defaults ) {
-		if ( $shipper_defaults eq $shipper or $shipper_defaults eq 'all' ) {
+	foreach my $shipper_key ( sort keys %$defaults ) {
+		if ( $shipper_key eq $shipper or $shipper_key eq 'all' ) {
+			my $shipper_defaults = $defaults->{ $shipper_key };
+			
 			for ( keys %$shipper_defaults ) {
-				$opt{ $_ } ||= $defaults->{ $_ } if ( $_ and defined $defaults->{ $_ } );
+				my $value = $shipper_defaults->{ $_ };
+				$opt{ $_ } ||= $value if ( $_ and defined $value );
 			}
 		}
 	}
