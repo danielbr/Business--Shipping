@@ -15,6 +15,7 @@ Business::Shipping - Cost estimation and tracking for UPS and USPS
 =head1 VERSION
 
 1.53
+$Date$
 
 =cut
 
