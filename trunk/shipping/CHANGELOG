@@ -1,14 +1,12 @@
 Revision history for Business::Shipping.
 
-1.05  CVS
+1.06  CVS
 
-Compatibility
-    
-	
+1.05  Feb 10 2004
+
 General
     - Fix Bundle::Business::Shipping
     - Remove unneeded .zip files from data/
-
 
 1.04  Feb 07 2004
 	- Compatibility
