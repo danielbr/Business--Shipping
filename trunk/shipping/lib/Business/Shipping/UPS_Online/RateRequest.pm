@@ -336,6 +336,17 @@ sub get_total_charges
 
 =head2 _handle_response
 
+=head2 error_details()
+
+See L<Business::Shipping::RateRequest> for full documentation.
+Adds the following keys to each error:
+
+ error_severity		: Transient, Hard, or Warning
+ minimum_retry_seconds	: The minimum number of seconds to wait
+ locations		: An arrayref of hashrefs.  Each hash ref has
+			  the keys, element and attribute.  
+ error_data		: An arrayref of strings containing the invalid data
+			  
 =cut
 
 sub _handle_response
@@ -353,15 +364,83 @@ sub _handle_response
     
     my $status_code = $response_tree->{Response}->{ResponseStatusCode};
     my $status_description = $response_tree->{Response}->{ResponseStatusDescription};
-    my $error = $response_tree->{Response}->{Error}->{ErrorDescription};
-    my $err_location = $response_tree->{Response}->{Error}->{ErrorLocation}->{ErrorLocationElementName} || '';
-    if ( $error and $error !~ /Success/ ) {
-        my $combined_error_msg = "$status_description ($status_code): $error @ $err_location"; 
-        $combined_error_msg =~ s/\s{3, }/ /g;
-        $self->user_error( $combined_error_msg );
-        return;
-    }
     
+    ### If there is an error
+    if( exists($response_tree->{Response}->{Error}) )
+    {
+	### Lets work on an array, since there could be more than one
+	my $errors = (ref( $response_tree->{Response}->{Error} ) eq 'ARRAY') 
+	              ? $response_tree->{Response}->{Error} 
+	              : [ $response_tree->{Response}->{Error} ];
+	
+	### Loop through the errors, gathering the details and 
+	### create a simple error message string
+	my (@errorDetails, $errorMsg);
+	foreach my $errorHash (@$errors)
+	{
+	    ### Get some of the error details
+	    my $severity = $errorHash->{ErrorSeverity};
+	    my $code = $errorHash->{ErrorCode};
+	    my $error = $errorHash->{ErrorDescription};
+	    my $retry_secs = $errorHash->{MinimumRetrySeconds};
+	    my @err_locations = ();
+	    my @err_contents = ();
+	    my $err_location = '';
+	    
+	    ### Check if the error location was given
+	    if( exists($errorHash->{ErrorLocation}) )
+	    {
+		### There could be more than one
+		my $locations = (ref $errorHash->{ErrorLocation} eq 'ARRAY')
+		                 ? $errorHash->{ErrorLocation}
+		                 : [ $errorHash->{ErrorLocation} ];
+		foreach my $location (@$locations)
+		{
+		    my ($elem, $attrib) = ($location->{ErrorLocationElementName},
+					   $location->{ErrorLocationAttributeName},);
+		    $err_location = $elem if( !defined($err_location) || $err_location eq '' );
+		    push( @err_locations, { element => $elem, attribute => $attrib } );
+		}
+	    }
+
+	    ### Check if the contents of the element in error was given
+	    if( exists($errorHash->{ErrorDigest}) )
+	    {
+		### There could be more than one
+		my $digests = (ref $errorHash->{ErrorDigest} eq 'ARRAY')
+		               ? $errorHash->{ErrorDigest}
+		               : [ $errorHash->{ErrorDigest} ];
+		foreach my $digest (@$digests)
+		{
+		    push( @err_contents, $digest );
+		}
+	    }
+
+	    push( @errorDetails, { error_code => $code,
+				   error_msg => $error,
+				   error_severity => $severity,
+				   minimum_retry_seconds => $retry_secs,
+				   locations => \@err_locations,
+				   error_data => \@err_contents } );
+	    
+	    if ( !defined($errorMsg) && $error and $error !~ /Success/ ) 
+	    {
+		my $combined_error_msg = "$status_description ($status_code): $error @ $err_location"; 
+		$combined_error_msg =~ s/\s{3, }/ /g;
+		$errorMsg = $combined_error_msg;
+	    }
+	} # foreach error
+
+	### Store the error message and details in the object
+	$self->user_error( $errorMsg );
+	$self->error_details( @errorDetails );
+	
+	### Status code is 1 on success and 0 on failure.
+	### Return, only if status code is 0
+	return $self->is_success(0) if( !$status_code );
+
+    } # if there is an error
+
     my @services_results;
     my $ups_results;
     

@@ -71,6 +71,17 @@ See _handle_response() for implementation details.
 Stores a Business::Shipping::Shipment object.  Many methods are forwarded to it.
 At this time, each RateRequest only has one Shipment.
 
+=head2 $rate_request->error_details()
+
+Arrayref.  Stores the error results of a rate request. There can be multiple
+errors for one request.  Each entry in the array represents an error.  Each
+error is a hashref with the following keys:
+
+ error_code	: The error code
+ error_msg	: A description error message
+
+Additional keys may be added by the shipper class.
+
 =cut
 
 use Class::MethodMaker 2.0
@@ -110,7 +121,8 @@ use Class::MethodMaker 2.0
                   'Has_a' 
                 ],
       scalar => [ { -static => 1, -default => 'shipper' }, 'Required' ],
-      scalar => [ { -static => 1, -default => 'shipper' }, 'Unique'   ]
+      scalar => [ { -static => 1, -default => 'shipper' }, 'Unique'   ],
+      array  => [ 'error_details' ],
     ];
 
 =head2 $rate_request->go()

@@ -233,6 +233,14 @@ sub _massage_values
 
 =head2 _handle_response
 
+=head2 error_details()
+
+See L<Business::Shipping::RateRequest> for full documentation.
+Adds the following keys to each error:
+
+ package_id	: The unique package id in which the error occurred
+ error_source	: The component that generated the error
+
 =cut
 
 sub _handle_response
@@ -240,23 +248,67 @@ sub _handle_response
     trace '()';
     my $self = shift;
     
+    ### Keep the root element, because USPS might 
+    ### return an error and 'Error' will be the root element
     my $response_tree = XML::Simple::XMLin( 
         $self->response()->content(), 
         ForceArray => 0, 
-        KeepRoot => 0 
+        KeepRoot => 1 
     );
+    ### But discard the root element if it is RateV2Response
+    $response_tree = $response_tree->{RateV2Response} if( exists($response_tree->{RateV2Response}) );
     
-    # TODO: Handle multiple packages errors.
-    # (this doesn't seem to handle multiple packagess errors very well)
-    if ( $response_tree->{Error} or $response_tree->{Package}->{Error} ) {
-        my $error = $response_tree->{Package}->{Error};
-        $error ||= $response_tree->{Error};
-        my $error_number         = $error->{Number};
-        my $error_source         = $error->{Source};
-        my $error_description    = $error->{Description};
-        $self->user_error( "$error_source: $error_description ($error_number)" );
-        return( undef );
+    # Handle errors
+    ### Get all errors
+    my $errors = [];
+    push( @$errors, $response_tree->{Error} ) if( exists($response_tree->{Error}) );
+    if( ref $response_tree->{Package} eq 'HASH' )
+    {
+	if( exists($response_tree->{Package}{Error}) )
+	{
+	    push( @$errors, $response_tree->{Package}{Error} );
+	    $errors->[$#{$errors}]{PackageID} = $response_tree->{Package}{ID};
+	}
     }
+    elsif( ref $response_tree->{Package} eq 'ARRAY' )
+    {
+	foreach my $pkg (@{$response_tree->{Package}})
+	{
+	    if( exists($pkg->{Error}) )
+	    {
+		push( @$errors, $pkg->{Error} );
+		$errors->[$#{$errors}]{PackageID} = $pkg->{ID};
+	    }	    
+	}
+    }
+    if( @$errors > 0 )
+    {
+	### Loop through the errors, gathering the details and
+	### create a simple error message string
+	my (@errorDetails, $errorMsg);
+	foreach my $errorHash (@$errors)
+	{
+	    ### Get some of the error details
+	    my $code = $errorHash->{Number};
+	    my $error = $errorHash->{Description};
+	    my $source = $errorHash->{Source};
+	    my $pkg_src = $errorHash->{PackageID};
+	    
+	    push( @errorDetails, { error_code => $code,
+				   error_msg => $error,
+				   package_id => $pkg_src,
+				   error_source => $source } );
+	    if( !defined($errorMsg) && $error )
+	    {
+		$errorMsg = "$source: $error ($code)";
+	    }
+	} # foreach error
+
+	$self->user_error( $errorMsg );
+	$self->error_details( @errorDetails );
+	
+	return $self->is_success(0);
+    } # if errors
     
     #
     # This is a "large" debug.
