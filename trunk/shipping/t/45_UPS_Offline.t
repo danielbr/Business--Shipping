@@ -225,10 +225,11 @@ SKIP: {
     print "Online: intl to gb: " . $shipment_online->total_charges() . "\n";
 }
 
+# XDM invalid for this request, changed to XPR 
 %test = (
     from_state    => 'Washington',
     from_zip    => '98682',
-    service        => 'XDM',
+    service        => 'XPR',
     weight        => 20,
     to_country    => 'GB',
     to_zip        => 'RH98AX',

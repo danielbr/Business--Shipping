@@ -10,6 +10,7 @@ $Rev$
 
 =head2 Domestic
 
+    All
     EXPRESS
     Priority
     Parcel
@@ -19,16 +20,16 @@ $Rev$
 
 =head2 International
  
-    'Global Express Guaranteed Document Service',
-    'Global Express Guaranteed Non-Document Service',
-    'Global Express Mail (EMS)',
-    'Global Priority Mail - Flat-rate Envelope (large)',
-    'Global Priority Mail - Flat-rate Envelope (small)',
-    'Global Priority Mail - Variable Weight Envelope (single)',
-    'Airmail Letter Post',
-    'Airmail Parcel Post',
-    'Economy (Surface) Letter Post',
-    'Economy (Surface) Parcel Post',
+ Global Express Guaranteed Document Service
+ Global Express Guaranteed Non-Document Service
+ Global Express Mail (EMS)
+ Global Priority Mail - Flat-rate Envelope (Large)
+ Global Priority Mail - Flat-rate Envelope (Small)
+ Global Priority Mail - Variable Weight (Single)
+ Airmail Letter-post
+ Airmail Parcel Post
+ Economy (Surface) Letter-post
+ Economy (Surface) Parcel Post
 
 =head1 METHODS
 
@@ -149,23 +150,25 @@ sub _gen_request_xml
         $packageEl->appendChild($ouncesEl);
         
         if ( $self->domestic() ) {
-            my $containerEl = $rateReqDoc->createElement('Container'); 
-            my $containerText = $rateReqDoc->createTextNode( $package->container() ); 
-            $containerEl->appendChild($containerText); 
-            $packageEl->appendChild($containerEl); 
+            if ( defined( $package->container() ) ) {
+                my $containerEl = $rateReqDoc->createElement('Container'); 
+                my $containerText = $rateReqDoc->createTextNode( $package->container() ); 
+                $containerEl->appendChild($containerText); 
+                $packageEl->appendChild($containerEl);
+            }
             
             my $oversizeEl = $rateReqDoc->createElement('Size'); 
             my $oversizeText = $rateReqDoc->createTextNode( $package->size() ); 
             $oversizeEl->appendChild($oversizeText); 
             $packageEl->appendChild($oversizeEl); 
-            
-	    if( defined( $package->machinable() ) )
-	    {
-		my $machineEl = $rateReqDoc->createElement('Machinable'); 
-		my $machineText = $rateReqDoc->createTextNode( $package->machinable() ); 
-		$machineEl->appendChild($machineText); 
-		$packageEl->appendChild($machineEl);
-	    }
+        
+            if( defined( $package->machinable() ) )
+            {
+                my $machineEl = $rateReqDoc->createElement('Machinable'); 
+                my $machineText = $rateReqDoc->createTextNode( $package->machinable() ); 
+                $machineEl->appendChild($machineText); 
+                $packageEl->appendChild($machineEl);
+            }
         }
         else {
             my $mailTypeEl = $rateReqDoc->createElement('MailType'); 
@@ -334,36 +337,34 @@ sub _handle_response
         #
         
         $charges = $response_tree->{ Package }->{ Postage };
-
-	if( defined($charges) )
-	{
-	    $charges = [ $charges ] if( ref $charges ne 'ARRAY' );
-	    foreach my $chg (@$charges)
-	    {
-		next if( ref $chg ne 'HASH' );
-		my $service_hash = {
-		    code       => undef,
-		    nick       => undef,
-		    name       => $chg->{MailService},
-		    deliv_days => undef,
-		    deliv_date => undef,
-		    charges    => $chg->{Rate},
-		    charges_formatted    => Business::Shipping::Util::currency( {}, $chg->{Rate} ),
-		    deliv_date_formatted => undef,
-		};
-		push( @services_results, $service_hash );
-	    }
-	}
+        if( defined($charges) )
+        {
+            $charges = [ $charges ] if( ref $charges ne 'ARRAY' );
+            foreach my $chg (@$charges)
+            {
+            next if( ref $chg ne 'HASH' );
+            my $service_hash = {
+                code       => undef,
+                nick       => undef,
+                name       => $chg->{MailService},
+                deliv_days => undef,
+                deliv_date => undef,
+                charges    => $chg->{Rate},
+                charges_formatted    => Business::Shipping::Util::currency( {}, $chg->{Rate} ),
+                deliv_date_formatted => undef,
+            };
+            push( @services_results, $service_hash );
+            }
+        }
     }
     else {
         #
         # International *does* tell you the price of all services for each package
         #
         
-        foreach my $service ( @{ $response_tree->{ Package }->{ Service } } ) {
-            debug( "Trying to find a matching service by service description..." );
+        foreach my $service ( @{ $response_tree->{ IntlRateResponse }->{ Package }->{ Service } } ) {
+            debug( "Trying to find a matching service by service description (" . $service->{ SvcDescription } . ")..." );
             debug( "Charges for $service->{SvcDescription} service = " . $service->{Postage} );
-            
             # BUG: you can't check if the service descriptions match, because many countries use
             # different descriptions for the same service.  So we try to match by description
             # *or* by mail_type.  (There are probably many services with the same mail_type, how 
@@ -391,7 +392,7 @@ sub _handle_response
             # Still can't find the right service...
             if ( ! $charges ) {
                 my $error_msg = "The requested service (" . ( $self->service() || 'none entered by user' )
-                        . ") did not match any services that was available for that country.";
+                        . ") did not match any services that were available for that country.";
                 
                 print STDERR $error_msg;
                 $self->user_error( $error_msg );

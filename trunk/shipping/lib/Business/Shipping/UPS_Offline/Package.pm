@@ -21,7 +21,7 @@ use strict;
 use warnings;
 use base ( 'Business::Shipping::Package' );
 
-use Class::MethodMaker 2.0 [ new => [ qw/ -hash new / ] ];
+use Class::MethodMaker 2.0 [ new => 'new' ];
 
 1;
 

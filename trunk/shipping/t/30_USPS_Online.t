@@ -51,28 +51,61 @@ sub simple_test
 
 
 my $shipment;
-$shipment = test(
-    'test_mode'  => 1,
-    'service'    => 'EXPRESS',
-    'from_zip'   => '20770',
-    'to_zip'     => '20852',
-    'pounds'     => 10,
-    'ounces'     => 0,
-    'container'  => 'None',
-    'size'       => 'REGULAR',
-    'machinable' => '',
-);
-ok( $shipment->total_charges(),     'USPS domestic test total_charges > 0' );
 
-$shipment = test(
-    'test_mode'  => 1,
-    'pounds'     => 0,
-    'ounces'     => 1,
-    'mail_type'  => 'Postcards or Aerogrammes',
-    'to_country' => 'Algeria',
-);
-ok( $shipment->total_charges(),     'USPS intl test total_charges > 0' );
+if ( 0 ) {
+    $shipment = test(
+        'test_mode'  => 1,
+        'service'    => 'EXPRESS',
+        'from_zip'   => '20770',
+        'to_zip'     => '20852',
+        'pounds'     => 10,
+        'ounces'     => 0,
+        'size'       => 'REGULAR',
+    );
+    ok( $shipment->total_charges(),     'USPS domestic test total_charges > 0' );
     
+    
+    $shipment = test(
+        'test_mode'  => 1,
+        'pounds'     => 0,
+        'ounces'     => 1,
+        'mail_type'  => 'Postcards or Aerogrammes',
+        'to_country' => 'Algeria',
+    );
+    ok( $shipment->total_charges(),     'USPS intl test total_charges > 0' );
+
+}
+
+# V2 tes requests
+if ( 1 ) {
+    $shipment = test(
+        'test_mode'  => 1,
+        'service'    => 'PRIORITY',
+        'from_zip'   => '10022',
+        'to_zip'     => '20008',
+        'pounds'     => 10,
+        'ounces'     => 5,
+        'container'  => 'Flat Rate Box',
+        'size'       => 'REGULAR',
+    );
+    ok( $shipment->total_charges(),     'USPS domestic test total_charges > 0' );
+    
+    
+    $shipment = test(
+        test_mode    => 1,    
+        service      => 'All',
+        from_zip     => '10022',
+        to_zip       => '20008',
+        'pounds'     => 10,
+        'ounces'     => 5,
+        'size'       => 'LARGE',
+        machinable   => 'TRUE',
+    );
+    ok( $shipment->total_charges(),     'USPS domestic all services test total_charges > 0' );
+
+}
+
+
 $shipment = test(
     'test_mode'        => 0,
     'from_zip'         => '98682',
@@ -114,7 +147,7 @@ $shipment = test(
     'ounces'        => 0,
     'mail_type'        => 'Package',
     'to_country'    => 'Great Britain',
-    
+    'from_zip'     => '98682'
 );
 ok( $shipment->total_charges(),        'USPS intl production total_charges > 0' );
 
@@ -146,24 +179,45 @@ my $total_charges_5_pounds = $shipment->total_charges();
 
 ok( $total_charges_1_pound != $total_charges_5_pounds,    'USPS intl cache saves results separately' ); 
 
+###########################################################################
+##  High weight should be a high price
+###########################################################################
+
+$shipment = test(
+    service     => 'Priority',
+    weight      => 22.5,
+    to_zip      => 27713,
+    from_zip    => 98682,
+);
+#print "\ttotal charges = " . $shipment->total_charges() . "\n";
+ok( $shipment->total_charges() > 20.00,        'USPS high weight is high price' );
 
 ###########################################################################
 ##  Zip Code Testing
 ###########################################################################
+
+# This test doesn't work anymore because Priority service always returns
+# "Priority Mail Flat Rate Box (11.25" x 8.75" x 6")'" for $7.70
+
+if ( 0 ) {
+
 # Vancouver, Vermont, Alaska, Hawaii
 my @several_very_different_zip_codes = ( '98682', '22182', '99501' );
 my %charges;
+
+#Business::Shipping->log_level( 'DEBUG' );
 foreach my $zip ( @several_very_different_zip_codes ) {
     $shipment = test(
-        'cache'    => 1,
-        'test_mode'        => 0,
+        'cache'    => 0,
         'service'         => 'Priority',
         'weight'        => 5,
         'to_zip'        => $zip,
         'from_zip'        => 98682
     );
     $charges{ $zip } = $shipment->total_charges();
+    print Dumper( $shipment->results );
 }
+#use Data::Dumper; print Dumper( \%charges ); exit;
 
 # Somehow make sure that all the values in %charges are unique.
 my $found_duplicate;
@@ -179,20 +233,14 @@ foreach my $zip1 ( keys %charges ) {
     }
 }
 
-ok( ! $found_duplicate, 'USPS different zip codes give different prices' );
+ok( ! $found_duplicate, 'USPS different zip codes give different prices (caching enabled)' );
+
+}
 
 ##########################################################################
 ##  SPECIFIC CIRCUMSTANCES
 ##########################################################################
 
-$shipment = test(
-    service     => 'Priority',
-    weight        => 22.5,
-    to_zip        => 27713,
-    from_zip    => 98682,
-);
-#print "\ttotal charges = " . $shipment->total_charges() . "\n";
-ok( $shipment->total_charges() > 20.00,        'USPS high weight is high price' );
 
 #simple_test(
 #    from_zip    => '98682',

@@ -47,7 +47,7 @@ use Class::MethodMaker 2.0
     [
       new    => [ { -hash => 1 }, 'new' ],
       new    => 'default_new',
-      scalar => [ { -default => 'None'    }, 'container'  ],
+      scalar => [ { -default => undef     }, 'container'  ],
       scalar => [ { -default => 'Regular' }, 'size'       ],
       scalar => [ { -default => undef     }, 'machinable' ],
       scalar => [ { -default => 'Package' }, 'mail_type'  ],
