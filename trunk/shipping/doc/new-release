@@ -15,31 +15,28 @@ new-release - the Business::Shipping release script.
  # Remove the old tars
  rm -f Business-Shipping-*.tar.gz
  
- # Test it
- make test
- 
- # Update the verision in Makefile.PL (if you haven't already)
- vi Makefile.PL
- 
  # Update the CHANGELOG
- cvs diff | more
- vi CHANGELOG
+ # cvs diff | more
  
  # Update the documentation
- make docs
- 
- # Update the manifest
- make manifest
+ make docs manifest && make && make test 
  
  # Commit to CVS
+ #
+ # TODO: would be nice if I could automatically pull the right
+ #       stuff from the changelog, but that would more work than
+ #       it's worth. 
+ #
  cvs commit
  
  # Upload to server.
  make tardist
  doc/new-release Business-Shipping-*.tar.gz
- 
- # Update the versions in Makefile.PL and CHANGELOG
 
+ # Update to the next verision in Makefile.PL (if you haven't already)
+ export NEW=0.78
+ perl -pi -e "s/\$VERSION = \'.\...\'/\$VERSION = \'${NEW}\'/g" Makefile.PL
+ 
 =cut 
 
 my ( $file ) = @ARGV;
