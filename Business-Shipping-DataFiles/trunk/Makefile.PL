@@ -81,10 +81,10 @@ installed perl, typically root.
 
 $module Support files directory:);
 
-	$my_globals{ SUPPORT_FILES_DIR } = prompt( 
-        $question, 
-		$my_globals{ SUPPORT_FILES_DIR },
-	);
+        $my_globals{ SUPPORT_FILES_DIR } = prompt( 
+            $question, 
+            $my_globals{ SUPPORT_FILES_DIR },
+        );
     
 	$my_globals{ SUPPORT_FILES_DIR } =~ s:[\\/]\s*$::;
 	$my_globals{ SUPPORT_FILES_DIR } =~ s:^\s*::;
