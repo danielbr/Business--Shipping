@@ -16,8 +16,8 @@ Documentation forthcoming.
 
 =cut
 
-use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.1 $ =~ /(\d+)\.(\d+)/);
+use vars qw(@ISA $VERSION);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.2 $ =~ /(\d+)\.(\d+)/);
 use Business::Ship;
 use LWP::UserAgent ();
 use HTTP::Request ();
@@ -25,7 +25,7 @@ use HTTP::Response ();
 use XML::Simple ();
 use Carp ();
 
-@ISA = qw(Business::Ship);
+@ISA = ('Business::Ship');
 
 sub set_defaults
 {

@@ -37,7 +37,15 @@ my %vals = (
 	tx_type				=> undef,
 	error				=> undef,
 	server_response		=> undef,
+	server				=> undef,
+	protocol			=> undef,
+	path				=> undef,
 );
+
+my @required_fields = qw/
+	user_id
+	password
+/;
 
 my %rate_vals = (
 	origination_zip		=> undef,
@@ -94,5 +102,13 @@ sub required_fields {
         Carp::croak("missing required field $_") unless exists $vals{$_};
     }
 }
+
+sub build_subs {
+    my $self = shift;
+    foreach(@_) {
+        eval "sub $_ { my \$self = shift; if(\@_) { \$self->{$_} = shift; } return \$self->{$_}; }";
+    }
+}
+
 
 1;
