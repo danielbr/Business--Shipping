@@ -8,7 +8,7 @@ $Rev$
 
 =head1 DESCRIPTION
 
-Many file-related functions, some others.
+Misc functions, some others.
 
 =head1 METHODS
 
@@ -32,36 +32,10 @@ use File::Copy;
 use Fcntl ':flock';
 use English;
 
-=item * download_to_file( $url, $file )
-
-=cut
-
-sub download_to_file
-{
-    my ( $url, $file ) = @_;
-    trace "( $url, $file )";
-    
-    return unless $url and $file;
-    
-    eval {
-        use LWP::UserAgent;
-        my $ua = LWP::UserAgent->new;
-        my $req = HTTP::Request->new(GET => $url);
-        open( NEW_ZONE_FILE, "> $file" );
-        print( NEW_ZONE_FILE $ua->request($req)->content() );        
-        close( NEW_ZONE_FILE );
-    };
-    warn $@ if $@;
-    
-    return;
-}
-
 =item * currency( $opt, $amount )
 
 Formats a number for display as currency in the current locale (currently, the
 only locale supported is USD).
-
-Analagous to $Tag->currency() in Interchange.
 
 =cut
 
@@ -76,83 +50,6 @@ sub currency
     return $amount;
 }
 
-=item * _unzip_file( $zipName, $destination_directory )
-
-=cut
-
-# Extracts all files from the given zip
-
-=pod
-
-sub _unzip_file
-{
-    my ( $zipName, $destination_directory ) = @_;
-    $destination_directory ||= './';
-    
-    use Archive::Zip qw(:ERROR_CODES);
-
-    my $zip = Archive::Zip->new();
-    my $status = $zip->read( $zipName );
-    if ( $status != AZ_OK )  {
-        my $error = "Read of $zipName failed";
-        #$self->user_error( $error );
-        logdie $error;
-    }
-    if ( $@ ) { logdie "_unzip_file error: $@"; }
-    
-    $zip->extractTree( '', $destination_directory );
-    
-    return;
-}
-
-=cut
-
-=item * filename_only( $path )
-
-=cut
-
-sub filename_only
-{
-    trace "( $_[0] )";
-    my $filename_with_extension = $_[0];
-    
-    my $filename_only = $filename_with_extension; 
-    $filename_only =~ s/\..+$//;
-    
-    return $filename_only;
-}
-
-=item * split_dir_file( $path )
-
-=cut
-
-# Return ( directory_path, file_name ) from any path.
-# TODO: Use correct File:: Module, and be Windows-compatible
-
-sub split_dir_file
-{
-    my $path = shift;
-    
-    my @path_components = split( '/', $path );
-    my $file = pop @path_components;
-    my $dir = join( '/', @path_components );
-    return ( $dir, $file ); 
-}
-
-=item * remove_extension( $file )
-
-=cut
-
-sub remove_extension
-{
-    my $file = shift;
-    trace "( $file )";
-    
-    my $filename_only = filename_only( $file );
-    rename( $file, $filename_only );
-    
-    return $filename_only;
-}
 
 =item * remove_elements_of_x_that_are_in_y( $x, $y )
 
@@ -181,45 +78,6 @@ sub remove_elements_of_x_that_are_in_y
     return @new_x;
 }
 
-=item * remove_windows_carriage_returns( $path )
-
-=cut
-
-# TODO: Windows compat: call binmode() if Windows.
-
-sub remove_windows_carriage_returns
-{
-    my $file = shift;
-    trace "( $file )";
-    
-    open(    IN,        $file      );
-    flock(   IN,        LOCK_EX    );
-    
-    open(    OUT,       ">$file.1" );
-    flock(   OUT,       LOCK_EX    );
-
-    # read it all in at once.
-
-    undef $/;
-    my $contents = <IN>;
-    $contents =~ s/\r\n/\n/g;
-    print OUT $contents;
-    
-    flock(  IN,        LOCK_UN     );
-    close(  IN                     );
-    flock(  OUT,       LOCK_UN     );
-    close(  OUT                    );
-    copy(   "$file.1", $file       );
-    unlink( "$file.1"              );
-    
-
-    # return to normal line endings.
-    # TODO: Use English;
-
-    $/ = "\n";
-    return;
-}
-
 =item * readfile( $file )
 
 =cut
@@ -241,6 +99,8 @@ sub readfile
 }
 
 =item * element_in_array( $element, @array )
+
+TODO: Replace with List::Util?
 
 =cut
 

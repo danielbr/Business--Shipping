@@ -6,7 +6,7 @@
 
 ifndef DEF_USERTAG_BUSINESS_SHIPPING
 Variable DEF_USERTAG_BUSINESS_SHIPPING     1
-Message -i Loading [business-shipping] usertag...
+Message -i Loading [business-shipping]...
 Require Module Business::Shipping
 UserTag  business-shipping  Order         shipper
 UserTag  business-shipping  AttrAlias     mode    shipper
@@ -20,7 +20,7 @@ UserTag  business-shipping  Documentation <<EOD
 =head1 VERSION
 
 [business-shipping] usertag:    $Rev$
-Requires Business::Shipping:     Revision: 1.04+
+Requires Business::Shipping:     Revision: 1.54+
 
 =head1 AUTHOR 
 
@@ -69,14 +69,15 @@ Here is a general outline for installing [business-shipping] in Interchange.
    These can be added by copying/pasting into the variable.txt file, then
    restarting Interchange.
    
-   Note that "XPS" is used to denote fields that can be used for UPS or USPS.
+   Note that "BS" is used to denote fields that can be used for any 
+   Business::Shipping shipper.  Note that the spaces below are one tab.
 
-XPS_FROM_COUNTRY	US	Shipping
-XPS_FROM_STATE	WA	Shipping
-XPS_FROM_ZIP	98682	Shipping
-XPS_TO_COUNTRY_FIELD	country	Shipping
-XPS_TO_CITY_FIELD	city	Shipping
-XPS_TO_ZIP_FIELD	zip	Shipping
+BS_FROM_COUNTRY	US	Shipping
+BS_FROM_STATE	WA	Shipping
+BS_FROM_ZIP	98682	Shipping
+BS_TO_COUNTRY_FIELD	country	Shipping
+BS_TO_CITY_FIELD	city	Shipping
+BS_TO_ZIP_FIELD	zip	Shipping
 UPS_ACCESS_KEY	AB12CDEF345G6	Shipping 
 UPS_USER_ID	userid	Shipping
 UPS_PASSWORD	mypassword	Shipping
@@ -87,15 +88,16 @@ USPS_PASSWORD	abcd1234d5	Shipping
  * Sample shipping.asc entry:
 
 UPS_GROUND: UPS Ground
-    criteria    [criteria-intl]
-    min            0
-    max            150
+    criteria    weight
+    min         0
+    max         150
     cost        f [business-shipping mode="UPS_Offline" service="GNDRES" weight="@@TOTAL@@"]
 
 =head1 UPGRADE from [ups-query]
 
-See the replacement [ups-query] usertag in this directory.  
-Untested, so please report any bugs. 
+If you already use [ups-query], you can replace it with the version here to be
+able to re-use all of your old shipping.asc entries.  It is untested, so 
+please report any bugs. 
 
 =head1 COPYRIGHT AND LICENCE
 
@@ -106,7 +108,7 @@ the same terms as Perl itself. See LICENSE for more info.
 =cut
 EOD
 UserTag  business-shipping  Routine <<EOR
-use Business::Shipping 1.04;
+use Business::Shipping 1.54;
 
 sub {
     my ( $shipper, $opt ) = @_;
@@ -121,18 +123,17 @@ sub {
     }
     
     # We pass the options mostly unmodifed to the underlying library, so here we
-    # take out anything Interchange-specific that isn't necessary with a hash
+    # take out anything Interchange-specific that isn't necessary using a hash
     # slice.
 
     delete @{ $opt }{ 'reparse', 'mode', 'hide' };
     
-
     # Business::Shipping takes a hash.
 
     my %opt = %$opt;
     $opt = undef;
 
-    my $to_country_default = $Values->{ $Variable->{ XPS_TO_COUNTRY_FIELD } || 'country' };
+    my $to_country_default = $Values->{ $Variable->{ BS_TO_COUNTRY_FIELD } || 'country' };
     
     # STDOUT goes to the IC debug files (usually '/tmp/debug')
     # STDERR goes to the global error log (usually 'interchange/error.log').
@@ -142,12 +143,12 @@ sub {
     my $defaults = {
         'all' => {
             'to_country'        => $Values->{ 
-                $Variable->{ XPS_TO_COUNTRY_FIELD } || 'country' 
+                $Variable->{ BS_TO_COUNTRY_FIELD } || 'country' 
             },
-            'to_zip'            => $Values->{ $Variable->{ XPS_TO_ZIP_FIELD } || 'zip' },
-            'to_city'           => $Values->{ $Variable->{ XPS_TO_CITY_FIELD } || 'city' },
-            'from_country'      => $Variable->{ XPS_FROM_COUNTRY },
-            'from_zip'          => $Variable->{ XPS_FROM_ZIP },
+            'to_zip'            => $Values->{ $Variable->{ BS_TO_ZIP_FIELD } || 'zip' },
+            'to_city'           => $Values->{ $Variable->{ BS_TO_CITY_FIELD } || 'city' },
+            'from_country'      => $Variable->{ BS_FROM_COUNTRY },
+            'from_zip'          => $Variable->{ BS_FROM_ZIP },
             'cache'             => ( defined $opt{ cache } ? $opt{ cache } : 1 ),
         },
         'USPS_Online' => {
@@ -156,16 +157,16 @@ sub {
             'to_country' => $Tag->data( 
                 'country', 
                 'name', 
-                $Variable->{ XPS_TO_COUNTRY_FIELD } || 'country'
+                $Variable->{ BS_TO_COUNTRY_FIELD } || 'country'
             )
         },
         'UPS_Online' => {
-            'access_key'        => $Variable->{ "UPS_ACCESS_KEY" },
-            'user_id'           => $Variable->{ "UPS_USER_ID" },
-            'password'          => $Variable->{ "UPS_PASSWORD" },
+            'access_key'        => $Variable->{ UPS_ACCESS_KEY },
+            'user_id'           => $Variable->{ UPS_USER_ID },
+            'password'          => $Variable->{ UPS_PASSWORD },
         },
         'UPS_Offline' => { 
-            'from_state'        => $Variable->{ XPS_FROM_STATE },
+            'from_state'        => $Variable->{ BS_FROM_STATE },
             'cache'             => 0,
         },
     };
@@ -217,14 +218,14 @@ sub {
     $charges ||= $rate_request->total_charges();
 
     # This is a debugging / support tool.  It uses these variables: 
-    #   XPS_GEN_INCIDENTS
+    #   BS_GEN_INCIDENTS
     #   SYSTEMS_SUPPORT_EMAIL
     
     my $report_incident;
     if ( 
             ( ! $charges or $charges !~ /\d+/ )
         and
-            $Variable->{ 'XPS_GEN_INCIDENTS' }
+            $Variable->{ 'BS_GEN_INCIDENTS' }
        ) 
     {
         # Don't report invalid rate requests:No zip code, GNDRES to Canada, etc.

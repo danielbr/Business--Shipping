@@ -2,6 +2,30 @@
 ##  General TODO
 ################################################################################
 
+    * UPS Tracking Numbers appear in the following formats:
+       1Z 999 999 99 9999 999 9
+       9999 9999 999 9
+       T999 9999 999 
+
+    * USPS tracking formats:
+      - http://hdusps.esecurecare.net/cgi-bin/hdusps.cfg/php/enduser/std_adp.php?p_faqid=1125&p_created=1052781743&p_sid=LjOKtaqh&p_lva=&p_sp=cF9zcmNoPSZwX3NvcnRfYnk9JnBfZ3JpZHNvcnQ9JnBfcm93X2NudD0zNiZwX3Byb2RfbHZsMT01MSZwX3Byb2RfbHZsMj0mcF9wYWdlPTE*&p_li=
+       
+    * [Bug] http://ppm.activestate.com/BuildStatus/5.6plus/solaris/Business-Shipping-1.54.txt
+    
+    * [Bug] http://ppm.activestate.com/BuildStatus/5.8-hpux/hpux-pa-risc-5.8/Business-Shipping-1.54.txt
+    
+    * [Enh] Switch to Config::General
+    
+    * [Enh] Evaluate OODoc
+    
+    * [Enh] Determine the upcoming fuel surcharge changes from UPS website, then 
+      check to see if that date has passed.  If so, automatically update the fuel 
+      surcharge.
+    
+    * Build up Business::Shipping::DataTools
+
+    * Remove dependency on Scalar::Util
+    
     * [Enh] Country Support
       - Which origin countries do UPS_Online and UPS_Offline support?
     
@@ -179,7 +203,9 @@
        when using USPS_Online:
        + Business::Shipping::USPS_Online::RateRequest::_handle_response: ()
          File does not exist:  at .../USPS_Online/RateRequest.pm ...
-
+	 
+   * [Enh] Printable labels
+   
 ################################################################################
 ##  UPS_Offline TODO
 ################################################################################
@@ -212,10 +238,6 @@
  * [Enh] Add charges based on pickup type.  
    An alternate set of data is available for people who don't have an account 
    with UPS.  Is the only difference a $4.00 surcharge?
-
- * [Enh] Determine the upcoming fuel surcharge changes from UPS website, then 
-   check to see if that date has passed.  If so, automatically update the fuel 
-   surcharge.
 
  * [Enh] From Canada to Alaska (and other destinations)
                 99663 = Seldovia, Alaska
@@ -267,7 +289,8 @@
 
         zone table:
 		
- 	zone_from_exactly	zone_from_lt	zone_from_gt	zip_to_exactly	zip_to_lt	zip_to_gt	service
+ 	zone_from_exactly	zone_from_lt	zone_from_gt	zip_to_exactly
+	zip_to_lt	zip_to_gt	service
 	
         weight table:
 	
@@ -297,6 +320,7 @@
     * [Enh] UPS support for sending multiple simultaneous requests
       - (USPS had built-in support in the API for Intl)
       - If they don't support it, try LWP::Parallel::UserAgent.
+      - Selena Brewington: better yet, use "Rate Shopping"
  
     * [Enh] Implement a multi-package API for UPS.   
       Move to a different XML generation scheme, since all the packages 
@@ -322,6 +346,7 @@
 
     * FedEx
       - http://www.fedex.com/us/solutions/wis/index.html/
+      - http://www.synesmedia.com/twiki/bin/view/Cyc/FedExShipManager      
       - [Enh] FedEx module: Christopher L Wenham from Synesmedia has created an 
         Interchange usertag that uses FedEx::DirectConnect for various functions.
       - [Enh] Francois Belanger, francois@sitepak.com has also created a FedEx 
@@ -348,3 +373,6 @@
 ##  General Ideas
 ################################################################################
 
+    * Other software:
+    * Cold Fushion: UPSRateMonger by Matt Robertson (http://www.mysecretbase.com)
+    * Cold Fushion: FedExMonger by Matt Robertson (http://www.mysecretbase.com)

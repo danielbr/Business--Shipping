@@ -23,15 +23,21 @@ my %my_globals = (
 =cut
 
 $::UseDefaults = 0;
+$::UseOptions;
+
 if ( @ARGV ) {
     eval "use Getopt::Mixed";
     if ( ! $@ ) {
-        our $opt_u;
-        Getopt::Mixed::getOptions( 'u:i use_defaults>u' );
-        my %rr_params;
-        if ( $opt_u ) {
-            $::UseDefaults = 1;
-        }
+        $::UseOptions = 1;
+    }
+}
+
+if ( $::UseOptions ) {
+    our $opt_u;
+    Getopt::Mixed::getOptions( 'u:i use_defaults>u' );
+    my %rr_params;
+    if ( $opt_u ) {
+        $::UseDefaults = 1;
     }
 }
 

@@ -312,14 +312,14 @@ sub gen_unique_key
     return;
 }
 
-=head2 $rate_request->total_charges()
+=head2 $rate_request->rate()
 
 Iterates the $self->results hash and sums the charges from each 
 package->charges.  Returns the total.
 
 =cut
 
-sub total_charges
+sub rate
 {
     my $self = shift;
     my $total;
@@ -420,16 +420,20 @@ sub display_price_components
 }
 
 # COMPAT: get_total_price()
+# COMPAT: total_charges()
 
 =head2 $rate_request->get_total_price()
 
 For backwards compatibility.
 
+=head2 $rate_request->total_charges()
+
+For backwards compatibility.
+
 =cut
 
-sub get_total_price { &total_charges; }
-
-
+*get_total_price = *total_charges;
+*total_charges = *rate;
 
 1;
 

@@ -423,7 +423,7 @@ no warnings 'redefine';
 
 =head2 to_country_abbrev()
 
-We have to override the to_country_abbrev function becuase Online::UPS
+We have to override the to_country_abbrev function becuase UPS_Online
 likes its own spellings of certain country abbreviations (GB, etc.).
 
 Redefines attribute.

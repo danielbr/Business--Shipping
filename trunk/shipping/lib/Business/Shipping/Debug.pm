@@ -23,7 +23,7 @@ Note that this module has been depreciated.  Business::Shipping::Logging is the
 correct module to use now.  What is left here is a compatibility wrapper, and it
 may disappear in a future version.
 
-Aside from the usual stuff, these functions have been speciall mapped:
+Aside from the usual stuff, these functions have been specially mapped:
 
     error_log => error 
     error     => moved to Shipping::user_error  

@@ -14,11 +14,11 @@ Business::Shipping - Rates and tracking for UPS and USPS
 
 =head1 VERSION
 
-Version 1.54
+Version 1.55
 
 =cut
 
-$VERSION = '1.54';
+$VERSION = '1.55';
 
 =head1 SYNOPSIS
 
@@ -27,7 +27,7 @@ $VERSION = '1.54';
  use Business::Shipping;
  
  my $rate_request = Business::Shipping->rate_request(
-     shipper   => 'Offline::UPS',
+     shipper   => 'UPS_Offline',
      service   => 'GNDRES',
      from_zip  => '98682',
      to_zip    => '98270',
@@ -356,7 +356,7 @@ The origin zipcode.
 
 =item * from_state
 
-The origin state in two-letter code format or full-name format.  Required for Offline::UPS.
+The origin state in two-letter code format or full-name format.  Required for UPS_Offline.
 
 =item * to_zip
 
@@ -378,13 +378,13 @@ There are some additional common values:
 
 =item * user_id
 
-A user_id, if required by the provider. Online::USPS and Online::UPS require
-this, while Offline::UPS does not.
+A user_id, if required by the provider. USPS_Online and UPS_Online require
+this, while UPS_Offline does not.
 
 =item * password
 
-A password,  if required by the provider. Online::USPS and Online::UPS require
-this, while Offline::UPS does not.
+A password,  if required by the provider. USPS_Online and UPS_Online require
+this, while UPS_Offline does not.
 
 =back
 
@@ -435,6 +435,34 @@ Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.
 
 *log_level = *Business::Shipping::Logging::log_level;
 
+=head2 Business::Shipping->_new_subclass()
+
+Private Method.
+
+Generates an object of a given subclass dynamically.  Will dynamically 'use' 
+the corresponding module, unless runtime module loading has been disabled via 
+the 'preload' option.
+
+=cut
+
+sub _new_subclass
+{
+    my ( $class, $subclass, %opt ) = @_;
+    
+    Carp::croak( "Error before _new_subclass was called: $@" ) if $@;
+    
+    my $new_class = $class . '::' . $subclass;
+    
+    if ( $Business::Shipping::RuntimeLoad )
+        { eval "use $new_class"; }
+        
+    Carp::croak( "Error when trying to use $new_class: \n\t$@" ) if $@;
+    
+    my $new_sub_object = eval "$new_class->new()";
+    Carp::croak( "Failed to create new $new_class object.  Error: $@" ) if $@;
+    
+    return $new_sub_object;    
+}
 
 # COMPAT: event_handlers()
 
@@ -470,35 +498,6 @@ sub event_handlers
     }
     
     return;
-}
-
-=head2 Business::Shipping->_new_subclass()
-
-Private Method.
-
-Generates an object of a given subclass dynamically.  Will dynamically 'use' 
-the corresponding module, unless runtime module loading has been disabled via 
-the 'preload' option.
-
-=cut
-
-sub _new_subclass
-{
-    my ( $class, $subclass, %opt ) = @_;
-    
-    Carp::croak( "Error before _new_subclass was called: $@" ) if $@;
-    
-    my $new_class = $class . '::' . $subclass;
-    
-    if ( $Business::Shipping::RuntimeLoad )
-        { eval "use $new_class"; }
-        
-    Carp::croak( "Error when trying to use $new_class: \n\t$@" ) if $@;
-    
-    my $new_sub_object = eval "$new_class->new()";
-    Carp::croak( "Failed to create new $new_class object.  Error: $@" ) if $@;
-    
-    return $new_sub_object;    
 }
 
 1;
@@ -540,8 +539,7 @@ author and/or on their website or in their application.
 =item * Interchange e-commerce system ( L<http://www.icdevgroup.org> ).  See 
     C<UserTag/business-shipping.tag>.
 
-=item * The paymentonline.com mod_perl/template 
-    toolkit system.
+=item * The paymentonline.com mod_perl/template toolkit system.
 
 =item * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman 
     <andy@kahncentral.net>.

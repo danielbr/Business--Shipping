@@ -245,7 +245,6 @@ sub validate
 
     }
 
-        
     return 1;
 }
 

@@ -33,8 +33,6 @@ $Rev$
 
 =head1 METHODS
 
-=over 4
-
 =cut
 
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
@@ -56,21 +54,21 @@ use File::Copy;
 use Math::BaseCnv;
 use Scalar::Util 1.10;
 
-=item * update
+=head2 update
 
-=item * download
+=head2 download
 
-=item * unzip
+=head2 unzip
 
-=item * convert
+=head2 convert
 
-=item * is_from_west_coast
+=head2 is_from_west_coast
 
-=item * is_from_east_coast
+=head2 is_from_east_coast
 
-=item * to_residential
+=head2 to_residential
 
-=item * Zones
+=head2 Zones
 
 Hash.  Format:
 
@@ -85,9 +83,9 @@ Hash.  Format:
         }
     )
 
-=item * zone_file
+=head2 zone_file
 
-=item * zone_name
+=head2 zone_name
 
   - For International, it's the name of the country (e.g. 'Canada')
   - For Domestic, it is the first three of a zip (e.g. '986')
@@ -153,12 +151,12 @@ sub _this_init
 sub to_residential { return shift->shipment->to_residential( @_ ); }
 sub is_from_east_coast { return not shift->is_from_west_coast(); }
 
-=item * convert_ups_rate_file
+=head2 convert_ups_rate_file
 
 =cut
 
 
-=item * validate
+=head2 validate
 
 =cut
 
@@ -186,10 +184,29 @@ sub validate
         return 0;
     }
     
+    $self->check_for_updates;
+    
     return 1;
 }
 
-=item * _handle_response
+=head2 check_for_updates()
+
+    * [Enh] Determine the upcoming fuel surcharge changes from UPS website, then 
+      check to see if that date has passed.  If so, automatically update the fuel 
+      surcharge.
+
+=cut
+
+sub check_for_updates
+{
+    my ( $self ) = @_;
+    
+    
+    
+    return;
+}
+
+=head2 _handle_response
 
 =cut
 
@@ -289,7 +306,7 @@ sub _handle_response
     return $self->is_success( 1 );
 }
 
-=item * $self->_increase_total_charges( $amount )
+=head2 $self->_increase_total_charges( $amount )
 
 Increase the _total_charges by an amount.
 
@@ -304,7 +321,7 @@ sub _increase_total_charges
     return;
 }
 
-=item * calc_express_plus_adder
+=head2 calc_express_plus_adder
 
 =cut
 
@@ -321,7 +338,7 @@ sub calc_express_plus_adder
 }
 
 
-=item * calc_delivery_area_surcharge
+=head2 calc_delivery_area_surcharge
 
 The "Delivery Area Surcharge" is also known as "Extended Area Surcharge", but 
 does not include special residential charges that apply to some services (air
@@ -346,7 +363,7 @@ sub calc_delivery_area_surcharge
     return 0.00;
 }
 
-=item * $self->calc_residential_surcharge()
+=head2 $self->calc_residential_surcharge()
 
 Note that this is different than the delivery area surcharge
 sub calc_residential_surcharge.  It is listed as "Residential Differential"
@@ -377,7 +394,7 @@ sub calc_residential_surcharge
     return 0;
 }
     
-=item * calc_fuel_surcharge
+=head2 calc_fuel_surcharge
 
 =cut
 
@@ -415,7 +432,7 @@ sub calc_fuel_surcharge
     return $fuel_surcharge;
 }
 
-=item * service_code_to_ups_name
+=head2 service_code_to_ups_name
 
 =cut
 
@@ -443,7 +460,7 @@ sub service_code_to_ups_name
     }
 }
 
-=item * ups_name_to_table
+=head2 ups_name_to_table
 
 =cut
 
@@ -470,7 +487,7 @@ sub ups_name_to_table
     }
 }
 
-=item * calc_zone_data()
+=head2 calc_zone_data()
 
 * Modifies the class attribute Zones(), and adds data for the zone like so...
 
@@ -599,7 +616,7 @@ sub calc_zone_data
     return;
 }
 
-=item * determine_keys()
+=head2 determine_keys()
 
 Decides what unique keys will be used to locate the zone record.  
 
@@ -646,7 +663,7 @@ sub determine_keys
     return ( $key, $raw_key );
 }
 
-=item * rate_table_exceptions
+=head2 rate_table_exceptions
 
 WorldWide methods use different tables for Canada
 
@@ -674,7 +691,7 @@ sub rate_table_exceptions
     return $table;
 }
 
-=item * calc_cost( )
+=head2 calc_cost( )
 
 * Modifies the class attribute $Zones, and adds data for the zone like so...
 
@@ -865,7 +882,7 @@ sub calc_cost
     return $cost || 0;
 }
 
-=item * special_zone_hi_ak( $type )
+=head2 special_zone_hi_ak( $type )
 
  $type    Type of service.
  
@@ -916,7 +933,7 @@ sub special_zone_hi_ak
     return $zone;
 }
 
-=item * calc_zone_info()
+=head2 calc_zone_info()
 
 Determines which zone (zone_name), and which zone file to use for lookup.
 
@@ -1009,7 +1026,7 @@ sub calc_zone_info
     return;
 }
 
-=item * determine_coast
+=head2 determine_coast
 
 If this is an international order, we need to determine which state the shipper
 is in, then if it is east or west coast.  If west, then use the first "Express" field
@@ -1021,20 +1038,18 @@ sub determine_coast
 {
     my ( $self ) = @_;
     
-    #
-    #
     if ( $self->intl() and $self->from_state() ) {
         
-        my $west_coast_states_aryref = cfg()->{ ups_information }->{ west_coast_states };
-        my $east_coast_states_aryref = cfg()->{ ups_information }->{ east_coast_states };
+        my @west_coast_states_abbrev = split( ',', cfg()->{ ups_information }->{ west_coast_states } );
+        my @east_coast_states_abbrev = split( ',', cfg()->{ ups_information }->{ east_coast_states } );
         
-        for ( @$west_coast_states_aryref ) {
-            if ( $_ eq $self->from_state() ) {
+        for ( @west_coast_states_abbrev ) {
+            if ( $_ eq $self->from_state_abbrev() ) {
                 $self->is_from_west_coast( 1 );
             }
         }
-        for ( @$east_coast_states_aryref ) {
-            if ( $_ eq $self->from_state() ) {
+        for ( @east_coast_states_abbrev ) {
+            if ( $_ eq $self->from_state_abbrev() ) {
                 $self->is_from_west_coast( 0 );
             }
         }
@@ -1045,7 +1060,7 @@ sub determine_coast
 
     
 
-=item * _massage_values()
+=head2 _massage_values()
 
 Performs some final value modification just before the submit.
 
@@ -1056,8 +1071,8 @@ sub _massage_values
     my ( $self ) = @_;
     trace '()';
 
-    # In order to share the Shipment::UPS object between both Online::UPS and
-    # Offline::UPS, we do a little magic.  If it gets more complex than this,
+    # In order to share the Shipment::UPS object between both UPS_Online and
+    # UPS_Offline, we do a little magic.  If it gets more complex than this,
     # subclass it instead.
 
     $self->shipment->offline( 1 );
@@ -1074,8 +1089,6 @@ sub _massage_values
 1;
 
 __END__
-
-=back
 
 =head1 AUTHOR
 
