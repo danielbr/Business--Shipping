@@ -2,40 +2,20 @@
 ##  General TODO
 ######################################################
  
- 
- 
+ * Find a better way to correlate "Air mail" with all the various names
+   it is called by each country.
+
  * Fix the multi-package API for UPS.
  
- * Find a way to correlate "Air mail" with all the various names it is called by each country.
- 
- * Look into bug cases
- 
- * Debugging settings can be handled by configuration files, environment variables, or
-   passed-parameters.
- 
- * Bug Reports:
-   
-   - Some of the intermittent errors:
-   
-     "[xps-query]: USPS error: HTTP Error. Status line: 500 read timeoutContent:"
-     
-   - When trying to ship USPS to Afghanistan:
-   
-     "Runtime error: Not an ARRAY reference at 
-     /home/db/src/ship/lib/Business/Shipping/RateRequest/Online/USPS.pm 
-     line 259."
-     
- 
- * When Cache is enabled, and you run [xps-query] consecutively, UPS doesn't seem 
-   to notice the different service types (i.e. 'service' isn't on the 'unique' list)
+ * Migrate the "retry on failure" code from business-shipping.tag to 
+   Business::Shipping proper.  Default to tries=2, but allow that to be
+   overridden.
  
  * Only Cache the response if it was a success (very important)
  
- * Re-do the self meta-data, I think it's buggy.
- 
  * Error on missing arguments isn't working very well ( user_id, password)
  
- * include the terms of use for each module.
+ * Include the terms of use for each module.
  
  * The Shipping module itself should be able to be queried for what shippers it
    handles. Each shipper should be able to be queried for what services it 
@@ -67,12 +47,6 @@
 	# Perhaps XML::Simple Configuration files?  Other?  Shipping::Config module
 	# will provide parser, importer.  Any internal modules that use configuration
 	# will go through that module.  (it's an idea, anyway) 
- 
- * Perhaps pull the shipper-related stuff out of Business::Shipping into Business::Shipper. 
- 	- Then Packages can inherit all of the sub building, debugging, etc. functions from
-	  Business::Shipping.  USPS and UPS will then inherit what they need from Business::Shipper.
-	- Business::Shipper would also be @ISA=Business::Shipping.
-	- Should be done without breaking backwards-compatibility.
  
  * Upgrade the debugging/error handling features: allow user to pass in a callback ref.
  

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::USPS - Abstract class for shipping cost rating.
 # 
-# $Id: USPS.pm,v 1.3 2003/08/07 22:45:47 db-ship Exp $
+# $Id: USPS.pm,v 1.4 2003/08/16 12:33:45 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( @ISA $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @ISA = ( 'Business::Shipping::RateRequest::Online' );
 
 
@@ -90,15 +90,6 @@ sub _gen_request_xml
 		$packageEl->setAttribute('ID', $id); 
 		$rateReqEl->appendChild($packageEl); 
 
-		# TODO: Get rid of this bug workaround.
-		# When using xps-query, and you call UPS, then USPS on the same
-		# page, then the USPS::Package will not get the 'service', 'to_zip', or 'from_zip' values
-		# BUT, they are still in $self.  How can that be, if it is supposed to be aliased to the\
-		# package?  Worse, how come it only occurs when UPS is first called?
-		#for ( 'service', 'from_zip', 'to_zip' ) {
-		#	$package->$_( $self->$_() ) unless $package->$_();
-		#}
-		
 		if ( $self->domestic() ) {
 			my $serviceEl = $rateReqDoc->createElement('Service'); 
 			my $serviceText = $rateReqDoc->createTextNode( $self->shipment->service() ); 
@@ -234,6 +225,8 @@ sub _handle_response
 	debug3( 'response = ' . $self->response->content );
 	#
 	
+	my $charges;
+	
 	#
 	# TODO: Get the pricing routines to work for multi-packages (not just
 	# the default_package()
@@ -243,20 +236,15 @@ sub _handle_response
 		# Domestic *doesn't* tell you the price of all services for that package
 		#
 		
-		my $charges = $response_tree->{Package}->{Postage};
-		if ( ! $charges ) { $self->error( 'charges are 0, error out' ); return $self->clear_is_success(); }
-		debug( 'Setting charges to ' . $charges );
-		my $packages = [ { 'charges' => $charges, }, ];
-		my $results = { $self->shipment->shipper() => $packages };
-		$self->results( $results );
-		
+		$charges = $response_tree->{ Package }->{ Postage };
 	}
 	else {
 		#
 		# International *does* tell you the price of all services for each package
 		#
 		
-		foreach my $service ( @{ $response_tree->{Package}->{Service} } ) {
+		foreach my $service ( @{ $response_tree->{ Package }->{ Service } } ) {
+			debug( "Trying to find a matching service by service description..." );
 			debug( "Charges for $service->{SvcDescription} service = " . $service->{Postage} );
 			
 			# BUG: you can't check if the service descriptions match, because many countries use
@@ -264,29 +252,45 @@ sub _handle_response
 			# *or* by mail_type.  (There are probably many services with the same mail_type, how 
 			# do we handle those?  We could just get them based on index number (maybe all "zero" 
 			# is the cheapest ground service, or...?
-			if	(
-					( $self->mail_type()	and $self->mail_type()	=~ $service->{ MailType } 		)
-				or	( $self->service() 		and $self->service 		=~ $service->{SvcDescription} 	)
-				) {
-					
-				my $charges = $service->{ 'Postage' };
-				if ( ! $charges ) { $self->error( 'charges are 0, error out' ); return $self->clear_is_success(); }
-				debug( 'Setting charges to ' . $service->{Postage} );
-				my $packages = [ { 'charges' => $charges, }, ];
-				my $results = { $self->shipment->shipper() => $packages };
-				$self->results( $results );
-				
+			
+			#
+			# TODO: Try searching all of them for a service that matches.  Perhaps we should
+			# have a "matching" variable for each service.  Like, "Air" for "Airmail Parcel Post",
+			# so that whichever service has "Air" in the description will be used first.
+			#
+			
+			if ( $self->service() and $self->service() =~ $service->{ SvcDescription } ) {
+				$charges = $service->{ 'Postage' };
 			}
-			else {
+		}
+		if ( ! $charges ) {
+			# Couldn't find it by service description, try by mail_type...
+			foreach my $service ( @{ $response_tree->{Package}->{Service} } ) {
+				debug( "Trying to find a matching service by mail_type..." );
+				if	(	$self->mail_type()	and $self->mail_type()	=~ $service->{ MailType }	) {
+					$charges = $service->{ Postage };
+				}
+			}
+			# Still can't find the right service...
+			if ( ! $charges ) {
 				my $error_msg = "The requested service (" . $self->service() 
-						. ") did not match the service that was available for that country: "
-						. $service->{SvcDescription};
+						. ") did not match any services that was available for that country.";
 				
 				print STDERR $error_msg;
 				$self->error( $error_msg );
 			}
 		}
 	}
+	
+	if ( ! $charges ) { 
+		$self->error( 'charges are 0, error out' ); 
+		return $self->clear_is_success();
+	}
+	debug( 'Setting charges to ' . $charges );
+	my $packages = [ { 'charges' => $charges, }, ];
+	my $results = { $self->shipment->shipper() => $packages };
+	$self->results( $results );
+	
 	trace 'returning success';
 	return $self->is_success( 1 );
 }

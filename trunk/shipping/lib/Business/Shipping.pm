@@ -1,6 +1,6 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.3 2003/08/07 22:45:46 db-ship Exp $
+# $Id: Shipping.pm,v 1.4 2003/08/16 12:33:45 db-ship Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Carp;
 use Business::Shipping::Debug;
@@ -110,34 +110,6 @@ sub _gen_unique_values
 	return( @new_unique_values );
 }
 
-=item $shipping->rate_request( %options )
-
-Simple API for rating requests.
-
-my $rate_request = Business::Shipping->rate_request(
-
-	shipper 		=> 'UPS',
-	service 		=> 'GNDRES',
-	
-	user_id 		=> '',		
-	password 		=> '',
-	access_key 		=> '',		# UPS only
-	
-	from_country	=> '',		# Default: US
-	to_country		=> '',		# Default: US
-	
-	from_zip		=> '',
-	to_zip			=> '',
-	
-	weight			=> '',
-};
-
-$rate_request->submit() or die $shipping->error();
-
-print $rate_request->total_charges();
-
-
-=cut 
 sub rate_request
 {
 	my $class = shift;
@@ -185,28 +157,33 @@ Business::Shipping - API for UPS and USPS
 
 =head1 SYNOPSIS
 
- use Business::Shipping;
- my $shipment = new Business::Shipping( 
-	'shipper' 		=> 'USPS'
-	'user_id'		=> '',
-	'password'		=> '',
-	'from_zip'		=> '',
-	'to_zip'		=> '',
-	'weight' 		=> '',
-	'service'		=> '',
- );
- $shipment->submit() or die $shipment->error();
- print $shipment->total_charges();
+Simple API for rating requests.
+
+	use Business::Shipping;
+	
+	my $rate_request = Business::Shipping->rate_request(
+		shipper 		=> 'UPS',
+		user_id 		=> '',		
+		password 		=> '',
+		service 		=> 'GNDRES',
+		from_zip		=> '98682',
+		to_zip			=> '98270',
+		weight			=> 5.00,
+	};
+	
+	$rate_request->submit() or die $shipping->error();
+	
+	print $rate_request->total_charges();
 
 =head1 ABSTRACT
 
-Business::Shipping is an API for implementing shipping-related functionality.
+Business::Shipping is an API for shipping-related tasks.
 
-Currently, the only implemented functionality is "shipping cost calculation",
-but tracking, availability, and other services are planned for future addition.
+Currently, the only implemented task is shipping cost calculation, but tracking, 
+availability, and other services are planned for future addition.
 
-Currently, the only shipping carriers implemented are UPS and USPS, but FedEX
-and perhaps others are planned for future support.
+UPS and USPS have been implemented so far, but FedEX and perhaps others are 
+planned for future support.
 
 =head1 MULTI-PACKAGE API
 
@@ -229,8 +206,8 @@ and perhaps others are planned for future support.
 
  $shipment->submit() or print $shipment->error();
 
- print $shipment->get_package('0')->get_charges( 'Airmail Parcel Post' );
- print $shipment->get_package('1')->get_charges( 'Airmail Parcel Post' );
+ print $shipment->package('0')->get_charges( 'Airmail Parcel Post' );
+ print $shipment->package('1')->get_charges( 'Airmail Parcel Post' );
  print $shipment->get_total_price( 'Airmail Parcel Post' );
 
 =head1 ERROR/DEBUG HANDLING
@@ -261,10 +238,6 @@ the return values of methods.  For example:
 	
 However, if you don't save the error value before the next call, it could be
 overwritten by a new error.
-
-=head1 METHODS
-
-=over 4 
 
 =cut
 

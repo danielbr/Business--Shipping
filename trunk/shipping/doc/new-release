@@ -29,7 +29,7 @@ new-release - the Business::Shipping release script.
  
  # Upload to server.
  make tardist
- ./new-release Business-Shipping-*.tar.gz
+ doc/new-release Business-Shipping-*.tar.gz
  
  # Update the versions in Makefile.PL and CHANGELOG
 

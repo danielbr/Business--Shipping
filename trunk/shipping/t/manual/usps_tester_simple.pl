@@ -47,14 +47,17 @@ $rate_request = Business::Shipping->rate_request(
 	shipper 		=> 'USPS', 
 	service 		=> 'Airmail Parcel Post',
 	
+	event_handlers => { 'trace' => 'STDERR', debug => 'STDERR', debug3 => 'STDERR' },
+	
+	from_zip		=> '98682',
 	user_id 		=> $ENV{ USPS_USER_ID },		
 	password 		=> $ENV{ USPS_PASSWORD },
-
-	from_zip		=> '98682',
-	to_country		=> 'American Samoa',
-	                    
 	
-	weight			=> '7',
+
+	to_zip => 6157,
+	to_country => 'Australia',
+	weight => 5.00,
+
 );
 
 not defined $rate_request and die $@;
@@ -69,4 +72,4 @@ if ( $total_charges ) {
 else {
 	print "Error -- charges were \$0.00.\n";
 }
-	
+

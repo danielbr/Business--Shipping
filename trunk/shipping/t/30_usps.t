@@ -214,6 +214,21 @@ SKIP: {
 	#	weight		=> 5,
 	#);
 	
-	
+	#
+	# This tries to test to make sure that the shipping matches up right
+	#  - So that Airmail parcel post goes to Airmail parcel post, etc.
+	#
+	$shipment = test(
+		service 		=> 'Airmail Parcel Post',
+		
+		from_zip		=> '98682',
+		user_id 		=> $ENV{ USPS_USER_ID },		
+		password 		=> $ENV{ USPS_PASSWORD },
+		
+		to_zip => 6157,
+		to_country => 'Australia',
+		weight => 5.00,
+	);
+	ok( $shipment->total_charges() > 25.00,		'USPS matching australia service correctly' );
 
 } # /skip

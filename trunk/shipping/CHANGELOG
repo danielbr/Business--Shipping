@@ -1,5 +1,9 @@
 Revision history for Business::Shipping.
 
+0.73  Aug 15 2003
+	- More tests
+	- Fix USPS International shipping: new "service matching" method.
+	- Documentation Updates
 
 0.72  Aug 09 2003
 	- Many more tests.
@@ -25,6 +29,10 @@ Revision history for Business::Shipping.
 	- License changed from Perl to GPL
 	- New cache system (faster, more reliable)
 	- Enhancements to Class::Methodmaker
+	- Fixed: When Cache is enabled, and you run [xps-query] consecutively, 
+	  UPS doesn't seem to notice the different service types (i.e. 'service' 
+	  isn't on the 'unique' list)
+	- Re-did the self meta-data
 
 	
 0.04  Jun 24 2003
