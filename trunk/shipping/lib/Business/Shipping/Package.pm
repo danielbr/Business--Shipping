@@ -1,6 +1,6 @@
 # Business::Shipping::Package - Abstract class
 # 
-# $Id$
+# $Id: Package.pm 145 2004-07-09 16:57:14Z db-ship $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Package - Abstract class
 
 =head1 VERSION
 
-$Revision: 1.9 $      $Date$
+$Revision: 1.9 $      $Date: 2004-07-09 09:57:14 -0700 (Fri, 09 Jul 2004) $
 
 =head1 DESCRIPTION
 
