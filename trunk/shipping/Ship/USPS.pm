@@ -1,6 +1,8 @@
-# Copyright (c) 2003 Kavod Technologies, Dan Browning, and Kevin Old.
-# All rights reserved. This program is free software; you can redistribute it
-# and/or modify it under the same terms as Perl itself.
+# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# This program is free software; you can redistribute it and/or modify it 
+# under the same terms as Perl itself.
+#
+# $Id: USPS.pm,v 1.1 2003/05/31 22:39:48 db-ship Exp $
 
 package Business::Ship::USPS;
 use strict;
@@ -24,7 +26,7 @@ http://www.uspsprioritymail.com/et_regcert.html
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.14 $ =~ /(\d+)\.(\d+)/);
+$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Ship;
 use Business::Ship::USPS::Package;
@@ -73,7 +75,6 @@ sub new
 		size		=> 'Regular',
 		machinable	=> 'False',
 		mail_type	=> 'Package',
-		from_country	=> undef,
 		service 	=> undef,
 		from_zip	=> undef,
 		to_zip		=> undef,
@@ -203,21 +204,17 @@ sub _gen_request
 {
 	my ( $self ) = shift;
 	
-	# The "API=...&XML=" is the only part that is different from UPS...
-	my $request_xml;
-	$request_xml .= 'API=';
-	$request_xml .= $self->domestic() ? 'Rate' : 'IntlRate';
-	$request_xml .= '&XML=';
-	$request_xml .= $self->_gen_request_xml();
-
-	my $request = new HTTP::Request 'POST', $self->_gen_url();
+	my $request = $self->SUPER::_gen_request();
 	
-	$request->header( 'content-type' => 'application/x-www-form-urlencoded' );
-	$request->header( 'content-length' => length( $request_xml ) );
+	# The "API=...&XML=" is the only part that is different from the parent...
+	my $request_prepend;
+	$request_prepend .= 'API=';
+	$request_prepend .= $self->domestic() ? 'Rate' : 'IntlRate';
+	$request_prepend .= '&XML=';
+	$request_prepend .= $self->_gen_request_xml();
 	
-	$request->content(  $request_xml );
-	
-	$self->debug( $request->as_string() );
+	$request->content( $request_prepend . $request->content() )
+	$request->header( 'content-length' => length( $request->content() ) );
 	
 	return ( $request );
 }
@@ -227,45 +224,11 @@ sub _massage_values
 	my $self = shift;
 	#$self->_set_pounds_ounces();
 	$self->_domestic_or_intl();
+	
+	# TODO: If some packages don't have a to_zip, from_zip, etc., then map from teh default assignment. 
+	# Should it be done at the Package level?
 	return;
 }
-
-sub validate
-{
-	my $self = shift;
-	
-	if ( $self->SUPER::validate() ) {
-		#TODO: Check all values before submitting
-		return 1;
-	}
-	return undef;
-}
-
-sub _gen_unique_values
-{
-	my $self = shift;
-	
-	# USPS unique keys are:  all package vars joined together.
-	
-	# Nothing unique at this level either, try the USPS::Package level...
-	my @unique_values;
-	foreach my $package ( @{$self->packages()} ) {
-		push @unique_values, $package->get_unique_values()
-	}
-	
-	# We prefer 0 in the key to represent 'undef'
-	# clean it all up...
-	my @new_unique_values;
-	foreach my $value ( @unique_values ) {
-		if ( not defined $value ) {
-			$value = 0;
-		}
-		push @new_unique_values, $value;
-	}
-
-	return( @new_unique_values );
-}
-
 
 sub _handle_response
 {
@@ -308,6 +271,9 @@ sub _handle_response
 	
 	return $self->is_success( 1 );
 }
+
+# Do nothing, this is just to support the interface, but we're always from US.
+sub from_country { return; }
 
 sub _set_pounds_ounces
 {

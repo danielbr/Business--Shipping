@@ -1,0 +1,58 @@
+=head1 NAME
+
+Business::Ship - Shipment rating API for UPS and USPS
+
+=head1 INSTALLATION
+
+perl Makefile.PL
+make
+make test
+make install
+
+=head1 DEPENDENCIES
+
+ Bundle::LWP 
+ Crypt::SSLeay
+ XML::Simple
+ XML::DOM
+ Digest::SHA1
+ Error
+ Cache::FileCache
+ Data::Dumper
+ 
+=head1 USAGE
+
+ * To use USPS interface, you must first sign up online (for free).
+ 	- http://www.uspsonlinetools.com
+    
+ * Sign up for UPS:
+	You will also need to get a User Id, Password, and Access Key from UPS.
+	 
+	 * Read about it online:
+	 
+	http://www.ec.ups.com/ecommerce/gettools/gtools_intro.html 
+	 
+	 * US Sign up here:
+	 
+	https://www.ups.com/servlet/registration?loc=en_US_EC
+	 
+	 * When you recieve your information from UPS, you can enter into IC
+	   via catalog variables.  You can add these to your products/variables.txt
+	   file, like the following example, or you can add them using the Admin UI.
+
+ * See Business::Ship POD documentation for API notes.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+This program is free software; you can redistribute it and/or modify it 
+under the same terms as Perl itself.
+
+=head1 AUTHOR
+
+	Dan Browning
+	Kavod Technologies
+	<db@kavod.com>
+	http://www.kavod.com
+
+=cut

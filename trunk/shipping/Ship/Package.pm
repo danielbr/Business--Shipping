@@ -1,9 +1,15 @@
+# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# This program is free software; you can redistribute it and/or modify it 
+# under the same terms as Perl itself.
+#
+# $Id: Package.pm,v 1.1 2003/05/31 22:39:48 db-ship Exp $
+
 package Business::Ship::Package;
 use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.7 $ =~ /(\d+)\.(\d+)/);
+$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Ship;
 use Data::Dumper;
@@ -65,7 +71,7 @@ sub set_price
 sub get_charges
 {
 	my ( $self, $service ) = @_;	
-	return $self->{'price'}->{$service};	
+	return $self->{ 'price' }->{ $service };	
 }
 
 sub is_empty

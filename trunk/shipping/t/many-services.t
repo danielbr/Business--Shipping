@@ -1,22 +1,16 @@
 #!/usr/bin/perl
 
 use Business::Ship;
-use Business::Ship::UPS;
 
-#my $shipment = new Business::Ship( 'shipper' => 'UPS' );
-
-#print "$@ at $!" if $@;
-
-my $shipment = new Business::Ship::UPS;
-
-#defined $shipment or die "Could not build Business::Ship::UPS object.";
+my $shipment = new Business::Ship( 'shipper' => 'UPS' );
+print "$@ at $!" if $@;
 
 $shipment->set(
 	'event_handlers' => (
 		{
 		#'debug' => 'STDOUT', 
-		'trace' => 'STDOUT', 
-		'error' => 'STDOUT', 
+		#'trace' => 'STDOUT', 
+		#'error' => 'STDOUT', 
 		}
 	)
 );
@@ -24,23 +18,23 @@ $shipment->set(
 $shipment->set(
 	'user_id' 		=> $ENV{UPS_USER_ID},
 	'password' 		=> $ENV{UPS_PASSWORD},
-	'license'		=> $ENV{ UPS_ACCESS_LICENSE_NUMBER },
+	'access_key'	=> $ENV{ UPS_ACCESS_KEY },
 	'tx_type' 		=> 'rate', 
 	'test_mode'		=> 1,
 	'cache_enabled'	=> 0,
 );
 
 $shipment->set(
-	'pickup_type'	 	=> '06',
+	'pickup_type'	 	=> 'daily pickup',
 	'from_zip'			=> '98682',
 	'from_country'		=> 'US',
 	'to_country'		=> 'US',
 );
 
 $shipment->set(
-	'service'		=> 'GNDRES',
+	'service'			=> '1DA',
 	'to_residential'	=> '1',
-	'to_zip'		=> '98270',
+	'to_zip'			=> '98270',
 );
 
 $shipment->add_package(

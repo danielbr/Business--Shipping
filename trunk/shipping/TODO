@@ -2,141 +2,42 @@
 ##  General TODO
 ######################################################
  
+ * Add "make README" to makefile as "pod2text README.pod  > README"
+ 
+ * Perhaps pull the shipper-related stuff out of Business::Ship into Business::Shipper. 
+ 	- Then Packages can inherit all of the sub building, debugging, etc. functions from
+	  Business::Ship.  USPS and UPS will then inherit what they need from Business::Shipper.
+	- Business::Shipper would also be @ISA=Business::Ship.
+	- Should be done without breaking backwards-compatibility.
+ 
  * Upgrade the debugging/error handling features: allow user to pass in a callback ref.
  
  * Documentation
  
- * Support Multiple packages (also supported by USPS/UPS) 
- 	# UPS can handle multiple packages per shipment
-	# USPS handles each package as a separate shipment 
-	# (i.e. can have different services)
-	# more concept code:
-	
-		# Note that USPS has a different methodology for International.
-		my $package1 = new Business::Ship::USPS::Package;
-		$package1->set(
-			id => '1',  #optional, will automatically assign id based on arrival. used for array index.
-			#weight,
-			#etc.
-		);
-		
-		my $package2 = $package1->clone();
-		$package4->service( 'Priority' );
-		
-		my $package3 = $package1->clone();
-		$package4->service( 'Express' );
-		
-		my $package4 = $package1->clone();
-		$package4->service( 'Global' );
-		
-		my $shipment = new Business::Ship( 'USPS' );
-		$shipment->add( $package1, $package2, $package3 );
-		$shipment->submit();
-		$shipment->package->[1]->charges();
-		$shipment->package->[1]->success();
-		$shipment->package->[1]->error_msg();
-		
-	#UPS:  For all shipments in US and Puerto Rico:
-	#  amounts at the "Package" level are accurate, will also provite a total charges
-	# International:
-	#  "shipment" level used for specifying packages
-	#  it does NOT have accruate total for that shipment,
-	#  use the total price of the entire shipment only.
- 	- add_package() and get_package_total() functions?
-	- Some ideas...
-		$shipment->add_package(
-			PackagingType_Code => '...'
-			Weight => '...'
-			Dimensions => '...'
-		);
-		$shipment->run_query();
-		my $total_charges = $ups->total_charges();
-		my $package1_charges = $ups->charges('package' => '1');
-		my %all_package_charges = $ups->all_package_charges();
-		my $package2_charges = $all_package_charges{2};
-
- * Build support for sending multiple simultaneous requests
- 	- USPS supports multiple rate requests... does UPS?
-	- (Docs... "for instance, you may request multiple rate quotes, where each
-	  rate quote is identified by an “ID” attribute. Within a given package, 
-	  an <Error> may be returned. For multiple request documents, you need to
-	  check if there is an <Error> within a given <Package>, <Address>, etc.
-		<RateRequest>
-		<Package ID=”0”>
-		…
-		</Package>
-		<Package ID=”1”>
-		<Error>
-		…
-		</Error>
-		</Package>
-		</RateRequest>
- 	- If they don't support it, try LWP::Parallel::UserAgent
-
-* Business::Ship::FedEx module
+ * Business::Ship::FedEx module
  	- Utilize the recently released Business::FedEx::DirectConnect module.
 
  * More flexible handling of SSL?
-	- Here's how Interchange does it...
-	
- * New features:
- 	- Address Verification
-	- Package Tracking
-	- Service Availability
-	
+	- Allow the use of Net::SSLeay as well as Crypt::SSLeay?
+
  * Business::Ship::OldUPS interface?
  	- Utilize Business::UPS?  Advantage:  no username/id...
 	
- * Build tests (t/*) for the module.
+ * New feature ideas:
+ 	- Address Verification
+	- Package Tracking
+	- Service Availability
+ 	
+ * Testing code needs a lot of work.
  
- * Is our namespace good?
- 	- Business::Ship 
- 	- Business::Shipment
- 	- Business::Shipper
-	- My favorite is Business::Ship, conceptually the same 
-	  as "Shipment", but shorter.
-
-BEGIN {
-
-	my $selected;
-	eval {
-		package Vend::Payment;
-		require Net::SSLeay;
-		import Net::SSLeay qw(post_https make_form make_headers);
-		$selected = "Net::SSLeay";
-	};
-
-	$Vend::Payment::Have_Net_SSLeay = 1 unless $@;
-
-	unless ($Vend::Payment::Have_Net_SSLeay) {
-
-		eval {
-			package Vend::Payment;
-			require LWP::UserAgent;
-			require HTTP::Request::Common;
-			require Crypt::SSLeay;
-			import HTTP::Request::Common qw(POST);
-			$selected = "LWP and Crypt::SSLeay";
-		};
-
-		$Vend::Payment::Have_LWP = 1 unless $@;
-
-	}
-
-	unless ($Vend::Payment::Have_Net_SSLeay or $Vend::Payment::Have_LWP) {
-		die __PACKAGE__ . " requires Net::SSLeay or Crypt::SSLeay";
-	}
-
-	::logGlobal("%s payment module initialized, using %s", __PACKAGE__, $selected)
-		unless $Vend::Quiet;
-}
-
+ * Use Params::Validate for parameter validation?
+ 
+ * List Prerequisites in a Bundle module
+ 
 ######################################################
 ##  Interchange usertags TODO
 ######################################################
 
- * Move as much stuff from ups-query.tag into Business::UPS
- 
  * Test for ability to use within Safe?
 	([perl]$Tag->ups_query('', '', '');[/perl]) 
 	
@@ -166,9 +67,13 @@ BEGIN {
 	- World wide (several countries, states (Hawaii, Alaska), etc.)
 	- Confirm that price returned > 0, and no error.  (If error, fail test and dispaly error).
 
- * Confirm thread-safety-ness (run on thread-enabled Perl).
+ * Confirm thread-safety-ness.
 
- * Is non-ssl communication with UPS servers possible?	
+ * Is non-ssl communication with either provider possible?	
 
  * Be able to handle "mal-formed XML doc" error return from UPS.  
  	- Right now, it still tries to parse as an XML doc.
+ 
+ * UPS support for sending multiple simultaneous requests
+	- (USPS had built-in support in the API for Intl)
+ 	- If they don't support it, try LWP::Parallel::UserAgent.

@@ -1,9 +1,15 @@
+# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# This program is free software; you can redistribute it and/or modify it 
+# under the same terms as Perl itself.
+#
+# $Id: Package.pm,v 1.1 2003/05/31 22:39:49 db-ship Exp $
+
 package Business::Ship::USPS::Package;
 use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.8 $ =~ /(\d+)\.(\d+)/);
+$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Ship::Package;
 use Data::Dumper;

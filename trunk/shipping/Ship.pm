@@ -1,8 +1,9 @@
-# Copyright (c) 2003 Kavod Technologies, and Dan Browning.  
-# All rights reserved. This program is free software; you can 
-# redistribute it and/or modify it under the same terms as Perl 
-# itself.
-# $Id: Ship.pm,v 1.16 2003/05/25 00:10:04 db-ship Exp $
+# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# This program is free software; you can redistribute it and/or modify it 
+# under the same terms as Perl itself.
+#
+# $Id: Ship.pm,v 1.1 2003/05/31 22:39:47 db-ship Exp $
+
 package Business::Ship;
 use strict;
 use warnings;
@@ -14,36 +15,30 @@ Business::Ship - API for UPS and USPS
 =head1 SYNOPSIS
 
 use Business::Ship;
-my $shipment = new Business::Ship( 'shipper' => 'USPS' );
- 
-$shipment->set(
-	user_id		=> '',
-	password	=> '',
-	weight		=> '',
+
+my $shipment = new Business::Ship( 
+	'shipper' 		=> 'USPS'
+	'user_id'		=> '',
+	'password'		=> '',
+	'from_zip'		=> '',
+	'to_zip'		=> '',
+	'weight' 		=> '',
+	'service'		=> '',
 );
 
 $shipment->submit() or print $shipment->error();
 
+print $shipment->total_charges();
 
-=head1 INSTALLATION:
+=head1 DESCRIPTION
 
- * Install all the necessary perl modules:
-   - Bundle::LWP 
-   - XML::Simple 
-   - XML::DOM
-   - Crypt::SSLeay
-   - Digest::SHA1
-   - Error
-   - Cache::FileCache
-   - You can install them with this command:
-   - C<perl -MCPAN -e 'install Bundle::LWP XML::Simple etc. etc.'>
+In normal use, the application creates a C<Business::Ship::*> object, and then
+configures it with values for user id, password, access key, etc.  The query is
+run via the submit() method, and the total_charges can be accessed via the
+total_charges() method.
 
- * Sign up for USPS or UPS
- 	- See instructions in Business::Ship module.
-	- Add Access ID and code using Admin UI->Preferences
-
- * Copy the Ship/ directory into this directory:
-   interchange/lib/Business/
+Note that you can set variables in the submit() method, via the set() method,
+or via the new() constructor.
 
 =head1 MULTI-PACKAGE API
 
@@ -51,39 +46,73 @@ $shipment->set(
 	user_id		=> '',
 	password	=> '',
 	from_zip	=> '',
+	to_zip		=> '',
 );
 
 $shipment->add_package(
 	id			=> '0',
 	weight		=> '',
-	to_zip		=> '',
 );
 
 $shipment->add_package(
 	id			=> '1',
 	weight		=> '',
-	to_zip		=> '',
 );
+
+$shipment->submit() or print $shipment->error();
 
 print $shipment->get_package('0')->get_charges( 'Airmail Parcel Post' );
 print $shipment->get_package('1')->get_charges( 'Airmail Parcel Post' );
 print $shipment->get_total_price( 'Airmail Parcel Post' );
-   
+
+=head1 ERROR/DEBUG HANDLING
+
+The 'event_handlers' argument takes a hashref telling interchange what to do
+for error, debug, trace, and the like.  The value can be one of four options:
+
+ * 'STDERR'
+ * 'STDOUT'
+ * 'carp'
+ * 'croak'
+
+For example:
+
+$shipment->set( 
+	'event_handlers'	=> ({ 
+		'debug' => undef,
+		'trace' => undef,
+		'error' => 'croak',
+	})
+);
+ 
+The default is 'STDERR' for error handling, and nothing for debug/trace handling.
+Note that you can still access error messages even with no handler, by accessing
+the return values of methods.  For example:
+
+	$shipment->set( %values ) or print $shipment->error();
+	
+However, if you don't save the error value before the next call, it could be
+overwritten by a new error.
+
 =cut
 
-
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.16 $ =~ /(\d+)\.(\d+)/);
+$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Data::Dumper;
 use Carp;
 use Cache::FileCache;
+use HTTP::Request;
 
+# Pull them in now to avoid runtime requires (in hopes of compatibility with
+# Safe.pm sometime in the future. 
+use Business::Ship::UPS;
+use Business::Ship::USPS;
 
 # This new() does a little magic so that it can be called as:
-# my $usps = new Business::Ship::USPS;
+# my $shipment = new Business::Ship::USPS;
 #  - or -
-# my $usps = new Business::Ship( 'shipper' => 'USPS' );
+# my $shipment = new Business::Ship( 'shipper' => 'USPS' );
 # If called with a 'shipper' argument, then return a sub object (like Ship::USPS)
 # If called without one, then return a Ship object 
 #  - Like when a sub-class is calling as SUPER->new().
@@ -152,11 +181,9 @@ sub new
 		}, $class 
 	);
 	
-	$self->trace('just blessed self, building subs and setting defaults now...');
 	$self->build_subs( keys %required, keys %optional);
 	$self->build_alias_subs( keys %alias_to_default_package );
 	$self->set( %required, %optional, %args );
-	$self->trace('...returning self');
 	
 	return $self;
 }
@@ -168,12 +195,13 @@ sub initialize
 	$self->build_subs( $self->_metadata( 'required' ) );
 	$self->build_subs( $self->_metadata( 'optional' ) );
 	$self->build_alias_subs( $self->_metadata( 'alias_to_default_package' ) );
-	foreach ('internal', 'optional', 'parent_defaults' ) {
+	foreach ( 'required', 'internal', 'optional', 'parent_defaults' ) {
 		$self->set(
 			%{ $self->_metadata( $_ ) }
 		);
 	}
 	$self->set( %args );
+	# Hmmm... currently nothing needed for compatibility's sake...
 	#$self->compatibility_map( %{ $self->_metadata( 'compatibility_map' ) } ); 
 	return $self;
 }
@@ -198,6 +226,27 @@ sub build_alias_subs
 sub default_package { return shift->packages()->[0]; }
 sub get_package { return shift->packages()->[ @_ ]; }
 
+sub validate
+{
+	my ( $self ) = shift;
+	
+	my @missing_args;
+	
+	foreach my $required ( $self->_metadata( 'required' ) ) {
+		unless ( $self->$required() ) {
+			push @missing_args, $required;	
+		}
+	}
+	if ( @missing_args ) {
+		$self->error( "Missing required argument " . join ", ", @missing_args );
+		return undef;
+	}
+	else {
+		return 1;
+	}
+}
+	
+=pod Old one
 sub validate 
 {
 	my( $self, @fields ) = @_;
@@ -211,6 +260,7 @@ sub validate
 	
 	return 1;
 }
+=cut
 
 sub get_unique_keys
 {
@@ -255,12 +305,55 @@ sub _gen_url
 	return( $self->test_mode() ? $self->test_url() : $self->prod_url() );
 }
 
+sub _gen_unique_values
+{
+	my ( $self ) = @_;
+		
+	# Now I need to get unique values for all packages.
+	
+	my @unique_values;
+	foreach my $package ( @{$self->packages()} ) {
+		push @unique_values, $package->get_unique_values();
+	}
+	
+	# We prefer 0 in the key to represent 'undef'
+	# clean it all up...
+	my @new_unique_values;
+	foreach my $value ( @unique_values ) {
+		if ( not defined $value ) {
+			$value = 0;
+		}
+		push @new_unique_values, $value;
+	}
+
+	return( @new_unique_values );
+}
+
+sub _gen_request
+{
+	my ( $self ) = shift;
+	$self->trace( "called" );
+	
+	my $request_xml = $self->_gen_request_xml();
+	my $request = new HTTP::Request 'POST', $self->_gen_url();
+	
+	$request->header( 'content-type' => 'application/x-www-form-urlencoded' );
+	$request->header( 'content-length' => length( $request_xml ) );
+	$request->content( $request_xml );
+	
+	return ( $request );
+}
+
 # This was pulled into Business::Ship because it's likely that both
 # shippers will benefit from a similar cache structure.
 #
 # Caches responses for speed.  Not all API users will be able to extract all
 # of the pakage rates for each service at once, they will have to do it twice. 
 # This helps a lot.
+#
+# TODO:  A more efficient caching method would be to cache the end-result
+# (the amounts, or whatever), then look it up at submit() time based on the
+# same _unique_values. 
 sub _get_response
 {
 	my $self = shift;
@@ -398,3 +491,44 @@ sub _log
 }
 
 1;
+
+=pod
+ * TODO: Allow the use of Net::SSLeay as well as Crypt::SSLeay?
+ * Here's how interchange does it...
+
+BEGIN {
+
+	my $selected;
+	eval {
+		package Vend::Payment;
+		require Net::SSLeay;
+		import Net::SSLeay qw(post_https make_form make_headers);
+		$selected = "Net::SSLeay";
+	};
+
+	$Vend::Payment::Have_Net_SSLeay = 1 unless $@;
+
+	unless ($Vend::Payment::Have_Net_SSLeay) {
+
+		eval {
+			package Vend::Payment;
+			require LWP::UserAgent;
+			require HTTP::Request::Common;
+			require Crypt::SSLeay;
+			import HTTP::Request::Common qw(POST);
+			$selected = "LWP and Crypt::SSLeay";
+		};
+
+		$Vend::Payment::Have_LWP = 1 unless $@;
+
+	}
+
+	unless ($Vend::Payment::Have_Net_SSLeay or $Vend::Payment::Have_LWP) {
+		die __PACKAGE__ . " requires Net::SSLeay or Crypt::SSLeay";
+	}
+
+	::logGlobal("%s payment module initialized, using %s", __PACKAGE__, $selected)
+		unless $Vend::Quiet;
+}
+
+=cut
