@@ -1,10 +1,21 @@
 Revision history for Business::Shipping
 =======================================
 
-1.51  CVS
+1.52  SCM 
+
+  USPS_Online
+    * [Fixed] Several missing module bugs
+      - List of errors:
+        "Can't locate Business/Shipping/Package/USPS.pm in @INC"
+	"Can't locate Business/Shipping/Shipment/USPS.pm in @INC"
+      - Reported by Micah Gersten <micah@davka.com>
+      - Caused by module name restructure in 1.51.
+
+
+1.51  Sep 10 2004  
 
   Compatibility
-    - Module names have been restructured.  When using 
+    * Module names have been restructured.  When using 
       Business::Shipping->rate_request(), be sure to use the new values for 
       'shipper':
       shipper => 'UPS_Online',
@@ -26,12 +37,12 @@ Revision history for Business::Shipping
         that system just uses the names, instead of actually checking the 
         inheritance trees.
     * [Enh] Update the ClassInfo/ClassAttribs system to handle the restructured
-      module system.  Should use @{ $class::ISA } instead of breaking down the 
-      name components.  
+      module system.  Should use ISA instead of breaking down the name 
+      components.  
     * [Fixed] [Bug] For Micah Gersten <micah@davka.com>, Business.pm was 
       'require'd.
 
-1.50  CVS
+1.50  Available in Software Change Management (SCM) only
 
   Compatibility
     - Clone module now required (for Tracking).
@@ -79,7 +90,6 @@ Revision history for Business::Shipping
       lib/Business/Shipping/Config.pm.
     - Support arrays in Has_a fields.
 
-   
   Offline::UPS
     - Bug fixed: Zip+4 not handled correctly (should drop the four).
     - Update fuel surcharge to 6.0%.

@@ -2,12 +2,22 @@
 ##  General TODO
 ################################################################################
 
+* [Enh] Resurrect the event_handlers() method.  Log4perl configuration should 
+  allow manual overrides via event_handlers.  Can be done via some code that 
+  would check for event_handlers(), then set normal values.  E.g.,
+  
+      log4perl.appender.DB.username = \
+        sub { $ENV{DB_USER_NAME } }
+
+* [Enh] [Log4perl] replace die and warn with logdie and logwarn.
+
+* [Enh] CPAN tarball cannot be downloaded (404).
+
+* [Enh] Test on Sourceforge Compile Farm systems.
+
 * [Enh] Build a replacement for ClassInfo and ClassAttribs that will be more 
   simple, efficient, and portable.
   
-* [Enh] Resurrect the event_handlers() method.  Log4perl configuration should 
-  allow manual overrides via event_handlers.
-
 * [Enh] Business::Shipping::UPS_XML
   - Add to documentation as an alternative to Business::Shipping
   - Maybe utilize the Parser code?
@@ -33,7 +43,7 @@
     replaced.
   - What are the longest operations?
   
-* [Doc] Memory footprint information: 
+* [Enh] Memory footprint information: 
    8+ MB when Offline is used (and stays).
    ---> 6.5 mb happens at the time of 
         "use Business::Shipping::RateRequest::Offline::UPS"
@@ -121,7 +131,7 @@ Anyway, I think I need to investigate it some more.
   automatically utilize the table-lookup method.
    
 * [Enh] Many of the functions that are currently in 
-  Shipping::RateRequest::Offline::UPS should probably be moved somewhere else.
+  Shipping::RateRequest::UPS_Offline should probably be moved somewhere else.
   They work on one shipment at a time, and having them in the RateRequest 
   object makes it seem like they should be able to work on multiple shipments
   at once.  Perhaps make the first parameter the given shipment to be worked 
@@ -177,6 +187,7 @@ Anyway, I think I need to investigate it some more.
  
 * [Enh] Log4Perl enhancement
   - Remove "Business::Shipping" from the first part of logging output.
+  - Perhaps via Log::Log4perl::NDC->pop() ?
   - Perhaps via a Filter object?
 
 ################################################################################
@@ -301,7 +312,7 @@ Anyway, I think I need to investigate it some more.
  
  * [Bug] Return error message if trying to ship to military americas:
    - USP does not ship to APO or FPO addresses.
-
+   
  * [Bug] Be able to handle "mal-formed XML doc" error return from UPS.  
    - Right now, it still tries to parse as an XML doc.
 
@@ -322,6 +333,9 @@ Anyway, I think I need to investigate it some more.
 
 * [Enh] Test for ability to use within Safe?
   - Make runtime requires into optional startup or runtime requires.
+  - Allow an optional "use Business::Shipping 'preload_all'", which will preload
+    all modules that will ever be needed.  Other options (such as 
+    "preload_Online_UPS" could be implemented as well).
    
 ################################################################################
 ##  Online::FedEx 
@@ -336,6 +350,7 @@ Anyway, I think I need to investigate it some more.
   (see FedEx.pm).
 
 * See FedEx::DirectConnect
+  Business::FedEx::ShipRequest
   
 ################################################################################
 ##  Online::DHL 

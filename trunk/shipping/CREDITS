@@ -16,11 +16,11 @@ contributed.
  
  * bbfu on PerlMonks.org got Class::MethodMaker working with SUPER.
  
- * Mike Castle <dalgoda@ix.netcom.com> reported a POD nit.
- 
  * Mark Stosberg <mark@stosberg.com> contributed documentation patches.
 
- * Richard Hornsby <rhornsby@io.osuedc.org> reported a bug that was fixed in
-   version 1.00.
+ * Individuals who have contributed bug reports:
+   - Mike Castle <dalgoda@ix.netcom.com>
+   - Richard Hornsby <rhornsby@io.osuedc.org>
+   - Micah Gersten <micah@davka.com>
    
 Thank you.

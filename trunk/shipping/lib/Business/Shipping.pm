@@ -62,19 +62,19 @@ Business::Shipping - Interface for shippers (UPS, USPS)
 
 =head1 REQUIRED MODULES
 
-Bundle::DBD::CSV (any)
-Cache::FileCache (any)
-Class::MethodMaker::Engine (any)
-Clone (any)
-Config::IniFiles (any)
-Crypt::SSLeay (any)
-Getopt::Mixed (any)
-Log::Log4perl (any)
-LWP::UserAgent (any)
-Math::BaseCnv (any)
-Scalar::Util (1.10)
-XML::DOM (any)
-XML::Simple (2.05)
+ Bundle::DBD::CSV (any)
+ Cache::FileCache (any)
+ Class::MethodMaker::Engine (any)
+ Clone (any)
+ Config::IniFiles (any)
+ Crypt::SSLeay (any)
+ Getopt::Mixed (any)
+ Log::Log4perl (any)
+ LWP::UserAgent (any)
+ Math::BaseCnv (any)
+ Scalar::Util (1.10)
+ XML::DOM (any)
+ XML::Simple (2.05)
 
 =head1 INSTALLATION
 
@@ -301,9 +301,10 @@ sub new_subclass
 
 sub event_handlers
 {
-    warn 'The event_handlers() method has not yet been implement for the new ' . 
-         'Log::Log4Perl system.  In the mean time, configure event handlers ' .
-         'in config/log4perl.conf.';
+    #warn 'The event_handlers() method has not yet been implement for the new ' . 
+    #     'Log::Log4Perl system.  In the mean time, configure event handlers ' .
+    #     'in config/log4perl.conf.';
+    
     return;
 }
 

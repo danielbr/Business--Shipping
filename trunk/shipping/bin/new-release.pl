@@ -34,12 +34,15 @@ new-release - the Business::Shipping release script.
  # Delete old file, make new file, and upload to server.
  # Upload the new version to CPAN, for PAUSE
  # Update to the next verision in Makefile.PL (if you haven't already)
+ # Note that cpan-upload requires AppConfig AppConfig::Std
  #
  export VERSION_AFTER_THIS_UPLOAD=1.52
  rm Business-Shipping-*.tar.gz
  make tardist
  bin/new-release.pl Business-Shipping-*.tar.gz
  cpan-upload -user `cat ~/.apps/.PAUSE-user` -password `cat ~/.apps/.PAUSE-password` -mailto 'db@kavod.com' -non_interactive Business-Shipping-*.tar.gz
+ 
+ 
  #
  # This version updater doesn't work now that I've changed the Makefile.PL.
  # perl -pi -e "s/\$VERSION = \'.\...\'/\$VERSION = \'${VERSION_AFTER_THIS_UPLOAD}\'/g" Makefile.PL

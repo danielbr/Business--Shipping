@@ -323,7 +323,8 @@ sub find_group
             if ( $Group_in_string_format ) {
                 #
                 # We check that the group is not empty, because sometimes they 
-                # are, like when a custom function is used (e.g. Package::USPS).
+                # are, like when a custom function is used (e.g. 
+                # USPS_Online::Package).
                 #
                 debug3( "$class->$group was called on $object" );
                 debug3( "$class->$group returned $Group_in_string_format" );

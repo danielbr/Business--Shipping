@@ -1,9 +1,3 @@
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-
-package Business::Shipping::Logging;
-
 =head1 NAME
 
 Business::Shipping::Logging - Logging interface
@@ -21,6 +15,8 @@ Wrapper for KLogger.
 =over 4
 
 =cut
+
+package Business::Shipping::Logging;
 
 use strict;
 use warnings;
