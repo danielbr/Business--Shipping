@@ -38,6 +38,13 @@ USAGE
 
      * See Business::Ship POD documentation for API notes.
 
+EXAMPLES
+    This module is used by the Interchange E-Commerce software
+    (http://www.icdevgroup.org). For a reference implementation of
+    Business::UPS, see the doc/xps-query.tag file, it implements a function
+    that takes shipping-related arguments, builds a Business::Ship object,
+    then returns the calculatd cost.
+
 WEBSITE
      http://www.kavod.com/Business-Ship
  
@@ -54,4 +61,8 @@ AUTHOR
             Kavod Technologies
             <db@kavod.com>
             http://www.kavod.com
+
+CREDITS
+     * Kevin Old <kold@carolina.rr.com> got the USPS XML generator working.
+     * sauoq on PerlMonks.org provided valuable commentary and ideas. 
 

@@ -70,4 +70,9 @@ under the same terms as Perl itself.
 	<db@kavod.com>
 	http://www.kavod.com
 
+=head1 CREDITS
+
+ * Kevin Old <kold@carolina.rr.com> got the USPS XML generator working.
+ * sauoq on PerlMonks.org provided valuable commentary and ideas. 
+
 =cut

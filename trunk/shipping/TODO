@@ -2,6 +2,40 @@
 ##  General TODO
 ######################################################
  
+ * General consensus seems to be that Business::Shipping is better.
+   http://www.perlmonks.org/index.pl?node_id=262176
+ 
+ * include the terms of use for each module.
+ 
+ * The Shipping module itself should be able to be queried for what shippers it
+   handles. Each shipper should be able to be queried for what services it 
+   provides... maybe code would look like this:
+
+	use Business::Shipping; 
+	
+	# Query the module for installed shipper specific modules.
+	my @shippers = Business::Shipping::available_shippers(); 
+	
+	my %shipping_option; 
+	for my $shipper (@shippers) { 
+	
+		# Services would be Ground, 2nd day air, things like that.
+		my @services = $shipper->services();
+	 
+		for my $service (@services) { 
+	
+			# The $package would have been previously generated.
+			$shipping_option{$shipper->name}->{$service} =
+				$shipper->rate($service, $package); 
+	
+		}
+	}
+
+ 
+ * The POD is pretty well broken, at least for the Ship.pm file.
+ 
+ * Country name translator strings to data outside your program.
+ 
  * Perhaps pull the shipper-related stuff out of Business::Ship into Business::Shipper. 
  	- Then Packages can inherit all of the sub building, debugging, etc. functions from
 	  Business::Ship.  USPS and UPS will then inherit what they need from Business::Shipper.
@@ -31,6 +65,8 @@
  * Use Params::Validate for parameter validation?
  
  * List Prerequisites in a Bundle module
+ 
+ * Documentation: explain what else is out there (Business::UPS, FedEx, static table lookup)
  
 ######################################################
 ##  Interchange usertags TODO
