@@ -136,7 +136,7 @@ sub {
 			to_country	=> $opt->{'to_country'},
 		);
 		$shipment->submit(); #TODO: handle errors
-		return $shipment->get_price( $opt->{'service'} );
+		return $shipment->get_charges( $opt->{'service'} );
 	}
 }
 EOR

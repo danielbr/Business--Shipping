@@ -22,7 +22,7 @@ http://www.uspsprioritymail.com/et_regcert.html
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.11 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.12 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship;
 use Business::Ship::USPS::Package;
@@ -45,6 +45,11 @@ sub new
 	my %internal = (
 		ua			=> new LWP::UserAgent,
 		xs			=> new XML::Simple,
+		
+		# TODO: Abstract the packages() interface some more
+		# I think it should be:  
+		# $package = packages( $id );
+		# packages( 'id' => $new_package );
 		packages	=> [ new Business::Ship::USPS::Package ],
 		intl		=> undef,
 		domestic	=> undef,
@@ -62,11 +67,8 @@ sub new
 	
 	bless( $self, $class );
 	
-	my %package_subs = (
-		id			=> undef,
-		service		=> undef,
+	my %alias_to_default_package = (
 		pounds		=> undef,
-		weight		=> undef,
 		ounces		=> 0,
 		container	=> 'None',
 		size		=> 'Regular',
@@ -76,10 +78,8 @@ sub new
 	
 	# We need our internals for the rest of it...
 	$self->build_subs( keys %internal );
-	$self->set( %internal );
-	$self->build_subs_packages( keys %package_subs );
-	$self->set( %optional, %parent_defaults, %arg );
-	
+	$self->build_alias_subs( keys %alias_to_default_package );
+	$self->set( %internal, %optional, %parent_defaults, %arg );
 	return $self;
 }
 
@@ -95,13 +95,6 @@ sub build_subs_packages
 		}
     }
 	return;
-}
-
-sub _gen_url
-{
-	my ( $self ) = shift;
-	
-	return( $self->test_mode() ? $self->test_url() : $self->prod_url() );
 }
 
 # _gen_request_xml()
@@ -259,14 +252,16 @@ sub validate
 {
 	my $self = shift;
 	
-	#TODO: Check all values before submitting
-	
-	return 1;
+	if ( $self->SUPER::validate() ) {
+		#TODO: Check all values before submitting
+		return 1;
+	}
+	return undef;
 }
 
 
 
-sub gen_unique_values
+sub _gen_unique_values
 {
 	my $self = shift;
 	
@@ -291,71 +286,20 @@ sub gen_unique_values
 	return( @new_unique_values );
 }
 
-# Caches responses for speed.  Not all API users will be able to extract all
-# of the pakage rates for each service at once, they will have to do it twice. 
-# This helps a lot.
-sub get_response
+
+sub _handle_response
 {
 	my $self = shift;
-	my $request = shift;
+	$self->trace( 'called.' );
 	
-	my @unique_values = $self->gen_unique_values();
-	my $key = join( "|", @unique_values );
-	my $response = $self->cache()->get( $key );
-	if ( not defined $response ) {
-		#$self->trace( "unique_values = " . $self->uneval( @unique_values ) );
-		$self->trace( "running request manually, then add to cache." );
-		$response = $self->{'ua'}->request( $request );
-		#TODO: Allow setting of cache properties (time limit, enable/disable, etc.)
-		$self->cache()->set( $key, $response, "2 days" ); 
-	}
-	else {
-		$self->trace( "using cached response." );
-	}
-	return $response;	
-}
-=item $shipment->submit( [%args] )
-
-This method sets some values (optional), generates the request, then parses and
-the results and assigns the total_charges amount.
-
-=cut
-
-sub submit
-{
-	my ( $self, %args ) = @_;
-	
-	$self->trace( "calling with ( " . $self->uneval( %args ) . " )" );
-	
-	$self->set( %args ) if %args;
-	
-	$self->_massage_values();
-	$self->validate() or return ( undef );
-	
-	#my $cached_results = $self->try_cache();
-	#if ( defined $cached_results ) {
-	#	#TODO: use the cached ones instead of continuing
-	#}
-	
-	my $request = $self->_gen_request();
-	
-	$self->response( $self->get_response( $request ) );
-	
-	$self->debug( "response content = " . $self->response()->content() );
-	
-	my $content;
-	
-	if ( $self->response()->is_success() ) { 
-		 $content = $self->response->content; 
-	}
-	else { 
-		$self->error( "HTTP Error.  Content = " . $content ); 
-		return( undef ); 
-	}	
-	
-	my $response_tree = $self->{xs}->XMLin( $self->response()->content(), ForceArray => 0, KeepRoot => 0 );
+	my $response_tree = $self->{xs}->XMLin( 
+		$self->response()->content(), 
+		ForceArray => 0, 
+		KeepRoot => 0 
+	);
 	
 	# TODO: Handle multiple packages errors.
+	# (this doesn't seem to handle multiple packagess errors very well)
 	if ( $response_tree->{Error} or $response_tree->{Package}->{Error} ) {
 		my $error = $response_tree->{Package}->{Error};
 		$error ||= $response_tree->{Error};
@@ -372,8 +316,7 @@ sub submit
 		$self->total_charges( $response_tree->{Package}->{Postage} );
 	}
 	elsif ( $self->intl() ) {
-		
-		# For now, total_charges will just be the first service returned.
+		# TODO: Sum the get_charges( $service ) for all packages to return to total_charges
 		$self->total_charges( $response_tree->{Package}->{Service}->[0]->{Postage} );
 		foreach my $service ( @{ $response_tree->{Package}->{Service} } ) {
 			$self->debug( " Postage = " . $service->{Postage} );
@@ -381,10 +324,8 @@ sub submit
 		}
 	}
 	
-	return $self->success( 1 );
+	return $self->is_success( 1 );
 }
-
-
 
 sub _set_pounds_ounces
 {
@@ -393,10 +334,10 @@ sub _set_pounds_ounces
 		$self->pounds( $self->weight() );
 	}
 	
-	# Can pounds be a fraction?  Or do we need to calc the ounces?
+	# 'pounds' cannot be a fraction.
+	# TODO: Calculate 'ounces' from a fractional pound.
 	return;
 }
-
 
 # Decide if we are domestic or international for this run...
 sub _domestic_or_intl
@@ -439,13 +380,9 @@ sub _domestic_or_intl
 
 =head1 AUTHOR
 
-	Initially developed by Kevin Old, later rewritten by Dan Browning.
-	
 	Dan Browning <db@kavod.com>
 	Kavod Technologies
 	http://www.kavod.com
-	
-	Kevin Old <kold@carolina.rr.com>
 
 =head1 COPYRIGHT
 

@@ -2,7 +2,7 @@
 # All rights reserved. This program is free software; you can redistribute it
 # and/or modify it under the same terms as Perl itself.
 #
-# $Id: UPS.pm,v 1.10 2003/05/05 23:53:27 db-ship Exp $
+# $Id: UPS.pm,v 1.11 2003/05/09 07:52:03 db-ship Exp $
 package Business::Ship::UPS;
 use strict;
 use warnings;
@@ -13,20 +13,35 @@ Business::Ship::UPS - A UPS module
 
 =head1 SYNOPSIS
 
-	use Business::Ship::UPS;
-	my $ups = new Business::Ship::UPS;
-	$ups->run_query(
 		access_license_number => '248B43N8NXN1S35J',
+		
 		user_id => 'youruserid',
 		password => 'yourpassword',
-		pickup_type_Code => '06',
+		
+		pickup_type_code => '06',
+			pickup_type => 'DAILY',
+		
 		shipper_countrycode => 'US',
+			from_country => 'United States' (or 'US', it does translation.)
+		
 		shipper_postalcode => '98682',
+			from_zip
+		
 		ship_to_residential_address => '1',
+			to_residential
+		
 		ship_to_country_code => 'US',
+			to_country
+		
 		ship_to_postal_code => '98270',
+			to_zip
+			
 		service_code => '01',
-		packaging_type_ode =>  '02',
+			service
+		
+		packaging_type_code =>  '02',
+			packaging_type	=>	'TUBE'
+			
 		weight => '3.4',
 	);
 	my $total_charges = $ups->get_total_charges();
@@ -94,7 +109,7 @@ The following methods are available:
 =cut
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.10 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.11 $ =~ /(\d+)\.(\d+)/);
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;

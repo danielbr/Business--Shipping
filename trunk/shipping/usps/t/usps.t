@@ -21,8 +21,8 @@ my $shipment3 = new Business::Ship(
 	'test_mode'		=> 0,
 );
 
+#$shipment->set('event_handlers' => ({ 'debug' => STDOUT, 'trace' => 'STDOUT', 'error' => 'STDOUT', }),);
 $shipment->set(
-	#'event_handlers' => ({ 'debug' => STDOUT, 'trace' => 'STDOUT',}),
 	'user_id' 		=> $ENV{USPS_USER_ID},
 	'password' 		=> $ENV{USPS_PASSWORD},
 	'tx_type' 		=> 'rate', 
@@ -40,8 +40,10 @@ $shipment->set(
 		to_country	=> 'Great Britain',
 );
 
+#print Dumper( $shipment );
+
 $shipment->submit() or die 'error on submit: ' . $shipment->error();
-print "0.2 weight: " . $shipment->get_price('Airmail Parcel Post') . "\n";
+print "0.2 weight: " . $shipment->get_charges('Airmail Parcel Post') . "\n";
 
 $shipment->set(
 		weight		=> 5.6,
@@ -59,7 +61,7 @@ my @countries_to_test = (
 
 foreach my $country ( @countries_to_test ) {
 	$shipment->submit( 'to_country' => $country );
-	print "$country = " . $shipment->default_package()->get_price( 'Airmail Parcel Post' ) . "\n";
+	print "$country = " . $shipment->default_package()->get_charges( 'Airmail Parcel Post' ) . "\n";
 	
 }
 
@@ -125,11 +127,11 @@ $shipment->set(
 
 $shipment->submit();
 
-$shipment->success() or die "Error = " .  $shipment->error_msg();
+$shipment->is_success() or die "Error = " .  $shipment->error_msg();
 
 #print Dumper( $shipment->response_tree() );
 
-print "Airmail Parcel Post = " . $shipment->packages()->[0]->get_price( 'Airmail Parcel Post' ) . "\n";
+print "Airmail Parcel Post = " . $shipment->packages()->[0]->get_charges( 'Airmail Parcel Post' ) . "\n";
 
 #print Dumper ($shipment->packages());
 

@@ -83,6 +83,19 @@ XPS_FROM_ZIP	98682	Shipping
 	'Airmail Parcel Post',
 	'Economy (Surface) Letter Post',
 	'Economy (Surface) Parcel Post',
+
+ * Sample shipping.asc entry:
+
+USPS_AIRMAIL_POST: USPS International
+	criteria	[criteria-intl]
+	
+	min			0
+	max			4
+	cost		f [xps-query mode="USPS" service="Airmail Parcel Post" weight="@@TOTAL@@"]
+	
+	min			4
+	max			999999
+	cost		f [xps-query mode="USPS" service="Airmail Parcel Post" weight="@@TOTAL@@"]
  
 =cut
 EOD
@@ -103,10 +116,7 @@ sub {
 	delete $opt->{ 'reparse' };
 	delete $opt->{ 'mode' };
 
-	$opt->{ 'pounds' } = sprintf( "%1.0f", $opt->{ 'weight' } );
-	delete $opt->{ 'weight' }; 	
-	
-	
+	$opt->{ 'pounds' } = delete $opt->{ 'weight' };
 	
 	# Business::Ship takes a hash anyway, we might as well deref it now.
 	my %opt = %$opt;
@@ -132,13 +142,12 @@ sub {
 		$opt{ $_ } ||= $defaults{ $_ } if $defaults{ $_ }; 
 	}
 
-	my $shipment = new Business::Ship::USPS; #$mode
+	my $shipment = new Business::Ship( 'shipper' => $mode );
 	
-	::logDebug( "calling 2 Business::Ship::${mode} with: " ); for ( keys %opt ) { ::logDebug( "\'$_\' => \'$opt{$_}\'" ); }
+	::logDebug( "calling Business::Ship::${mode}->submit() with: " ); for ( keys %opt ) { ::logDebug( "\'$_\' => \'$opt{$_}\'" ); }
 	
-	$shipment->set( %opt );
-	$shipment->submit() or ( Log $shipment->error() and return ( undef ) );
+	$shipment->submit( %opt ) or ( Log $shipment->error() and return ( undef ) );
 	
-	return $shipment->get_price( $opt{ 'service' } );
+	return $shipment->get_charges( $opt{ 'service' } );
 }
 EOR

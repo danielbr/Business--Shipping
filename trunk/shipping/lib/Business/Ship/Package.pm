@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.5 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.6 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship;
 use Data::Dumper;
@@ -64,7 +64,7 @@ sub set_price
 	return $self->{'price'}->{$service};	
 }
 
-sub get_price
+sub get_charges
 {
 	my ( $self, $service ) = @_;	
 	return $self->{'price'}->{$service};	
