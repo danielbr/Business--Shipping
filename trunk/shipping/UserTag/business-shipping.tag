@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.10 2004/01/21 23:00:36 db-ship Exp $
+# $Id: business-shipping.tag,v 1.11 2004/01/21 23:05:36 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -133,10 +133,13 @@ sub {
 	# Defaults: Cache enabled.  Log errors only.
 	#	
 	
+	my $simple_shipper_name = $shipper;
+	$simple_shipper_name =~ s/(On|Off)line:://;
+	
 	my $defaults = {
 		'all' => {
-			'user_id'			=> $Variable->{ "${shipper}_USER_ID" },
-			'password'			=> $Variable->{ "${shipper}_PASSWORD" },
+			'user_id'			=> $Variable->{ "${simple_shipper_name}_USER_ID" },
+			'password'			=> $Variable->{ "${simple_shipper_name}_PASSWORD" },
 			'to_country'		=> $Values->{ 
 				$Variable->{ XPS_TO_COUNTRY_FIELD } || 'country' 
 			},
@@ -159,7 +162,7 @@ sub {
 			)
 		},
 		'Online::UPS' => {
-			'access_key'		=> ( $Variable->{ "${shipper}_ACCESS_KEY" } || undef ),
+			'access_key'		=> ( $Variable->{ "UPS_ACCESS_KEY" } || undef ),
 		},
 		'Offline::UPS' => { 
 			'from_state'		=> $Variable->{ XPS_FROM_STATE },
