@@ -24,7 +24,7 @@ my $rr = test_ol_usps(
         'to_country' => 'Algeria',
 );
 
-$rr->submit() or die $rr->error();
+$rr->submit() or die $rr->user_error();
 ok( $rr->total_charges, 'Online::USPS International does not require certain fields.' );
  
 

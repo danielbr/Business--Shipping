@@ -1,11 +1,6 @@
-# Business::Shipping::RateRequest - Abstract class for shipping cost estimation
-# 
-# $Id: RateRequest.pm,v 1.12 2004/03/31 19:11:05 danb Exp $
-# 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
-# 
 
 package Business::Shipping::RateRequest;
 
@@ -15,7 +10,7 @@ Business::Shipping::RateRequest - Abstract class for shipping cost estimation
 
 =head1 VERSION
 
-$Revision: 1.12 $      $Date: 2004/03/31 19:11:05 $
+$Revision: 1.13 $      $Date: 2004/05/06 20:15:19 $
 
 =head1 DESCRIPTION
 
@@ -29,7 +24,7 @@ Represents a request for shipping cost estimation.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.13 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -84,6 +79,8 @@ use Class::MethodMaker 2.0
       scalar        => [ 'is_success', 'cache', 'invalid' ],
       scalar        => [ 'shipper' ],
       scalar        => [ 'results' ],
+      scalar        => [ '_total_charges' ],
+      scalar        => [ 'price_components' ],
       # Right now, each RateRequest has only one shipment.
       # Eventually, maybe we'll use object_list with "shipments()->..." like packages.
       scalar => [ { -type    => 'Business::Shipping::Shipment',
@@ -130,22 +127,6 @@ sub submit
     my ( $self, %args ) = @_;
     trace( "( " . uneval( %args ) . " )" );
     
-    #
-    # Tried to use this code to find error when I was getting 'Use of 
-    # undefined value' errors in the MethodMaker module.  It turned out that
-    # Shipping::Shipment had 'current_package_index' in a grouped_field_inherit
-    # section, and all the problems went away when I moved it to a 'get_set' 
-    # section.
-    #
-    # use Data::Dumper;
-    # print STDERR "args = " . Dumper( \%args ) . "\n";
-    #
-    #foreach my $key ( %args ) {
-    #    print STDERR "\texecuting \$self->$key( $args{$key} )\n";
-    #    $self->$key( $args{ $key } );
-    #}
-    #
-    
     $self->init( %args ) if %args;
     $self->_massage_values();
     $self->validate() or return;
@@ -189,6 +170,7 @@ sub submit
         trace( 'cache disabled, not saving results.' );
     }
     
+    debug "returning " . $self->is_success;
     return $self->is_success();
 }
 
@@ -206,7 +188,7 @@ sub validate
     
     my $return_val = $self->SUPER::validate;
     
-    my @invalid_rate_requests_ups = $self->config_to_ary_of_hashes( 
+    my @invalid_rate_requests_ups = config_to_ary_of_hashes( 
         cfg()->{ invalid_rate_requests }->{ invalid_rate_requests_ups }
     );
     
@@ -248,7 +230,7 @@ sub validate
         if ( $matches == keys %$invalid_rate_request ) {
             my $reason = ( $invalid_rate_request->{ reason } ? '  ' . $invalid_rate_request->{ reason } : '' ); 
             $self->invalid( 1 );
-            $self->error( "Rate request invalid.$reason  See the configuration file for more information." );
+            $self->user_error( "Rate request invalid.$reason  See the configuration file for more information." );
             $return_val = 0;
         }
     }
@@ -336,12 +318,15 @@ sub total_charges
         my $packages = $self->results->{ $shipper };        
         foreach my $package ( @$packages ) {
             debug3 "\t" . uneval( $package );
-            debug3 "\t\tcharges = " . $package->{ 'charges' } . "\n";
-            $total += $package->{ 'charges' };
+            my $charges = $package->{ 'charges' };
+            if ( $charges ) {
+                debug3 "\t\tcharges = $charges\n";
+                $total += $charges;
+            }
         }
     }
         
-    return $total;
+    return Business::Shipping::Util::currency( { no_format => 1 }, $total );
 }
 
 =item * get_unique_keys()
@@ -385,48 +370,6 @@ sub _gen_unique_values
     return( @new_unique_values );
 }
 
-=item * add_package( %args )
-
-Adds a new package to the shipment.
-
-=cut
-#
-# This is from 0.04.
-# Needs to be made compatible with the new version.
-#
-sub add_package
-{
-    my $self = shift;
-    trace('called with' . uneval( @_ ) );
-    
-    my $new = Business::Shipping->new( 'package' => $self->package_subclass_name() );
-    
-    $new->set( @_ );
-    
-    # If the passed package has an ID, then use that.
-    if ( $new->id() or ( $new->id() and $new->id() == 0 ) ) {
-        trace( "Using id in passed package" );
-        $self->packages()->[$new->id()] = $new;
-        return 1;
-    }
-        
-    # If the "default" package ($self->packages()->[0]) is 
-    # still in "default" state (has not yet been updated),
-    # then replace it with the passed package.
-    trace( 'checking to see if default package is empty...' );
-    if ( $self->default_package()->is_empty() ) {
-        debug( 'yes, is empty.' );
-        $self->packages()->[0] = $new;
-        debug( 'done setting up default package.' );
-        return 1;    
-    }
-    trace( 'no, not empty.' );
-    
-    # Otherwise, add the package in the second slot.
-    push( @{$self->packages()}, $new );
-    
-    return 1;
-}
 
 #
 # Right now, we only support one shipment per rate request, but 
@@ -440,6 +383,44 @@ sub current_shipment
     
     return $self->shipment;
 }
+
+# COMPAT
+sub get_total_price { &total_charges; }
+
+=item * $self->calc_debug_string()
+
+Arrange the values of some important variables in a pretty format.
+Return a scalar string.
+
+=cut
+
+sub calc_debug_string
+{
+    my ( $self ) = @_;
+    
+    my $vars_out .= "\nActual values from the rate_request object\n";
+    foreach ( qw/ from_country to_country from_zip to_zip weight service / ) {
+        
+        my $val = ( $self->can( $_ ) ? $self->$_ : '' ) || '';
+        $vars_out .= "\t$_ => \t\t\'" . $val . "\',\n";
+    }
+    
+    return $vars_out;
+}
+
+=item * $self->display_price_components()
+
+Return formatted string of price component information
+
+=cut
+
+sub display_price_components
+{
+    my ( $self ) = @_;
+    return Data::Dumper::Dumper( $self->price_components ) if $self->price_components;
+    return;
+}
+    
 
 1;
 

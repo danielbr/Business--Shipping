@@ -24,7 +24,7 @@ $rate_request_online->submit(
     from_country     => 'US',
     to_residential     => 1,
     packaging        => '02',
-) or die $rate_request_online->error();
+) or die $rate_request_online->user_error();
 
 print "UPS online domestic = " .  $rate_request_online->total_charges() . "\n";
 

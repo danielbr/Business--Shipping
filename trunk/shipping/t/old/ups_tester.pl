@@ -22,7 +22,7 @@ sub test
         }),
     );
     die $@ if $@;
-    $shipment->submit( %args ) or die $shipment->error();
+    $shipment->submit( %args ) or die $shipment->user_error();
     return $shipment;
 }
 

@@ -4,11 +4,14 @@
 #
 # TODO: If Business-Shipping-CVS doesn't exist, do a checkout.
 #
-# mkdir -p $SOURCE_PATH
-# cd $SOURCE_PATH
-# cvs -q -z3 -d :pserver:anonymous@cvs.kavod.com/home/ship/rep co -d Business-Shipping-CVS ship
-# mkdir -p ~/bin
-# ln -s $SOURCE_PATH/bin/Business-Shipping-update-source.sh ~/bin
+#
+# Link to this file:
+#
+#
+# cd ~/src
+# cvs -q -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/shipping login
+# cvs -q -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/shipping co -d Business-Shipping-CVS shipping
+# mkdir -p ~/bin; ln -s $SOURCE_PATH/Business-Shipping-CVS/bin/Business-Shipping-update-source.sh ~/bin
 #
 # Required if you want to update the Interchange usertag too
 #
@@ -22,11 +25,11 @@
 # Standard locations
 #
 export SOURCE_PATH=${HOME}/src
-
-
 cd $SOURCE_PATH/Business-Shipping-CVS
 cvs -q -z3 up -dP
-perl Makefile.PL
+
+#/usr/local/bin/perl Makefile.PL INSTALLPRIVLIB=~/lib INSTALLARCHLIB=~/lib INSTALLSITELIB=~/lib  INSTALLMAN1DIR=none INSTALLMAN3DIR=none INSTALLSITEARCH=~/lib INSTALLDIRS=perl INSTALLBIN=~/bin INSTALLSITEBIN=~/bin INSTALLSCRIPT=~/bin 
+#perl Makefile.PL
 make && make test && make install
 
 

@@ -1,6 +1,6 @@
 # Business::Shipping::Tracking::USPS - Abstract class for tracking shipments
 # 
-# $Id: USPS.pm,v 1.4 2004/03/31 19:11:08 danb Exp $
+# $Id: USPS.pm,v 1.5 2004/05/06 20:15:29 danb Exp $
 # 
 # Copyright (c) 2004 InfoGears Inc.  All Rights Reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
@@ -59,7 +59,7 @@ Licensed under the GNU Public License (GPL).  See COPYING for more info.
 
 package Business::Shipping::Tracking::USPS;
 
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -188,7 +188,7 @@ sub _handle_response
         my $error_number         = $error->{Number};
         my $error_source         = $error->{Source};
         my $error_description    = $error->{Description};
-        $self->error( "$error_source: $error_description ($error_number)" );
+        $self->user_error( "$error_source: $error_description ($error_number)" );
         return( undef );
     }
     

@@ -1,15 +1,25 @@
-# Business::Shipping::RateRequest::Online - Abstract class for shipping cost rating.
-# 
-# $Id: Online.pm,v 1.9 2004/03/31 19:11:06 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
 
 package Business::Shipping::RateRequest::Online;
 
-$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+=head1 NAME
+
+Business::Shipping::RateRequest::Online - Abstract class for shipping cost rating.
+
+=head1 VERSION
+
+$Revision: 1.10 $      $Date: 2004/05/06 20:15:27 $
+
+=head1 METHODS
+
+=over 4
+
+=cut
+
+$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -38,7 +48,7 @@ sub perform_action
     #debug3( "response content = " . $self->response()->content() );
     
     if ( ! $self->response()->is_success() ) { 
-        $self->error(     
+        $self->user_error(     
                         "HTTP Error. Status line: " . $self->response->status_line .
                         "Content: " . $self->response->content() 
                     ); 

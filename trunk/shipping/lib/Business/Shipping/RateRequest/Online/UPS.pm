@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::UPS - Estimates shipping cost online
 # 
-# $Id: UPS.pm,v 1.16 2004/03/31 19:11:07 danb Exp $
+# $Id: UPS.pm,v 1.17 2004/05/06 20:15:28 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -14,6 +14,19 @@ package Business::Shipping::RateRequest::Online::UPS;
 Business::Shipping::RateRequest::Online::UPS - Estimates shipping cost online
 
 See Shipping.pm POD for usage information.
+
+=head1 REQUIRED FIELDS
+
+user_id
+password
+access_key
+
+If user_id, password, and/or access_key are not defined, then the following 
+shell environment variables will be used, if defiend:
+
+UPS_USER_ID
+UPS_PASSWORD
+UPS_ACCESS_KEY
 
 =head1 SERVICE TYPES
 
@@ -71,7 +84,7 @@ See Shipping.pm POD for usage information.
     
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.16 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.17 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -79,6 +92,7 @@ use base ( 'Business::Shipping::RateRequest::Online' );
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Package::UPS;
+use Business::Shipping::Util;
 use XML::Simple 2.05;
 use Cache::FileCache;
 use LWP::UserAgent;
@@ -412,7 +426,7 @@ sub _handle_response
     if ( $error and $error !~ /Success/ ) {
         my $combined_error_msg = "$status_description ($status_code): $error @ $err_location"; 
         $combined_error_msg =~ s/\s{3,}/ /g;
-        $self->error( $combined_error_msg );
+        $self->user_error( $combined_error_msg );
         return ( undef );
     }
     
@@ -470,13 +484,13 @@ sub to_country_abbrev
     
     return unless $self->to_country;
     
-    #
     # Do the UPS translations
-    #
+    
     my $online_ups_country_to_abbrev = cfg()->{ ups_information }->{ online_ups_country_to_abbrev };
-    my $countries = $self->config_to_hash( $online_ups_country_to_abbrev );
+    my $countries = config_to_hash( $online_ups_country_to_abbrev );
     my $to_country_abbrev = $countries->{ $self->to_country } || $self->SUPER::to_country_abbrev();
-    return $to_country_abbrev;
+    
+    return $to_country_abbrev || $self->to_country;
 }
 use warnings; # end redefine
 

@@ -32,7 +32,7 @@ print STDERR "ounces = " . $rate_request->ounces;
 
 not defined $rate_request and die " rate_request not defined: $@";
 
-$rate_request->submit() or die $rate_request->error();
+$rate_request->submit() or die $rate_request->user_error();
 
 STDERR->print( "\$" . $rate_request->total_charges() . "\n" );
 

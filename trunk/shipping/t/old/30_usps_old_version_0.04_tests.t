@@ -36,7 +36,7 @@ sub test
         'cache_enabled'    => 0,
         #'event_handlers' => ({ 'debug' => 'STDOUT', }),
     );
-    $shipment->submit( %args ) or die $shipment->error();
+    $shipment->submit( %args ) or die $shipment->user_error();
     return $shipment;
 }
 

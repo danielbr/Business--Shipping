@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.27 2004/03/08 17:13:54 danb Exp $
+# $Id: business-shipping.tag,v 1.28 2004/05/06 20:15:15 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -21,7 +21,7 @@ UserTag  business-shipping  Documentation     <<EOD
 
 =head1 VERSION
 
-[business-shipping] usertag:    $Revision: 1.27 $
+[business-shipping] usertag:    $Revision: 1.28 $
 Requires Business::Shipping:     Revision: 1.04+
 
 =head1 AUTHOR 
@@ -45,7 +45,7 @@ Requires Business::Shipping:     Revision: 1.04+
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (2.00)
+ Class::MethodMaker (2.02)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
@@ -53,6 +53,7 @@ Requires Business::Shipping:     Revision: 1.04+
  Devel::Required (0.03)
  Error (any)
  Getopt::Mixed (any)
+ Log::Log4perl (any)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
  Scalar::Util (1.10)
@@ -306,7 +307,7 @@ sub {
     }
     
     if ( $report_incident ) {
-        my $vars_out;
+        my $vars_out = $rate_request->calc_debug_string;
         
         $vars_out .= "Important variables:\n";
         foreach ( 'shipper', 'service', 'to_country', 'weight', 'to_zip' ) {
@@ -322,9 +323,8 @@ sub {
         foreach ( sort keys %opt ) {
             $vars_out .= "\t$_ => \t\t\'" . $rate_request->$_() . "\',\n";
         }
-
         
-        my $error = $rate_request->error();
+        my $error = $rate_request->user_error();
         #$error = $error ? "Error: $error." : 'errors: none.';
         
         #

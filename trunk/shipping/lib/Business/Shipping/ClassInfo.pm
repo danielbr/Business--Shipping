@@ -1,6 +1,6 @@
 # Business::Shipping::ClassInfo - Used by ClassAttribs
 # 
-# $Id: ClassInfo.pm,v 1.2 2004/03/31 19:11:05 danb Exp $
+# $Id: ClassInfo.pm,v 1.3 2004/05/06 20:15:19 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::ClassInfo - Used by ClassAttribs
 
 =head1 VERSION
 
-$Revision: 1.2 $      $Date: 2004/03/31 19:11:05 $
+$Revision: 1.3 $      $Date: 2004/05/06 20:15:19 $
 
 =head1 METHODS
 
@@ -23,7 +23,7 @@ $Revision: 1.2 $      $Date: 2004/03/31 19:11:05 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -110,7 +110,7 @@ sub new_unless_defined
 sub find_and_add_Has_a_objects
 {
     my ( $self ) = @_;
-    trace '()';
+    trace3 '()';
     
     use Data::Dumper;
     debug3( "classes = " . Dumper( $self->{ classes } ) );
@@ -129,7 +129,7 @@ sub find_and_add_Has_a_objects
 sub get_classes_objects_for_classes
 {
     my ( $self, @class_names ) = @_;
-    trace 'called';
+    trace3 'called';
     
     #debug3 ( "arg1 = $_[1], arg2 = $_[2]" );
     
@@ -272,7 +272,7 @@ sub add_via_class_name
 sub get_object
 {
     my ( $class ) = @_;
-    trace "( $class )";
+    trace3 "( $class )";
     #
     # Skip any objects that have construction problems.
     #
@@ -300,7 +300,7 @@ sub get_object
 sub find_group
 {
     my ( $self, $group ) = @_;
-    trace( "( $group )" );
+    trace3 "( $group )";
     
     if ( ! $group ) {
         log_error( "find_group() did not have a group and class_name!" );
@@ -335,7 +335,7 @@ sub find_group
     
     @Group = Business::Shipping::Util::unique( @Group );
     my $str = "find_group( $group ) returning " . join( ',', @Group ) . "\n";
-    debug $str;
+    debug3 $str;
     
     return @Group;
 }

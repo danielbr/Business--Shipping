@@ -121,7 +121,7 @@ sub xps_query {
             last;
         }
         else {
-            Log( "Try $tries: " . $shipment->error() );
+            Log( "Try $tries: " . $shipment->user_error() );
             
             for (    
                     'HTTP Error. Status line: 500 read timeout',
@@ -130,7 +130,7 @@ sub xps_query {
                     'HTTP Error. Status line: 500 Can\'t connect to production.shippingapis.com:80',
                 ) {
                 
-                if ( $shipment->error() =~ /$_/ ) {
+                if ( $shipment->user_error() =~ /$_/ ) {
                     Log( 'Error was on USPS server, trying again...' );
                 }
             }
@@ -146,7 +146,7 @@ sub xps_query {
     
     if ( ! $charges ) {
         my $variables = uneval( \%opt ); 
-        my $error = $shipment->error();
+        my $error = $shipment->user_error();
         my $message = "[xps-query]: $mode error: $error.\nOptions were: $variables";
         Log $message;
         

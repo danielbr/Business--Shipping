@@ -1,6 +1,6 @@
 # Business::Shipping::Tracking::UPS - Abstract class for tracking shipments
 # 
-# $Id: UPS.pm,v 1.4 2004/03/31 19:11:08 danb Exp $
+# $Id: UPS.pm,v 1.5 2004/05/06 20:15:29 danb Exp $
 # 
 # Copyright (c) 2004 InfoGears Inc.  All Rights Reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
@@ -84,7 +84,7 @@ Licensed under the GNU Public License (GPL).  See COPYING for more info.
 
 package Business::Shipping::Tracking::UPS;
 
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -259,7 +259,7 @@ sub _handle_response
     if ( $error and $error !~ /Success/ ) {
       my $combined_error_msg = "$status_description ($status_code): $error @ $err_location"; 
       $combined_error_msg =~ s/\s{3,}/ /g;
-      $self->error( $combined_error_msg );
+      $self->user_error( $combined_error_msg );
       return ( undef );
     }
     

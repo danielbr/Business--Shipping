@@ -17,7 +17,7 @@ $rate_request_online->submit(
         debug     => 'STDERR',
         error    => 'STDERR',
     },
-) or die $rate_request_online->error();
+) or die $rate_request_online->user_error();
 
 print "online = " .  $rate_request_online->total_charges() . "\n";
 

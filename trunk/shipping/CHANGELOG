@@ -1,15 +1,18 @@
-Revision history for Business::Shipping.
+Revision history for Business::Shipping
+=======================================
 
 
 1.50  CVS
   
   Compatibility
     - Clone module now required (for Tracking).
-    - Class::MethodMaker 2.0 now required.  CPAN installation instructions:
-      perl -MCPAN -e 'install F/FL/FLUFFY/Class-MethodMaker-2.00.tar.gz'
+    - Class::MethodMaker 2.02 now required.  CPAN installation instructions:
+      perl -MCPAN -e 'install Class::MethodMaker::Engine'
       Updated because the new version has sugary syntax.
     - Log::Log4perl now required (for debug/error handling).
     - event_handlers() depreciated (use config/log4perl.conf instead).
+    - $self->error() changed to $self->user_error() 
+    - Multi-package API un-supported.
         
   Tracking
     - Rusty Conover <rconover@infogears.com> contributed the following:
@@ -20,7 +23,7 @@ Revision history for Business::Shipping.
   General
     - Changed to dual GPL/Artistic License.
     - Changed hosting from kavod.com to sf.net.
-        - Code cleanup all over the place.
+    - Code cleanup all over the place.
     - Logging system added, wrapper for Log4perl.
     - Major documentation updates.
     - Change tabs to four spaces
@@ -34,14 +37,21 @@ Revision history for Business::Shipping.
       the auto-creation of a default package if one does not exist.
     - LWP::UserAgent and HTTP::Response objects now created on-the-fly.
     - Many other misc. changes.
-    
+    - New tests.
+    - Remove documentation for multi-package API.  Unsupported.
+    - Fixed: Error on missing arguments isn't working very well (user_id, 
+      password)
    
   Offline::UPS
     - Bug fixed: Zip+4 not handled correctly (should drop the four).
-    - Update fuel surcharge to 5.50%.
+    - Update fuel surcharge to 6.0%.
     - Minor validity changes:
       - Warning about UPS Standard being available to Canada only.
       - Cyprus does not have XPD
+    - Restrictions for Canada added.
+    - Rewrite of surcharge/adder system for consistency.
+    - Make pricing components available to the user.  Allows the user to see
+      how much of the total charges were for various surcharges.
     
   Online::USPS
     - Pounds, ounces, and weight handling refactored.
@@ -52,8 +62,8 @@ Revision history for Business::Shipping.
       the "send incident report code" feature -- it sends it even if to_zip is
       missing.
         - Fixed with "Required Options" changes.
-   
-	  
+
+
 1.06  Feb 11 2004
 
   General

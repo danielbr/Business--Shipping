@@ -19,6 +19,6 @@ $rate_request->submit(
         to_zip =>               '71270',
         cache =>                '1',
         shipper =>              'Offline::UPS',
-) or die $rate_request->error();
+) or die $rate_request->user_error();
 
 print "offline = " . $rate_request->total_charges() . "\n";

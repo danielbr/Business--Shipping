@@ -1,6 +1,6 @@
 # Makefile.PL - Installation script for Business::Shipping
 # 
-# $Id: Makefile.PL,v 1.30 2004/03/31 19:11:03 danb Exp $
+# $Id: Makefile.PL,v 1.31 2004/05/06 20:15:14 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -32,7 +32,7 @@ WriteMakefile(
 		'Archive::Zip'			=> 0,
 		'Bundle::DBD::CSV'		=> 0,
 		'Cache::FileCache'		=> 0,
-		'Class::MethodMaker'	=> '2.00',
+		'Class::MethodMaker'	=> '2.02',
 		'Clone'					=> 0,
 		'Config::IniFiles'		=> 0,
 		'Crypt::SSLeay'			=> 0,
@@ -40,15 +40,12 @@ WriteMakefile(
 		'Devel::Required'		=> '0.03',
 		'Error'					=> 0,
 		'Getopt::Mixed'			=> 0,
-		'LWP::UserAgent'		=> 0,
+		'Log::Log4perl'         => 0,
+        'LWP::UserAgent'		=> 0,
 		'Math::BaseCnv'			=> 0,
 		'Scalar::Util'			=> '1.10',
 		'XML::DOM' 				=> 0,
 		'XML::Simple'			=> '2.05',
-        #Module::Build #for Log::Dispatch::File
-        #Log::Log4perl (comes with File and Screen Appenders)
-        #Log::Dispatch
-        #Log::Dispatch::Email?
 	},
 );
 
@@ -81,13 +78,12 @@ docs :
 support_files_install :
 	\@echo "Installing support files (database, configuration, etc.) to $my_globals{SUPPORT_FILES_DIR}"
 	\@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/log
-    \@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/data
+	\@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/data
 	\@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/config
 	\@\$(CP) --recursive --force data/*   $my_globals{SUPPORT_FILES_DIR}/data/
 	\@\$(CP) --recursive --force config/* $my_globals{SUPPORT_FILES_DIR}/config/
 };  #/qq
 }
-
 
 sub extra_WriteMakefile_options {
 	$my_globals{SUPPORT_FILES_DIR} = prompt(

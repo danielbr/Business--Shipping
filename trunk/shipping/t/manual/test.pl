@@ -29,6 +29,6 @@ my $rate_request = Business::Shipping->rate_request(
     #'to_city' => 'Vancouver',
 );
 
-$rate_request->submit() or die $rate_request->error();
+$rate_request->submit() or die $rate_request->user_error();
 
 print $rate_request->total_charges() . "\n";

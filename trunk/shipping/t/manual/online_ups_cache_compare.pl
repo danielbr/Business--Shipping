@@ -30,7 +30,7 @@ $rate_request_online1->submit(
         'weight'            => '1.0',
         'packaging'         => '02',
     
-) or die $rate_request_online1->error();
+) or die $rate_request_online1->user_error();
 
 print "UPS online 1 = " .  $rate_request_online1->total_charges() . "\n";
 
@@ -57,6 +57,6 @@ $rate_request_online2->submit(
         'weight'            => '5',
         'packaging'         => '02',
     
-) or die $rate_request_online2->error();
+) or die $rate_request_online2->user_error();
 
 print "UPS online 2 = " .  $rate_request_online2->total_charges() . "\n";

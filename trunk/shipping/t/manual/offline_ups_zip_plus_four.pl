@@ -21,6 +21,6 @@ $rate_request->submit(
                         debug    => 'STDERR',
                         error    => 'STDERR',
     },
-) or die $rate_request->error();
+) or die $rate_request->user_error();
 
 print "offline = " . $rate_request->total_charges() . "\n";

@@ -3,7 +3,7 @@
 #
 # Business::Shipping::RateRequest::Offline::USPS
 #
-# $Id: USPS.pm,v 1.7 2004/03/31 19:11:06 danb Exp $
+# $Id: USPS.pm,v 1.8 2004/05/06 20:15:27 danb Exp $
 #
 # Copyright (C) 2003 Interchange Development Group
 # Copyright (c) 2003, 2004 Kavod Technologies, Dan Browning. 
@@ -76,9 +76,13 @@ the appropriate rate table for a price by that zone.
 Can aggregate shipments greater than 70 pounds by assuming you will ship
 multiple 70-pound packages (plus one package with the remainder).
 
+=head1 METHODS
+
+=over 4
+
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;

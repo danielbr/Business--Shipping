@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment - Abstract class
 # 
-# $Id: Shipment.pm,v 1.10 2004/03/31 19:11:05 danb Exp $
+# $Id: Shipment.pm,v 1.11 2004/05/06 20:15:26 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # This program is free software; you may redistribute it and/or modify it under
@@ -9,7 +9,7 @@
 
 package Business::Shipping::Shipment;
 
-$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 =head1 NAME
 
@@ -17,7 +17,7 @@ Business::Shipping::Shipment - Abstract class
 
 =head1 VERSION
 
-$Revision: 1.10 $      $Date: 2004/03/31 19:11:05 $
+$Revision: 1.11 $      $Date: 2004/05/06 20:15:26 $
 
 =head1 DESCRIPTION
 
@@ -61,9 +61,8 @@ Has-A: Object list: Business::Shipping::Package.
 use Class::MethodMaker 2.0
     [
       new    => [ { -hash => 1, -init => 'this_init' }, 'new' ],
-      scalar => [ qw/ current_package_index service from_country from_zip
-                      from_city  to_country to_zip to_city / 
-                ],
+      scalar => [ qw/ current_package_index service from_zip from_city  to_zip to_city /   
+                ], #to_country removed
       #
       # Let it be defined in non-abstract classes only?
       #
@@ -142,26 +141,27 @@ to_country must be overridden to transform from various forms (alternate
 spellings of the full name, abbreviatations, alternate abbreviations) into
 the full name that we use internally.
 
-May be overridden by subclasses to provide their own spelling ("UK" vs 
-"GB", etc.).  
+May be overridden by subclasses to provide their own spelling ("United Kingdom"
+vs "Great Britain", etc.).  
 
 Redefines the MethodMaker implementation of this attribute.
 
 =cut
-no warnings 'redefine';
+
 sub to_country
 {
     my ( $self, $to_country ) = @_;
     
     if ( defined $to_country ) {
-        my $abbrevs = $self->config_to_hash( cfg()->{ ups_information }->{ abbrev_to_country } );
-        $to_country = $abbrevs->{ $to_country } || $to_country;
+        my $abbrevs = config_to_hash( cfg()->{ ups_information }->{ abbrev_to_country } );
+        my $abbrev_to_country = $abbrevs->{ $to_country };
+        #use Data::Dumper; print STDERR "cfg() -> { ups_information } -> { abbrev_to_country } = " . Dumper( cfg()->{ ups_information }->{ abbrev_to_country } ) . "\nhash = " . Dumper( $abbrevs ) . "\n\n to_country = $to_country, abbrev_to_country = $abbrev_to_country\n";
+        $to_country = $abbrev_to_country || $to_country;
     }
     $self->{ to_country } = $to_country if defined $to_country;
     
     return $self->{ to_country };
 }
-use warnings; # end 'redefine'
 
 =item * to_country_abbrev()
 
@@ -174,7 +174,7 @@ sub to_country_abbrev
 {
     my ( $self ) = @_;
     
-    my $country_abbrevs = $self->config_to_hash( 
+    my $country_abbrevs = config_to_hash( 
         cfg()->{ ups_information }->{ country_to_abbrev } 
     );
     
@@ -184,23 +184,20 @@ sub to_country_abbrev
 
 =item * from_country()
 
-Redefines the MethodMaker implementation of this attribute.
 
 =cut
-no warnings 'redefine';
 sub from_country
 {
     my ( $self, $from_country ) = @_;
     
     if ( defined $from_country ) {
-        my $abbrevs = $self->config_to_hash( cfg()->{ ups_information }->{ abbrev_to_country } );
+        my $abbrevs = config_to_hash( cfg()->{ ups_information }->{ abbrev_to_country } );
         $from_country = $abbrevs->{ $from_country } || $from_country;
     }
     $self->{ from_country } = $from_country if defined $from_country;
     
     return $self->{ from_country };
 }
-use warnings;
 
 
 =item * from_country_abbrev()
@@ -211,10 +208,10 @@ sub from_country_abbrev
     my ( $self ) = @_;
     return unless $self->from_country;
     
-    my $countries = $self->config_to_hash( cfg()->{ ups_information }->{ country_to_abbrev } );
+    my $countries = config_to_hash( cfg()->{ ups_information }->{ country_to_abbrev } );
     my $from_country_abbrev = $countries->{ $self->from_country };
     
-    return $from_country_abbrev;
+    return $from_country_abbrev || $self->from_country;
 }
 
 =item * current_package()
@@ -241,27 +238,7 @@ sub current_package {
 #
 # TODO: default_package(): remove?
 #
-sub default_package {
-    
-    my $self = shift;
-    
-    if ( not defined $self->packages_index( 0 ) ) {
-        debug( 'No default package defined yet, creating one...' );
-        #
-        # The only time that $shipper is undefined is probably when using 
-        # ClassAttribs, since it polls the abstract classes ("Shipment").
-        #
-        my $shipper = $self->shipper || $self->determine_shipper_from_self;
-        $shipper  ||= $shipper ? "::" . $self->shipper : '';
-        #debug( "shipper = " . $self->shipper );
-        $self->packages_push( eval "Business::Shipping::Package" . $shipper . "->new" );
-    }
-    else {
-        #debug( 'Package already defined, using it.');
-    }
-    
-    return $self->packages_index( 0 ); 
-}
+sub default_package { $_[ 0 ]->packages_index( 0 ) }
 
 =item * domestic_or_ca()
 
@@ -381,8 +358,50 @@ sub to_ak_or_hi
         }
     }
     
-    return;
+    return 0;
 }
+
+
+=item * add_package( %args )
+
+Adds a new package to the shipment.
+
+=cut
+#
+# This is from 0.04.
+# Needs to be made compatible with the new version.
+#
+sub add_package
+{
+    my ( $self, %options ) = @_;
+    
+    trace( 'called with' . uneval( @_ ) );
+    
+    if ( not $self->shipper ) {
+        error "Need shipper to get the package subclass.";
+        return;
+    }
+    
+    my $package;
+    eval { $package  = Business::Shipping->new_subclass( 'Package::'  . $self->shipper ); };
+    die "Error when creating Package subclass: $@" if $@;
+    die "package was undefined."  if not defined $package;
+    
+    $package->init( %options );
+    
+    # If the passed package has an ID.  Do not evaluate for perl trueness, 
+    # because 0 is a valid true value in this case.    
+    if ( defined $package->id() ) {
+        debug 'Using id in passed package';
+        $self->packages_set( $package->id => $package );
+        return 1;
+    }
+    
+    $self->packages_push( $package );
+    
+    return 1;
+}
+
 
 1;
 

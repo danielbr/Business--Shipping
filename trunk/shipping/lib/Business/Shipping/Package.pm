@@ -1,6 +1,6 @@
 # Business::Shipping::Package - Abstract class
 # 
-# $Id: Package.pm,v 1.7 2004/03/08 17:13:55 danb Exp $
+# $Id: Package.pm,v 1.8 2004/05/06 20:15:19 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Package - Abstract class
 
 =head1 VERSION
 
-$Revision: 1.7 $      $Date: 2004/03/08 17:13:55 $
+$Revision: 1.8 $      $Date: 2004/05/06 20:15:19 $
 
 =head1 DESCRIPTION
 
@@ -28,7 +28,7 @@ implementation.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -68,29 +68,6 @@ sub get_charges
 {
     my ( $self, $service ) = @_;    
     return $self->{ 'price' }->{ $service };    
-}
-
-=item * $self->is_empty()
-
-Determines whether the object has been filled with any user-supplied data, or
-if it is still in the "newly created" state.  Useful for checking to see if
-a package has been used yet (if not used yet, it can be used -- if it has been
-used, then a new one must be created).  It is used that way in RateRequest.
-
-Returns 1 if true, 0 if false.
-
-=cut
-sub is_empty
-{
-    my ( $self ) = @_;
-    
-    for ( $self->required ) {
-        if ( $self->$_() ) {
-            return 0;
-        }
-    }
-    
-    return 1;
 }
 
 1;

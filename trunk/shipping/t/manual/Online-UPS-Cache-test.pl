@@ -36,7 +36,7 @@ sub test
             #trace => 'STDERR', 
         }
     );
-    $shipment->submit( %args ) or die $shipment->error();
+    $shipment->submit( %args ) or die $shipment->user_error();
     return $shipment;
 }
 
@@ -53,7 +53,7 @@ sub test
         'weight'            => 2,
         'packaging'         => '02',
     );
-    $rr1->submit() or die $rr1->error();
+    $rr1->submit() or die $rr1->user_error();
     my $total_charges_2_pounds = $rr1->total_charges();
     debug( "Cache test. 2 pounds = $total_charges_2_pounds" ); 
     
@@ -69,7 +69,7 @@ sub test
         'weight'            => 9,
         'packaging'         => '02',
     );
-    $rr2->submit() or die $rr2->error();
+    $rr2->submit() or die $rr2->user_error();
     my $total_charges_9_pounds = $rr2->total_charges();
     debug( "Cache test. 9 pounds = $total_charges_9_pounds" );
     ok( $total_charges_2_pounds != $total_charges_9_pounds, 'UPS domestic cache, sequential charges are different' );

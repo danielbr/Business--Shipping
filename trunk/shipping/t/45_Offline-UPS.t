@@ -16,13 +16,9 @@ sub test
         from_state    => 'Washington',    
         shipper         => 'Offline::UPS',
         cache            => 0,
-        event_handlers    => {
-            #trace => 'STDERR'
-            #debug => 'STDERR',
-        }
     );
     
-    $shipment->submit( %args ) or die $shipment->error();
+    $shipment->submit( %args ) or die $shipment->user_error();
     return $shipment;
 }
 
@@ -36,13 +32,9 @@ sub test_online
         password        => $ENV{ UPS_PASSWORD },
         access_key        => $ENV{ UPS_ACCESS_KEY }, 
         cache            => 0,
-        event_handlers    => {
-            #trace => 'STDERR' 
-            #debug => 'STDERR',
-        }
     );
     
-    $shipment->submit( %args ) or die $shipment->error();
+    $shipment->submit( %args ) or die $shipment->user_error();
     return $shipment;
 }
 
@@ -178,12 +170,12 @@ print "Offline: GNDRES, medium, close, residential: " . $shipment->total_charges
 ##  International
 ###########################################################################
 %test = (
-    from_state    => 'Washington',
+    from_state  => 'Washington',
     from_zip    => '98682',
-    service        => 'XPD',
-    weight        => 20,
-    to_country    => 'GB',
-    to_zip        => 'RH98AX',
+    service     => 'XPD',
+    weight      => 20,
+    to_country  => 'GB',
+    to_zip      => 'RH98AX',
 );
 
 $shipment = test( %test );
@@ -298,7 +290,7 @@ $rr->submit(
     from_state    => 'Washington',
     to_zip        => '96826',
     
-) or die $rr->error();
+) or die $rr->user_error();
 
 print "Hawaii 2DA (alternate calling method):" . $rr->total_charges() . "\n";
 ok( $rr->total_charges, "Hawaii 2DA (alternate calling method):" );

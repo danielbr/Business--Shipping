@@ -1,6 +1,6 @@
 # Business::Shipping::Tracking - Abstract class
 # 
-# $Id: Tracking.pm,v 1.4 2004/03/31 19:11:05 danb Exp $
+# $Id: Tracking.pm,v 1.5 2004/05/06 20:15:26 danb Exp $
 # 
 # Copyright (c) 2004 Infogears Inc.  All rights reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights 
@@ -31,7 +31,7 @@ tracking_ids => ['EJ958083578US', 'EJ958083578US'],
 
 );
 
-$tracker->submit() || die $tracker->error();
+$tracker->submit() || die $tracker->user_error();
 my $hash = $tracker->results();
 
 use Data::Dumper;
@@ -44,7 +44,7 @@ Business::Tracking is an API for tracking shipments
 =cut
 
 
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -162,7 +162,7 @@ sub submit
         #
         # If we're getting http errors we should bomb out.
         #
-        $self->error(     
+        $self->user_error(     
              "HTTP Error. Status line: " . $self->response->status_line .
              "Content: " . $self->response->content() 
             ); 
@@ -219,20 +219,20 @@ sub validate
     
     if(scalar(@{$self->{tracking_ids}}) == 0) {
       $self->invalid( 1 );
-      $self->error( "No tracking ids passed to track" );
+      $self->user_error( "No tracking ids passed to track" );
       return 0;
     }
 
     if(!defined($self->user_id)) {
       $self->invalid( 1 );
-      $self->error( "No user_id specified" );
+      $self->user_error( "No user_id specified" );
       return 0;
 
     }
 
     if(!defined($self->password)) {
       $self->invalid( 1 );
-      $self->error( "No password specified" );
+      $self->user_error( "No password specified" );
       return 0;
 
     }

@@ -47,7 +47,7 @@ $shipment->set(
 
 #print Dumper( $shipment );
 
-$shipment->submit() or die $shipment->error();
+$shipment->submit() or die $shipment->user_error();
 print "0.2 weight: " . $shipment->get_charges('Airmail Parcel Post') . "\n";
 
 exit;
@@ -134,7 +134,7 @@ $shipment->set(
 
 $shipment->submit();
 
-$shipment->is_success() or die "Error = " .  $shipment->error_msg();
+$shipment->is_success() or die "Error = " .  $shipment->user_error_msg();
 
 #print Dumper( $shipment->response_tree() );
 

@@ -29,7 +29,7 @@ Eventually, it should run a gamut of tests, for all modules, etc.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r }; 
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r }; 
 
 use strict;
 use warnings;
@@ -125,7 +125,7 @@ sub xps_query {
     
     #print Dumper( $rate_request );
     $rate_request->init( %opt );
-    $rate_request->submit() or die $rate_request->error();
+    $rate_request->submit() or die $rate_request->user_error();
         
     #my $rate_request = eval "Business::Shipping::${mode}->new()";
     #my $rate_request;
@@ -154,7 +154,7 @@ sub xps_query {
 #            last;
 #        }
 #        else {
-#            Log( "Try $tries: " . $rate_request->error() );
+#            Log( "Try $tries: " . $rate_request->user_error() );
 #            
 #            for (    
 #                    'HTTP Error. Status line: 500 read timeout',
@@ -163,7 +163,7 @@ sub xps_query {
 #                    'HTTP Error. Status line: 500 Can\'t connect to production.shippingapis.com:80',
 #                ) {
 #                
-#                if ( $rate_request->error() =~ /$_/ ) {
+#                if ( $rate_request->user_error() =~ /$_/ ) {
 #                    Log( 'Error was on USPS server, trying again...' );
 #                }
 #            }
@@ -180,7 +180,7 @@ sub xps_query {
     
     if ( ! $charges ) {
         my $variables = uneval( \%opt ); 
-        my $error = $rate_request->error();
+        my $error = $rate_request->user_error();
         my $message = "[xps-query]: $mode error: $error.\nOptions were: $variables";
         Log $message;
         

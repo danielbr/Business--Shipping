@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::USPS - Estimates shipping cost online
 # 
-# $Id: USPS.pm,v 1.13 2004/03/31 19:11:07 danb Exp $
+# $Id: USPS.pm,v 1.14 2004/05/06 20:15:28 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ See Business::Shipping.pm POD for usage information.
 
 =head1 VERSION
 
-$Revision: 1.13 $      $Date: 2004/03/31 19:11:07 $
+$Revision: 1.14 $      $Date: 2004/05/06 20:15:28 $
 
 =head1 SERVICE TYPES
 
@@ -49,7 +49,7 @@ $Revision: 1.13 $      $Date: 2004/03/31 19:11:07 $
 
 package Business::Shipping::RateRequest::Online::USPS;
 
-$VERSION = do { my @r=(q$Revision: 1.13 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.14 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -267,7 +267,7 @@ sub _handle_response
         my $error_number         = $error->{Number};
         my $error_source         = $error->{Source};
         my $error_description    = $error->{Description};
-        $self->error( "$error_source: $error_description ($error_number)" );
+        $self->user_error( "$error_source: $error_description ($error_number)" );
         return( undef );
     }
     
@@ -329,13 +329,13 @@ sub _handle_response
                         . ") did not match any services that was available for that country.";
                 
                 print STDERR $error_msg;
-                $self->error( $error_msg );
+                $self->user_error( $error_msg );
             }
         }
     }
     
     if ( ! $charges ) { 
-        $self->error( 'charges are 0, error out' ); 
+        $self->user_error( 'charges are 0, error out' ); 
         return $self->is_success( 0 );
     }
     debug( 'Setting charges to ' . $charges );

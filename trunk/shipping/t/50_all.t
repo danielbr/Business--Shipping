@@ -69,22 +69,26 @@ TODO: {
 }; #/end TODO
 
 
-#
-# Test error message handling
-#
-my $shipping = Business::Shipping->new();
-$shipping->event_handlers( { error => undef } );
-$shipping->user_error( 'This is a test user_error message.' );
+SKIP: {
+    skip( 'Verbose Tests are disabled by default', 1 ) 
+        unless ( $ENV{ VERBOSE_TESTS } );
 
-ok( $shipping->user_error() eq 'This is a test user_error message.', 'Shipping::error()' );
-
-#Clean out the ups_shipment object
-$ups_shipment = Business::Shipping::Shipment::UPS->new(
-    'shipper'        => 'UPS',
-    'service'        => 'GNDRES',
-    #'from_zip'        => '98682',
-    'to_zip'        => '98270',
-);
+    #
+    # Test error message handling
+    #
+    my $shipping = Business::Shipping->new();
+    $shipping->user_error( 'This is a test user_error message.' );
+    ok( $shipping->user_error() eq 'This is a test user_error message.', 'Shipping::error()' );
+    
+    #Clean out the ups_shipment object
+    $ups_shipment = Business::Shipping::Shipment::UPS->new(
+        'shipper'        => 'UPS',
+        'service'        => 'GNDRES',
+        #'from_zip'        => '98682',
+        'to_zip'        => '98270',
+    );
+    
+}
 
 $ups_shipment->from_zip( '98682' );
 
@@ -124,7 +128,7 @@ $rate_requets->set(
 
 );
 
-$rate_request->submit() or print $rate_request->error();
+$rate_request->submit() or print $rate_request->user_error();
 
 # get_services() for UPS would have to do some extra stuff.
 # It needs to use their services to find stuff...
@@ -203,7 +207,7 @@ $rate_request->set(
 foreach my $service ( $rate_request->find_services() ) {
 }
 
-$rate_request->submit() or die $rate_request->error();
+$rate_request->submit() or die $rate_request->user_error();
 
     
 

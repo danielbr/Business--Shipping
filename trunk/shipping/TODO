@@ -1,83 +1,99 @@
-######################################################
+################################################################################
 ##  General TODO
-######################################################
+################################################################################
+ 
+ * [BUG] 'make test' generates these bugs:
+    t/45_Offline-UPS..........Argument "Letter" isn't numeric in numeric eq (==) at /usr/lib/perl5/site_perl/5.8.3/SQL/Statement.pm line 1120, <GEN3> chunk 2.
+    Argument "Multiplier" isn't numeric in numeric eq (==) at /usr/lib/perl5/site_perl/5.8.3/SQL/Statement.pm line 1120, <GEN3> chunk 153.
 
- * [ENH] Upgrade to Log4perl
-   - Too verbose.  For example, 
-     
-       error( 'Cannot access file ', $file );
-       
-       -vs-
-       
-       my $log = Log::Log4perl->get_logger("My::MegaPackage");
-       $log->error( 'Cannot access file ', $file );
-       
-       I realize that not everyone wants to use thir class heirarchy as the
-       logging category system, but I do.  And since I'm Lazy, I want my logging
-       system to detect what category I'm in automatically when I call error().
-       
-   - Only 5 Levels?
-   
-     I use debug1() debug2() and debug3().  They are quick to type.  If my 
-     categories are automatically defined, then I shouldn't try to use them 
-     for the level system, should I?
-     
-     OK, OK, I guess I could use 
-     "Business::Shipping::RateRequest::Online::UPS::DEBUG3 = on/off"
-     
-   - Use this in the constructor?
-     my $logger = Log::Log4perl::get_logger($class);
-     
-     other methods can get the class name with ref( $self )
-     
-   - get_logger() is equivalent to get_logger(__PACKAGE__).
-   
-   - Set $Log::Log4perl::caller_depth to 1, if I implement my own Logger class.
-   
-   - Find some way to have a "remove Business::Shipping" from the first part of 
-     the name.
-     
-   - Leave Business::Shipping::Debug around as a compatibility package for a 
-     while.
-       
- 
- * [ENH] Use Log::Dispatch::Email for incident notifications?
- 
- * [DOC] Look into OODoc or Pod::Tree
+ * [DOC] Documentation Ehancements:
+   Look into OODoc or Pod::Tree
+   Use Pod::HtmlEasy to generate CPAN-style (i.e. pretty) HTML docs.
+   Use podchecker during build process
 
- * [DOC] Include the terms of use for each provider.
- 
- * [DOC] Any UPS shipment originating in Canada must use UPS Standard or UPS
-   Worldwide method.
- 
- * [ENH] Coding style: non-public methods are prefixed with "_". 
- 
- * [ENH] Make some kind of allowance for alternate units (kilograms, etc.).
-
- * [ENH] Potential re-name:
+ * [ENH] Restructure:
    - Keep everything the same, except the "lowest level":
-     Shipping::RateRequest::Online::UPS --> Shipping::UPS::RateRequest
-	 Shipping::Shipment::UPS --> Shipping::UPS::Shipment
-	 Shipping::RateRequest::Online::USPS --> Shipping::USPS::RateRequest
+         "Online::UPS"  => "UPS_Online"
+	 "Offline::UPS" => "UPS_Offline"
+	 "Online::USPS" => "USPS_Online"
+	 new            => "UPS_Online_Old"
+         Shipping::RateRequest::Online::UPS --> Shipping::UPS_Online::RateRequest
+	 Shipping::Shipment::UPS --> Shipping::UPS_Online::Shipment
+	 Shipping::RateRequest::Online::USPS --> Shipping::USPS_Online::RateRequest
    - Benefits:
      All of the vendor-related code is in one directory (UPS/, FedEx/, etc.).
-     All of the neutral code is in neutral directories.
+     All of the abstract code is in neutral directories.
    - Optional: Move the neutral code to Shipping::All:: to signify the fact that
      all code is derived from them.
 	 
+ * [ENH] Remove default_package() and determine_shipper_from_self().
+
+ * [ENH] Conform to coding style: private methods should be prefixed with an
+   underscore. 
+ 
+ * [ENH] Make some kind of allowance for alternate units (kilograms, etc.).
+
  * [ENH] Look into Params::Validate and/or Class::Contract
  
  * [ENH] Add Test::Inline tests
- 
- * [ENH] Multi-package API broken:
-   Can't locate object method "add_package" via package
-   "Business::Shipping::Shipment::UPS" at test1.pl line 13.
 
- * [ENH] Re-license under dual GPL/Artistic
+ * [ENH] Consider using Locale::Country (5.8.x+) & Locale::SubCountry (CPAN), or 
+   Geography::States & Geography::Countries.
 
- * [ENH] Merge Rusty's USPS and UPS Tracking module.
+ * [DOC] Memory footprint information: 
+   8+ MB when Offline is used (and stays).
+   ---> 6.5 mb happens at the time of 
+        "use Business::Shipping::RateRequest::Offline::UPS"
+   ---> Which module is taking up 6.5mb memory?
+   ---> At any rate, make a note for users of mod_perl to preload those modules
+        once, instead of letting the runtime include load them for each
+	process.
+
+Yes, but it should only be loading the ones it needs (and then keeping them in
+memory).  For example, if you do a shipment *from* a certain zip code,
+it should load that zone file (e.g. 986.csv), then keep it in memory, so the
+next request will be faster.
+
+The internal representation is at least twice as big as the file is (probably
+more).
+
+I think that for regular usage (one origination, multiple destinations), the KB
+of files actually used probably does not go over 500K.  So the memory used for
+500K should only be 2MB or less.  Since you are seeing 8MB, I wonder where it
+is coming from.
+
+It could be a bug in my code (that really is loading more tables than it
+should), or it could be the extra modules that the Offline::UPS uses.  But I
+don't think so, they are pretty small: 
+
+use Data::Dumper;
+use File::Find;
+use File::Copy;
+use Math::BaseCnv;
+use Scalar::Util 1.10;
+
+Anyway, I think I need to investigate it some more.
  
- * [BUG] Error on missing arguments isn't working very well (user_id, password)
+   -  "optimize for smaller memory footprint"
+   -  "or, optimize for execution speed (larger memory footprint)"
+
+	If it is optimized for memory footprint, then it will read the table off the
+	disk (getting a benefit from OS filesystem cache, probably), then convert it to
+	the in-memory representation (hmm... I should save this internal representation
+	next time), then run the calculation.
+
+ * [ENH] Split the data into its own package, and add it to the bundle.
+   - Business::Shipping::Data
+
+ * [ENH] Logging system (Log4perl) enhancements
+   - At the time of Makefile.PL, automatically transform the log4perl.conf file
+     with the correct absolute path to 'log'.  Same problem as config.ini and
+     the hard-coded path to /var/perl/Business-Shipping.
+     
+   - Find some way to have a "remove Business::Shipping" from the first part of 
+     the name.  Probably a Log::Log4perl::Filter.    
+ 
+ * [ENH] Use Log::Dispatch::Email for incident notifications?
 
  * [ENH] Make the error handling more customizable
    Each module should be able to specifiy it's parameters, so that, for example,
@@ -104,14 +120,6 @@
  * [ENH] Allow the user to set the timeout for http requests.  Sometimes 30
    seconds is too long.
 
- * [BUG] When the internet is down, we should give a more useful error message
-   than the following:
-	 "Business::Shipping::RateRequest::Online::USPS::_handle_response: ()
-     File does not exist:  at .../RateRequest/Online/USPS.pm line 202"
- 
- * [BUG] Add a test that will confirm that we only cache responses that are a
-   success.
- 
  * [ENH] Evaluate Log4Perl.
 
  * [ENH] Is non-ssl communication with either Online provider possible?
@@ -194,10 +202,12 @@
  * [ENH] New feature for MethodMaker: parent_defaults => [ 'shipper' => 'UPS' ].
    After initialization, calls parent methods with default values so the user 
    does not have to write an "-init" method.
+
+ * [ENH] Add support back in for multi-package API.
  
-######################################################
+################################################################################
 ##  Online::USPS TODO
-######################################################
+################################################################################
 
  * [BUG] Find a better way to correlate "Air mail" with all the various names
    it is called by each country.
@@ -212,20 +222,65 @@
  * [ENH] Use the International Country Listing
 	- http://pe.usps.gov/cpim/ftp/manuals/Imm/Immctry.pdf
  
-######################################################
+################################################################################
 ##  Offline::UPS TODO
-######################################################
+################################################################################
+
+ * Get an alternate set of data for people who aren't on daily pickup.
 
  * [BUG] UPS Ground: Was 7.02.  Should have been 8.11, or 8.64.
    - See t/manual/offline_ups_bug2_al.pl
+   - Offline is not handling the residential thing correctly, I think.
+     "A delivery area surcharge of ___" (determined from accessorrials.csv)
+     Currently: $1.75.
+     Residential Differential: 1.40
+   - REAL PROBLEM: It looks like I'm in zone 4, when I should be in zone 8!
+     Are my zone/rate files up-to-date?
 
  * [ENH] Determine the upcoming fuel surcharge changes from UPS website, then 
    check to see if that date has passed.  If so, automatically update the fuel 
    surcharge.
+   
+   The surcharge also applies to the following accessorial charges (where 
+   applicable):
+
+    * On-Call Pickup Charges
+    * UPS Next Day Air Early A.M./UPS Express Plus Charges
+    * International Extended Area Charges
+    * Remote Delivery Charges
+    * Saturday Delivery
+    * Saturday Pickup
 
  * [BUG] Note:  Effective January 5, 2004, the Fuel Surcharge will be 
    discontinued for the following services:  UPS Ground Commercial, UPS Ground 
    Residential, UPS Ground Hundredweight Service, and UPS Standard to Canada.
+   
+ * [BUG] United Kingdom Express Plus
+   Error:  Zero cost returned for mode ExpressPlusSM, geo code (key) United 
+   Kingdom.
+        from_country =>                 'US',
+        to_country =>           'UK',
+        event_handlers =>               'HASH(0x9b8b5ac)',
+        from_state =>           'WA',
+        service =>              'XDM',
+        from_zip =>             '98682',
+        weight =>               '55',
+        to_zip =>               'S11 9BU',
+        cache =>                '1',
+        shipper =>              'Offline::UPS',
+
+ * [BUG] United Arab Emirates XPD:
+   No zone found for geo code (key) United Arab Emirates, type ExpeditedSM_EC.
+        from_country =>                 'US',
+        to_country =>           'AE',
+        event_handlers =>               'HASH(0x9bfbd60)',
+        from_state =>           'WA',
+        service =>              'XPD',
+        from_zip =>             '98682',
+        weight =>               '7',
+        to_zip =>               '17295',
+        cache =>                '1',
+        shipper =>              'Offline::UPS',
 
  * [BUG] Saudi Arabia  
    Error:  No zone found for geo code (key) Saudi Arabia, type ExpeditedSM_EC.
@@ -401,9 +456,9 @@
  
  * [ENH] Utilize GDBM or SQL, if available, to speed up lookups.
 
-######################################################
+################################################################################
 ##  Online::UPS TODO
-######################################################
+################################################################################
  
  * [BUG] Fix the multi-package API for UPS.  
    # TODO: Move to a different XML generation scheme, since all the packages 
@@ -423,19 +478,17 @@
 	- (USPS had built-in support in the API for Intl)
  	- If they don't support it, try LWP::Parallel::UserAgent.
 	
-######################################################
+################################################################################
 ##  Interchange UserTag TODO
-######################################################
+################################################################################
 
- * [ENH] Test for ability to use within Safe?  Or catalog-level usertag?
-   [perl]$Tag->business_shipping();[/perl] 
-
-######################################################
+ * [ENH] Test for ability to use within Safe?
+   Remove runtime requires: Business::Shipping->rate_request( ... )
+   
+################################################################################
 ##  Online::FedEx 
-######################################################
+################################################################################
 		 
  * [ENH] FedEx module: Christopher L Wenham from Synesmedia has created an 
    Interchange usertag that uses FedEx::DirectConnect for various functions.  
    Evaluate.
-   
-

@@ -1,6 +1,6 @@
 # Business::Shipping - Interface for shippers (UPS, USPS)
 #
-# $Id: Shipping.pm,v 1.21 2004/03/31 19:11:05 danb Exp $
+# $Id: Shipping.pm,v 1.22 2004/05/06 20:15:18 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -27,7 +27,7 @@ Business::Shipping - Interface for shippers (UPS, USPS)
         weight    =>  5.00,
     );    
     
-    $rate_request->submit() or die $rate_request->error();
+    $rate_request->submit() or die $rate_request->user_error();
     
     print $rate_request->total_charges();
 
@@ -66,7 +66,7 @@ Business::Shipping - Interface for shippers (UPS, USPS)
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (2.00)
+ Class::MethodMaker (2.02)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
@@ -74,6 +74,7 @@ Business::Shipping - Interface for shippers (UPS, USPS)
  Devel::Required (0.03)
  Error (any)
  Getopt::Mixed (any)
+ Log::Log4perl (any)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
  Scalar::Util (1.10)
@@ -86,47 +87,6 @@ C<perl -MCPAN -e 'install Bundle::Business::Shipping'>
 
 See the INSTALL file for more information.
  
-=head1 MULTI-PACKAGE API
-
-Please note that the Multi-package API may change in upcoming releases.
-
-=head2 Online::UPS Example
-
- use Business::Shipping;
- use Business::Shipping::Shipment::UPS;
- 
- my $shipment = Business::Shipping::Shipment::UPS->new();
- 
- $shipment->init(
-    from_zip  => '98682',
-    to_zip    => '98270',
-    service   => 'GNDRES',
-    #
-    # user_id, etc. needed here.
-    #
- );
-
- $shipment->add_package(
-    id        => '0',
-    weight        => 5,
- );
-
- $shipment->add_package(
-    id        => '1',
-    weight        => 3,
- );
- 
- my $rate_request = Business::Shipping::rate_request( shipper => 'Online::UPS' );
- #
- # Add the shipment to the rate request.
- #
- $rate_request->shipment( $shipment );
- $rate_request->submit() or ie $rate_request->error();
-
- print $rate_request->package('0')->get_charges( 'GNDRES' );
- print $rate_request->package('1')->get_charges( 'GNDRES' );
- print $rate_request->get_total_price( 'GNDRES' );
-
 =head1 ERROR/DEBUG HANDLING
 
 Log4perl is used for logging error, debug, etc. messages.  See 
@@ -136,7 +96,7 @@ config/log4perl.conf.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.21 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.22 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -151,6 +111,13 @@ use Class::MethodMaker 2.0
       scalar => [ { -static => 1, -default => 'tx_type' }, 'Optional' ]
     ];
 
+    
+=head2 $self->init( %args )
+
+Generic attribute setter.
+
+=cut
+
 sub init
 {
     my ( $self, %args ) = @_;
@@ -164,17 +131,43 @@ sub init
     return;
 }
 
+=head2 $self->user_error( "Error message" )
+
+Log and store errors that should be visibile to the user.
+
+=cut
+
 sub user_error
 {
     my ( $self, $msg ) = @_;
     
     if ( defined $msg ) {
         $self->_user_error_msg( $msg );
-        error( $msg );
+        
+        # Make it look like I'm calling error() from the caller, instead of this
+        # function.
+        
+        my ( $package, $filename, $line, $sub ) = caller( 1 );
+        error( 
+            { 
+                caller_package  => '',
+                caller_filename => $filename,
+                caller_line     => $line,
+                caller_sub      => $sub,
+                caller_depth_modifier => 1,
+            }, 
+            $msg
+        );
     }
     
     return $self->_user_error_msg;
 }
+
+=head2 $self->validate()
+
+Confirms that the object is valid.  Checks that required attributes are set.
+
+=cut
 
 sub validate
 {
@@ -195,7 +188,7 @@ sub validate
     }
     
     if ( @missing ) {
-        $self->error( "Missing required argument(s): " . join ", ", @missing );
+        $self->user_error( "Missing required argument(s): " . join ", ", @missing );
         $self->invalid( 1 );
         return 0;
     }
@@ -289,72 +282,47 @@ sub rate_request
     
     $shipment->packages_push( $package );
     $new_rate_request->shipment( $shipment );
-    
-    # init(), in turn, automatically delegates certain options to Shipment and Package.
-    #$new_rate_request->init( %opt );
-    #
-    # init() is not provided for us anymore, so we're using this...
-    #
-    for ( keys %opt ) {
-        $new_rate_request->$_( $opt{ $_ } );
-    }
-    
+    $new_rate_request->init( %opt );
     
     return ( $new_rate_request );
 }
+
+=head2 Business::Shipping->new_subclass( "Subclass::Name", %opt )
+
+Generates a subclass, such as a Shipment object.
+
+=cut
 
 sub new_subclass
 {
     my ( $class, $subclass, %opt ) = @_;
     
     my $new_class = $class . '::' . $subclass;
-    if ( not defined &$new_class ) {  # TODO: this test is always false: get a better test.
-        #
-        # Clear previous errors
-        #
-        $@ = '';
-        
-        eval "require $new_class";
-        Carp::croak( "Error when trying to require $new_class: \n\t$@" ) if $@;
-        
-        eval "import $new_class";
-        Carp::croak( "Error when trying to import $new_class: $@" ) if $@;
-    }
-    else {
-        # "$new_class already defined.";
-    }
-    
+    Carp::croak( "Error before new_subclass was called: $@" ) if $@;
+    eval "use $new_class";
+    Carp::croak( "Error when trying to use $new_class: \n\t$@" ) if $@;
     my $new_sub_object = eval "$new_class->new()";
-    if ( $@ ) {
-        die "Failed to create new $new_class object.  Error: $@";
-    }
+    Carp::croak( "Failed to create new $new_class object.  Error: $@" ) if $@;
     
     return $new_sub_object;    
 }
 
-sub get_class_name { return blessed $_[ 0 ]; }
+=head2 $self->determine_shipper_from_self()
+
+To be removed.
+
+=cut
 
 sub determine_shipper_from_self
 {
     my ( $self ) = @_;
     
-    trace( 'called' );
-    
     my $class = blessed $self;
-    
-    debug "class = $class";
-    
     return 'UPS'  if $class =~ /UPS$/;
     return 'USPS' if $class =~ /USPS$/;
     
     return;
 }
-
-#
-# Aliased for convenient access in each subclass.
-#
-sub config_to_hash          { return &Business::Shipping::Config::config_to_hash;          }
-sub config_to_ary_of_hashes { return &Business::Shipping::Config::config_to_ary_of_hashes; }
 
 sub event_handlers { warn 'Depreciated.  Event handlers are now configured via config/log4perl.conf.' }
 

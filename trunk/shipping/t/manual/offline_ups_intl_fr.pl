@@ -24,7 +24,7 @@ $rate_request->submit(
         weight =>       '1.5',
         to_zip =>       '17300',
         
-) or die $rate_request->error();
+) or die $rate_request->user_error();
 
 print "offline = " . $rate_request->total_charges() . "\n";
 

@@ -1,6 +1,6 @@
 # Business::Shipping::Util - Miscellaneous functions
 # 
-# $Id: Util.pm,v 1.7 2004/03/31 19:11:05 danb Exp $
+# $Id: Util.pm,v 1.8 2004/05/06 20:15:26 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Util - Miscellaneous functions
 
 =head1 VERSION
 
-$Revision: 1.7 $      $Date: 2004/03/31 19:11:05 $
+$Revision: 1.8 $      $Date: 2004/05/06 20:15:26 $
 
 =head1 DESCRIPTION
 
@@ -27,7 +27,7 @@ Many file-related functions, some others.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT  = ( 'element_in_array', 'uneval' );
 
 use strict;
@@ -76,8 +76,8 @@ sub currency
 {
     my ( $opt, $amount ) = @_;
     
-    $amount = sprintf( "%9.2f", $amount );
-    
+    return unless $amount;
+    $amount = sprintf( "%.2f", $amount );
     $amount = "\$$amount" unless $opt->{ no_format };
     
     return $amount;
@@ -98,7 +98,7 @@ sub _unzip_file
     my $status = $zip->read( $zipName );
     if ( $status != AZ_OK )  {
         my $error = "Read of $zipName failed";
-        #$self->error( $error );
+        #$self->user_error( $error );
         die $error;
     }
     if ( $@ ) { die "_unzip_file error: $@"; }
@@ -287,49 +287,6 @@ sub unique
     
     return @unique;
 }
-
-=item * uneval( ... )
-
-Takes any built-in object and returns a string of text representing the perl 
-representation of it.  
-
-It was copied from Interchange L<http://www.icdevgroup.org>, written by Mike 
-Heins  E<lt>F<mike@perusion.com>E<gt>.
-
-=cut
-sub uneval { 
-    my ( $self, $o ) = @_;        # recursive
-    my ( $r, $s, $i, $key, $value );
-
-    local($^W) = 0;
-    no warnings; #supress 'use of unitialized values'
-    
-    $r = ref $o;
-    if (!$r) {
-        $o =~ s/([\\"\$@])/\\$1/g;
-        $s = '"' . $o . '"';
-    } 
-    elsif ($r eq 'ARRAY') {
-        $s = "[";
-        foreach $i (0 .. $#$o) {
-            $s .= uneval($o->[$i]) . ",";
-        }
-        $s .= "]";
-    }
-    elsif ($r eq 'HASH') {
-        $s = "{";
-        while (($key, $value) = each %$o) {
-            $s .= "'$key' => " . uneval($value) . ",";
-        }
-        $s .= "}";
-    } 
-    else {
-        $s = "'something else'";
-    }
-
-    $s;
-}
-
 
 1;
 

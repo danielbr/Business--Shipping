@@ -22,7 +22,7 @@ $rate_request->submit(
     #unzip        => 1,
     #convert        => 1,
     
-) or die $rate_request->error();
+) or die $rate_request->user_error();
 
 print "offline = " . $rate_request->total_charges() . "\n";
 
@@ -38,7 +38,7 @@ $rate_request_online->submit(
         debug     => 'STDERR',
         error    => 'STDERR',
     },
-) or die $rate_request_online->error();
+) or die $rate_request_online->user_error();
 
 print "online = " .  $rate_request_online->total_charges() . "\n";
 

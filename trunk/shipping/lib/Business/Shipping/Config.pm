@@ -1,6 +1,6 @@
 # Business::Shipping::Config - Configuration functions
 # 
-# $Id: Config.pm,v 1.6 2004/03/08 17:13:55 danb Exp $
+# $Id: Config.pm,v 1.7 2004/05/06 20:15:19 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Config - Configuration functions
 
 =head1 VERSION
 
-$Revision: 1.6 $      $Date: 2004/03/08 17:13:55 $
+$Revision: 1.7 $      $Date: 2004/05/06 20:15:19 $
 
 =head1 DESCRIPTION
 
@@ -28,8 +28,8 @@ Config::IniFiles module.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-@EXPORT = qw( cfg cfg_obj );
+$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+@EXPORT = qw/ cfg cfg_obj config_to_hash config_to_ary_of_hashes /;
 
 use strict;
 use warnings;
@@ -79,7 +79,7 @@ Builds a hash from an array of lines containing key / value pairs, like so:
 =cut
 sub config_to_hash
 {
-    my ( $self, $ary, $delimiter ) = @_;
+    my ( $ary, $delimiter ) = @_;
     return unless $ary;
     #
     # TODO: check ref( $ary ) eq 'ARRAY'
@@ -111,7 +111,7 @@ This:
 
 When called with this:
 
- my @invalid_rate_requests_ups = $self->config_to_ary_of_hashes( 
+ my @invalid_rate_requests_ups = config_to_ary_of_hashes( 
      cfg()->{ invalid_rate_requests }->{ invalid_rate_requests_ups }
  );
 
@@ -131,7 +131,7 @@ Returns this:
 =cut
 sub config_to_ary_of_hashes
 {
-    my ( $self, $cfg ) = @_;
+    my ( $cfg ) = @_;
         
     my @ary;
     foreach my $line ( @$cfg ) {

@@ -1,24 +1,29 @@
-# Business::Shipping::RateRequest::Offline
-#
-# $Id: Offline.pm,v 1.9 2004/03/31 19:11:06 danb Exp $
-#
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. 
-#
 # All rights reserved. 
-# 
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
-#
 
 package Business::Shipping::RateRequest::Offline;
 
+
+=head1 NAME
+
+Business::Shipping::RateRequest::Offline - Abstract class for cost calculation.
+
+=head1 VERSION
+
+$Revision: 1.10 $      $Date: 2004/05/06 20:15:27 $
+
 =head1 DESCRIPTION
 
-Business::Shipping::RateRequest::Offline doesn't have very much to it.  It just
-disables the cache feature, and has a few miscellaneous function.
+This doesn't have very much to it.  It just disables the cache feature, and has
+a few miscellaneous functions.
+
+=head1 METHODS
+
+=over 4
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;

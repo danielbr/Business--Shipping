@@ -12,7 +12,7 @@ my $ups = new Business::Shipping::UPS;
 
 # If you are not using any of the STDERR or Carp error methods,
 # You may use this calling structure to get at error messages:
-# $ups->method_name() or print $ups->error();
+# $ups->method_name() or print $ups->user_error();
 
 
 $ups->set(
@@ -30,7 +30,7 @@ $ups->set(
     ship_to_residential_address => '1',
     weight => '3.4',
     packaging_type_code =>  '02',
-) or print $ups->error();
+) or print $ups->user_error();
 
 $ups->set(
     ship_to_residential_address => '1',
@@ -38,7 +38,7 @@ $ups->set(
     ship_to_postal_code => '98270',
     service_code => '01',
     packaging_type_code =>  '02',
-) or print $ups->error();
+) or print $ups->user_error();
 
 =pod
 print "UPS XDM 98682 to UK";
@@ -128,9 +128,9 @@ $shipment->submit(
     'to_residential'    => '1',
     'weight'         => '3.4',
     'packaging'     =>  '02',    
-) or die $shipment->error();
+) or die $shipment->user_error();
 =cut
 
-$shipment->submit() or die $shipment->error();
+$shipment->submit() or die $shipment->user_error();
 
 print $shipment->total_charges() . "\n";

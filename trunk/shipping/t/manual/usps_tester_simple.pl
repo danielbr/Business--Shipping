@@ -35,7 +35,7 @@ my $rate_request;
 #
 #not defined $rate_request and die $@;
 #
-#$rate_request->submit() or die $rate_request->error();
+#$rate_request->submit() or die $rate_request->user_error();
 #
 #print "\$" . $rate_request->total_charges() . "\n";
 
@@ -59,7 +59,7 @@ $rate_request = Business::Shipping->rate_request(
 
 not defined $rate_request and die $@;
 
-$rate_request->submit() or die $rate_request->error();
+$rate_request->submit() or die $rate_request->user_error();
 
 my $total_charges = $rate_request->total_charges();
 

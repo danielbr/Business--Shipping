@@ -28,7 +28,7 @@ sub test
             #trace => 'STDERR', 
         },
     );
-    $shipment->submit( %args ) or die $shipment->error();
+    $shipment->submit( %args ) or die $shipment->user_error();
     return $shipment;
 }
 
@@ -36,7 +36,7 @@ sub simple_test
 {
     my ( %args ) = @_;
     my $shipment = test( %args );
-    $shipment->submit() or die $shipment->error();
+    $shipment->submit() or die $shipment->user_error();
     my $total_charges = $shipment->total_charges(); 
     my $msg = 
             "USPS Simple Test: " 

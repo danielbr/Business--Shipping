@@ -11,7 +11,7 @@ BEGIN {
 }
 
 SKIP: {
-    skip( 'Verbose Tests are disabled by default' ) 
+    skip( 'Verbose Tests are disabled by default', 1 ) 
         unless ( $ENV{ VERBOSE_TESTS } );
 
     use Log::Log4perl qw( :easy );
@@ -30,8 +30,10 @@ SKIP: {
         if ( defined $what ) 
             { $logger->info( 'Drinking ', $what  ); }
         else
-            { $logger->error( 'No drink defined' ); }
+            { $logger->user_error( 'No drink defined' ); }
     }
+    
+    ok( 1, 'drink test' );
 }
 
 1;

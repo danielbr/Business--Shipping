@@ -15,7 +15,7 @@ $rate_request->submit(
     from_state    => 'WA',
     to_zip        => 'N2H6S9',
     to_country    => 'Canada',
-) or die $rate_request->error();
+) or die $rate_request->user_error();
 
 print STDERR "UPS Standard =\t" . $rate_request->total_charges() . "\n";
 
@@ -34,6 +34,6 @@ $rate_request->submit(
 #        debug3     => undef,
 #        error    => 'croak',
 #    },
-) or die $rate_request->error();
+) or die $rate_request->user_error();
 
 print "Expedited =\t" . $rate_request->total_charges() . "\n";

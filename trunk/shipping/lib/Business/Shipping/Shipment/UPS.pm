@@ -1,4 +1,4 @@
-# $Id: UPS.pm,v 1.8 2004/03/08 17:13:56 danb Exp $
+# $Id: UPS.pm,v 1.9 2004/05/06 20:15:29 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,7 +13,7 @@ Business::Shipping::Shipment::UPS
 
 =head1 VERSION
 
-$Revision: 1.8 $      $Date: 2004/03/08 17:13:56 $
+$Revision: 1.9 $      $Date: 2004/05/06 20:15:29 $
 
 =head1 METHODS
 
@@ -21,7 +21,7 @@ $Revision: 1.8 $      $Date: 2004/03/08 17:13:56 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -76,7 +76,7 @@ sub from_state_abbrev
 {
     my ( $self ) = @_;
     
-    my $state_abbrevs = $self->config_to_hash( 
+    my $state_abbrevs = config_to_hash( 
         cfg()->{ ups_information }->{ state_to_abbrev } 
     );
     

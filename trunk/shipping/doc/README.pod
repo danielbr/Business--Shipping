@@ -16,7 +16,7 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (2.00)
+ Class::MethodMaker (2.02)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
@@ -24,6 +24,7 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
  Devel::Required (0.03)
  Error (any)
  Getopt::Mixed (any)
+ Log::Log4perl (any)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
  Scalar::Util (1.10)
@@ -31,6 +32,9 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
  XML::Simple (2.05)
 
 =head1 GETTING STARTED
+
+Be careful to read, understand, and comply with the terms of use for the 
+provider that you will use.
 
  * For USPS: Sign up online for free:
  
@@ -57,17 +61,22 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
    
    - Once you get a User Id and Password from UPS, you will need to login and
      select "Get Access Key", then "Get XML Access Key".
+     
+   - Legal Terms and Conditions: 
+     L<http://www.ups.com/content/us/en/resources/service/terms/index.html>
  
 =head1 USAGE EXAMPLES
  
  * See Shipping.pm POD documentation for API and usage examples.
 
- * Business::Shipping is used by the Interchange E-Commerce software 
-   (http://www.icdevgroup.org).  For a reference implementation of 
-   Business::Shipping, see the UserTag/business-shipping.tag file, it implements
-   a function that takes shipping-related arguments, builds a Business::Shipping
-   object, then returns the calculated cost.
-   
+ * Business::Shipping can be used with the Interchange e-commerce system 
+   ( L<http://www.icdevgroup.org> ).  See the UserTag/business-shipping.tag 
+   file, it implements a function that takes shipping-related arguments, builds
+   a Business::Shipping object, then returns the calculated cost.
+
+ * Business::Shipping is used in the paymentonline.com mod_perl/template toolkit
+   system.
+ 
  * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman 
    <andy@kahncentral.net>.
    http://www.plainblack.com/wobjects?wid=1143&func=viewSubmission&sid=654
@@ -82,6 +91,25 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
  
 The website carries the most recent version, as well as instructions for
 accessing the anonymous CVS repository. 
+
+=head1 CODING STYLE
+
+ * The more whitespace, the better.
+ 
+ * Non-public methods are prefixed with "_". 
+
+=head1 BUGS
+
+See the TODO file for a comprehensive list.
+
+=over 4
+
+=item * You will get the following error when there is no connection to the internet:
+
+ Business::Shipping::RateRequest::Online::USPS::_handle_response: ()
+ File does not exist:  at .../RateRequest/Online/USPS.pm ...
+ 
+=back
 
 =head1 COPYRIGHT AND LICENCE
 

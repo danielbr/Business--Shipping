@@ -1,7 +1,3 @@
-# Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
-#
-# $Id: UPS.pm,v 1.21 2004/03/31 19:11:06 danb Exp $
-#
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003, 2004 Kavod Technologies, Dan Browning. 
 #
@@ -14,7 +10,6 @@
 # Portions based on the corresponding work in the Interchange project, which 
 # was written by Mike Heins <mike@perusion.com>.  See http://www.icdevgroup.org
 # for more info.
-#
 
 package Business::Shipping::RateRequest::Offline::UPS;
 
@@ -24,20 +19,15 @@ Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
 
 =head1 VERSION
 
-$Revision: 1.21 $      $Date: 2004/03/31 19:11:06 $
-
-=head1 SPECIAL INFO
-
-Countries that do not have Express Plus:
-
-CA  Canada (it is possible to calculate the rate, but you have to call UPS to 
-           find out if it is available).
-
-See config.ini file for more.
+$Revision: 1.22 $      $Date: 2004/05/06 20:15:27 $
 
 =head1 GLOSSARY
 
-EAS        Extended Area Surcharge (EAS)
+=over 4
+
+=item * EAS    Extended Area Surcharge
+
+=item * DAS    Delivery Area Surcharge (same as EAS)
 
 =head1 METHODS
 
@@ -45,7 +35,7 @@ EAS        Extended Area Surcharge (EAS)
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.21 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.22 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -525,19 +515,19 @@ sub validate
     
     return if ( ! $self->SUPER::validate );
     if ( $self->service and $self->service eq 'GNDRES' and $self->to_ak_or_hi ) {
-        $self->error( "Invalid Rate Request: Ground Residential to AK or HI." );
+        $self->user_error( "Invalid Rate Request: Ground Residential to AK or HI." );
         $self->invalid( 1 );
         return 0;
     }
     
     if ( $self->service eq 'UPSSTD' and not $self->to_canada ) {
-        $self->error( "UPS Standard service is available to Canada only." );
+        $self->user_error( "UPS Standard service is available to Canada only." );
         $self->invalid( 1 );
         return 0;
     }
     
     if ( $self->to_canada and $self->to_zip =~ /\d\d\d\d\d/ ) {
-        $self->error( "Cannot use US-style zip codes when sending to Canada" );
+        $self->user_error( "Cannot use US-style zip codes when sending to Canada" );
         $self->invalid( 1 );
         return 0;
     }
@@ -555,12 +545,69 @@ sub _handle_response
     my $total_charges;
     $self->do_update();
     $self->calc_zone_data();
-    $total_charges  = $self->calc_cost();
-    $total_charges += $self->calc_express_plus_adder( $total_charges );
-    $total_charges += $self->calc_fuel_surcharge( $total_charges );
-    $total_charges += $self->calc_residential_surcharge( $total_charges );
     
-    $total_charges = Business::Shipping::Util::currency( { no_format => 1 }, $total_charges );
+    
+    
+    # The fuel surcharge also applies to the following accessorial charges:
+    #  * On-Call Pickup Charges
+    #  * UPS Next Day Air Early A.M./UPS Express Plus Charges
+    #  * International Extended Area Charges
+    #  * Remote Delivery Charges
+    #  * Saturday Delivery
+    #  * Saturday Pickup
+    
+    my @price_components = (
+        {
+            component   => 'cost',
+            description => 'Cost',
+            fatal       => 1,
+        },
+        {
+            component   => 'express_plus_adder',
+            description => 'Express Plus',
+        },
+        {
+            component   => 'delivery_area_surcharge',
+            description => 'Delivery Area Surcharge',
+        },
+        {
+            component   => 'fuel_surcharge',
+            description => 'Fuel Surcharge',
+        }
+    );
+    
+    my $final_price_components;
+    
+    foreach my $price_component ( @price_components ) {
+        
+        my $fn = "calc_" . $price_component->{ component };
+        
+        my $price = $self->$fn();
+        if ( ! $price ) {
+            if ( $price_component->{ fatal } ) {
+                return $self->is_success( 0 );
+            }
+            else {
+                next;
+            }
+        }
+        debug3 "adding price $price to final_components";
+        
+        
+        push @$final_price_components, {
+            price       => $price,
+            description => $price_component->{ description }
+        };
+        $self->_increase_total_charges( $price );
+    }
+    
+    $self->price_components( $final_price_components );
+
+    $total_charges = Business::Shipping::Util::currency( 
+        { no_format => 1 }, 
+        $self->_total_charges 
+    );
+    
     #
     # 'return' method:
     # 1. Save a "results" hash.
@@ -584,64 +631,117 @@ sub _handle_response
     return $self->is_success( 1 );
 }
 
+=item * $self->_increase_total_charges( $amount )
+
+Increase the _total_charges by an amount.
+
+=cut
+
+sub _increase_total_charges
+{
+    my ( $self, $increase ) = @_;
+    
+    $self->_total_charges( ( $self->_total_charges || 0 ) + $increase );
+    
+    return;
+}
+
 =item * calc_express_plus_adder
 
 =cut
 sub calc_express_plus_adder
 {
 
-    my ( $self, $total_charges ) = @_;
+    my ( $self ) = @_;
     
-    if ( ! $total_charges ) {
-        $self->error( "Need total_charges" );
-        return 0;
+    if ( $self->service_code_to_ups_name( $self->service ) =~ /plus/i ) {
+         return cfg()->{ ups_information }->{ express_plus_adder } || 40.00 
     }
     
-    
-    trace "( $total_charges )";
-    return 0 unless $total_charges;
-    
-    if ( $self->service_code_to_ups_name( $self->service() ) =~ /plus/i ) {
-         return cfg()->{ ups_information }->{ express_plus_adder } || 40.00;
-    }
-    
-    return 0.00;
+    return 0;
 }
 
-=item * calc_residential_surcharge
+
+=item * calc_delivery_area_surcharge
+
+The "Delivery Area Surcharge" is also known as "Extended Area Surcharge", but 
+does not include special residential charges that apply to some services (air
+services, for example).
 
 =cut
 #
-# TODO: Lookup the zip code in the xzones.csv chart, if found, add the $1.17
+# TODO: Instead of always applying this, only apply it if the zip is found
+# in xarea.
 #
-# For now, all it does is go by the user's specification.
+# TODO: Calculate the delivery area surcharge amount from the accessorials.csv
 #
-sub calc_residential_surcharge
+sub calc_delivery_area_surcharge
 {
-    my ( $self, $total_charges ) = @_;
+    my ( $self ) = @_;
     
-    #
-    # We must have some amount to add it to, before we add it.
-    #
-    if ( $self->to_residential and $total_charges ) {
-        return 1.17;
-    }
-    else {
-        return 0;
-    }
+    return 1.75 if $self->to_residential;
+    return 1.00;
 }
 
+=item * $self->calc_residential_surcharge()
+
+Note that this is different than the delivery area surcharge
+sub calc_residential_surcharge.  It is listed as "Residential Differential"
+in the accessorials.csv file.
+
+Currently $1.40.
+
+=cut
+sub calc_residential_surcharge
+{
+    my ( $self ) = @_;
+    
+    # I think the services that are excluded from this calculation are the 
+    # following.
+    # TODO: Residential surcharge: confirm that all the right services are 
+    # included/excluded
+
+    my $ups_service_name = $self->service_code_to_ups_name( $self->service );
+    my @exempt_services = qw/
+        UPS Ground Commercial
+        UPS Ground Residential
+        UPS Ground Hundredweight Service
+        UPS Standard
+    /;    
+    
+    return 1.40 if $self->to_residential;
+    return 0;
+}
+    
 =item * calc_fuel_surcharge
 
 =cut
+
 sub calc_fuel_surcharge
 {
-    my ( $self, $total_charges ) = @_;
+    my ( $self ) = @_;
     
-    my $fuel_surcharge = cfg()->{ ups_information }->{ fuel_surcharge } || do { $self->error( "fuel surcharge rate not found" ); return; };
+    # http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html
+    # The surcharge applies to all domestic and International transportation 
+    # charges except UPS Ground Commercial, UPS Ground Residential, UPS Ground
+    # Hundredweight Service®, and UPS Standard to Canada.
+    my $ups_service_name = $self->service_code_to_ups_name( $self->service );
+    my @exempt_services = qw/
+        UPS Ground Commercial
+        UPS Ground Residential
+        UPS Ground Hundredweight Service
+        UPS Standard
+    /;
+    return 0 if grep @exempt_services, /$ups_service_name/i;
+    
+    my $fuel_surcharge = cfg()->{ ups_information }->{ fuel_surcharge } || do { 
+        $self->user_error( "fuel surcharge rate not found" ); 
+        return 0; 
+    };
+    
     $fuel_surcharge =~ s/\%//;
     $fuel_surcharge *= .01;
-    $fuel_surcharge *= $total_charges;
+    $fuel_surcharge *= $self->_total_charges;
     
     return $fuel_surcharge;
 }
@@ -654,7 +754,7 @@ sub service_code_to_ups_name
     my ( $self, $service ) = @_;
     
     if ( ! $service ) {
-        $self->error( "Need service parameter." );
+        $self->user_error( "Need service parameter." );
         return;
     }
     #
@@ -681,7 +781,7 @@ sub ups_name_to_table
     my ( $self, $ups_name ) = @_;
     
     if ( ! $ups_name ) {
-        $self->error( "Need ups_name parameter." );
+        $self->user_error( "Need ups_name parameter." );
         return;
     }
     
@@ -718,7 +818,7 @@ sub calc_zone_data
     
     my $zone_name = $self->zone_name;
     if ( not defined $zone_name ) {
-        $self->error( "Need zone_name" );
+        $self->user_error( "Need zone_name" );
         return;
     }
     
@@ -754,7 +854,7 @@ sub calc_zone_data
             $this_zone->{ zone_data } = Business::Shipping::Util::readfile( $self->zone_file() );
         }
         if ( ! $this_zone->{ zone_data } ) {
-            $self->error( "Bad shipping file for zone " . $_ . ", lookup disabled." );
+            $self->user_error( "Bad shipping file for zone " . $_ . ", lookup disabled." );
             next;
         }
         my ( @zone ) = grep /\S/, split /[\r\n]+/, $this_zone->{ zone_data };
@@ -848,7 +948,7 @@ sub determine_keys
         #
         
         if ( ! $self->to_zip ) {
-            $self->error( "Need to_zip." );
+            $self->user_error( "Need to_zip." );
             return;
         }
         
@@ -882,7 +982,7 @@ sub rate_table_exceptions
     my $exceptions_cfg = cfg()->{ ups_names_in_zone_file_to_table_map_exceptions }->{ $self->to_country };
     return $table unless $exceptions_cfg;
     
-    my $exceptions_hash = $self->config_to_hash( $exceptions_cfg ); 
+    my $exceptions_hash = config_to_hash( $exceptions_cfg ); 
     debug3( "type = $type, table = $table, looking for type in exceptions hash..." );
     
     if ( $exceptions_hash->{ $type } ) {
@@ -916,7 +1016,7 @@ sub calc_cost
     my ( $self ) = @_;
     
     if ( ! $self->zone_name or ! $self->service ) {
-        $self->error( "Need zone_name and service" );
+        $self->user_error( "Need zone_name and service" );
         return;
     }
     
@@ -951,7 +1051,7 @@ sub calc_cost
     #
     debug( "rate table = " . ( $table ? $table : 'undef' ) . ", zone_name = " . ( $zone_name ? $zone_name : 'undef' ) );
     if ( ! defined $zref->{zone_data} ) {
-        $self->error( "zone data could not be found" );
+        $self->user_error( "zone data could not be found" );
         return 0;
     }
     
@@ -1001,7 +1101,7 @@ sub calc_cost
         last;
     }
     if ( ! defined $point) {
-        $self->error( "Zone '$code' lookup failed, type '$type' not found" );
+        $self->user_error( "Zone '$code' lookup failed, type '$type' not found" );
         return 0;
     }
     else {
@@ -1050,11 +1150,11 @@ sub calc_cost
     $zone = $self->special_zone_hi_ak( $type, $zone );
     
     if (! defined $zone) {
-        $self->error( "No zone found for geo code (key) $key, type $type. " );
+        $self->user_error( "No zone found for geo code (key) $key, type $type. " );
         return 0;
     }
     elsif ( ! $zone or $zone eq '-') {
-        $self->error( "No $type shipping allowed for $key." );
+        $self->user_error( "No $type shipping allowed for $key." );
         $self->invalid( 1 );
         return 0;
     }
@@ -1064,16 +1164,16 @@ sub calc_cost
     $cost =  record( $table, $zone, $weight );
     
     if ( ! $cost ) {
-        $self->error( "Zero cost returned for mode $type, geo code (key) $key.");
+        $self->user_error( "Zero cost returned for mode $type, geo code (key) $key.");
         return 0;
     }
         
-    debug( "cost = $cost" );
+    debug "cost = $cost";
     #
     # TODO: Surcharge table + Surcharge_field?
     # TODO: Residential field (same table)?
     #
-        
+    
     return $cost || 0;
 }
 
@@ -1142,7 +1242,7 @@ sub calc_zone_info
     if ( $self->domestic ) {
         debug( "domestic" );
         if ( ! $self->from_zip ) {
-            $self->error( "Need from_zip" );
+            $self->user_error( "Need from_zip" );
             return;
         }
         debug( "from_zip = " . $self->from_zip );
@@ -1162,10 +1262,10 @@ sub calc_zone_info
                 #
                 # An Alaska or Hawaii source has it's own complete set of data. :-(                
                 #
-                $self->error( "UPS Standard from Alaska or Hawaii not supported." ) and return;
+                $self->user_error( "UPS Standard from Alaska or Hawaii not supported." ) and return;
             }
             my $state_to_upsstd_zone_file = cfg()->{ ups_information }->{ state_to_upsstd_zone_file };
-            my $states = $self->config_to_hash( $state_to_upsstd_zone_file );
+            my $states = config_to_hash( $state_to_upsstd_zone_file );
             use Data::Dumper;
             debug( "states = " . Dumper( $states ) );
             debug( "my from_state = " . ( $self->from_state || 'undef' ) );
@@ -1175,7 +1275,7 @@ sub calc_zone_info
                         . "parameter, zone_file = $zone_file " );
             }
             else {
-                $self->error(
+                $self->user_error(
                     "could not find state in \'state to UPS Standard zone file\' converter."
                 );
                 return;
