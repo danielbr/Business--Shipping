@@ -15,7 +15,7 @@ Business::Shipping::Debug - Compatibility wrapper for Logging.  Depreciated.
 
 =head1 VERSION
 
-$Revision: 1.8 $      $Date$
+$Rev$      $Date$
 
 =head1 SYNOPSIS
 
@@ -55,7 +55,7 @@ or error messages.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT = qw( debug debug3 trace log_error error );
 
 use strict;

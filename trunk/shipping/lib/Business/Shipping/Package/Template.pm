@@ -13,7 +13,7 @@ Business::Shipping::Package::Template
 
 =head1 VERSION
 
-$Revision: 1.1 $      $Date$
+$Rev$      $Date$
 
 =head1 METHODS
 
@@ -21,7 +21,7 @@ $Revision: 1.1 $      $Date$
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;

@@ -15,7 +15,7 @@ Business::Shipping::KLogging - Logging interface
 
 =head1 VERSION
 
-$Revision: 1.2 $      $Date$
+$Rev$      $Date$
 
 =head1 DESCRIPTION
 
@@ -28,7 +28,7 @@ via your own wrapper.  See Business::Shipping::Logging as an example wrapper.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;

@@ -6,7 +6,7 @@ update-data.pl - Updates data tables for Business::Shipping.
 
 =head1 VERSION
 
-$Revision: 1.3 $
+$Rev$
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 # Business::Shipping::Package - Abstract class
 # 
-# $Id: Package.pm 145 2004-07-09 16:57:14Z db-ship $
+# $Id$
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Package - Abstract class
 
 =head1 VERSION
 
-$Revision: 1.9 $      $Date: 2004-07-09 09:57:14 -0700 (Fri, 09 Jul 2004) $
+$Rev$      $Date$
 
 =head1 DESCRIPTION
 
@@ -28,7 +28,7 @@ implementation.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;

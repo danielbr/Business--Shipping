@@ -15,7 +15,7 @@ Business::Shipping::ClassAttribs - Class attribute functions
 
 =head1 VERSION
 
-$Revision: 1.3 $      $Date$
+$Rev$      $Date$
 
 =head1 DESCRIPTION
 
@@ -28,7 +28,7 @@ via static class methods.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT = qw( get_grouped_attrs );
 
 use strict;

@@ -19,7 +19,7 @@ Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
 
 =head1 VERSION
 
-$Revision: 1.25 $      $Date$
+$Rev$      $Date$
 
 =head1 GLOSSARY
 
@@ -37,7 +37,7 @@ $Revision: 1.25 $      $Date$
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.25 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;

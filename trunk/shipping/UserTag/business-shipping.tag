@@ -19,7 +19,7 @@ UserTag  business-shipping  Documentation <<EOD
 
 =head1 VERSION
 
-[business-shipping] usertag:    $Revision: 1.33 $
+[business-shipping] usertag:    $Rev$
 Requires Business::Shipping:     Revision: 1.04+
 
 =head1 AUTHOR 

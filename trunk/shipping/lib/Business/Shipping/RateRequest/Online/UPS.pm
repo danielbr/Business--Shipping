@@ -84,7 +84,7 @@ UPS_ACCESS_KEY
     
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.19 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
