@@ -2,7 +2,7 @@
 # All rights reserved. This program is free software; you can 
 # redistribute it and/or modify it under the same terms as Perl 
 # itself.
-
+# $Id $
 package Business::Ship::UPS;
 use strict;
 use warnings;
@@ -67,7 +67,7 @@ The following methods are available:
 =cut
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.3 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.4 $ =~ /(\d+)\.(\d+)/);
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
@@ -170,6 +170,13 @@ sub new
 This method assigns internal options.
 
 =cut
+
+sub build_subs {
+    my $self = shift;
+    foreach(@_) {
+        eval "sub $_ { my \$self = shift; if(\@_) { \$self->{$_} = shift; } return \$self->{$_}; }";
+    }
+}
 
 sub set
 {
