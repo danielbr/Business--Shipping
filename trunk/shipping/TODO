@@ -93,18 +93,15 @@ BEGIN {
 ##  Business::Ship::USPS TODO
 ######################################################
 
->  - Pull the test cases & responses out of the PDF docs and 
-> program them
-> so that they are a test case (commonly in the /t directory in 
-> most CPAN
-> modules) so that a user can plug their username and password in the
-> script, or via the build process and test that their account is
-> accepting data correctly.  Comments/Suggestions?
-
->  - Identify the different USPS interfaces (Standard Mail (what we're
-> working on), Priority Mail, International, ?Others? and pull the specs
-> from the PDF's on how to structure the requests and parse the
-> responses.  Comments/Suggestions?
+ * Pull the test cases & responses out of the PDF docs and program them so 
+   that they are a test case (commonly in the /t directory in most CPAN  
+   modules) so that a user can plug their username and password in the 
+   script, or via the build process and test that their account is 
+   accepting data correctly.
+   
+ * Identify the different USPS interfaces (Standard Mail (what we're 
+   working on), Priority Mail, International, ?Others? and pull the specs
+   from the PDF's on how to structure the requests and parse the responses.
 
 ######################################################
 ##  Business::Ship::UPS TODO
