@@ -8,10 +8,15 @@ use Data::Dumper;
 my $shipment = new Business::Ship( 'USPS' );
 
 $shipment->set(
-	'user_id' => 'fdsjakl',
-	'password' => 'fdjkasl',
-	'tx_type' => 'rate',
-	'event_handlers' => ({ 'debug' => 'STDOUT' })
+	'event_handlers' => ({ 'debug' => 'STDOUT' }),
+	'user_id' 		=> $ENV{USPS_USER_ID},
+	'password' 		=> $ENV{USPS_PASSWORD},
+	'tx_type' 		=> 'rate',
+	'test_mode'		=> 0,
+	'service'		=> 'BPM',
+	'weight'		=> 3,
+	'from_zip'		=> '98682',
+	'to_zip'		=> '98270',
 );
 
 $shipment->submit();
@@ -22,7 +27,7 @@ $shipment->success() or print "Error = " .  $shipment->error_msg();
 #	'event_handlers' => ({ 'debug' => 'croak' })
 #);
 
-print "shipment = " . Dumper( $shipment );
+#print "shipment = " . Dumper( $shipment );
 
 print "\n";
 

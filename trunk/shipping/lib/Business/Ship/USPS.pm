@@ -17,7 +17,7 @@ Documentation forthcoming.
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.4 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.5 $ =~ /(\d+)\.(\d+)/);
 use Business::Ship;
 use LWP::UserAgent ();
 use HTTP::Request ();
@@ -39,12 +39,18 @@ sub set_defaults
 		test_url	http://testing.shippingapis.com/ShippingAPItest.dll
 		prod_url	http://production.shippingapis.com/ShippingAPI.dll
 		test_mode	1
+		container	NONE
+		size		Regular
+		machineable	False
+		ounces		0
 	|);
 	
 	$self->set( %default_values );
 	$self->set( 'ua' => new LWP::UserAgent );
 	$self->set( 'xs' => new XML::Simple(ForceArray => 1, KeepRoot => 1) );
-		
+	
+	# NOTE!  I need to somehow convert weight to pounds/ounces.
+	
     return;
 }
 
@@ -58,48 +64,88 @@ sub _gen_request
 {
 	my ( $self ) = shift;
 	
-	my $request_xml = $self->_gen_request_xml();
+	# The "API=Rate&XML=" is the only part that is different from UPS...
+	my $request_xml = 'API=Rate&XML=' . $self->_gen_request_xml();
+
+	
+=pod  This is an example of a working request
+<RateRequest USERID="539KAVOD6731" PASSWORD="900QZ55LW201">
+	<Package ID="0">
+		<Service>BPM</Service>
+		<ZipOrigination>29708</ZipOrigination>
+		<ZipDestination>28278</ZipDestination>
+		<Pounds>1</Pounds>
+		<Ounces>0</Ounces>
+		<Container>NONE</Container>
+		<Size>Regular</Size>
+		<Machinable>False</Machinable>
+	</Package>
+</RateRequest>
+=cut
+
+	$request_xml = qq{API=Rate&XML=
+	<RateRequest USERID="539KAVOD6731" PASSWORD="900QZ55LW201">
+		<Package ID="0">
+			<Service>BPM</Service>
+			<ZipOrigination>29708</ZipOrigination>
+			<ZipDestination>28278</ZipDestination>
+			<Pounds>1</Pounds>
+			<Ounces>0</Ounces>
+			<Container>NONE</Container>
+			<Size>Regular</Size>
+			<Machinable>False</Machinable>
+		</Package>
+	</RateRequest>
+	};
+	
 	my $request = new HTTP::Request 'POST', $self->_gen_url();
 	
 	$request->header( 'content-type' => 'application/x-www-form-urlencoded' );
 	$request->header( 'content-length' => length( $request_xml ) );
-	$request->content( $request_xml );
+	
+	$request->content(  $request_xml );
 	
 	return ( $request );
 }
 
-=item $ups->run_query( [%args] )
+
+sub _massage_values
+{
+	my $self = shift;
+	$self->_set_pounds_ounces();
+	return;
+}
+	
+=item $shipment->submit( [%args] )
 
 This method sets some values (optional), generates the request, then parses and
 the results and assigns the total_charges amount.
 
 =cut
 
-=pod	
-sub run_query 
-{
-	
-
-	
-	
-	
-}
-=cut
-
 sub submit
 {
 	my ( $self, %args ) = @_;
 	
+	$self->set( %args ) if %args;
+	
+	$self->_massage_values();
 	#$self->validate() or return ( undef );
 	
 	my $request = $self->_gen_request();
 	$self->response( $self->{'ua'}->request( $request ) );
 	
 	$self->debug( "response content = " . $self->response()->content );
-	unless( $self->response()->content ) {
+	unless( $self->response()->content() ) {
 		$self->error( 'Repsonse empty.  HTTP response code:' . $self->response()->code() );
 		return( undef );
 	}
+	
+	if ( $self->response()->content() =~ /HTTP Error/ ) {
+		$self->error( "HTTP Error.  Content = " . $self->response()->content() );
+		return( undef );
+	}
+	
 	# I get "Out of Memory" errors unless I disable KeepRoot in XML::Simple::XMLin()
 	my $response_tree = $self->{xs}->XMLin( $self->response()->content(), ForceArray => 0, KeepRoot => 0 );
 	my $status_code = $response_tree->{Response}->{ResponseStatusCode};
@@ -128,13 +174,13 @@ sub _gen_request_xml
 			'Package' => [{
 				'ID' => '0',
 				'Service' => [ $self->service() ],
-				'ZipOrigination' => [ '98682' ],
-				'ZipDestination' => [ '98270' ],
-				'Pounds' => [ '5' ],
-				'Ounces' => [ '3' ],
-				'Container' => [ 'NONE' ],
-				'Size' => [ 'Regular' ],
-				'Machineable' => [ 'False' ],
+				'ZipOrigination' => [ $self->from_zip() ],
+				'ZipDestination' => [ $self->to_zip() ],
+				'Pounds' => [ $self->pounds() ],
+				'Ounces' => [ $self->ounces() ],
+				'Container' => [ $self->container() ],
+				'Size' => [ $self->size() ],
+				'Machineable' => [ $self->machineable() ],
 			}]
 		}]
 	};
@@ -161,9 +207,26 @@ sub build_subs
 		usps_custom4
 		ua
 		xs
+		container
+		size
+		machineable
+		pounds
+		ounces
 	/;
 	
 	$self->SUPER::build_subs( @_, @usps_required_vals, @usps_optional_vals );
+	
+	# build these sub	
+}
+
+sub _set_pounds_ounces
+{
+	my $self = shift;
+	unless( $self->pounds() ) {
+		$self->pounds( $self->weight() );
+	}
+	
+	# Can pounds be a fraction?  Or do we need to calc the ounces?
 }
 
 =head1 SEE ALSO

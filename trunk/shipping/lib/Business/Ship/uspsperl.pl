@@ -13,8 +13,8 @@ $b_ounces = "0";
 #Build request XML
 $rateReqDoc = new XML::DOM::Document; 
 $rateReqEl = $rateReqDoc->createElement('RateRequest'); 
-$rateReqEl->setAttribute('USERID', 'xxxxxxxx'); 
-$rateReqEl->setAttribute('PASSWORD', 'xxxxxxxx'); 
+$rateReqEl->setAttribute('USERID', $ENV{USPS_USER_ID}); 
+$rateReqEl->setAttribute('PASSWORD', $ENV{USPS_PASSWORD}); 
 $rateReqDoc->appendChild($rateReqEl); 
 $packageEl = $rateReqDoc->createElement('Package'); 
 $packageEl->setAttribute('ID', '0'); 

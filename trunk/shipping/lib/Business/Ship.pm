@@ -2,7 +2,7 @@
 # All rights reserved. This program is free software; you can 
 # redistribute it and/or modify it under the same terms as Perl 
 # itself.
-# $Id: Ship.pm,v 1.7 2003/04/23 01:39:59 db-ship Exp $
+# $Id: Ship.pm,v 1.8 2003/04/23 04:34:25 db-ship Exp $
 package Business::Ship;
 use strict;
 use warnings;
@@ -30,7 +30,7 @@ else {
 
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.7 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.8 $ =~ /(\d+)\.(\d+)/);
 
 use Data::Dumper;
 use Carp;
@@ -63,8 +63,8 @@ sub new {
 		test_mode
 		
 		service 
-		origination_zip
-		destination_zip
+		from_zip
+		to_zip
 		weight
 		total_charges
 		
@@ -140,10 +140,9 @@ sub debug {
 
 sub error {
     my ( $self, $msg ) = @_;
-
 	$msg .= "\n" unless ( $msg =~ /\n$/ );
 	$self->success( undef );
-	
+	$self->error_msg( $msg );
     return $self->_log( 'error', $msg );
 }
 
@@ -154,7 +153,6 @@ sub _log
 
 	my( $package, $filename, $line, $sub ) = caller( 2 );
 	$msg  = "$sub: $msg";
-	
 	$msg .= "\n" unless ( $msg =~ /\n$/ );
 	
 	# TODO: Allow to be settable via member var.
