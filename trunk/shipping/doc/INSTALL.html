@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>INSTALLATION</title>
-<link rev="made" href="mailto:db@kavod1.kavod.com" />
+<link rev="made" href="mailto:root@localhost" />
 </head>
 
 <body style="background-color: white">
@@ -27,6 +27,7 @@
 <p>
 </p>
 <h1><a name="installation">INSTALLATION</a></h1>
+<p>How to install Business::Shipping:</p>
 <p>
 </p>
 <hr />
@@ -35,7 +36,7 @@
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (any)
+ Class::MethodMaker::Engine (any)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
@@ -43,21 +44,23 @@
  Devel::Required (0.03)
  Error (any)
  Getopt::Mixed (any)
+ Log::Log4perl (any)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
  Scalar::Util (1.10)
+ Test::More (any)
  XML::DOM (any)
  XML::Simple (2.05)</pre>
 <p>
 </p>
 <h2><a name="module_installation_via_cpan">Module Installation via CPAN</a></h2>
 <pre>
+ C&lt;perl -MCPAN -e 'force install XML::Parser XML::Parser::PerlSAX XML::DOM'&gt;
  C&lt;perl -MCPAN -e 'install Bundle::Business::Shipping'&gt;</pre>
 <p>As of February 10, 2004, two CPAN modules in Bundle::Business::Shipping do not
-pass their own tests.  Therefore, we recommend forcing their installation first:</p>
-<pre>
- C&lt;perl -MCPAN -e 'force install XML::Parser XML::Parser::PerlSAX'&gt;
- C&lt;perl -MCPAN -e 'install Bundle::Business::Shipping'&gt;</pre>
+pass their own tests.  Therefore, we recommend forcing their installation first.
+The manual insatllation of Class-MethodMaker 2.0 is required, since 1.12 is 
+always selected if you only input ``Class::MethodMaker''.</p>
 <p>
 </p>
 <hr />

@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment - Abstract class
 # 
-# $Id: Shipment.pm,v 1.11 2004/05/06 20:15:26 danb Exp $
+# $Id: Shipment.pm,v 1.12 2004/06/24 03:09:23 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # This program is free software; you may redistribute it and/or modify it under
@@ -9,7 +9,7 @@
 
 package Business::Shipping::Shipment;
 
-$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 =head1 NAME
 
@@ -17,7 +17,7 @@ Business::Shipping::Shipment - Abstract class
 
 =head1 VERSION
 
-$Revision: 1.11 $      $Date: 2004/05/06 20:15:26 $
+$Revision: 1.12 $      $Date: 2004/06/24 03:09:23 $
 
 =head1 DESCRIPTION
 
@@ -58,6 +58,7 @@ use Business::Shipping::Config;
 Has-A: Object list: Business::Shipping::Package.
 
 =cut
+
 use Class::MethodMaker 2.0
     [
       new    => [ { -hash => 1, -init => 'this_init' }, 'new' ],
@@ -87,6 +88,7 @@ sub this_init { }
 Forward the weight to the current package.
 
 =cut
+
 sub weight { return shift->current_package->weight( @_ ); }
 
 =item * total_weight
@@ -94,6 +96,7 @@ sub weight { return shift->current_package->weight( @_ ); }
 Returns the weight of all packages within the shipment.
 
 =cut
+
 sub total_weight
 {
     my $self = shift;
@@ -112,6 +115,7 @@ Throw away the "four" from zip+four.
 Redefines the MethodMaker implementation of this attribute.
 
 =cut
+
 no warnings 'redefine';
 sub to_zip
 {
@@ -170,6 +174,7 @@ Returns the abbreviated form of 'to_country'.
 Redefines the MethodMaker implementation of this attribute.
 
 =cut
+
 sub to_country_abbrev
 {
     my ( $self ) = @_;
@@ -186,6 +191,7 @@ sub to_country_abbrev
 
 
 =cut
+
 sub from_country
 {
     my ( $self, $from_country ) = @_;
@@ -203,6 +209,7 @@ sub from_country
 =item * from_country_abbrev()
 
 =cut
+
 sub from_country_abbrev
 {
     my ( $self ) = @_;
@@ -223,6 +230,7 @@ the corresponding package object, creating one if it doesn't exist.
 Not completely impemented yet.
 
 =cut
+
 sub current_package {
     my ( $self ) = @_;
     
@@ -248,6 +256,7 @@ States) or Canada.
 Returns 1 if to_country is not set.
 
 =cut
+
 sub domestic_or_ca
 {
     my ( $self ) = @_;
@@ -264,6 +273,7 @@ Uses to_country() value to determine if the order is International (non-US).
 Returns 1 or 0 (true or false).
 
 =cut
+
 sub intl
 {
     my ( $self ) = @_;
@@ -282,6 +292,7 @@ sub intl
 Returns the opposite of $self->intl
  
 =cut
+
 sub domestic
 { 
     my ( $self ) = @_;
@@ -299,6 +310,7 @@ sub domestic
 UPS treats Canada differently.
 
 =cut
+
 sub from_canada
 {
     my ( $self ) = @_;
@@ -317,6 +329,7 @@ sub from_canada
 UPS treats Canada differently.
 
 =cut
+
 sub to_canada
 {
     my ( $self ) = @_;
@@ -335,6 +348,7 @@ sub to_canada
 Alaska and Hawaii are treated differently by many shippers.
 
 =cut
+
 sub to_ak_or_hi
 {
     my ( $self ) = @_;
@@ -367,6 +381,7 @@ sub to_ak_or_hi
 Adds a new package to the shipment.
 
 =cut
+
 #
 # This is from 0.04.
 # Needs to be made compatible with the new version.

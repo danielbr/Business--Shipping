@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Business::Shipping - Interface for shippers</title>
-<link rev="made" href="mailto:db@kavod1.kavod.com" />
+<link rev="made" href="mailto:root@localhost" />
 </head>
 
 <body style="background-color: white">
@@ -25,14 +25,11 @@
 	<li><a href="#installation">INSTALLATION</a></li>
 	<ul>
 
-		<li><a href="#online__ups_example">Online::UPS Example</a></li>
-	</ul>
-
-	<li><a href="#error_debug_handling">ERROR/DEBUG HANDLING</a></li>
-	<li><a href="#methods">METHODS</a></li>
-	<ul>
-
+		<li><a href="#_self_init___args__">$self-&gt;init( %args )</a></li>
+		<li><a href="#_self_user_error__error_message__">$self-&gt;user_error( ``Error message'' )</a></li>
+		<li><a href="#_self_validate__">$self-&gt;<code>validate()</code></a></li>
 		<li><a href="#rate_request__"><code>rate_request()</code></a></li>
+		<li><a href="#business__shipping_new_subclass__subclass__name___opt__">Business::Shipping-&gt;new_subclass( ``Subclass::Name'', %opt )</a></li>
 	</ul>
 
 	<li><a href="#author">AUTHOR</a></li>
@@ -63,7 +60,7 @@
         weight    =&gt;  5.00,
     );    
     
-    $rate_request-&gt;submit() or die $rate_request-&gt;error();
+    $rate_request-&gt;submit() or die $rate_request-&gt;user_error();
     
     print $rate_request-&gt;total_charges();</pre>
 <p>
@@ -102,7 +99,7 @@
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (any)
+ Class::MethodMaker::Engine (any)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
@@ -110,9 +107,11 @@
  Devel::Required (0.03)
  Error (any)
  Getopt::Mixed (any)
+ Log::Log4perl (any)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
  Scalar::Util (1.10)
+ Test::More (any)
  XML::DOM (any)
  XML::Simple (2.05)</pre>
 <p>
@@ -124,82 +123,25 @@
 </p>
 <pre>
 
-=head1 MULTI-PACKAGE API</pre>
-<p>Please note that the Multi-package API may change in upcoming releases.</p>
+=head1 ERROR/DEBUG HANDLING</pre>
+<p>Log4perl is used for logging error, debug, etc. messages.  See 
+config/log4perl.conf.
+</p>
+<pre>
+
+=head1 METHODS</pre>
 <p>
 </p>
-<h2><a name="online__ups_example">Online::UPS Example</a></h2>
-<pre>
- use Business::Shipping;
- use Business::Shipping::Shipment::UPS;
- 
- my $shipment = Business::Shipping::Shipment::UPS-&gt;new();
- 
- $shipment-&gt;init(
-    from_zip  =&gt; '98682',
-    to_zip    =&gt; '98270',
-    service   =&gt; 'GNDRES',
-    #
-    # user_id, etc. needed here.
-    #
- );</pre>
-<pre>
- $shipment-&gt;add_package(
-    id        =&gt; '0',
-    weight        =&gt; 5,
- );</pre>
-<pre>
- $shipment-&gt;add_package(
-    id        =&gt; '1',
-    weight        =&gt; 3,
- );
- 
- my $rate_request = Business::Shipping::rate_request( shipper =&gt; 'Online::UPS' );
- #
- # Add the shipment to the rate request.
- #
- $rate_request-&gt;shipment( $shipment );
- $rate_request-&gt;submit() or ie $rate_request-&gt;error();</pre>
-<pre>
- print $rate_request-&gt;package('0')-&gt;get_charges( 'GNDRES' );
- print $rate_request-&gt;package('1')-&gt;get_charges( 'GNDRES' );
- print $rate_request-&gt;get_total_price( 'GNDRES' );</pre>
+<h2><a name="_self_init___args__">$self-&gt;init( %args )</a></h2>
+<p>Generic attribute setter.</p>
 <p>
 </p>
-<hr />
-<h1><a name="error_debug_handling">ERROR/DEBUG HANDLING</a></h1>
-<p>The 'event_handlers' argument takes a hashref telling Business::Shipping what to do
-for error, debug, trace, and the like.  The value can be one of four options:</p>
-<pre>
- * 'STDERR'
- * 'STDOUT'
- * 'carp'
- * 'croak'</pre>
-<p>For example:</p>
-<pre>
- $rate_request-&gt;event_handlers(
-     { 
-        'error' =&gt; 'STDERR',
-        'debug' =&gt; 'STDERR',
-        'trace' =&gt; undef,
-        'debug3' =&gt; undef,
-    }
- );
- 
-The default is 'STDERR' for error handling, and nothing for debug/trace 
-handling.  The option 'debug3' adds additional debugging messages that are not 
-included in the normal 'debug'.  Note that you can still access error messages
-even without an 'error' handler, by accessing the return values of methods.  For 
-example:</pre>
-<pre>
- $rate_request-&gt;init( %values ) or print $rate_request-&gt;error();
-    
-However, if you don't save the error value before the next call, it could be
-overwritten by a new error.</pre>
+<h2><a name="_self_user_error__error_message__">$self-&gt;user_error( ``Error message'' )</a></h2>
+<p>Log and store errors that should be visibile to the user.</p>
 <p>
 </p>
-<hr />
-<h1><a name="methods">METHODS</a></h1>
+<h2><a name="_self_validate__">$self-&gt;<code>validate()</code></a></h2>
+<p>Confirms that the object is valid.  Checks that required attributes are set.</p>
 <p>
 </p>
 <h2><a name="rate_request__"><code>rate_request()</code></a></h2>
@@ -232,7 +174,7 @@ The origin zipcode.
 <p></p>
 <li><strong><a name="item_from_state">from_state</a></strong><br />
 </li>
-The origin state.  Required for Offline::UPS.
+The origin state in two-letter code format or full-name format.  Required for Offline::UPS.
 <p></p>
 <li><strong><a name="item_to_zip">to_zip</a></strong><br />
 </li>
@@ -246,6 +188,12 @@ The destination country.  Required for international shipments only.
 </li>
 Weight of the shipment, in pounds, as a decimal number.
 <p></p></ul>
+<p>
+</p>
+<h2><a name="business__shipping_new_subclass__subclass__name___opt__">Business::Shipping-&gt;new_subclass( ``Subclass::Name'', %opt )</a></h2>
+<p>Generates a subclass, such as a Shipment object.
+
+</p>
 <p>
 </p>
 <hr />

@@ -1,11 +1,11 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.30 2004/05/12 05:13:12 danb Exp $
+# $Id: business-shipping.tag,v 1.31 2004/06/24 03:09:14 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
-# 
+
 ifndef USERTAG_BUSINESS_SHIPPING
 Variable USERTAG_BUSINESS_SHIPPING     1
 Message -i Loading [business-shipping] usertag...
@@ -21,7 +21,7 @@ UserTag  business-shipping  Documentation <<EOD
 
 =head1 VERSION
 
-[business-shipping] usertag:    $Revision: 1.30 $
+[business-shipping] usertag:    $Revision: 1.31 $
 Requires Business::Shipping:     Revision: 1.04+
 
 =head1 AUTHOR 
@@ -45,7 +45,7 @@ Requires Business::Shipping:     Revision: 1.04+
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (2.02)
+ Class::MethodMaker::Engine (any)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
@@ -57,6 +57,7 @@ Requires Business::Shipping:     Revision: 1.04+
  LWP::UserAgent (any)
  Math::BaseCnv (any)
  Scalar::Util (1.10)
+ Test::More (any)
  XML::DOM (any)
  XML::Simple (2.05)
 
@@ -79,19 +80,19 @@ Here is a general outline for installing [business-shipping] in Interchange.
    
    Note that "XPS" is used to denote fields that can be used for UPS or USPS.
 
-XPS_FROM_COUNTRY    US    Shipping
-XPS_FROM_STATE    WA    Shipping
-XPS_FROM_ZIP    98682    Shipping
-XPS_TO_COUNTRY_FIELD    country    Shipping
-XPS_TO_CITY_FIELD    country    Shipping
-XPS_TO_ZIP_FIELD    zip    Shipping
-UPS_ACCESS_KEY    AB12CDEF345G6    Shipping 
-UPS_USER_ID    userid    Shipping
-UPS_PASSWORD    mypassword    Shipping
-UPS_PICKUPTYPE    Daily Pickup    Shipping
-USPS_USER_ID    123456ABCDE7890    Shipping
-USPS_PASSWORD    abcd1234d5    Shipping
-
+XPS_FROM_COUNTRY	US	Shipping
+XPS_FROM_STATE	WA	Shipping
+XPS_FROM_ZIP	98682	Shipping
+XPS_TO_COUNTRY_FIELD	country	Shipping
+XPS_TO_CITY_FIELD	country	Shipping
+XPS_TO_ZIP_FIELD	zip	Shipping
+UPS_ACCESS_KEY	AB12CDEF345G6	Shipping 
+UPS_USER_ID	userid	Shipping
+UPS_PASSWORD	mypassword	Shipping
+UPS_PICKUPTYPE	Daily Pickup	Shipping
+USPS_USER_ID	123456ABCDE7890	Shipping
+USPS_PASSWORD	abcd1234d5	Shipping
+    
  * Sample shipping.asc entry:
 
 UPS_GROUND: UPS Ground

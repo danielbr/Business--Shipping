@@ -53,24 +53,26 @@ sub simple_test
 
 ###########################################################################
 ##  Should fail on missing user_id or password
+##  - Test disabled until we can disable error output for individual tests
+##    (e.g. with a new version of event_handlers => {} )
 ###########################################################################
-
-my $UPS_USER_ID = $ENV{ UPS_USER_ID };
-delete $ENV{ UPS_USER_ID };
-
-my $rr100 = Business::Shipping->rate_request( 
-    shipper        => 'Online::UPS',
-    service        => 'GNDRES', 
-    weight         => 5,
-    to_residential => 1,
-    from_zip       => '98682',
-    to_zip         => '98270',
-);
-
-eval { $rr100->submit or die 'bob'; };
-ok( $@, "UPS Died on missing user_id as expected" );
-
-$ENV{ UPS_USER_ID } = $UPS_USER_ID;
+#
+#my $UPS_USER_ID = $ENV{ UPS_USER_ID };
+#delete $ENV{ UPS_USER_ID };
+#
+#my $rr100 = Business::Shipping->rate_request( 
+#    shipper        => 'Online::UPS',
+#    service        => 'GNDRES', 
+#    weight         => 5,
+#    to_residential => 1,
+#    from_zip       => '98682',
+#    to_zip         => '98270',
+#);
+#
+#eval { $rr100->submit or die 'bob'; };
+#ok( $@, "UPS Died on missing user_id as expected" );
+#
+#$ENV{ UPS_USER_ID } = $UPS_USER_ID;
 
 # skip the rest of the test if we don't have username/password
 SKIP: {

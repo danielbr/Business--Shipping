@@ -11,7 +11,7 @@
 # cd ~/src
 # cvs -q -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/shipping login
 # cvs -q -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/shipping co -d Business-Shipping-CVS shipping
-# mkdir -p ~/bin; ln -s $SOURCE_PATH/Business-Shipping-CVS/bin/Business-Shipping-update-source.sh ~/bin
+# mkdir -p ~/bin; ln -s ~/src/Business-Shipping-CVS/bin/Business-Shipping-update-source.sh ~/bin
 #
 # Required if you want to update the Interchange usertag too
 #
@@ -20,6 +20,7 @@
 #export B_S_USER=interch
 #export B_S_GROUP=interch
 #export B_S_GLOBAL_TAG_DIR=/usr/lib/interchange/code/UserTag
+#export B_S_PERL=/usr/local/myperl/bin/perl
 
 #
 # Standard locations
@@ -28,10 +29,7 @@ export SOURCE_PATH=${HOME}/src
 cd $SOURCE_PATH/Business-Shipping-CVS
 cvs -q -z3 up -dP
 
-#/usr/local/bin/perl Makefile.PL INSTALLPRIVLIB=~/lib INSTALLARCHLIB=~/lib INSTALLSITELIB=~/lib  INSTALLMAN1DIR=none INSTALLMAN3DIR=none INSTALLSITEARCH=~/lib INSTALLDIRS=perl INSTALLBIN=~/bin INSTALLSITEBIN=~/bin INSTALLSCRIPT=~/bin 
-#perl Makefile.PL
-make && make test && make install
-
+$B_S_PERL Makefile.PL && make && make test && make install
 
 #
 # Update Interchange UserTag

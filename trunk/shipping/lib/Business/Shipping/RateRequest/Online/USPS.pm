@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::USPS - Estimates shipping cost online
 # 
-# $Id: USPS.pm,v 1.14 2004/05/06 20:15:28 danb Exp $
+# $Id: USPS.pm,v 1.15 2004/06/24 03:09:25 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ See Business::Shipping.pm POD for usage information.
 
 =head1 VERSION
 
-$Revision: 1.14 $      $Date: 2004/05/06 20:15:28 $
+$Revision: 1.15 $      $Date: 2004/06/24 03:09:25 $
 
 =head1 SERVICE TYPES
 
@@ -49,7 +49,7 @@ $Revision: 1.14 $      $Date: 2004/05/06 20:15:28 $
 
 package Business::Shipping::RateRequest::Online::USPS;
 
-$VERSION = do { my @r=(q$Revision: 1.14 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.15 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -66,6 +66,7 @@ use HTTP::Response;
 =item * domestic
 
 =cut
+
 use Class::MethodMaker 2.0
     [
       new    => [ { -hash => 1, -init => 'this_init' }, 'new' ],
@@ -106,6 +107,7 @@ sub to_residential { return 0; }
 Generate the XML document.
 
 =cut
+
 sub _gen_request_xml
 {
     trace '()';
@@ -208,6 +210,7 @@ sub _gen_request_xml
 =item * _gen_request
 
 =cut
+
 sub _gen_request
 {
     my ( $self ) = shift;
@@ -229,6 +232,7 @@ sub _gen_request
 =item * _massage_values
 
 =cut
+
 sub _massage_values
 {
     my $self = shift;
@@ -248,6 +252,7 @@ sub _massage_values
 =item * _handle_response
 
 =cut
+
 sub _handle_response
 {
     trace '()';
@@ -352,6 +357,7 @@ sub _handle_response
 Decide if we are domestic or international for this run.
 
 =cut
+
 sub _domestic_or_intl
 {
     my $self = shift;

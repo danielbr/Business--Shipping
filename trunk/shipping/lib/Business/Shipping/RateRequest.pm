@@ -10,7 +10,7 @@ Business::Shipping::RateRequest - Abstract class for shipping cost estimation
 
 =head1 VERSION
 
-$Revision: 1.13 $      $Date: 2004/05/06 20:15:19 $
+$Revision: 1.14 $      $Date: 2004/06/24 03:09:23 $
 
 =head1 DESCRIPTION
 
@@ -24,7 +24,7 @@ Represents a request for shipping cost estimation.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.13 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.14 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -74,6 +74,7 @@ See _handle_response() for implementation details.
 Stores a Business::Shipping::Shipment object.  Many methods are forwarded to it.
 
 =cut
+
 use Class::MethodMaker 2.0
     [ new => [ qw/ -hash new / ],
       scalar        => [ 'is_success', 'cache', 'invalid' ],
@@ -122,10 +123,11 @@ This method sets some values (optional), generates the request, then parses the
 results.
 
 =cut
+
 sub submit
 {
     my ( $self, %args ) = @_;
-    trace( "( " . uneval( %args ) . " )" );
+    #trace( "( " . uneval( %args ) . " )" );
     
     $self->init( %args ) if %args;
     $self->_massage_values();
@@ -181,6 +183,7 @@ Does some validation common to all RateRequest objects, but most of the
 validation goes on in the subclass.
 
 =cut
+
 sub validate
 {
     my ( $self ) = @_;
@@ -245,6 +248,7 @@ Calls unique() on all subclasses to determine a list of unique elements.
 Returns a hash of element_name => element_value.  Used by gen_unique_key().
 
 =cut
+
 sub get_unique_hash
 {
     my $self = shift;
@@ -274,6 +278,7 @@ Sorts hash alphabetically, then returns just the values.  (So that the key will
 have the values sorted in the same order always).
 
 =cut
+
 sub hash_to_sorted_values
 {
     my $self = shift;
@@ -291,6 +296,7 @@ Calls get_unique_hash(), sorts them with hash_to_sorted_values(), then returns
 them in string format.
 
 =cut
+
 sub gen_unique_key
 {
     my $self = shift;
@@ -306,6 +312,7 @@ Iterates the $self->results hash and sums the charges from each
 package->charges.  Returns the total.
 
 =cut
+
 sub total_charges
 {
     my $self = shift;
@@ -317,7 +324,7 @@ sub total_charges
         
         my $packages = $self->results->{ $shipper };        
         foreach my $package ( @$packages ) {
-            debug3 "\t" . uneval( $package );
+            #debug3 "\t" . uneval( $package );
             my $charges = $package->{ 'charges' };
             if ( $charges ) {
                 debug3 "\t\tcharges = $charges\n";
@@ -332,6 +339,7 @@ sub total_charges
 =item * get_unique_keys()
 
 =cut
+
 sub get_unique_keys
 {
     my $self = shift;
@@ -345,6 +353,7 @@ sub get_unique_keys
 =item * _gen_unique_values()
 
 =cut
+
 sub _gen_unique_values
 {
     trace '()';

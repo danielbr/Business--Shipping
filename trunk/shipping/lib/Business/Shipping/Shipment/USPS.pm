@@ -1,4 +1,4 @@
-# $Id: USPS.pm,v 1.12 2004/05/06 20:15:29 danb Exp $
+# $Id: USPS.pm,v 1.13 2004/06/24 03:09:26 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,7 +13,7 @@ usiness::Shipping::Shipment::USPS
 
 =head1 VERSION
 
-$Revision: 1.12 $      $Date: 2004/05/06 20:15:29 $
+$Revision: 1.13 $      $Date: 2004/06/24 03:09:26 $
 
 =head1 DESCRIPTION
 
@@ -27,7 +27,7 @@ Move the country translator data into configuration.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.13 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -68,6 +68,7 @@ sub ounces { &{ $_[ 0 ]->default_package->ounces }; }
 Always returns 'US'.
 
 =cut
+
 sub from_country { return 'US'; }
 
 =item * to_country( $to_country ) 
@@ -76,6 +77,7 @@ Uses the name translaters of Shipping::Shipment::to_country(), then applies its
 own translations.  The former may not be necessary, but the latter is.
 
 =cut
+
 sub to_country
 {
     #trace '( ' . uneval( \@_ ) . ' )';

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::UPS - Estimates shipping cost online
 # 
-# $Id: UPS.pm,v 1.17 2004/05/06 20:15:28 danb Exp $
+# $Id: UPS.pm,v 1.18 2004/06/24 03:09:25 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -84,7 +84,7 @@ UPS_ACCESS_KEY
     
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.17 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.18 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -106,6 +106,7 @@ use LWP::UserAgent;
 =item * to_city
 
 =cut
+
 use Class::MethodMaker 2.0
     [
       new => [ qw/ -hash new / ],
@@ -158,6 +159,7 @@ sub from_state {}
 =item * pickup_type
 
 =cut
+
 sub pickup_type
 {
     my ( $self ) = @_;
@@ -187,6 +189,7 @@ sub package_subclass_name { return 'UPS::Package'; }
 =item * _massage_values
 
 =cut
+
 sub _massage_values
 {
     trace( 'called' );
@@ -296,6 +299,7 @@ sub _massage_values
 Generate the XML document.
 
 =cut
+
 sub _gen_request_xml
 {
     debug( 'called' );
@@ -393,6 +397,7 @@ sub _gen_request_xml
 Returns the total charges.
 
 =cut
+
 #
 # TODO: redundant?
 #
@@ -406,6 +411,7 @@ sub get_total_charges
 =item * _handle_response
 
 =cut
+
 sub _handle_response
 {
     trace '()';
@@ -478,6 +484,7 @@ likes its own spellings of certain country abbreviations (GB, etc.).
 Redefines attribute.
 
 =cut
+
 sub to_country_abbrev
 {
     my ( $self ) = @_;

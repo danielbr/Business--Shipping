@@ -6,8 +6,9 @@ contributed.
    - Tracking::USPS
    - Tracking::UPS
  
- * Mike Heins <mike@perusion.com> first wrote some offline UPS and USPS code
-   for the Interchange project, which were adapted for use here.
+ * Mike Heins <mike@perusion.com> wrote a complete offline UPS and USPS cost
+   estimation system for the Interchange project.  They were adapted for use 
+   with Business::Shipping.
    
  * Kevin Old <kold@carolina.rr.com> got the USPS XML generator working.
  

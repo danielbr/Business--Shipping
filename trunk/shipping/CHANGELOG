@@ -3,7 +3,7 @@ Revision history for Business::Shipping
 
 
 1.50  CVS
-  
+
   Compatibility
     - Clone module now required (for Tracking).
     - Test::More module required.
@@ -14,7 +14,7 @@ Revision history for Business::Shipping
     - event_handlers() depreciated (use config/log4perl.conf instead).
     - $self->error() changed to $self->user_error() 
     - Multi-package API un-supported.
-        
+
   Tracking
     - Rusty Conover <rconover@infogears.com> contributed the following:
         Tracking
@@ -42,6 +42,8 @@ Revision history for Business::Shipping
     - Remove documentation for multi-package API.  Unsupported.
     - Fixed: Error on missing arguments isn't working very well (user_id, 
       password)
+    - [Done] [Enh] Use podchecker during build process
+    - [Fixed] Many POD nits fixed.
    
   Offline::UPS
     - Bug fixed: Zip+4 not handled correctly (should drop the four).
@@ -67,11 +69,17 @@ Revision history for Business::Shipping
         Error:  Zero cost returned for mode ExpressPlusSM, geo code (key) United 
         Kingdom.
     - [Fixed] [Bug] France XPR
+    - [Fixed] [bug] 'make test' generates warnings
+      - t/45_Offline-UPS..........Argument "Letter" isn't numeric in numeric eq
+	(==) at [...]/SQL/Statement.pm line 1120, <GEN3> chunk 2.  Argument 
+	"Multiplier" isn't numeric in numeric eq (==) at [...]/SQL/Statement.pm
+	line 1120, <GEN3> chunk 153.
+      - 'use diagnostics;' was removed to solve the problem.
 
   Online::USPS
     - Pounds, ounces, and weight handling refactored.
     
-  UserTag
+  Interchange UserTag
     - Sort hashes before reporting them in incidents.
     - [Fixed] The "don't send if required field is missing" doesn't work in 
       the "send incident report code" feature -- it sends it even if to_zip is
@@ -79,6 +87,7 @@ Revision history for Business::Shipping
         - Fixed with "Required Options" changes.
     - City added
     - Incident report enhancements.
+    - Variable formatting fixes
 
 
 1.06  Feb 11 2004
@@ -330,7 +339,7 @@ Revision history for Business::Shipping
     - Add dependency requirements
     - Misc updates.
 
-    
+
 0.02  Sat May 31 18:04:00 2003
     - Testing overhaul
     - Lots of bug fixes (uncovered by testing, mostly for USPS)
@@ -340,7 +349,7 @@ Revision history for Business::Shipping
     - API Changes:
         + None.
 
-        
+
 0.01  Fri May 30 22:45:11 2003
     - Moved everything around a lot
     - Packaged everything like standard Perl modules

@@ -1,7 +1,7 @@
 
-			    Business::Shipping, Version 1.50+
+                    Business::Shipping, Version 1.50+
 
-                Copyright (C) 2003, 2004, by Dan Browning and others
+            Copyright (C) 2003, 2004, by Dan Browning and others
 
 			    All rights reserved.
 
@@ -9,8 +9,8 @@
     it under the terms of either:
 
 	a) the GNU General Public License as published by the Free
-	Software Foundation (see doc/GPL); either version 1, or (at your option) any
-	later version, or
+	Software Foundation (see doc/GPL); either version 1, or (at your option)
+	any later version, or
 
 	b) the "Artistic License" which comes with this Kit (see doc/Artistic).
 

@@ -10,7 +10,7 @@ Business::Shipping::RateRequest::Offline - Abstract class for cost calculation.
 
 =head1 VERSION
 
-$Revision: 1.10 $      $Date: 2004/05/06 20:15:27 $
+$Revision: 1.11 $      $Date: 2004/06/24 03:09:24 $
 
 =head1 DESCRIPTION
 
@@ -23,7 +23,7 @@ a few miscellaneous functions.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -43,6 +43,7 @@ Cache always disabled for Offline lookups: they are so fast already, the disk I/
 of a running a cache is not worth it.
 
 =cut
+
 sub cache { return 0; }
 
 =item * make_three( $zip )
@@ -52,6 +53,7 @@ sub cache { return 0; }
 Shorten to three digits.  If the input doesn't have leading zeros, add them.
 
 =cut
+
 sub make_three 
 {
     my ( $self, $zip ) = @_;

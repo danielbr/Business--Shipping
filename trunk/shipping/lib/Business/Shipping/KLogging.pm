@@ -1,6 +1,6 @@
 # Business::Shipping::KLogging - Logging interface
 # 
-# $Id: KLogging.pm,v 1.1 2004/05/06 20:15:19 danb Exp $
+# $Id: KLogging.pm,v 1.2 2004/06/24 03:09:23 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::KLogging - Logging interface
 
 =head1 VERSION
 
-$Revision: 1.1 $      $Date: 2004/05/06 20:15:19 $
+$Revision: 1.2 $      $Date: 2004/06/24 03:09:23 $
 
 =head1 DESCRIPTION
 
@@ -28,7 +28,7 @@ via your own wrapper.  See Business::Shipping::Logging as an example wrapper.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -246,6 +246,7 @@ It was copied from Interchange L<http://www.icdevgroup.org>, written by Mike
 Heins  E<lt>F<mike@perusion.com>E<gt>.
 
 =cut
+
 sub uneval { 
     my ( $self, $o ) = @_;        # recursive
     my ( $r, $s, $i, $key, $value );

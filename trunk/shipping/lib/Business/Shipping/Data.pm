@@ -1,11 +1,6 @@
-# Business::Shipping::Data - Database interface
-# 
-# $Id: Data.pm,v 1.6 2004/05/07 05:29:38 danb Exp $
-# 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
-# 
 
 package Business::Shipping::Data;
 
@@ -15,7 +10,7 @@ Business::Shipping::Data - Database interface
 
 =head1 VERSION
 
-$Revision: 1.6 $      $Date: 2004/05/07 05:29:38 $
+$Id: Data.pm,v 1.7 2004/06/24 03:09:23 danb Exp $
 
 =head1 DESCRIPTION
 
@@ -27,13 +22,12 @@ Uses DBI for CSV file access.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT = qw( record );
 
 use strict;
 use warnings;
 use base ( 'Exporter' );
-use Data::Dumper;
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use DBI;
@@ -43,6 +37,7 @@ use DBI;
 Performs a single-record lookup.  Analagous to Interchange tag_data() function.
 
 =cut
+
 sub record
 {
     my ( $table, $field, $key, $opt ) = @_;
@@ -59,7 +54,7 @@ sub record
     my $sth = sth( $query )
         or die "Could not get sth: $@";
     my $hashref = $sth->fetchrow_hashref();
-    debug3( "hashref = " . Dumper( $hashref ) );
+    #debug3( "hashref = " . Dumper( $hashref ) );
     
     return $hashref->{ $field };
 }    
@@ -92,10 +87,10 @@ sub dbh
             or die "Cannot connect: " . $DBI::errstr;
     
         if ( $dsn =~ /^DBI:CSV/ ) {
-            #
+
             # Try to find tables in the configuration that have
             # extra settings.
-            #
+
             foreach my $section ( cfg_obj()->Sections() ) {
                 if ( $section =~ /^Table_/ ) {
                     my $table = $section;
@@ -108,19 +103,18 @@ sub dbh
                     $table_attributes_hash->{ eol } =~ s/nl/\n/;
                     $table_attributes_hash->{ eol } ||= "\n";
                     
-                    debug3( "adding special csv attributes for $table.  They are:" . Dumper( $table_attributes_hash ) );
+                    #debug3( "adding special csv attributes for $table.  They are:" . Dumper( $table_attributes_hash ) );
                     
-                    #
                     # TODO: only allow a restricted list of attributes to be set
                     # instead of letting anything in the config file be set.
-                    #
+
                     $dbh->{ csv_tables }->{ $table } = $table_attributes_hash;
                 }
             }
         }
-        #
+        
         # Currently, only one DBH is allowed.
-        #
+
         $::dbh_store->{ main } = $dbh;
     }
     return $::dbh_store->{ main };
@@ -130,14 +124,13 @@ sub get_primary_key
 {
     my ( $table ) = @_;
     
-    my $sth = sth( "SELECT * FROM $table LIMIT 1" );
+    my $sth = sth( "select * from $table limit 1" );
     
-    #
     # TODO: Use some DBI method to determine the real primary key
     # Or, allow the primary key to be specified in the config.
     #
     # For now, we assume that the first column is the primary key.
-    #
+
     return $sth->{ NAME }->[ 0 ];
 }
 

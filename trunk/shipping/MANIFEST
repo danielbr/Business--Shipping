@@ -1,4 +1,3 @@
-.cvsignore
 bin/Business-Shipping-update-source.sh
 bin/gen_bundle.sh
 bin/new-release.pl
@@ -744,8 +743,6 @@ lib/Business/Shipping/Tracking/UPS.pm
 lib/Business/Shipping/Tracking/USPS.pm
 lib/Business/Shipping/Util.pm
 LICENSE
-log/.cvsignore
-log/.empty
 Makefile.PL
 MANIFEST			This list of files
 META.yml
@@ -778,6 +775,8 @@ t/manual/misc_method_maker2.pl
 t/manual/misc_method_maker3.pl
 t/manual/misc_method_maker4.pl
 t/manual/offline_ups.pl
+t/manual/offline_ups_802.pl
+t/manual/offline_ups_ak.pl
 t/manual/offline_ups_alternate_syntax.pl
 t/manual/offline_ups_bug1.pl
 t/manual/offline_ups_bug2_al.pl
@@ -786,23 +785,30 @@ t/manual/offline_ups_bug4_cy.pl
 t/manual/offline_ups_ca.pl
 t/manual/offline_ups_ca2.pl
 t/manual/offline_ups_ca_multi.pl
+t/manual/offline_ups_ca_to_ca.pl
 t/manual/offline_ups_ca_xpr.pl
 t/manual/offline_ups_hi.pl
 t/manual/offline_ups_hi_1da.pl
 t/manual/offline_ups_hi_2da.pl
 t/manual/offline_ups_intl.pl
 t/manual/offline_ups_intl_fr.pl
+t/manual/offline_ups_intl_france.pl
+t/manual/offline_ups_intl_france_metro.pl
 t/manual/offline_ups_intl_gb.pl
+t/manual/offline_ups_intl_gb2_.pl
 t/manual/offline_ups_intl_my.pl
 t/manual/offline_ups_intl_other.pl
 t/manual/offline_ups_intl_ru.pl
 t/manual/offline_ups_intl_xdm.pl
 t/manual/offline_ups_intl_xpd.pl
 t/manual/offline_ups_simple.pl
+t/manual/offline_ups_vt.pl
 t/manual/offline_ups_zip_plus_four.pl
 t/manual/Online-UPS-Cache-test.pl
+t/manual/Online-USPS-first-class.pl
 t/manual/Online-USPS-intl_doesnt_require_from_zip.pl
 t/manual/online_ups_ca.pl
+t/manual/online_ups_ca_to_ca.pl
 t/manual/online_ups_ca_xpr.pl
 t/manual/online_ups_cache_compare.pl
 t/manual/online_ups_domestic.pl

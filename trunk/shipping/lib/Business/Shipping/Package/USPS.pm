@@ -1,4 +1,4 @@
-# $Id: USPS.pm,v 1.11 2004/05/06 20:15:26 danb Exp $
+# $Id: USPS.pm,v 1.12 2004/06/24 03:09:24 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,7 +13,7 @@ Business::Shipping::Package::USPS
 
 =head1 VERSION
 
-$Revision: 1.11 $      $Date: 2004/05/06 20:15:26 $
+$Revision: 1.12 $      $Date: 2004/06/24 03:09:24 $
 
 =head1 METHODS
 
@@ -21,7 +21,7 @@ $Revision: 1.11 $      $Date: 2004/05/06 20:15:26 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -51,6 +51,7 @@ Default 'Package'.
 =item * ounces
 
 =cut
+
 use Class::MethodMaker 2.0
     [
       new    => [ { -hash => 1, -init => 'this_init' }, 'new' ],
@@ -90,6 +91,7 @@ of the following: pounds, ounces, or weight.  It doesn't matter which one it is,
 but if none of them are defined, then we pick 'weight' to Require.
 
 =cut
+
 sub Required
 {
     my ( $self ) = @_;
@@ -110,6 +112,7 @@ Overrides the standard weight definition so that it can correctly set pounds &
 ounces.
 
 =cut
+
 sub weight
 {
     my ( $self, $in_weight ) = @_;
@@ -135,6 +138,7 @@ sub weight
 Set pounds and ounces.  Converts from fractional pounds.
 
 =cut
+
 sub set_lbs_oz
 {
     my ( $self, $in_weight ) = @_;
@@ -161,6 +165,7 @@ sub set_lbs_oz
 Converts pounds + ounces to fractional weight.  Returns weight.
 
 =cut
+
 sub lbs_oz_to_weight
 {
     my ( $self ) = @_;
@@ -178,6 +183,7 @@ sub lbs_oz_to_weight
 =item * _round_up
 
 =cut
+
 sub _round_up
 {
     my ( $self, $f ) = @_;

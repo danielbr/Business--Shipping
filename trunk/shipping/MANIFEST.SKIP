@@ -10,6 +10,8 @@
 \bRCS\b
 \bCVS\b
 ,v$
+\.cvsignore$
+\.empty$
 
 
 #

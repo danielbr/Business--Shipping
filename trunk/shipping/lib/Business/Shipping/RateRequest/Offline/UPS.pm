@@ -19,7 +19,7 @@ Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
 
 =head1 VERSION
 
-$Revision: 1.23 $      $Date: 2004/05/07 05:29:38 $
+$Revision: 1.24 $      $Date: 2004/06/24 03:09:24 $
 
 =head1 GLOSSARY
 
@@ -29,13 +29,15 @@ $Revision: 1.23 $      $Date: 2004/05/07 05:29:38 $
 
 =item * DAS    Delivery Area Surcharge (same as EAS)
 
+=back
+
 =head1 METHODS
 
 =over 4
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.23 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.24 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -88,6 +90,7 @@ Hash.  Format:
   - For Canada, it is...?
 
 =cut
+
 use Class::MethodMaker 2.0
     [ 
       new    => [ { -init => 'this_init' }, 'new' ],
@@ -150,6 +153,7 @@ sub is_from_east_coast { return not shift->is_from_west_coast(); }
 =item * convert_ups_rate_file
 
 =cut
+
 sub convert_ups_rate_file
 {
     trace "( $_[0] )";
@@ -233,6 +237,7 @@ sub convert_ups_rate_file
 =item * do_download
 
 =cut
+
 sub do_download
 {
     my ( $self ) = @_;
@@ -257,6 +262,7 @@ sub do_download
 =item * do_unzip
 
 =cut
+
 sub do_unzip
 {
     for ( 
@@ -288,6 +294,7 @@ Find all data .csv files and convert them from the vanilla UPS CSV format
 into one that Business::Shipping can use.
 
 =cut
+
 sub do_convert_data
 {
     trace '()';
@@ -372,6 +379,7 @@ sub do_convert_data
 =item * convert_zone_file
 
 =cut
+
 sub convert_zone_file
 {
     my ( $self, $file ) = @_;
@@ -433,6 +441,7 @@ sub convert_zone_file
 =item * rename_tables_that_start_with_numbers
 
 =cut
+
 sub rename_tables_that_start_with_numbers
 {
     my $path = shift;
@@ -455,6 +464,7 @@ sub rename_tables_that_start_with_numbers
 =item * rename_tables_that_have_a_dash
 
 =cut
+
 sub rename_tables_that_have_a_dash
 {
     my $path = shift;
@@ -478,6 +488,7 @@ sub rename_tables_that_have_a_dash
 =item * auto_update
 
 =cut
+
 sub auto_update
 {
     my ( $self ) = @_;
@@ -488,6 +499,7 @@ sub auto_update
 =item * do_update
 
 =cut
+
 sub do_update
 {
     my ( $self ) = @_;
@@ -508,6 +520,7 @@ sub do_update
 =item * validate
 
 =cut
+
 sub validate
 {
     my ( $self ) = @_;
@@ -538,6 +551,7 @@ sub validate
 =item * _handle_response
 
 =cut
+
 sub _handle_response
 {
     my $self = $_[ 0 ];
@@ -625,7 +639,7 @@ sub _handle_response
     my $results = {
         $self->shipper() => $packages
     };
-    debug3 'results = ' . uneval( $results );
+    #debug3 'results = ' . uneval( $results );
     $self->results( $results );
     
     return $self->is_success( 1 );
@@ -649,6 +663,7 @@ sub _increase_total_charges
 =item * calc_express_plus_adder
 
 =cut
+
 sub calc_express_plus_adder
 {
 
@@ -669,6 +684,7 @@ does not include special residential charges that apply to some services (air
 services, for example).
 
 =cut
+
 #
 # TODO: Instead of always applying this, only apply it if the zip is found
 # in xarea.
@@ -696,6 +712,7 @@ in the accessorials.csv file.
 Currently $1.40.
 
 =cut
+
 sub calc_residential_surcharge
 {
     my ( $self ) = @_;
@@ -758,6 +775,7 @@ sub calc_fuel_surcharge
 =item * service_code_to_ups_name
 
 =cut
+
 sub service_code_to_ups_name
 {
     my ( $self, $service ) = @_;
@@ -785,6 +803,7 @@ sub service_code_to_ups_name
 =item * ups_name_to_table
 
 =cut
+
 sub ups_name_to_table
 {
     my ( $self, $ups_name ) = @_;
@@ -824,6 +843,7 @@ sub ups_name_to_table
     )
     
 =cut
+
 sub calc_zone_data
 {
     trace( 'called' );
@@ -949,6 +969,7 @@ Decides what unique keys will be used to locate the zone record.
 Returns ( $key, $raw_key )
 
 =cut
+
 sub determine_keys
 {
     my ( $self ) = @_;
@@ -987,6 +1008,7 @@ sub determine_keys
 WorldWide methods use different tables for Canada
 
 =cut
+
 sub rate_table_exceptions
 {
     my ( $self, $type, $table ) = @_;
@@ -1024,6 +1046,7 @@ sub rate_table_exceptions
     }
     
 =cut
+
 sub calc_cost
 {
     my ( $self ) = @_;
@@ -1162,8 +1185,11 @@ sub calc_cost
     
     $zone = $self->special_zone_hi_ak( $type, $zone );
     
-    if (! defined $zone) {
-        $self->user_error( "No zone found for geo code (key) $key, type $type. " );
+    if ( not defined $zone ) {
+        $self->user_error( 
+            "No zone found for geo code (key) " . ( $key || 'undef' ) . ", " 
+            . "type " . ( $type || 'undef' ) . '.' 
+        );
         return 0;
     }
     elsif ( ! $zone or $zone eq '-') {
@@ -1203,6 +1229,7 @@ sub calc_cost
 Hawaii and Alaska have special per-zipcode zone exceptions for 1da/2da.
 
 =cut
+
 sub special_zone_hi_ak
 {
     my ( $self, $type, $zone ) = @_;
@@ -1251,6 +1278,7 @@ sub special_zone_hi_ak
 Determines which zone (zone_name), and which zone file to use for lookup.
 
 =cut
+
 sub calc_zone_info
 {
     trace '()';
@@ -1345,6 +1373,7 @@ is in, then if it is east or west coast.  If west, then use the first "Express" 
 in the zone chart.  If east, then use the second.
 
 =cut
+
 sub determine_coast
 {
     my ( $self ) = @_;
@@ -1378,6 +1407,7 @@ sub determine_coast
 Performs some final value modification just before the submit.
 
 =cut
+
 sub _massage_values
 {
     my ( $self ) = @_;

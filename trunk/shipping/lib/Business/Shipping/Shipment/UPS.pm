@@ -1,4 +1,4 @@
-# $Id: UPS.pm,v 1.9 2004/05/06 20:15:29 danb Exp $
+# $Id: UPS.pm,v 1.10 2004/06/24 03:09:25 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,7 +13,7 @@ Business::Shipping::Shipment::UPS
 
 =head1 VERSION
 
-$Revision: 1.9 $      $Date: 2004/05/06 20:15:29 $
+$Revision: 1.10 $      $Date: 2004/06/24 03:09:25 $
 
 =head1 METHODS
 
@@ -21,7 +21,7 @@ $Revision: 1.9 $      $Date: 2004/05/06 20:15:29 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -33,6 +33,7 @@ use Business::Shipping::Config;
 Defaults to true.
 
 =cut
+
 use Class::MethodMaker 2.0
     [ 
       new    => [ { -hash => 1, -init => 'this_init' },  'new' ],
@@ -59,6 +60,7 @@ sub this_init
 from_state only required for Offline international orders.
 
 =cut
+
 sub Required
 {
     return 'service, from_state' if $_[ 0 ]->to_canada and $_[ 0 ]->offline;
@@ -72,6 +74,7 @@ sub Required
 Returns the abbreviated form of 'from_state'.
 
 =cut
+
 sub from_state_abbrev
 {
     my ( $self ) = @_;
@@ -88,6 +91,7 @@ sub from_state_abbrev
 Alaska and Hawaii are treated differently by many shippers.
 
 =cut
+
 sub from_ak_or_hi
 {
     my ( $self ) = @_;

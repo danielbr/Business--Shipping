@@ -1,6 +1,6 @@
 # Business::Shipping::ClassAttribs - Class attribute functions
 # 
-# $Id: ClassAttribs.pm,v 1.2 2004/03/31 19:11:05 danb Exp $
+# $Id: ClassAttribs.pm,v 1.3 2004/06/24 03:09:23 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::ClassAttribs - Class attribute functions
 
 =head1 VERSION
 
-$Revision: 1.2 $      $Date: 2004/03/31 19:11:05 $
+$Revision: 1.3 $      $Date: 2004/06/24 03:09:23 $
 
 =head1 DESCRIPTION
 
@@ -28,7 +28,7 @@ via static class methods.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT = qw( get_grouped_attrs );
 
 use strict;
@@ -38,7 +38,7 @@ use Business::Shipping::Logging;
 use Business::Shipping::ClassInfo;
 use Scalar::Util 'blessed';
     
-=head2 $object->get_grouped_attrs( $attribute_group_name, %options  )
+=item * $object->get_grouped_attrs( $attribute_group_name, %options  )
 
 Its recommended that you create an object of the desired class, then call it as 
 above. 
@@ -63,6 +63,7 @@ class_name is for the old feature
  3. Go over the list and look for $group elements.
     
 =cut
+
 #
 # TODO: automatically notice when called as "$self->" or not, 
 # and adjust accordingly.  If $self *AND* object => ... are specified,
@@ -138,6 +139,7 @@ sub get_grouped_attrs
 =item * obj_to_class_name( $obj )
 
 =cut
+
 sub obj_to_class_name
 {
     my ( $obj ) = @_;

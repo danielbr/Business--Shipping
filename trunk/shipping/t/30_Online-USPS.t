@@ -276,5 +276,7 @@ SKIP: {
         weight            => 5.5,
     );
     ok( $shipment->total_charges(), 'USPS Parcel Post to Canada' );
-
+    
+    
+    
 } # /skip

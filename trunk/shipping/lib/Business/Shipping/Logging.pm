@@ -1,11 +1,6 @@
-# Business::Shipping::Logging - Logging interface
-# 
-# $Id: Logging.pm,v 1.2 2004/05/06 20:15:19 danb Exp $
-# 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
-# 
 
 package Business::Shipping::Logging;
 
@@ -15,18 +10,17 @@ Business::Shipping::Logging - Logging interface
 
 =head1 VERSION
 
-$Revision: 1.2 $      $Date: 2004/05/06 20:15:19 $
+$Id: Logging.pm,v 1.3 2004/06/24 03:09:23 danb Exp $
 
 =head1 DESCRIPTION
 
-Implements Vend specific portions of Logger.  Wrapper for KLogger.
+Wrapper for KLogger.
 
 =head1 METHODS
 
 =over 4
 
 =cut
-
 
 use strict;
 use warnings;
@@ -35,9 +29,8 @@ use vars ( '@EXPORT', '$VERSION'  );
 use Business::Shipping::KLogging;
 use Business::Shipping::Config;
 
-
 @EXPORT = Business::Shipping::KLogging::subs;
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 BEGIN
 {

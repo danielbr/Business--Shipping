@@ -4,8 +4,8 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
 
 =head1 INSTALLATION
 
- See INSTALL file for more details.
- 
+See INSTALL file for more details.
+
  perl Makefile.PL
  make
  make test
@@ -16,7 +16,7 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (2.02)
+ Class::MethodMaker::Engine (any)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
@@ -28,6 +28,7 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
  LWP::UserAgent (any)
  Math::BaseCnv (any)
  Scalar::Util (1.10)
+ Test::More (any)
  XML::DOM (any)
  XML::Simple (2.05)
 
@@ -36,67 +37,78 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
 Be careful to read, understand, and comply with the terms of use for the 
 provider that you will use.
 
- * For USPS: Sign up online for free:
- 
-    - http://www.uspswebtools.com/registration/
-    
-    - (More info at http://www.uspswebtools.com)
+=head2 For United States Postal Service (USPS): Free signup
 
-    - The online signup will result in a testing-only account (only a small
-      sample of queries will work).  
-      
-    - To activate the "production" use of your USPS account, you must follow the
-      USPS documentation.  Currently, that means contacting the Internet 
-      Customer Care Center by e-mail or phone:
-      
-        icustomercare@usps.com
-        
-        1-800-344-7779
-    
- * For UPS: Sign up online for free:
+=over 4
 
-   - https://www.ups.com/servlet/registration?loc=en_US_EC
-   
-   - (More info at http://www.ec.ups.com)
-   
-   - Once you get a User Id and Password from UPS, you will need to login and
-     select "Get Access Key", then "Get XML Access Key".
-     
-   - Legal Terms and Conditions: 
-     L<http://www.ups.com/content/us/en/resources/service/terms/index.html>
- 
-=head1 USAGE EXAMPLES
- 
- * See Shipping.pm POD documentation for API and usage examples.
+=item * L<http://www.uspswebtools.com/registration/>
 
- * Business::Shipping can be used with the Interchange e-commerce system 
-   ( L<http://www.icdevgroup.org> ).  See the UserTag/business-shipping.tag 
-   file, it implements a function that takes shipping-related arguments, builds
-   a Business::Shipping object, then returns the calculated cost.
+=item * (More info at L<http://www.uspswebtools.com>)
 
- * Business::Shipping is used in the paymentonline.com mod_perl/template toolkit
-   system.
- 
- * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman 
-   <andy@kahncentral.net>.
-   http://www.plainblack.com/wobjects?wid=1143&func=viewSubmission&sid=654
-   http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz
- 
- * Let the author know if you are using Business::Shipping in your website, 
-   application, etc. so it can be mentioned here.
+=item * The online signup will result in a testing-only account (only a small
+        sample of queries will work).  
+
+=item * To activate the "production" use of your USPS account, you must follow 
+        the USPS documentation.  Currently, that means contacting the Internet 
+        Customer Care Center by e-mail (C<icustomercare@usps.com>) or phone:
+        1-800-344-7779.
+
+=back
+
+=head2 For United Postal Service (UPS): Free signup
+
+=over 4
+
+=item * https://www.ups.com/servlet/registration?loc=en_US_EC
+
+=item * (More info at http://www.ec.ups.com)
+
+=item * Once you get a User Id and Password from UPS, you will need to login and
+        select "Get Access Key", then "Get XML Access Key".
+
+=item * Legal Terms and Conditions: 
+        L<http://www.ups.com/content/us/en/resources/service/terms/index.html>
+
+=back
+
+=head1 Uses of this software
+
+It is appreciated when users mention their use of Business::Shipping to the 
+author and/or on their website or in their application.
+
+=over 4
+
+=item * (See Shipping.pm POD documentation for API and usage examples.)
+
+=item * Business::Shipping can be used with the Interchange e-commerce system 
+   ( L<http://www.icdevgroup.org> ).  See C<UserTag/business-shipping.tag>.
+
+=item * Business::Shipping is used in the paymentonline.com mod_perl/template 
+    toolkit system.
+
+=item * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman 
+    <andy@kahncentral.net>.
+    L<http://www.plainblack.com/wobjects?wid=1143&func=viewSubmission&sid=654>
+    L<http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz>
+
+=item * Mentioned in YAPC 2004 Presentation: "Writing web applications with perl ..."
+    L<http://www.beamartyr.net/YAPC-2004/text25.html>
+
+=item * Phatmotorsports.com uses Business::Shipping for shipping cost 
+    calculation. 
+
+=back
 
 =head1 WEBSITE
- 
- http://www.kavod.com/Business-Shipping
- 
+
+L<http://www.kavod.com/Business-Shipping>
+
 The website carries the most recent version, as well as instructions for
 accessing the anonymous CVS repository. 
 
-=head1 CODING STYLE
+L<http://sf.net/projects/shipping>
 
- * The more whitespace, the better.
- 
- * Non-public methods are prefixed with "_". 
+Sourceforge.net provides hosting for the project.
 
 =head1 BUGS
 
@@ -104,27 +116,28 @@ See the TODO file for a comprehensive list.
 
 =over 4
 
-=item * You will get the following error when there is no connection to the internet:
+=item * USPS and no internet connection.
+
+You will get the following error when there is no connection to the internet 
+when using Online::USPS:
 
  Business::Shipping::RateRequest::Online::USPS::_handle_response: ()
  File does not exist:  at .../RateRequest/Online/USPS.pm ...
- 
+
 =back
-
-=head1 COPYRIGHT AND LICENCE
-
-Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
-Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 
 =head1 AUTHOR
 
- Dan Browning
- Kavod Technologies
- <db@kavod.com>
- http://www.kavod.com
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
 
 =head1 CREDITS
 
- * See CREDITS file. 
+See CREDITS file. 
 
 =cut

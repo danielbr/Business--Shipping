@@ -1,11 +1,13 @@
 =head1 INSTALLATION
 
+How to install Business::Shipping:
+
 =head1 REQUIRED MODULES
 
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (2.02)
+ Class::MethodMaker::Engine (any)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
@@ -17,13 +19,13 @@
  LWP::UserAgent (any)
  Math::BaseCnv (any)
  Scalar::Util (1.10)
+ Test::More (any)
  XML::DOM (any)
  XML::Simple (2.05)
 
 =head2 Module Installation via CPAN
 
- C<perl -MCPAN -e 'force install XML::Parser XML::Parser::PerlSAX'>
- C<perl -MCPAN -e 'install F/FL/FLUFFY/Class-MethodMaker-2.00.tar.gz'>
+ C<perl -MCPAN -e 'force install XML::Parser XML::Parser::PerlSAX XML::DOM'>
  C<perl -MCPAN -e 'install Bundle::Business::Shipping'>
 
 As of February 10, 2004, two CPAN modules in Bundle::Business::Shipping do not

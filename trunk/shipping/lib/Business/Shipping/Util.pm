@@ -1,6 +1,6 @@
 # Business::Shipping::Util - Miscellaneous functions
 # 
-# $Id: Util.pm,v 1.8 2004/05/06 20:15:26 danb Exp $
+# $Id: Util.pm,v 1.9 2004/06/24 03:09:24 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Util - Miscellaneous functions
 
 =head1 VERSION
 
-$Revision: 1.8 $      $Date: 2004/05/06 20:15:26 $
+$Revision: 1.9 $      $Date: 2004/06/24 03:09:24 $
 
 =head1 DESCRIPTION
 
@@ -27,8 +27,8 @@ Many file-related functions, some others.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-@EXPORT  = ( 'element_in_array', 'uneval' );
+$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+@EXPORT  = ( 'element_in_array' );
 
 use strict;
 use warnings;
@@ -44,6 +44,7 @@ use Fcntl ':flock';
 =item * download_to_file( $url, $file )
 
 =cut
+
 sub download_to_file
 {
     my ( $url, $file ) = @_;
@@ -72,6 +73,7 @@ only locale supported is USD).
 Analagous to $Tag->currency() in Interchange.
 
 =cut
+
 sub currency
 {
     my ( $opt, $amount ) = @_;
@@ -86,6 +88,7 @@ sub currency
 =item * _unzip_file( $zipName, $destination_directory )
 
 =cut
+
 #
 # Extracts all files from the given zip
 #
@@ -111,6 +114,7 @@ sub _unzip_file
 =item * filename_only( $path )
 
 =cut
+
 sub filename_only
 {
     trace "( $_[0] )";
@@ -125,6 +129,7 @@ sub filename_only
 =item * split_dir_file( $path )
 
 =cut
+
 #
 # Return ( directory_path, file_name ) from any path.
 #
@@ -141,6 +146,7 @@ sub split_dir_file
 =item * remove_extension( $file )
 
 =cut
+
 sub remove_extension
 {
     my $file = shift;
@@ -155,6 +161,7 @@ sub remove_extension
 =item * remove_elements_of_x_that_are_in_y( $x, $y )
 
 =cut
+
 sub remove_elements_of_x_that_are_in_y
 {
     my ( $x, $y ) = @_;
@@ -181,6 +188,7 @@ sub remove_elements_of_x_that_are_in_y
 =item * remove_windows_carriage_returns( $path )
 
 =cut
+
 sub remove_windows_carriage_returns
 {
     my $file = shift;
@@ -218,6 +226,7 @@ sub remove_windows_carriage_returns
 =item * readfile( $file )
 
 =cut
+
 sub readfile
 {
     my ( $file ) = @_;
@@ -233,6 +242,7 @@ sub readfile
 =item * element_in_array( $element, @array )
 
 =cut
+
 sub element_in_array
 {
     my ( $e, @a ) = @_;
@@ -248,6 +258,7 @@ sub element_in_array
 =item * get_fh( $filename )
 
 =cut
+
 sub get_fh
 {
     my ( $filename ) = @_;
@@ -261,6 +272,7 @@ sub get_fh
 =item * close_fh( $file_handle )
 
 =cut
+
 sub close_fh
 {
     my ( $file_handle ) = @_;
@@ -275,6 +287,7 @@ sub close_fh
 Removes duplicates (but leaves at least one).
 
 =cut
+
 sub unique
 {
     my ( @ary ) = @_;

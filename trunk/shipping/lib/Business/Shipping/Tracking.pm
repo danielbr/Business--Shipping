@@ -1,6 +1,6 @@
 # Business::Shipping::Tracking - Abstract class
 # 
-# $Id: Tracking.pm,v 1.5 2004/05/06 20:15:26 danb Exp $
+# $Id: Tracking.pm,v 1.6 2004/06/24 03:09:23 danb Exp $
 # 
 # Copyright (c) 2004 Infogears Inc.  All rights reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights 
@@ -44,7 +44,7 @@ Business::Tracking is an API for tracking shipments
 =cut
 
 
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -96,8 +96,6 @@ sub _delete_undefined_keys($) {
   } keys %$hash_ref;
 }
 
-
-
 =head1 SEE ALSO
 
 L<Business::Shipping::Tracking::UPS>
@@ -109,7 +107,8 @@ Copyright (c) 2004 InfoGears Inc. L<http://www.infogears.com>  All rights reserv
 
 Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 
-Licensed under the GNU Public License (GPL).  See COPYING for more info.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
 
 =cut
 

@@ -1,6 +1,6 @@
 # Business::Shipping::ClassInfo - Used by ClassAttribs
 # 
-# $Id: ClassInfo.pm,v 1.3 2004/05/06 20:15:19 danb Exp $
+# $Id: ClassInfo.pm,v 1.4 2004/06/24 03:09:23 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::ClassInfo - Used by ClassAttribs
 
 =head1 VERSION
 
-$Revision: 1.3 $      $Date: 2004/05/06 20:15:19 $
+$Revision: 1.4 $      $Date: 2004/06/24 03:09:23 $
 
 =head1 METHODS
 
@@ -23,7 +23,7 @@ $Revision: 1.3 $      $Date: 2004/05/06 20:15:19 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -59,6 +59,7 @@ Where possible, object is an actual object from the $self object (or one of its
 Has_a objects).
 
 =cut
+
 sub classes { return $_[ 0 ]->{ classes }; }
 
 sub add_classes_objects
@@ -126,6 +127,7 @@ sub find_and_add_Has_a_objects
 =item * get_classes_objects_for_classes
 
 =cut
+
 sub get_classes_objects_for_classes
 {
     my ( $self, @class_names ) = @_;
@@ -376,6 +378,7 @@ sub add_missing_objects
 =item * get_tree_class_names( $class_name )
 
 =cut
+
 sub get_tree_class_names
 {
     my ( $self, $class_name ) = @_;

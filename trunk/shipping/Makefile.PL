@@ -1,6 +1,6 @@
 # Makefile.PL - Installation script for Business::Shipping
 # 
-# $Id: Makefile.PL,v 1.32 2004/05/12 05:13:12 danb Exp $
+# $Id: Makefile.PL,v 1.33 2004/06/24 03:09:11 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -29,24 +29,24 @@ WriteMakefile(
     AUTHOR		    => 'Dan Browning <db@kavod.com>',
 	CONFIGURE		=> \&extra_WriteMakefile_options,
     PREREQ_PM		=>	{
-		'Archive::Zip'			=> 0,
-		'Bundle::DBD::CSV'		=> 0,
-		'Cache::FileCache'		=> 0,
-		'Class::MethodMaker'	=> '2.02',
-		'Clone'					=> 0,
-		'Config::IniFiles'		=> 0,
-		'Crypt::SSLeay'			=> 0,
-		'Data::Dumper'			=> 0,
-		'Devel::Required'		=> '0.03',
-		'Error'					=> 0,
-		'Getopt::Mixed'			=> 0,
-		'Log::Log4perl'         => 0,
-        'LWP::UserAgent'		=> 0,
-		'Math::BaseCnv'			=> 0,
-		'Scalar::Util'			=> '1.10',
-        'Test::More'            => 0,
-		'XML::DOM' 				=> 0,
-		'XML::Simple'			=> '2.05',
+		'Archive::Zip'			     => 0,
+		'Bundle::DBD::CSV'		     => 0,
+		'Cache::FileCache'		     => 0,
+		'Class::MethodMaker::Engine' => 0,
+		'Clone'					     => 0,
+		'Config::IniFiles'		     => 0,
+		'Crypt::SSLeay'			     => 0,
+		'Data::Dumper'		      	 => 0,
+		'Devel::Required'	      	 => '0.03',
+		'Error'				      	 => 0,
+		'Getopt::Mixed'		      	 => 0,
+		'Log::Log4perl'              => 0,
+        'LWP::UserAgent'		     => 0,
+		'Math::BaseCnv'			     => 0,
+		'Scalar::Util'			     => '1.10',
+        'Test::More'                 => 0,
+		'XML::DOM' 				     => 0,
+		'XML::Simple'			     => '2.05',
 	},
 );
 
@@ -69,6 +69,8 @@ sub MY::install {
 sub MY::postamble {
 	return qq{
 docs :
+	podchecker -nowarnings doc/INSTALL.pod doc/README.pod
+	find lib -name '*.pm' -exec podchecker -nowarnings {} \\;
 	pod2text doc/README.pod > README
 	pod2html doc/README.pod > doc/README.html
 	pod2text doc/INSTALL.pod > INSTALL
@@ -94,7 +96,8 @@ sub extra_WriteMakefile_options {
 		.	"Business::Shipping has various support files for configuration, database, etc.\n"
 		.	"(The path to these files can be overridden later on a per-user basis.)\n"
 		.	"I need to know the path to the \'system\' level, or \'default\' files.\n"
-		.	"On many systems, this directory will only be accessible by root.\n"
+		.	"On many systems, this directory will only be accessible by the user who\n"
+        .   "installed perl, typically root.\n"
 		.	"\n"
 		.	"Business::Shipping default support files directory:", 
 		$my_globals{SUPPORT_FILES_DIR},

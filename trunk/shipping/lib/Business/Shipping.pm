@@ -1,11 +1,10 @@
 # Business::Shipping - Interface for shippers (UPS, USPS)
 #
-# $Id: Shipping.pm,v 1.23 2004/05/12 05:13:13 danb Exp $
+# $Id: Shipping.pm,v 1.24 2004/06/24 03:09:23 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
-#
 
 package Business::Shipping;
 
@@ -66,7 +65,7 @@ Business::Shipping - Interface for shippers (UPS, USPS)
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (2.02)
+ Class::MethodMaker::Engine (any)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
@@ -78,6 +77,7 @@ Business::Shipping - Interface for shippers (UPS, USPS)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
  Scalar::Util (1.10)
+ Test::More (any)
  XML::DOM (any)
  XML::Simple (2.05)
 
@@ -246,16 +246,16 @@ Weight of the shipment, in pounds, as a decimal number.
 =back 
 
 =cut
+
 sub rate_request
 {
     my $class = shift;
     my ( %opt ) = @_;
     not $opt{ shipper } and Carp::croak( "shipper required" ) and return undef;
 
-    #
     # Supports the specification of 'Offline::UPS' -- but if just 'UPS' is sent
-    # then it assumes 'Online::UPS'.
-    #
+    # then it assumes 'Online::UPS' for backwards compatibility.
+
     my $full_shipper;
     if ( $opt{ shipper } =~ /::/ ) {
         $full_shipper = $opt{ shipper };
@@ -306,24 +306,11 @@ sub new_subclass
     return $new_sub_object;    
 }
 
-=head2 $self->determine_shipper_from_self()
-
-To be removed.
-
-=cut
-
-sub determine_shipper_from_self
+sub event_handlers
 {
-    my ( $self ) = @_;
-    
-    my $class = blessed $self;
-    return 'UPS'  if $class =~ /UPS$/;
-    return 'USPS' if $class =~ /USPS$/;
-    
-    return;
+    warn 'The event_handlers() method is depreciated.  Event handlers are ' . 
+         'now configured via config/log4perl.conf.'
 }
-
-sub event_handlers { warn 'Depreciated.  Event handlers are now configured via config/log4perl.conf.' }
 
 1;
 

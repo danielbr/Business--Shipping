@@ -2,53 +2,21 @@
 ##  General TODO
 ################################################################################
 
- * Is Test::Harness a dependancy?  http://www.plainblack.com/wobjects?func=viewSubmission&wid=1143&sid=654&forumOp=viewThread&forumPostId=108636#108636
+* [Enh] Remove default_package() and determine_shipper_from_self().
 
- * [BUG] Installation does not work?  Does $MKPATH and $CP in makefile still 
-   work?
-
- * [BUG] 'make test' generates these warnings (because of "use diagnostics"):
-    t/45_Offline-UPS..........Argument "Letter" isn't numeric in numeric eq (==)
-    at /usr/lib/perl5/site_perl/5.8.3/SQL/Statement.pm line 1120, <GEN3> chunk 
-    2.  Argument "Multiplier" isn't numeric in numeric eq (==) at 
-    /usr/lib/perl5/site_perl/5.8.3/SQL/Statement.pm line 1120, <GEN3> chunk 153.
-
- * [DOC] Documentation Ehancements:
-   Look into OODoc or Pod::Tree
-   Use Pod::HtmlEasy to generate CPAN-style (i.e. pretty) HTML docs.
-   Use podchecker during build process
-
- * [ENH] Restructure:
-   - Keep everything the same, except the "lowest level":
-         "Online::UPS"  => "UPS_Online"
-	 "Offline::UPS" => "UPS_Offline"
-	 "Online::USPS" => "USPS_Online"
-	 new            => "UPS_Online_Old"
-         Shipping::RateRequest::Online::UPS --> Shipping::UPS_Online::RateRequest
-	 Shipping::Shipment::UPS --> Shipping::UPS_Online::Shipment
-	 Shipping::RateRequest::Online::USPS --> Shipping::USPS_Online::RateRequest
-	 Shipping::Tracking::UPS --> Shipping::UPS_Online::Tracking
-   - Benefits:
-     All of the vendor-related code is in one directory (UPS/, FedEx/, etc.).
-     All of the abstract code is in neutral directories.
-   - Optional: Move the neutral code to Shipping::All:: to signify the fact that
-     all code is derived from them.
-	 
- * [ENH] Remove default_package() and determine_shipper_from_self().
-
- * [ENH] Conform to coding style: private methods should be prefixed with an
+* [Enh] Conform to coding style: private methods should be prefixed with an
    underscore. 
  
- * [ENH] Make some kind of allowance for alternate units (kilograms, etc.).
+* [Enh] Make some kind of allowance for alternate units (kilograms, etc.).
 
- * [ENH] Look into Params::Validate and/or Class::Contract
+* [Enh] Look into Params::Validate and/or Class::Contract
  
- * [ENH] Add Test::Inline tests
+* [Enh] Add Test::Inline tests
 
- * [ENH] Consider using Locale::Country (5.8.x+) & Locale::SubCountry (CPAN), or 
+* [Enh] Consider using Locale::Country (5.8.x+) & Locale::SubCountry (CPAN), or 
    Geography::States & Geography::Countries.
 
- * [DOC] Memory footprint information: 
+* [DOC] Memory footprint information: 
    8+ MB when Offline is used (and stays).
    ---> 6.5 mb happens at the time of 
         "use Business::Shipping::RateRequest::Offline::UPS"
@@ -90,10 +58,10 @@ Anyway, I think I need to investigate it some more.
 	the in-memory representation (hmm... I should save this internal representation
 	next time), then run the calculation.
 
- * [ENH] Split the data into its own package, and add it to the bundle.
+* [Enh] Split the data into its own package, and add it to the bundle.
    - Business::Shipping::Data
 
- * [ENH] Logging system (Log4perl) enhancements
+* [Enh] Logging system (Log4perl) enhancements
    - At the time of Makefile.PL, automatically transform the log4perl.conf file
      with the correct absolute path to 'log'.  Same problem as config.ini and
      the hard-coded path to /var/perl/Business-Shipping.
@@ -101,47 +69,106 @@ Anyway, I think I need to investigate it some more.
    - Find some way to have a "remove Business::Shipping" from the first part of 
      the name.  Probably a Log::Log4perl::Filter.    
  
- * [ENH] Use Log::Dispatch::Email for incident notifications?
+* [Enh] Use Log::Dispatch::Email for incident notifications?
 
- * [ENH] Make the error handling more customizable
+* [Enh] Make the error handling more customizable
    Each module should be able to specifiy it's parameters, so that, for example,
    you could have lots of debugging/errors for RateRequest::Offline, but none 
    for RateRequest::Online.
    
- * [ENH] How do I document the fact that some of the modules I require do not
+* [Enh] How do I document the fact that some of the modules I require do not
    build very easily in CPAN?  Right now, it's:
      - SQL::Statement keeps trying to install, even after it is installed
 	 - XML::Parser fails t/stream test 11.  
 	 - XML::Parser::PerlSAX
 
- * [ENH] Allow error format to specified: With/without caller, line numbers.
+* [Enh] Allow error format to specified: With/without caller, line numbers.
 
- * [ENH] Evaluate fields.pm as a guard against autovivification. 
- 
- * [ENH] Update to more recent C:MM syntax, like '-default', etc.
- 
- * [ENH] Allow users to set path to support files.
+* [Enh] Evaluate fields.pm as a guard against autovivification. 
 
- * [ENH] Need to check for support_files() config param, and exit if files
+* [Enh] Update to more recent C:MM syntax, like '-default', etc.
+ 
+* [Enh] Allow users to set path to support files.
+
+* [Enh] Need to check for support_files() config param, and exit if files
    are missing.
 
- * [ENH] Allow the user to set the timeout for http requests.  Sometimes 30
+* [Enh] Allow the user to set the timeout for http requests.  Sometimes 30
    seconds is too long.
 
- * [ENH] Evaluate Log4Perl.
+* [Enh] Evaluate Log4Perl.
 
- * [ENH] Is non-ssl communication with either Online provider possible?
+* [Enh] Is non-ssl communication with either Online provider possible?
  
- * [ENH] Migrate the "retry on failure" code from business-shipping.tag to 
+* [Enh] Migrate the "retry on failure" code from business-shipping.tag to 
    Business::Shipping proper.  Default to tries=2, but allow that to be
    overridden.  ("Failure" means HTTP 500 errors.)
 
- * [ENH] Business::Shipping::OldUPS
+* [Enh] Business::Shipping::OldUPS
     - Doesn't require signup (no username/password, etc.)
     - Utilize the new Business::UPS 2.0.
  
- * [ENH] New, optional interface:
+ * [Enh] Additional module flexibility
+	- Allow the use of Net::SSLeay as well as Crypt::SSLeay
+
+ * [Enh] New feature ideas:
+ 	- Address Verification
+	- Shipping status (package tracking)
+	- Service Availability
+	- Electronic Merchandise Return?
+	- Shipping label generation?
+	- Customs forms?
+	- Shipping time (how long till it gets there)?
+	- Delivery/Signature confirmation?
+
+ * [Enh] Allow the user to enable one shipper as a secondary shipper, if the 
+   first should fail.  For example, if the UPS/USPS servers are down, it will
+   automatically utilize the table-lookup method.
+   
+ * [Enh] Many of the functions that are currently in 
+   Shipping::RateRequest::Offline::UPS should probably be moved somewhere else.
+   They work on one shipment at a time, and having them in the RateRequest 
+   object makes it seem like they should be able to work on multiple shipments
+   at once.  Perhaps make the first parameter the given shipment to be worked 
+   on?
  
+ * [Enh] Find or create some module that will automatically update the "=head1 
+   VERSION" POD based on the CVS "Revision" keyword or the perl $VERSION 
+   variable in the same file.
+   
+ * [DOC] Need to create a list of common errors that will be encountered.
+ 
+ * [Enh] Change the many occurrences of $self->weight( 5 ) to 
+   $self->set_weight( 5 ) (and their like) for readability.
+ 
+ * [Enh] Setup a proper "announce", "cvs", and "users" mailing list where users
+   can sign up for updates and get information.   
+ 
+ * [Enh] Build a more advanced configuration system, with more config-file
+   flexibility.
+ 
+ * [Enh] [UNDER CONSIDERATION] Upgrade to Class::MethodMaker 2.00?
+   - It does not support several features, like 'grouped_fields'.
+   - It does not support grouped_fields_inherit
+   - It is prettier.
+ 
+ * [Enh] Test for thread-safety-ness.
+
+ * [Enh] New feature for MethodMaker: parent_defaults => [ 'shipper' => 'UPS' ].
+   After initialization, calls parent methods with default values so the user 
+   does not have to write an "-init" method.
+
+ * [Enh] Add support back in for multi-package API.
+
+ * Allow the user to configure whether all modules are loaded at startup (as 
+   would be desirable for mod_perl), or when they are needed.  
+   
+ * Put all the currently supported modules in the config.ini file, to make them
+   easier to add. 
+  
+* Have an API for "give me all shipping options and prices for this source,
+  destination, and weight".
+  
 	use Business::Shipping;
 	
 	my $rate_request = Business::Shipping->rate_request(
@@ -160,92 +187,71 @@ Anyway, I think I need to investigate it some more.
 			print "  Price:   $service->{total_charges}\n";
 		}
 	}
-	
- * [ENH] Additional module flexibility
-	- Allow the use of Net::SSLeay as well as Crypt::SSLeay
+ 
+* [Doc] Documentation Ehancements:
+   Look into OODoc or Pod::Tree
+   Use Pod::HtmlEasy to generate CPAN-style (i.e. pretty) HTML docs.
+ 
+* [Enh] Restructure:
+   - Keep everything the same, except the "lowest level":
+         "Online::UPS"  => "UPS_Online"
+	 "Offline::UPS" => "UPS_Offline"
+	 "Online::USPS" => "USPS_Online"
+	 new            => "UPS_Online_Old"
+         Shipping::RateRequest::Online::UPS --> Shipping::UPS_Online::RateRequest
+	 Shipping::Shipment::UPS --> Shipping::UPS_Online::Shipment
+	 Shipping::RateRequest::Online::USPS --> Shipping::USPS_Online::RateRequest
+	 Shipping::Tracking::UPS --> Shipping::UPS_Online::Tracking
+   - Benefits:
+     All of the vendor-related code is in one directory (UPS/, FedEx/, etc.).
+     All of the abstract code is in neutral directories.
+   - Optional: Move the neutral code to Shipping::All:: to signify the fact that
+     all code is derived from them.
 
- * [ENH] New feature ideas:
- 	- Address Verification
-	- Shipping status (package tracking)
-	- Service Availability
-	- Electronic Merchandise Return?
-	- Shipping label generation?
-	- Customs forms?
-	- Shipping time (how long till it gets there)?
-	- Delivery/Signature confirmation?
-
- * [ENH] Allow the user to enable one shipper as a secondary shipper, if the 
-   first should fail.  For example, if the UPS/USPS servers are down, it will
-   automatically utilize the table-lookup method.
+################################################################################
+##  Offline::USPS TODO
+################################################################################
+ 
+ * [Enh] Add First-Class Mail
+   - http://www.usps.com/consumers/domestic.htm#first
+   - Can be done via an off-line calculation, I believe.
    
- * [ENH] Many of the functions that are currently in 
-   Shipping::RateRequest::Offline::UPS should probably be moved somewhere else.
-   They work on one shipment at a time, and having them in the RateRequest 
-   object makes it seem like they should be able to work on multiple shipments
-   at once.  Perhaps make the first parameter the given shipment to be worked 
-   on?
- 
- * [ENH] Find or create some module that will automatically update the "=head1 
-   VERSION" POD based on the CVS "Revision" keyword or the perl $VERSION 
-   variable in the same file.
-   
- * [DOC] Need to create a list of common errors that will be encountered.
- 
- * [ENH] Change the many occurrences of $self->weight( 5 ) to 
-   $self->set_weight( 5 ) (and their like) for readability.
- 
- * [ENH] Setup a proper "announce", "cvs", and "users" mailing list where users
-   can sign up for updates and get information.   
- 
- * [ENH] Build a more advanced configuration system, with more config-file
-   flexibility.
- 
- * [ENH] [UNDER CONSIDERATION] Upgrade to Class::MethodMaker 2.00?
-   - It does not support several features, like 'grouped_fields'.
-   - It does not support grouped_fields_inherit
-   - It is prettier.
- 
- * [ENH] Test for thread-safety-ness.
-
- * [ENH] New feature for MethodMaker: parent_defaults => [ 'shipper' => 'UPS' ].
-   After initialization, calls parent methods with default values so the user 
-   does not have to write an "-init" method.
-
- * [ENH] Add support back in for multi-package API.
- 
 ################################################################################
 ##  Online::USPS TODO
 ################################################################################
 
- * [BUG] Find a better way to correlate "Air mail" with all the various names
+ * [Bug] Find a better way to correlate "Air mail" with all the various names
    it is called by each country.
  
- * [BUG] Not correctly realizing when there is an error (<Error><Number>...)
+ * [Bug] Not correctly realizing when there is an error (<Error><Number>...)
    - Perhaps because we don't ( KeepRoot => 1, ) on the XMLin()?
 
- * [ENH] Enable Cache for USPS.
+ * [Enh] Enable Cache for USPS.
  
- * [ENH] Support get_charges( 'service' ) for domestic types.
+ * [Enh] Support get_charges( 'service' ) for domestic types.
 
- * [ENH] Use the International Country Listing
+ * [Enh] Use the International Country Listing
 	- http://pe.usps.gov/cpim/ftp/manuals/Imm/Immctry.pdf
  
 ################################################################################
 ##  Offline::UPS TODO
 ################################################################################
 
- * Get an alternate set of data for people who aren't on daily pickup, or, if 
-   the only difference is the $4.00 surcharge, implement that manually.
+ * [Enh] http://perlmonks.org/index.pl?node_id=366587
+
+ * [Enh] Add charges based on pickup type.  
+   An alternate set of data is available for people who don't have an account 
+   with UPS.  Is the only difference a $4.00 surcharge?
 
  * Delivery Area Surcharge: check xarea table instead of always applying.
    
- * [BUG] Serbia: see t/manual/offline_ups_intl_other.pl
+ * [Bug] Serbia: see t/manual/offline_ups_intl_other.pl
 
- * [ENH] Determine the upcoming fuel surcharge changes from UPS website, then 
+ * [Enh] Determine the upcoming fuel surcharge changes from UPS website, then 
    check to see if that date has passed.  If so, automatically update the fuel 
    surcharge.
 
- * [ENH] From Canada to Alaska
+ * [Enh] From Canada to Alaska (and other destinations)
                 99663 = Seldovia, Alaska
 		my $rate_request = Business::Shipping->rate_request(
                        shipper         => 'Online::UPS',
@@ -261,37 +267,37 @@ Anyway, I think I need to investigate it some more.
                        access_key       => 'XXXXXX',
                );
 				
- * [ENH] Confirm that the auto-update feature works well.
+ * [Enh] Confirm that the auto-update feature works well.
  
- * [ENH] Performance enhancement: instead of transforming the data with
+ * [Enh] Performance enhancement: instead of transforming the data with
    calc_zone_data() everytime, just re-write the data file.
  
- * [ENH] Allow user to specify "use default" or "quiet" for Makefile.PL, which 
+ * [Enh] Allow user to specify "use default" or "quiet" for Makefile.PL, which 
    will cause it to use defaults.
  
- * [ENH] Change from_state to a Shipment function, which will calculate and set 
+ * [Enh] Change from_state to a Shipment function, which will calculate and set 
    the is_from_west_coast() value, instead of doing from within 
    massage_values().
 
- * [ENH] Add a simple example script in the bin directory.
+ * [Enh] Add a simple example script in the bin directory.
 
- * [ENH] How to find the current fuel surcharge rate:
+ * [Enh] How to find the current fuel surcharge rate:
    - http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html	
    - m/Effective.+: ?(\d\.\d\d\)%/
    
- * [ENH] Modify the system so that the easy-to-read data is read into memory
+ * [Enh] Modify the system so that the easy-to-read data is read into memory
          just once, and then is optimized for lookup speed, so the sequential
          lookups will be as fast as possible.  (Increases memory footprint, but
          it should be worth it).
  
- * [ENH] Canada needs to check for EAS surcharge (see canww.csv->'EAS' column)
+ * [Enh] Canada needs to check for EAS surcharge (see canww.csv->'EAS' column)
  
- * [ENH] Add test for the support files directory.  (Just warn, because they 
+ * [Enh] Add test for the support files directory.  (Just warn, because they 
          may be running the test as a non-priveledged user).
  
- * [ENH] Re-write the calc_zone_data() and calc_cost() routines.
+ * [Enh] Re-write the calc_zone_data() and calc_cost() routines.
 
- * [ENH] New table design?
+ * [Enh] New table design?
 
         zone table:
 		
@@ -301,46 +307,54 @@ Anyway, I think I need to investigate it some more.
 	
         weight	zone	amt
 
- * [ENH] Add tests for Alaska, Hawaii, Canada, and International.
+ * [Enh] Add tests for Alaska, Hawaii, Canada, and International.
          Add tests for 1DAP.
 
- * [ENH] Look at the zone file comments to determine which zone file to use.
+ * [Enh] Look at the zone file comments to determine which zone file to use.
    (i.e. 970.csv has "970-01 to 972-99" -- means it actually does 972.csv too).
  
- * [ENH] Utilize GDBM or SQL, if available, to speed up lookups.
+ * [Enh] Utilize GDBM or SQL, if available, to speed up lookups.
 
 ################################################################################
 ##  Online::UPS TODO
 ################################################################################
  
- * [BUG] Return error message if trying to ship to military americas:
+ * [Bug] Return error message if trying to ship to military americas:
    - USP does not ship to APO or FPO addresses.
 
- * [BUG] Be able to handle "mal-formed XML doc" error return from UPS.  
+ * [Bug] Be able to handle "mal-formed XML doc" error return from UPS.  
    - Right now, it still tries to parse as an XML doc.
 
- * [ENH] Allow better names, like "One Day Air" instead of 1DA.
-   - Better names for packaging too (instead of numbers).
+ * [Enh] Allow user-friendly names, like "One Day Air" instead of 1DA.
+   - Names for packaging instead of numbers.
  
- * [ENH] UPS support for sending multiple simultaneous requests
+ * [Enh] UPS support for sending multiple simultaneous requests
    - (USPS had built-in support in the API for Intl)
    - If they don't support it, try LWP::Parallel::UserAgent.
  
- * [ENH] Implement the multi-package API for UPS.  
+ * [Enh] Implement a multi-package API for UPS.  
    Move to a different XML generation scheme, since all the packages 
-   in a multi-package shipment will have the name "Package".
+   in a multi-package shipment currently have the name "Package".
  	
 ################################################################################
 ##  Interchange UserTag TODO
 ################################################################################
 
- * [ENH] Test for ability to use within Safe?
-   - Remove runtime requires.
+* [Enh] Test for ability to use within Safe?
+  - Remove runtime requires.
    
 ################################################################################
 ##  Online::FedEx 
 ################################################################################
 		 
- * [ENH] FedEx module: Christopher L Wenham from Synesmedia has created an 
-   Interchange usertag that uses FedEx::DirectConnect for various functions.  
-   Evaluate.
+* [Enh] FedEx module: Christopher L Wenham from Synesmedia has created an 
+  Interchange usertag that uses FedEx::DirectConnect for various functions.
+
+* [Enh] Francois Belanger, francois@sitepak.com has also created a FedEx module
+  (see FedEx.pm).
+   
+################################################################################
+##  Tracking
+################################################################################
+
+* Upgrade to C:MM 2.02.

@@ -13,7 +13,7 @@ SYNOPSIS
             weight    =>  5.00,
         );    
     
-        $rate_request->submit() or die $rate_request->error();
+        $rate_request->submit() or die $rate_request->user_error();
     
         print $rate_request->total_charges();
 
@@ -34,7 +34,7 @@ REQUIRED MODULES
      Archive::Zip (any)
      Bundle::DBD::CSV (any)
      Cache::FileCache (any)
-     Class::MethodMaker (any)
+     Class::MethodMaker::Engine (any)
      Clone (any)
      Config::IniFiles (any)
      Crypt::SSLeay (any)
@@ -42,9 +42,11 @@ REQUIRED MODULES
      Devel::Required (0.03)
      Error (any)
      Getopt::Mixed (any)
+     Log::Log4perl (any)
      LWP::UserAgent (any)
      Math::BaseCnv (any)
      Scalar::Util (1.10)
+     Test::More (any)
      XML::DOM (any)
      XML::Simple (2.05)
 
@@ -53,78 +55,21 @@ INSTALLATION
 
     See the INSTALL file for more information.
 
-MULTI-PACKAGE API
-    Please note that the Multi-package API may change in upcoming releases.
-
-  Online::UPS Example
-     use Business::Shipping;
-     use Business::Shipping::Shipment::UPS;
- 
-     my $shipment = Business::Shipping::Shipment::UPS->new();
- 
-     $shipment->init(
-        from_zip  => '98682',
-        to_zip    => '98270',
-        service   => 'GNDRES',
-        #
-        # user_id, etc. needed here.
-        #
-     );
-
-     $shipment->add_package(
-        id        => '0',
-        weight        => 5,
-     );
-
-     $shipment->add_package(
-        id        => '1',
-        weight        => 3,
-     );
- 
-     my $rate_request = Business::Shipping::rate_request( shipper => 'Online::UPS' );
-     #
-     # Add the shipment to the rate request.
-     #
-     $rate_request->shipment( $shipment );
-     $rate_request->submit() or ie $rate_request->error();
-
-     print $rate_request->package('0')->get_charges( 'GNDRES' );
-     print $rate_request->package('1')->get_charges( 'GNDRES' );
-     print $rate_request->get_total_price( 'GNDRES' );
-
 ERROR/DEBUG HANDLING
-    The 'event_handlers' argument takes a hashref telling Business::Shipping
-    what to do for error, debug, trace, and the like. The value can be one
-    of four options:
-
-     * 'STDERR'
-     * 'STDOUT'
-     * 'carp'
-     * 'croak'
-
-    For example:
-
-     $rate_request->event_handlers(
-         { 
-            'error' => 'STDERR',
-            'debug' => 'STDERR',
-            'trace' => undef,
-            'debug3' => undef,
-        }
-     );
- 
-    The default is 'STDERR' for error handling, and nothing for debug/trace
-    handling. The option 'debug3' adds additional debugging messages that
-    are not included in the normal 'debug'. Note that you can still access
-    error messages even without an 'error' handler, by accessing the return
-    values of methods. For example:
-
-     $rate_request->init( %values ) or print $rate_request->error();
-    
-    However, if you don't save the error value before the next call, it
-    could be overwritten by a new error.
+    Log4perl is used for logging error, debug, etc. messages. See
+    config/log4perl.conf.
 
 METHODS
+  $self->init( %args )
+    Generic attribute setter.
+
+  $self->user_error( "Error message" )
+    Log and store errors that should be visibile to the user.
+
+  $self->validate()
+    Confirms that the object is valid. Checks that required attributes are
+    set.
+
   rate_request()
     This method is used to request shipping rate information from online
     providers or offline tables. A hash is accepted as input with the
@@ -151,7 +96,8 @@ METHODS
         The origin zipcode.
 
     * from_state
-        The origin state. Required for Offline::UPS.
+        The origin state in two-letter code format or full-name format.
+        Required for Offline::UPS.
 
     * to_zip
         The destination zipcode.
@@ -161,6 +107,9 @@ METHODS
 
     * weight
         Weight of the shipment, in pounds, as a decimal number.
+
+  Business::Shipping->new_subclass( "Subclass::Name", %opt )
+    Generates a subclass, such as a Shipment object.
 
 AUTHOR
     Dan Browning <db@kavod.com>, Kavod Technologies, <http://www.kavod.com>.

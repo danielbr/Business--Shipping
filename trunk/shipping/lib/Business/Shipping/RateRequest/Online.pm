@@ -1,8 +1,3 @@
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
-# 
-
 package Business::Shipping::RateRequest::Online;
 
 =head1 NAME
@@ -11,7 +6,7 @@ Business::Shipping::RateRequest::Online - Abstract class for shipping cost ratin
 
 =head1 VERSION
 
-$Revision: 1.10 $      $Date: 2004/05/06 20:15:27 $
+$Revision: 1.11 $      $Date: 2004/06/24 03:09:24 $
 
 =head1 METHODS
 
@@ -19,7 +14,7 @@ $Revision: 1.10 $      $Date: 2004/05/06 20:15:27 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
