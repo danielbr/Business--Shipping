@@ -1,7 +1,6 @@
+# TODO: Implement USPS_Offline.  This is just a place-holder.
 #
-# TODO: Implement Offline::USPS.  This is just a place-holder.
-#
-# Business::Shipping::RateRequest::Offline::USPS
+# Business::Shipping::USPS_Offline::RateRequest
 #
 # $Id$
 #
@@ -14,13 +13,12 @@
 # 
 # Based on the corresponding work in the Interchange project, which was written 
 # by Mike Heins <mike@perusion.com>. See http://www.icdevgroup.org for more info.
-#
 
-package Business::Shipping::RateRequest::Offline::USPS;
+package Business::Shipping::USPS_Offline::RateRequest;
 
 =head1 NAME
 
-Business::Shipping::RateRequest::Offline::USPS -- Calculates US Postal service rates (intl only)
+Business::Shipping::USPS_Offline::RateRequest - Rates
 
 =head1 SYNOPSIS
 
@@ -236,8 +234,9 @@ Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.c
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-This program is free software; you may redistribute it and/or modify it under
-the same terms as Perl itself. See LICENSE for more info.
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning, Interchange 
+Development Group. All rights reserved.
+
+Licensed under the GNU Public Licnese (GPL).  See LICENSE for more info.
 
 =cut

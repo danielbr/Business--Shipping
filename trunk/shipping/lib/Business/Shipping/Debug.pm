@@ -2,11 +2,11 @@ package Business::Shipping::Debug;
 
 =head1 NAME
 
-Business::Shipping::Debug - Compatibility wrapper for Logging.  Depreciated.
+Business::Shipping::Debug - For backwards compatibility only
 
 =head1 VERSION
 
-$Rev$      $Date$
+$Rev$
 
 =head1 SYNOPSIS
 

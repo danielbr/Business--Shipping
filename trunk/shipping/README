@@ -2,7 +2,7 @@ NAME
     Business::Shipping - Rates and tracking for UPS and USPS
 
 VERSION
-    Version 1.53
+    Version 1.54
 
 SYNOPSIS
   Rate request example
@@ -36,7 +36,7 @@ FEATURES
 
 INSTALLATION
      perl -MCPAN -e 'install Bundle::Business::Shipping'
- 
+
     See the INSTALL file for more details.
 
 REQUIRED MODULES
@@ -57,18 +57,12 @@ REQUIRED MODULES
      XML::DOM (any)
      XML::Simple (2.05)
 
-ERROR/DEBUG HANDLING
-    Log4perl is used for logging error, debug, etc. messages. See
-    config/log4perl.conf. For simple manipulation of the current log level,
-    use the Business::Shipping->log_level( $log_level ) class method
-    (below).
-
 GETTING STARTED
     Be careful to read, understand, and comply with the terms of use for the
     provider that you will use.
 
   UPS_Offline: For United Parcel Service (UPS) offline rate requests
-    No signup required. Business::Shipping::DataFiles has all of rate
+    No signup required. "Business::Shipping::DataFiles" has all of rate
     tables.
 
   UPS_Online: For United Parcel Service (UPS) Online XML: Free signup
@@ -89,27 +83,11 @@ GETTING STARTED
     USPS Internet Customer Care Center by e-mail ("icustomercare@usps.com")
     or phone: 1-800-344-7779.
 
-Use of this software
-    It is appreciated when users mention their use of Business::Shipping to
-    the author and/or on their website or in their application.
-
-    * Interchange e-commerce system ( <http://www.icdevgroup.org> ). See
-    "UserTag/business-shipping.tag".
-    * The paymentonline.com mod_perl/template toolkit system.
-    * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman
-    <andy@kahncentral.net>.
-    <http://www.plainblack.com/wobjects?wid=1143&func=viewSubmission&sid=654
-    >
-    <http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar
-    .gz>
-    * Mentioned in YAPC 2004 Presentation: "Writing web applications with
-    perl ..." <http://www.beamartyr.net/YAPC-2004/text25.html>
-    * Phatmotorsports.com
-
-WEBSITE
-    The website carries the most recent version.
-
-    <http://www.kavod.com/Business-Shipping>
+ERROR/DEBUG HANDLING
+    Log4perl is used for logging error, debug, etc. messages. See
+    config/log4perl.conf. For simple manipulation of the current log level,
+    use the Business::Shipping->log_level( $log_level ) class method
+    (below).
 
 Preloading Modules
     To preload all modules, call Business::Shipping with this syntax:
@@ -133,10 +111,10 @@ Preloading Modules
     user will not experience any delay.
 
 METHODS
-  $obj->init( %args )
+  $obj->init()
     Generic attribute setter.
 
-  $obj->user_error( "Error message" )
+  $obj->user_error()
     Log and store errors that should be visibile to the user.
 
   $obj->validate()
@@ -183,12 +161,15 @@ METHODS
         A password, if required by the provider. Online::USPS and
         Online::UPS require this, while Offline::UPS does not.
 
-  Business::Shipping->log_level( $log_level )
+  Business::Shipping->log_level()
     Sets the log level for all Business::Shipping objects.
 
-    $log_level can be 'debug', 'info', 'warn', 'error', or 'fatal'.
+    Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.
 
-  Business::Shipping->_new_subclass( "Subclass::Name", %opt )
+  $obj->event_handlers()
+    For backwards compatibility only.
+
+  Business::Shipping->_new_subclass()
     Private Method.
 
     Generates an object of a given subclass dynamically. Will dynamically
@@ -211,6 +192,28 @@ SEE ALSO
     form instead of the UPS Online Tools. For shipments that originate in
     the USA only.
 
+Use of this software
+    It is appreciated when users mention their use of Business::Shipping to
+    the author and/or on their website or in their application.
+
+    * Interchange e-commerce system ( <http://www.icdevgroup.org> ). See
+    "UserTag/business-shipping.tag".
+    * The paymentonline.com mod_perl/template toolkit system.
+    * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman
+    <andy@kahncentral.net>.
+    <http://www.plainblack.com/wobjects?wid=1143&func=viewSubmission&sid=654
+    >
+    <http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar
+    .gz>
+    * Mentioned in YAPC 2004 Presentation: "Writing web applications with
+    perl ..." <http://www.beamartyr.net/YAPC-2004/text25.html>
+    * Phatmotorsports.com
+
+WEBSITE
+    The website carries the most recent version.
+
+    <http://www.kavod.com/Business-Shipping>
+
 SUPPORT
     This module is supported by the author. Please report any bugs or
     feature requests to "bug-business-shipping@rt.cpan.org", or through the
@@ -222,7 +225,7 @@ KNOWN BUGS
     See the TODO file for a comprehensive list of known bugs.
 
 CREDITS
-    See CREDITS file.
+    See the CREDITS file.
 
 AUTHOR
     Dan Browning <db@kavod.com>, Kavod Technologies, <http://www.kavod.com>.

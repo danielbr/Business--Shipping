@@ -15,11 +15,11 @@ package Business::Shipping::UPS_Offline::RateRequest;
 
 =head1 NAME
 
-Business::Shipping::UPS_Offline::RateRequest - Offline Cost Estimation
+Business::Shipping::UPS_Offline::RateRequest
 
 =head1 VERSION
 
-$Rev$      $Date$
+$Rev$
 
 =head1 GLOSSARY
 

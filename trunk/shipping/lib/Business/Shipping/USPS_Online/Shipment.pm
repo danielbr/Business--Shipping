@@ -4,7 +4,7 @@ Business::Shipping::USPS_Online::Shipment
 
 =head1 VERSION
 
-$Rev$      $Date$
+$Rev$
 
 =head1 DESCRIPTION
 

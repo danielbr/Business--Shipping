@@ -15,7 +15,7 @@ Business::Shipping::Package - Abstract class
 
 =head1 VERSION
 
-$Rev$      $Date$
+$Rev$
 
 =head1 DESCRIPTION
 

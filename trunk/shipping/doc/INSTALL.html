@@ -23,6 +23,7 @@
 	</ul>
 
 	<li><a href="#cpan_installation">CPAN INSTALLATION</a></li>
+	<li><a href="#manual_installation">MANUAL INSTALLATION</a></li>
 	<li><a href="#all_required_modules">All required modules</a></li>
 </ul>
 <!-- INDEX END -->
@@ -67,11 +68,11 @@ retreive version 2.x of Class::MethodMaker.</p>
 <code>Bundle::Business::Shipping</code>.  However, if you would only like to install the
 required modules for one shipper, you can select it individually:</p>
 <ul>
-<li><strong><a name="item_bundle_3a_3abusiness_3a_3ashipping_3a_3aups_online">Bundle::Business::Shipping::UPS_Online</a></strong><br />
+<li><strong><a name="item_bundle_3a_3abusiness_3a_3ashipping_3a_3aups_online"><code>Bundle::Business::Shipping::UPS_Online</code></a></strong><br />
 </li>
-<li><strong><a name="item_bundle_3a_3abusiness_3a_3ashipping_3a_3aups_offlin">Bundle::Business::Shipping::UPS_Offline</a></strong><br />
+<li><strong><a name="item_bundle_3a_3abusiness_3a_3ashipping_3a_3aups_offlin"><code>Bundle::Business::Shipping::UPS_Offline</code></a></strong><br />
 </li>
-<li><strong><a name="item_bundle_3a_3abusiness_3a_3ashipping_3a_3ausps_onlin">Bundle::Business::Shipping::USPS_Online</a></strong><br />
+<li><strong><a name="item_bundle_3a_3abusiness_3a_3ashipping_3a_3ausps_onlin"><code>Bundle::Business::Shipping::USPS_Online</code></a></strong><br />
 </li>
 </ul>
 <p>
@@ -89,14 +90,15 @@ required modules for one shipper, you can select it individually:</p>
 <p>UPS_Offline only:</p>
 <pre>
  perl -MCPAN -e 'force install DBD::CSV'
- perl -MCPAN -e 'install Bundle::Business::Shipping::UPS_Offline'
- 
-USPS_Online only:</pre>
+ perl -MCPAN -e 'install Bundle::Business::Shipping::UPS_Offline'</pre>
+<p>USPS_Online only:</p>
 <pre>
  perl -MCPAN -e 'force install XML::DOM'
- perl -MCPAN -e 'install Bundle::Business::Shipping::USPS_Online'
- 
-=head1 MANUAL INSTALLATION</pre>
+ perl -MCPAN -e 'install Bundle::Business::Shipping::USPS_Online'</pre>
+<p>
+</p>
+<hr />
+<h1><a name="manual_installation">MANUAL INSTALLATION</a></h1>
 <p>Be sure to install all required modules before installing.  After unpacking the 
 tarball, execute this command:</p>
 <pre>

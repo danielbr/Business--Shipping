@@ -6,7 +6,7 @@ Business::Shipping::UPS_Offline::Shipment
 
 =head1 VERSION
 
-$Rev: 158 $      $Date: 2004-09-09 15:58:17 -0700 (Thu, 09 Sep 2004) $
+$Rev: 158 $
 
 =head1 METHODS
 

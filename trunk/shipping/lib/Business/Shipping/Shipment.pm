@@ -1,15 +1,4 @@
-# Business::Shipping::Shipment - Abstract class
-# 
-# $Id$
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-# 
-
 package Business::Shipping::Shipment;
-
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
 =head1 NAME
 
@@ -17,7 +6,11 @@ Business::Shipping::Shipment - Abstract class
 
 =head1 VERSION
 
-$Rev$      $Date$
+$Rev$
+
+=cut
+
+$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
 =head1 DESCRIPTION
 

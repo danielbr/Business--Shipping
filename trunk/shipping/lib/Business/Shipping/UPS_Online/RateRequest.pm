@@ -1,16 +1,16 @@
-# $Id$
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-
 package Business::Shipping::UPS_Online::RateRequest;
 
 =head1 NAME
 
-Business::Shipping::UPS_Online::RateRequest - Estimates shipping cost online
+Business::Shipping::UPS_Online::RateRequest
 
-See Shipping.pm POD for usage information.
+=head1 VERSION
+
+Version $Rev$
+
+=cut
+
+$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
 =head1 REQUIRED FIELDS
 
@@ -78,8 +78,6 @@ UPS_ACCESS_KEY
 =head1 METHODS
 
 =cut
-
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
 use strict;
 use warnings;

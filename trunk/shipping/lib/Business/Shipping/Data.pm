@@ -10,7 +10,7 @@ Business::Shipping::Data - Database interface
 
 =head1 VERSION
 
-$Id$
+$Rev$
 
 =head1 DESCRIPTION
 

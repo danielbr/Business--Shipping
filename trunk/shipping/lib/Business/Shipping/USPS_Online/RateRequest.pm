@@ -1,12 +1,10 @@
 =head1 NAME
 
-Business::Shipping::USPS_Online::RateRequest - Estimates shipping cost online 
-
-See Business::Shipping.pm POD for usage information.
+Business::Shipping::USPS_Online::RateRequest 
 
 =head1 VERSION
 
-$Rev$      $Date$
+$Rev$
 
 =head1 SERVICE TYPES
 

@@ -11,9 +11,7 @@
 
 =head1 NAME
 
-Business::Shipping::UPS_Online::Tracking - A UPS module for Tracking Packages
-
-See Tracking.pm POD for usage information.
+Business::Shipping::UPS_Online::Tracking
 
 =head2 EXAMPLE 
 

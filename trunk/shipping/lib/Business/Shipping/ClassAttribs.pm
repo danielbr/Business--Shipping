@@ -1,21 +1,12 @@
-# Business::Shipping::ClassAttribs - Class attribute functions
-# 
-# $Id$
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-# 
-
 package Business::Shipping::ClassAttribs;
 
 =head1 NAME
 
-Business::Shipping::ClassAttribs - Class attribute functions
+Business::Shipping::ClassAttribs - Determine class attributes
 
 =head1 VERSION
 
-$Rev$      $Date$
+$Rev$
 
 =head1 DESCRIPTION
 

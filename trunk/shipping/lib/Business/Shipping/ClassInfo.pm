@@ -2,11 +2,11 @@ package Business::Shipping::ClassInfo;
 
 =head1 NAME
 
-Business::Shipping::ClassInfo - Used by ClassAttribs
+Business::Shipping::ClassInfo - ClassAttribs helper functions
 
 =head1 VERSION
 
-$Rev$      $Date$
+$Rev$
 
 =head1 METHODS
 

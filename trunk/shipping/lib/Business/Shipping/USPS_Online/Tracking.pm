@@ -7,7 +7,6 @@
 # 
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
-# 
 
 =head1 NAME
 

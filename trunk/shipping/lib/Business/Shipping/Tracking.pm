@@ -13,7 +13,7 @@ package Business::Shipping::Tracking;
 
 =head1 NAME
 
-Business::Shipping::Tracking - API for tracking packages
+Business::Shipping::Tracking
 
 =head1 SYNOPSIS
 

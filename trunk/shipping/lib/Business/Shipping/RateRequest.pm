@@ -6,11 +6,11 @@ package Business::Shipping::RateRequest;
 
 =head1 NAME
 
-Business::Shipping::RateRequest - Abstract class for shipping cost estimation
+Business::Shipping::RateRequest - Abstract class
 
 =head1 VERSION
 
-$Rev$      $Date$
+$Rev$
 
 =head1 DESCRIPTION
 

@@ -29,7 +29,7 @@
 	</ul>
 
 	<li><a href="#installation">INSTALLATION</a></li>
-	<li><a href="#error_debug_handling">ERROR/DEBUG HANDLING</a></li>
+	<li><a href="#required_modules">REQUIRED MODULES</a></li>
 	<li><a href="#getting_started">GETTING STARTED</a></li>
 	<ul>
 
@@ -38,21 +38,23 @@
 		<li><a href="#usps_online__for_united_states_postal_service__usps___free_signup">USPS_Online: For United States Postal Service (USPS): Free signup</a></li>
 	</ul>
 
-	<li><a href="#use_of_this_software">Use of this software</a></li>
-	<li><a href="#website">WEBSITE</a></li>
+	<li><a href="#error_debug_handling">ERROR/DEBUG HANDLING</a></li>
 	<li><a href="#preloading_modules">Preloading Modules</a></li>
 	<li><a href="#methods">METHODS</a></li>
 	<ul>
 
-		<li><a href="#_obj_init___args__">$obj-&gt;init( %args )</a></li>
-		<li><a href="#_obj_user_error__error_message__">$obj-&gt;user_error( ``Error message'' )</a></li>
+		<li><a href="#_obj_init__">$obj-&gt;<code>init()</code></a></li>
+		<li><a href="#_obj_user_error__">$obj-&gt;<code>user_error()</code></a></li>
 		<li><a href="#_obj_validate__">$obj-&gt;<code>validate()</code></a></li>
 		<li><a href="#_obj_rate_request__">$obj-&gt;<code>rate_request()</code></a></li>
-		<li><a href="#business__shipping_log_level___log_level__">Business::Shipping-&gt;log_level( $log_level )</a></li>
-		<li><a href="#business__shipping__new_subclass__subclass__name___opt__">Business::Shipping-&gt;_new_subclass( ``Subclass::Name'', %opt )</a></li>
+		<li><a href="#business__shipping_log_level__">Business::Shipping-&gt;<code>log_level()</code></a></li>
+		<li><a href="#_obj_event_handlers__">$obj-&gt;<code>event_handlers()</code></a></li>
+		<li><a href="#business__shipping__new_subclass__">Business::Shipping-&gt;<code>_new_subclass()</code></a></li>
 	</ul>
 
 	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#website">WEBSITE</a></li>
+	<li><a href="#support">SUPPORT</a></li>
 	<li><a href="#known_bugs">KNOWN BUGS</a></li>
 	<li><a href="#credits">CREDITS</a></li>
 	<li><a href="#author">AUTHOR</a></li>
@@ -69,7 +71,7 @@
 </p>
 <hr />
 <h1><a name="version">VERSION</a></h1>
-<p>Version 1.53</p>
+<p>Version 1.54</p>
 <p>
 </p>
 <hr />
@@ -126,11 +128,12 @@
 <hr />
 <h1><a name="installation">INSTALLATION</a></h1>
 <pre>
- perl -MCPAN -e 'install Bundle::Business::Shipping'
- 
-See the INSTALL file for more details.
- 
-=head1 REQUIRED MODULES</pre>
+ perl -MCPAN -e 'install Bundle::Business::Shipping'</pre>
+<p>See the INSTALL file for more details.</p>
+<p>
+</p>
+<hr />
+<h1><a name="required_modules">REQUIRED MODULES</a></h1>
 <p>Some of these modules are not required to use only one shipper.  See the INSTALL
 file for more information.</p>
 <pre>
@@ -150,20 +153,13 @@ file for more information.</p>
 <p>
 </p>
 <hr />
-<h1><a name="error_debug_handling">ERROR/DEBUG HANDLING</a></h1>
-<p>Log4perl is used for logging error, debug, etc. messages.  See 
-config/log4perl.conf.  For simple manipulation of the current log level, use
-the Business::Shipping-&gt;log_level( $log_level ) class method (below).</p>
-<p>
-</p>
-<hr />
 <h1><a name="getting_started">GETTING STARTED</a></h1>
 <p>Be careful to read, understand, and comply with the terms of use for the 
 provider that you will use.</p>
 <p>
 </p>
 <h2><a name="ups_offline__for_united_parcel_service__ups__offline_rate_requests">UPS_Offline: For United Parcel Service (UPS) offline rate requests</a></h2>
-<p>No signup required.  Business::Shipping::DataFiles has all of rate tables.</p>
+<p>No signup required.  <code>Business::Shipping::DataFiles</code> has all of rate tables.</p>
 <p>
 </p>
 <h2><a name="ups_online__for_united_parcel_service__ups__online_xml__free_signup">UPS_Online: For United Parcel Service (UPS) Online XML: Free signup</a></h2>
@@ -171,9 +167,8 @@ provider that you will use.</p>
 <li><strong><a name="item_read_the_legal_terms_and_conditions_3a_l_3chttp_3a">Read the legal terms and conditions: 
 <a href="http://www.ups.com/content/us/en/resources/service/terms/index.html">http://www.ups.com/content/us/en/resources/service/terms/index.html</a></a></strong><br />
 </li>
-<pre>
-
-=item * L&lt;https://www.ups.com/servlet/registration&gt;</pre>
+<li><strong><a name="item_https_3a_2f_2fwww_2eups_2ecom_2fservlet_2fregistra"><a href="https://www.ups.com/servlet/registration">https://www.ups.com/servlet/registration</a></a></strong><br />
+</li>
 <li><strong><a name="item_after_receiving_a_user_id_and_password_from_ups_2c">After receiving a User Id and Password from UPS, login, then select
         ``Get Access Key'', then ``Get XML Access Key''.</a></strong><br />
 </li>
@@ -200,33 +195,10 @@ provider that you will use.</p>
 <p>
 </p>
 <hr />
-<h1><a name="use_of_this_software">Use of this software</a></h1>
-<p>It is appreciated when users mention their use of Business::Shipping to the 
-author and/or on their website or in their application.</p>
-<ul>
-<li><strong><a name="item_system">Interchange e-commerce system ( <a href="http://www.icdevgroup.org">http://www.icdevgroup.org</a> ).  See 
-    <code>UserTag/business-shipping.tag</code>.</a></strong><br />
-</li>
-<li><strong><a name="item_the_paymentonline_2ecom_mod_perl_2ftemplate_toolki">The paymentonline.com mod_perl/template 
-    toolkit system.</a></strong><br />
-</li>
-<li><strong><a name="item_the__22shopping_cart_22_wobject_for_the_webgui_pro">The ``Shopping Cart'' Wobject for the WebGUI project, by Andy Grundman 
-    &lt;<a href="mailto:andy@kahncentral.net">andy@kahncentral.net</a>&gt;.
-    <a href="http://www.plainblack.com/wobjects?wid=1143&func=viewSubmission&sid=654">http://www.plainblack.com/wobjects</a>
-    <a href="http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz">http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz</a></a></strong><br />
-</li>
-<li><strong><a name="item_mentioned_in_yapc_2004_presentation_3a__22writing_">Mentioned in YAPC 2004 Presentation: ``Writing web applications with perl ...''
-    <a href="http://www.beamartyr.net/YAPC-2004/text25.html">http://www.beamartyr.net/YAPC-2004/text25.html</a></a></strong><br />
-</li>
-<li><strong><a name="item_phatmotorsports_2ecom">Phatmotorsports.com</a></strong><br />
-</li>
-</ul>
-<p>
-</p>
-<hr />
-<h1><a name="website">WEBSITE</a></h1>
-<p>The website carries the most recent version.</p>
-<p><a href="http://www.kavod.com/Business-Shipping">http://www.kavod.com/Business-Shipping</a></p>
+<h1><a name="error_debug_handling">ERROR/DEBUG HANDLING</a></h1>
+<p>Log4perl is used for logging error, debug, etc. messages.  See 
+config/log4perl.conf.  For simple manipulation of the current log level, use
+the Business::Shipping-&gt;log_level( $log_level ) class method (below).</p>
 <p>
 </p>
 <hr />
@@ -259,11 +231,11 @@ when preloading is advantagous.  For example:</pre>
 <h1><a name="methods">METHODS</a></h1>
 <p>
 </p>
-<h2><a name="_obj_init___args__">$obj-&gt;init( %args )</a></h2>
+<h2><a name="_obj_init__">$obj-&gt;<code>init()</code></a></h2>
 <p>Generic attribute setter.</p>
 <p>
 </p>
-<h2><a name="_obj_user_error__error_message__">$obj-&gt;user_error( ``Error message'' )</a></h2>
+<h2><a name="_obj_user_error__">$obj-&gt;<code>user_error()</code></a></h2>
 <p>Log and store errors that should be visibile to the user.</p>
 <p>
 </p>
@@ -320,12 +292,16 @@ this, while Offline::UPS does not.
 <p></p></ul>
 <p>
 </p>
-<h2><a name="business__shipping_log_level___log_level__">Business::Shipping-&gt;log_level( $log_level )</a></h2>
+<h2><a name="business__shipping_log_level__">Business::Shipping-&gt;<code>log_level()</code></a></h2>
 <p>Sets the log level for all Business::Shipping objects.</p>
-<p>$log_level can be 'debug', 'info', 'warn', 'error', or 'fatal'.</p>
+<p>Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.</p>
 <p>
 </p>
-<h2><a name="business__shipping__new_subclass__subclass__name___opt__">Business::Shipping-&gt;_new_subclass( ``Subclass::Name'', %opt )</a></h2>
+<h2><a name="_obj_event_handlers__">$obj-&gt;<code>event_handlers()</code></a></h2>
+<p>For backwards compatibility only.</p>
+<p>
+</p>
+<h2><a name="business__shipping__new_subclass__">Business::Shipping-&gt;<code>_new_subclass()</code></a></h2>
 <p>Private Method.</p>
 <p>Generates an object of a given subclass dynamically.  Will dynamically 'use' 
 the corresponding module, unless runtime module loading has been disabled via 
@@ -334,9 +310,7 @@ the 'preload' option.</p>
 </p>
 <hr />
 <h1><a name="see_also">SEE ALSO</a></h1>
-<p>Important modules that are related to Business::Shipping:
-
-</p>
+<p>Important modules that are related to Business::Shipping:</p>
 <ul>
 <li><strong><a name="item_business_3a_3ashipping_3a_3adatafiles__2d_required">Business::Shipping::DataFiles - Required for offline cost estimation</a></strong><br />
 </li>
@@ -349,12 +323,48 @@ the 'preload' option.</p>
 </p>
 <ul>
 <li><strong><a name="item_business_3a_3ashipping_3a_3aups_xml__2d_online_cos">Business::Shipping::UPS_XML - Online cost estimation module that has 
-very few prerequisites.  Supports shipments that originate in USA and Canada.
- 
-=item * Business::UPS - Online cost estimation module that uses the UPS web form
+very few prerequisites.  Supports shipments that originate in USA and Canada.</a></strong><br />
+</li>
+<li><strong><a name="item_business_3a_3aups__2d_online_cost_estimation_modul">Business::UPS - Online cost estimation module that uses the UPS web form
 instead of the UPS Online Tools.  For shipments that originate in the USA only.</a></strong><br />
 </li>
 </ul>
+<p>It is appreciated when users mention their use of Business::Shipping to the 
+author and/or on their website or in their application.
+
+</p>
+<ul>
+<li><strong><a name="item_system">Interchange e-commerce system ( <a href="http://www.icdevgroup.org">http://www.icdevgroup.org</a> ).  See 
+    <code>UserTag/business-shipping.tag</code>.</a></strong><br />
+</li>
+<li><strong><a name="item_the_paymentonline_2ecom_mod_perl_2ftemplate_toolki">The paymentonline.com mod_perl/template 
+    toolkit system.</a></strong><br />
+</li>
+<li><strong><a name="item_the__22shopping_cart_22_wobject_for_the_webgui_pro">The ``Shopping Cart'' Wobject for the WebGUI project, by Andy Grundman 
+    &lt;<a href="mailto:andy@kahncentral.net">andy@kahncentral.net</a>&gt;.
+    <a href="http://www.plainblack.com/wobjects?wid=1143&func=viewSubmission&sid=654">http://www.plainblack.com/wobjects</a>
+    <a href="http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz">http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz</a></a></strong><br />
+</li>
+<li><strong><a name="item_mentioned_in_yapc_2004_presentation_3a__22writing_">Mentioned in YAPC 2004 Presentation: ``Writing web applications with perl ...''
+    <a href="http://www.beamartyr.net/YAPC-2004/text25.html">http://www.beamartyr.net/YAPC-2004/text25.html</a></a></strong><br />
+</li>
+<li><strong><a name="item_phatmotorsports_2ecom">Phatmotorsports.com</a></strong><br />
+</li>
+</ul>
+<p>
+</p>
+<hr />
+<h1><a name="website">WEBSITE</a></h1>
+<p>The website carries the most recent version.
+
+</p>
+<p><a href="http://www.kavod.com/Business-Shipping">http://www.kavod.com/Business-Shipping</a>
+
+</p>
+<p>
+</p>
+<hr />
+<h1><a name="support">SUPPORT</a></h1>
 <p>This module is supported by the author.  Please report any bugs or feature 
 requests to <code>bug-business-shipping@rt.cpan.org</code>, or through the web interface 
 at <a href="http://rt.cpan.org">http://rt.cpan.org</a>.  The author will be notified, and then you'll 
@@ -372,7 +382,7 @@ automatically be notified of progress on your bug as the author makes changes.
 </p>
 <hr />
 <h1><a name="credits">CREDITS</a></h1>
-<p>See CREDITS file. 
+<p>See the CREDITS file. 
 
 </p>
 <p>
