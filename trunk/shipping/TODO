@@ -122,6 +122,25 @@
 ##  UPS OFFLINE TODO
 ######################################################
 
+ * [ENH] Allow user to specify "use default" for Makefile.PL (already done?)
+ 
+ * [ENH] Provide example documentation for easily keeping up to date with the
+   CVS.  For example:
+     
+     cvs up
+	 perl Makefile.PL
+	 make
+	 make test
+	 make install
+	 
+	 -or-
+	 
+	 cd $PATH_TO_SHIP
+	 su $USER -c 'perl Makefile.PL'
+	 su $USER -c 'make'
+	 su $USER -c 'make test'
+	 make install
+	 
  * [ENH] For Canada, only the first shipping method works.
 
  * [ENH] Change from_state to a Shipment function, which will calculate and set 

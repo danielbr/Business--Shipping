@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.15 2004/01/22 23:36:56 db-ship Exp $
+# $Id: business-shipping.tag,v 1.16 2004/01/23 00:03:25 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -103,7 +103,7 @@ use Business::Shipping;
 sub {
  	my ( $shipper, $opt ) = @_;
 	
-	my $debug = delete $opt->{ debug } || 1;
+	my $debug = delete $opt->{ debug } || 0;
 	::logDebug( "[business-shipping " . uneval( $opt ) ) if $debug;
 	my $try_limit = delete $opt->{ 'try_limit' } || 2;
 	

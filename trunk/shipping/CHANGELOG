@@ -24,6 +24,7 @@ Revision history for Business::Shipping.
 	  static hash, accessed by function.
 	- Updated the Interchange UserTag simulator, and make it a part of the
 	  standard testing scheme (instead of a manual test).
+	- Minor fixes: Express Plus.
 
 1.02  Jan 06 2004
 	- Update all data tables from UPS (Jan 05 2004)
