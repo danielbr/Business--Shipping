@@ -22,7 +22,7 @@ my %my_globals = (
 
 =cut
 
-$::UseDefaults = 0;
+$::UseDefaults = $ENV{ BS_USE_DEFAULTS } ? 1 : 0;
 $::UseOptions;
 
 if ( @ARGV ) {

@@ -14,9 +14,16 @@ Updates the fuel surcharge (stored in C<config/fuel_surcharge.txt>) from the UPS
 recommended that this be run every first Monday of the month in the early AM.  Here is an example 
 line to add to your crontab:
 
- 01 1 * * * Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
+ 01 4 * * 1 Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
 
-That causes cron to run this update program at 1:01 AM every Monday.
+That causes cron to run this update program at 4:01 AM every Monday.  Another good cronjob to have
+is one that will update your Business::Shipping::DataFiles:
+
+ 01 4 * * 1 perl -MCPAN -e 'install Business::Shipping::DataFiles'
+
+=head1 REQUIRED MODULES
+
+LWP::UserAgent
 
 =head1 METHODS
 
@@ -32,21 +39,7 @@ use LWP::UserAgent;
 
 =head2 check_for_updates()
 
-TODO: Put in a bin/... script, since it only needs to run once a month.
-
-Changes to the surcharge will be effective the first Monday of each month.
-
-
-    * [Enh] Determine the upcoming fuel surcharge changes from UPS website, then 
-      check to see if that date has passed.  If so, automatically update the fuel 
-      surcharge.
-      
-Stores the current rate in config/fuel_surcharge.txt, with the date it was updated.
-
-TOdO: Add LWP::UserAgent to the required modules?
-
-Fuel Surcharge: 11.25
-Good Through Date: 20041101
+Stores the "Good Through" rate in config/fuel_surcharge.txt, with the date it was updated.
 
 =cut
 

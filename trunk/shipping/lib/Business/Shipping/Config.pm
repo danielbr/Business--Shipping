@@ -198,7 +198,7 @@ sub data_dir
     my $data_dir_name = data_dir_name();
     
     # A filename that will be present in any data dir (to know if it exists).
-    my $test_filename = 'wash.csv';
+    my $test_filename = '.this_is_data';
     if ( -f "./$data_dir_name/$test_filename" ) {
         return "./$data_dir_name";
     }
@@ -227,16 +227,16 @@ sub get_req_mod
     
     my $req_mod = {
         'Minimum' => [ qw/
-            Class::MethodMaker::Engine              
-            Log::Log4perl                           
-            Business::Shipping                      
+            Class::MethodMaker::Engine
+            Log::Log4perl
+            Business::Shipping
             /
         ],
         'UPS_Offline' => [ qw/
-            Bundle::DBD::CSV                        
-            Business::Shipping::DataFiles           
-            Config::IniFiles                        
-            Math::BaseCnv                           
+            Bundle::DBD::CSV
+            Business::Shipping::DataFiles
+            Config::IniFiles
+            Math::BaseCnv
             /
         ],
         'UPS_Online' => [ qw/

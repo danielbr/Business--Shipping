@@ -2,6 +2,35 @@
 ##  General TODO
 ################################################################################
 
+* UPS Changed the way that it displays fuel surcharge rates.
+
+Fuel Surcharge
+Current Fuel Surcharge Rate:
+
+Ground
+Through January 2, 2005: 0.00%.
+Effective January 3, 2005: 2.00%.
+
+Air and International
+Through January 2, 2005: 13.00%.
+Effective January 3, 2005: 9.50%.
+
+* Build a test that will state with modules are missing.
+
+* UPS has changed their format from "4.75," to "$4.75 ," 
+
+* New 2005 zones and rates, setup DataTools
+
+* Remove requirement for Cache::FileCache, but put it as an optional installation
+  in the documentation for users of Online modules, if they want to use the 
+  cache feature.
+
+    * [Enh] Enhance the CPAN distro
+      - Test::Distribution - this module does it all. See below
+      - Test::Prereq - tests that your prerequisites are in order.
+      - Test::Pod - looks for errors in pod files.
+      - Test::Signature - makes sure your SIGNATURE file is cryptographically valid.
+
     * [Enh] Prepare for 2005 Updates
     
 Atlanta-based United Parcel Services (UPS) said it is increasing both package shipping rates and its fuel surcharge structure effective January 3, 2005.
@@ -61,8 +90,6 @@ Other pricing changes include an increase of $0.25 for the delivery area surchar
     
     * [Enh] Evaluate OODoc
     
-    * Build up Business::Shipping::DataTools
-
     * [Enh] Country Support
       - Which origin countries do UPS_Online and UPS_Offline support?
     

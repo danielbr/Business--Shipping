@@ -529,6 +529,11 @@ sub calc_zone_data
             for(@zone[1 .. $#zone]) {
                 #debug( "before = $_" );
                 my @columns = split( ',', $_ );
+                if ( not $columns[ 0 ] ) {
+                    debug "Nothing in the first column, zone was expected.";
+                    next;
+                }
+                
                 if ( $columns[ 0 ] =~ /-/ ) {
                     #
                     # "601-605" =>    "601,605"

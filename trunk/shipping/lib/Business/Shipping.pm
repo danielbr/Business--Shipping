@@ -14,11 +14,11 @@ Business::Shipping - Rates and tracking for UPS and USPS
 
 =head1 VERSION
 
-Version 1.55
+Version 1.56
 
 =cut
 
-$VERSION = '1.55';
+$VERSION = '1.56';
 
 =head1 SYNOPSIS
 
@@ -156,6 +156,8 @@ We recommend that you run the following program to update your fuel surcharge
 every first monday of the month.
 
  Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
+
+See bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
 
 =head2 UPS_Online: For United Parcel Service (UPS) Online XML: Free signup
 
@@ -481,7 +483,8 @@ sub rate_request
 
 =head2 Business::Shipping->log_level()
 
-Sets the log level for all Business::Shipping objects.
+Simple alternative to editing the config/log4perl.conf file.  Sets the log level for 
+all Business::Shipping objects.  
 
 Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.
 
@@ -593,7 +596,7 @@ author and/or on their website or in their application.
 =item * Interchange e-commerce system ( L<http://www.icdevgroup.org> ).  See 
     C<UserTag/business-shipping.tag>.
 
-=item * The paymentonline.com mod_perl/template toolkit system.
+=item * PaymentOnline.com software.
 
 =item * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman 
     <andy@kahncentral.net>.
@@ -603,7 +606,7 @@ author and/or on their website or in their application.
 =item * Mentioned in YAPC 2004 Presentation: "Writing web applications with perl ..."
     L<http://www.beamartyr.net/YAPC-2004/text25.html>
 
-=item * Phatmotorsports.com
+=item * Phatmotorsports.com, EndPCNoise.com, and many other E-Commerce websites.
 
 =back
 

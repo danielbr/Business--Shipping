@@ -1,6 +1,29 @@
 Revision history for Business::Shipping
 =======================================
 
+1.56  (In source repository)
+
+
+  General
+  
+    * [Fixed] "You tried to plan twice" error in t/16_Pod-Coverage.t
+    
+    * [Enh] Minor documentation updates
+
+  Offline_UPS
+  
+    * [Fixed] Fuel surcharge auto-update bugs.
+    
+    * [Enh] Minor enhancements
+      - [Enh] Preparation for the 2005 data.
+      - [Enh] Data directory checks for ".this_is_data" file
+      - [Enh] Check for missing columns while checking zone files
+    
+  Interchange Usertag
+  
+    * [Enh] Update usertag simulator test with recent usertag code.
+
+
 1.55  Nov 22 2004
 
   General
@@ -81,6 +104,10 @@ Revision history for Business::Shipping
         from the UPS website.  
       - See bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl for
         more information.
+        
+  Interchange UserTag
+  
+    * [Fixed] Several bugs and calling conventions.
 
 
 1.54  Sep 21 2004
