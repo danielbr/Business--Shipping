@@ -2,7 +2,7 @@ NAME
     Business::Shipping - Rates and tracking for UPS and USPS
 
 VERSION
-    Version 1.55
+    Version 1.56
 
 SYNOPSIS
   Rate request example
@@ -120,6 +120,8 @@ GETTING STARTED
 
      Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
 
+    See bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
+
   UPS_Online: For United Parcel Service (UPS) Online XML: Free signup
     * Read the legal terms and conditions:
     <http://www.ups.com/content/us/en/resources/service/terms/index.html>
@@ -217,7 +219,8 @@ METHODS
         require this, while UPS_Offline does not.
 
   Business::Shipping->log_level()
-    Sets the log level for all Business::Shipping objects.
+    Simple alternative to editing the config/log4perl.conf file. Sets the
+    log level for all Business::Shipping objects.
 
     Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.
 
@@ -253,7 +256,7 @@ Use of this software
 
     * Interchange e-commerce system ( <http://www.icdevgroup.org> ). See
     "UserTag/business-shipping.tag".
-    * The paymentonline.com mod_perl/template toolkit system.
+    * PaymentOnline.com software.
     * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman
     <andy@kahncentral.net>.
     <http://www.plainblack.com/wobjects?wid=1143&func=viewSubmission&sid=654
@@ -262,7 +265,8 @@ Use of this software
     .gz>
     * Mentioned in YAPC 2004 Presentation: "Writing web applications with
     perl ..." <http://www.beamartyr.net/YAPC-2004/text25.html>
-    * Phatmotorsports.com
+    * Phatmotorsports.com, EndPCNoise.com, and many other E-Commerce
+    websites.
 
 WEBSITE
     The website carries the most recent version.
