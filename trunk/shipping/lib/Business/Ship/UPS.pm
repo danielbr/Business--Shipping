@@ -2,6 +2,7 @@
 # All rights reserved. This program is free software; you can 
 # redistribute it and/or modify it under the same terms as Perl 
 # itself.
+# $Id: UPS.pm,v 1.7 2003/04/23 00:45:42 db-ship Exp $
 package Business::Ship::UPS;
 use strict;
 use warnings;
@@ -66,7 +67,7 @@ The following methods are available:
 =cut
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.6 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.7 $ =~ /(\d+)\.(\d+)/);
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
