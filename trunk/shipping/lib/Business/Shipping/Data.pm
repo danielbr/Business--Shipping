@@ -1,22 +1,20 @@
 # Business::Shipping::Data
 # 
-# $Id: Data.pm,v 1.1 2003/12/22 03:49:05 db-ship Exp $
+# $Id: Data.pm,v 1.2 2004/01/21 22:39:52 db-ship Exp $
 # 
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
 
 package Business::Shipping::Data;
 
-use strict;
-use warnings;
-
-use vars qw( $VERSION @EXPORT );
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-use base ( 'Exporter', 'Business::Shipping' );
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT = qw( record );
 
+use strict;
+use warnings;
+use base ( 'Exporter', 'Business::Shipping' );
 use Data::Dumper;
 use Business::Shipping::Debug;
 use Business::Shipping::Config;

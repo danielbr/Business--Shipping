@@ -12,6 +12,7 @@
  Devel::Required (0.03)
  Error (any)
  LWP::UserAgent (any)
+ Math::BaseCnv (any)
  XML::DOM (any)
  XML::Simple (2.05)
 

@@ -5,11 +5,11 @@ Message Loading [ups-query] usertag (compatiblity layer over [business-shipping]
 UserTag  ups-query  Order  mode origin zip weight country
 UserTag  ups-query  addAttr
 UserTag  ups-query  Routine <<EOR
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: ups-query.tag,v 1.4 2003/12/22 04:09:12 db-ship Exp $
+# $Id: ups-query.tag,v 1.5 2004/01/21 22:39:51 db-ship Exp $
 
 =head1 NAME
 

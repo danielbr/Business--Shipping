@@ -2,11 +2,18 @@
 ##  General TODO
 ######################################################
  
+NOTE: Online::UPS expects 'GB' not 'UK'
+
+ * [ENH] Allow users to set path to support files.
+
  * [ENH] Need to check for support_files() config param, and exit if files
    are missing.
- 
+
  * [ENH] Allow the user to set the timeout for http requests.  Sometimes 30
    seconds is too long.
+
+ * [DOC] Add minimal documentation to each module, with most of the 
+   documentation in the main module.
 
  * [DOC] Include the terms of use for each provider.
  
@@ -18,15 +25,7 @@
  * [BUG] Only Cache the response if it was a success (very important).
  
  * [BUG] Error on missing arguments isn't working very well ( user_id, password)
- 
- * [ENH] Country name translator strings to data outside your program.
- 	# TODO: Move all of this, and any other data that is currently mixed with 
-	# code.
-	# A simple, file-based configuration system would be nice, like Interchange.
-	# Perhaps Config::Ini Configuration files?  Other?  Shipping::Config module
-	# will provide parser, importer.  Any internal modules that use 
-	# configuration will go through that module.  (it's an idea, anyway) 
- 
+
  * [ENH] Enhance the debugging/error handling features: allow user to pass in a 
    callback ref conforming to some (customizable?) calling standard. 
 
@@ -86,7 +85,14 @@
  * [ENH] After Table-based lookups are added, enable them as a fall-back to 
    online lookups.  That way, if the UPS/USPS servers are down, it will
    automatically utilize the table-lookup method.
-
+   
+ * [ENH] Many of the functions that are currently in 
+   Shipping::RateRequest::Offline::UPS should probably be moved to a 
+   corresponding Shipment module (like calc_cost), becuase they work on a given
+   "current" shipment, not the entire rate request as a whole.  They happen to 
+   work because the RateRequest object aliases those functions (using 
+   'comp_mthds') to the 'shipment' object, slotted in the RateRequest object.
+   
 ######################################################
 ##  USPS ONLINE TODO
 ######################################################
@@ -108,6 +114,24 @@
 ##  UPS OFFLINE TODO
 ######################################################
 
+ * [ENH] Change from_state to a Shipment function, which will calculate and set 
+   the is_from_west_coast() value, instead of doing from within 
+   massage_values().
+
+ * [BUG] France Metropolitan:
+		[business-shipping]: Offline::UPS error: No zone found for geo code (key) France,
+		Metropolitan, type ExpeditedSM_EC. .
+		Options were: {'cache' => "1",'from_state' => "Washington",'from_zip' => "98682",'weight' =>
+		"1.5",'to_zip' => "69100",'from_country' => "US",'shipper' => "Offline::UPS",'to_country' =>
+		"FX",'service' => "XPD",}
+
+ * [BUG] Canada via XPR/XPD doesn't work (and wont, until canada is implemented)
+		[business-shipping]: Offline::UPS error: No zone found for geo code (key) Canada, type
+		ExpeditedSM_EC. .
+		Options were: {'cache' => "1",'from_state' => "Washington",'from_zip' => "98682",'weight' =>
+		"1",'to_zip' => "h9h2v3",'from_country' => "US",'shipper' => "Offline::UPS",'to_country' =>
+		"CA",'service' => "XPD",}
+				
  * [ENH] Have a simple example script in the doc directory.
 
  * [ENH] How to find the current fuel surcharge rate:
@@ -121,6 +145,8 @@
          just once, and then is optimized for lookup speed, so the sequential
 		 lookups will be as fast as possible.  (Increases memory footprint, but
 		 it should be worth it).
+ 
+ * [ENH] Canada needs to check for EAS surcharge (see canww.csv->'EAS' column)
  
  * [ENH] Add support for Canada (UPS Standard, XPD, XPR, XDM)
          - Requires new parsing method (Canada ZIP style, etc.)

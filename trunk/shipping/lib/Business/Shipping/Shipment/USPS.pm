@@ -1,26 +1,35 @@
 # Business::Shipping::Shipment::USPS
 # 
-# $Id: USPS.pm,v 1.6 2003/12/22 03:49:06 db-ship Exp $
+# $Id: USPS.pm,v 1.7 2004/01/21 22:39:54 db-ship Exp $
 # 
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
 
 package Business::Shipping::Shipment::USPS;
 
+=head1 DESCRIPTION
+
+Shipping::Shipment::USPS is not very unique, just a few modifications to to_zip
+and to_country.
+
+=head1 TODO
+
+Move the country translator data into configuration.
+
+=over 4 METHODS
+
+=cut
+
+$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+
 use strict;
 use warnings;
-
-use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 use base ( 'Business::Shipping::Shipment' );
-
 use Business::Shipping::Debug;
+use Business::Shipping::Config;
 use Business::Shipping::Package;
-
-
-# Nothing is unique about USPS, when it comes to Shipment.
 use Business::Shipping::CustomMethodMaker
 	new_with_init => 'new',
 	new_hash_init => 'hash_init';
@@ -38,10 +47,13 @@ sub init
 	return;
 }
 
-#
-# These methods automatically override the ones provided for us in 
-# Shipping::Shipment by the MethodMaker module.
-#
+sub from_country { return 'US'; }
+
+=item * to_zip( $to_zip )
+
+Overrides Shipping::Shipment::to_zip() to throw away the "four" from zip+four.
+
+=cut
 sub to_zip
 {
 	my $self = shift;
@@ -58,86 +70,33 @@ sub to_zip
 	return $self->{ 'to_zip' };
 }
 
-sub from_country
-{
-	# USPS is always from US.
-	return 'US';
-}
+=item * to_country( $to_country ) 
 
+Uses the name translaters of Shipping::Shipment::to_country(), then applies its
+own translations.  The former may not be necessary, but the latter is.
+
+=cut
 sub to_country
 {
-	trace '( ' . uneval( @_ ) . ' )';
-	my $self = shift;	
-	if ( @_ ) {
-		my $new_to_country = shift;
-		$new_to_country = $self->_country_name_translator( $new_to_country );
-		#debug ( "setting country to \'$new_to_country\'" );
-		$self->SUPER::to_country( $new_to_country );
+	trace '( ' . uneval( \@_ ) . ' )';
+	my ( $self, $to_country ) = @_;	
+	
+	if ( defined $to_country ) {
+		#
+		# Apply any Shipping::Shipment conversions, then apply our own.
+		#
+		$to_country = $self->SUPER::to_country( $to_country );
+		my $countries = $self->config_to_hash(
+			cfg()->{ usps_information }->{ usps_country_name_translations }
+		);
+		$to_country = $countries->{ $to_country } || $to_country; 
+		
+		debug3( "setting to_country to \'$to_country\'" );
+		$self->{ to_country } = $to_country;
 	} 
-	#debug ( "to_country now is " . ( $self->SUPER::to_country() || '' ) );
-	return $self->SUPER::to_country();
-}
-
-#
-# TODO: Separate code from data.
-#
-# Translate common usages (Great Britain) into the USPS proper name
-# (Great Britain and Northern Ireland).
-#
-sub _country_name_translator
-{
-	my ( $self, $country ) = @_;
+	debug3( "SUPER::to_country now is " . ( $self->SUPER::to_country() || '' ) );
 	
-	return if ( ! $country );
-	
-	my %country_translator = (
-		'American Samoa' => 'US Possession',  # Note: Requires Zip Code.
-		'Bosnia And Herzegowina' => 'Bosnia-Herzegovina',  # note spelling
-		'Bosnia And Herzegovina' => 'Bosnia-Herzegovina',  
-		'Cocos (Keeling) Islands' => 'Australia',
-		'Cook Islands' => 'New Zealand',
-		'Corsica' => 'France',
-		'Cote d` Ivoire (Ivory Coast)' => 'Cote d lvoire (Ivory Coast)',
-		'East Timor' => 'Indonesia',
-		'Falkland Islands (Malvinas)' => 'Falkland Islands',
-		'France (Includes Monaco)' => 'France',
-		'France, Metropolitan' => 'France',
-		'French Polynesia (Tahiti)' => 'French Polynesia',
-		'Georgia' => 'Georgia, Republic of',
-		'Great Britain' => 'Great Britain and Northern Ireland',
-		'Holy See (Vatican City State)' => 'Vatican City',
-		'Ireland (Eire)' => 'Ireland',
-		'Macedonia' => 'Macedonia, Republic of',
-		'Madeira Islands' => 'Portugal',
-		'Marshall Islands' => 'US Possession',
-		'Mayotte' => 'France',
-		'Micronesia, Federated States Of' => 'US Possession',
-		'Moldova, Republic Of' => 'Moldova',
-		'Monaco' => 'France',
-		'Niue' => 'New Zealand',
-		'Norfolk Island' => 'Australia',
-		'Northern Mariana Islands' => 'US Possession',
-		'Palau' => 'US Possession',
-		'Pitcairn' => 'Pitcairn Island',
-		'Puerto Rico' => 'US Possession',
-		'Russian Federation' => 'Russia',
-		'Saint Kitts And Nevis' => 'St. Christopher and Nevis',
-		'South Georgia And The South Sand' => 'Falkland Islands',
-		'South Korea' => 'Korea, Republic of (South Korea)',
-		'Tahiti' => 'French Polynesia',
-		'Tokelau' => 'Western Samoa',
-		'United Kingdom' => 'Great Britain and Northern Ireland',
-		'Virgin Islands (U.S.)' => 'US Possession',
-		'Wallis and Furuna Islands' => 'Wallis and Futuna Islands',    #misspelling
-		'Yugoslavia' => 'Serbia-Montenegro',
-		'Zaire' => 'Congo, Democratic Republic of the',		
-	);
-	if ( $country_translator{ $country } ) {
-		return $country_translator{ $country };
-	}
-	else {
-		return $country;
-	}
+	return $self->{ to_country };
 }
 
 1;

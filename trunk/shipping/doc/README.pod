@@ -4,6 +4,8 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
 
 =head1 INSTALLATION
 
+ See INSTALL file for more details.
+ 
  perl Makefile.PL
  make
  make test
@@ -21,6 +23,7 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
  Devel::Required (0.03)
  Error (any)
  LWP::UserAgent (any)
+ Math::BaseCnv (any)
  XML::DOM (any)
  XML::Simple (2.05)
 

@@ -4,7 +4,7 @@ use ExtUtils::MakeMaker;
 #
 # auto-update documentation if needed
 #
-eval "use Devel::Required text => [ '' ], pod => [qw(lib/Business/Shipping.pm), qw(doc/README.pod), qw(doc/INSTALL.pod)]";
+eval "use Devel::Required text => [ '' ], pod => [qw(lib/Business/Shipping.pm), qw(doc/README.pod), qw(doc/INSTALL.pod), qw(UserTag/business-shipping.tag)]";
 
 # Version for Business-Shipping as a whole.
 $VERSION = '1.03';
@@ -35,6 +35,7 @@ WriteMakefile(
 		'Bundle::DBD::CSV'		=> 0,
 		'Archive::Zip'			=> 0,
 		'Devel::Required'		=> '0.03',
+		'Math::BaseCnv'			=> 0,
 	},
 );
 

@@ -1,29 +1,27 @@
 # Business::Shipping::Util
 # 
-# $Id: Util.pm,v 1.2 2004/01/03 03:11:20 db-ship Exp $
+# $Id: Util.pm,v 1.3 2004/01/21 22:39:52 db-ship Exp $
 # 
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
 
 package Business::Shipping::Util;
 
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+@EXPORT_OK = ( 'element_in_array' );
+
 use strict;
 use warnings;
-
-use vars qw( $VERSION @EXPORT );
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 use base ( 'Exporter', 'Business::Shipping' );
-
 use Data::Dumper;
 use Business::Shipping::Debug;
-
+use Carp;
 use File::Find;
 use File::Copy;
 use Archive::Zip qw(:ERROR_CODES);
 use Fcntl ':flock';
-
 
 sub download_to_file
 {
@@ -182,7 +180,7 @@ sub readfile
 	return $contents;
 }
 
-sub element_e_in_array_a
+sub element_in_array
 {
 	my ( $e, @a ) = @_;
 	return unless $e and @a;
@@ -193,4 +191,25 @@ sub element_e_in_array_a
 	
 	return 0;
 }
+
+sub get_fh
+{
+	my ( $filename ) = @_;
+
+	my $file_handle;
+	open $file_handle, "$filename" || carp "could not open file: $filename.  Error: $@";
+	
+	return $file_handle;
+}
+
+sub close_fh
+{
+	my ( $file_handle ) = @_;
+	
+	close $file_handle;
+	
+	return;
+}
+
+
 

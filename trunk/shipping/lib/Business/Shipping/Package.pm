@@ -1,19 +1,18 @@
 # Business::Shipping::Package - Abstract class
 # 
-# $Id: Package.pm,v 1.3 2003/12/22 03:49:05 db-ship Exp $
+# $Id: Package.pm,v 1.4 2004/01/21 22:39:52 db-ship Exp $
 # 
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
 
 package Business::Shipping::Package;
 
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+
 use strict;
 use warnings;
-
-use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 use base ( 'Business::Shipping' );
 
 use Business::Shipping::CustomMethodMaker
@@ -23,7 +22,6 @@ use Business::Shipping::CustomMethodMaker
 		optional => [ 'id', 'charges' ],
 		unique => [ 'weight' ],
 	];
-
 
 sub set_price
 {

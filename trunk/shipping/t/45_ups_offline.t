@@ -247,6 +247,9 @@ SKIP: {
 ##  Hawaii / Alaska
 ###########################################################################
 
+TODO: {
+      local $TODO = "Hawaii, Alaska, and a few misc tests need some investigation.";
+  
 %test = (
 	service		=> '2DA',
 	weight		=> 20,
@@ -268,6 +271,35 @@ SKIP: {
 	ok( $shipment_online->total_charges(),	"UPS Online: " . $this_test_desc );
 	"UPS Online: " . $this_test_desc . $shipment_online->total_charges() . "\n";
 }
+
+
+
+
+
+my $rr = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
+
+$rr->submit(
+	service		=> '1DA',
+	weight		=> 20,
+	from_zip	=> '98682',
+	from_state	=> 'Washington',
+	to_zip		=> '96826',
+	
+) or die $rr->error();
+
+print "Hawaii 2DA (alternate calling method):" . $rr->total_charges() . "\n";
+ok( $rr->total_charges, "Hawaii 2DA (alternate calling method):" );
+
+
+
+
+
+
+
+
+
+
+
 
 %test = (
 	service		=> '1DA',
@@ -360,4 +392,5 @@ SKIP: {
 	
 }
 
-
+}; #/end TODO
+1;

@@ -1,21 +1,28 @@
 # Business::Shipping::Config - Configuration Functions.
 # 
-# $Id: Config.pm,v 1.1 2003/12/22 03:49:05 db-ship Exp $
+# $Id: Config.pm,v 1.2 2004/01/21 22:39:52 db-ship Exp $
 # 
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
 
 package Business::Shipping::Config;
 
+=head1 DESCRIPTION
+
+Business::Shipping::Config is currently just a simple API for the 
+Config::IniFiles module; however, in the future I hope to add a more
+advanced system.
+
+=cut
+
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+@EXPORT = qw( cfg cfg_obj );
+
 use strict;
 use warnings;
-
-use vars qw( $VERSION @EXPORT );
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 use base ( 'Exporter', 'Business::Shipping' );
-@EXPORT = qw( cfg cfg_obj );
 use Config::IniFiles;
 
 my $support_files_dir;

@@ -1,37 +1,26 @@
 # Business::Shipping::Debug - Debugging Functions
 # 
-# $Id: Debug.pm,v 1.4 2003/12/22 03:49:05 db-ship Exp $
+# $Id: Debug.pm,v 1.5 2004/01/21 22:39:52 db-ship Exp $
 # 
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
 
 package Business::Shipping::Debug;
 
-use strict;
-use warnings;
-
-use vars qw( $VERSION @EXPORT );
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-
-use base ( 'Exporter', 'Business::Shipping' );
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT = qw( uneval debug debug3 trace log_error );
 
-###########################################################################
-##  Variables
-###########################################################################
+use strict;
+use warnings;
+use base ( 'Exporter', 'Business::Shipping' );
 
 %Business::Shipping::Debug::event_handlers = ();
 $Business::Shipping::Debug::event_handlers{ 'debug' } 	= undef;
 $Business::Shipping::Debug::event_handlers{ 'debug3' }	= undef;
 $Business::Shipping::Debug::event_handlers{ 'trace' } 	= undef;
 $Business::Shipping::Debug::event_handlers{ 'error' } 	= 'STDERR';
-
-###########################################################################
-##  Helper methods
-###########################################################################
-
 
 # uneval() was shamelessly copied from Interchange.
 # Written by Mike Heins <mike@perusion.com>
@@ -95,7 +84,7 @@ sub _log
 	$msg .= "\n" unless ( $msg =~ /\n$/ );
 	
 	#
-	# Take off the "Business::Shipping::" to save horizontal space
+	# Take off the "Business::Shipping::" to save space
 	#
 	$msg =~ s/Business::Shipping:://;
 	

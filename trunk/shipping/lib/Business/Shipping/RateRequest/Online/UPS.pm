@@ -1,15 +1,17 @@
 # Business::Shipping::RateRequest::Online::UPS - Abstract class for shipping cost rating.
 # 
-# $Id: UPS.pm,v 1.11 2004/01/03 03:11:20 db-ship Exp $
+# $Id: UPS.pm,v 1.12 2004/01/21 22:39:53 db-ship Exp $
 # 
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
 
+package Business::Shipping::RateRequest::Online::UPS;
+
 =head1 NAME
 
-Business::Shipping::UPS 
+Business::Shipping::RateRequest::Online::UPS
 
 See Shipping.pm POD for usage information.
 
@@ -44,7 +46,6 @@ See Shipping.pm POD for usage information.
 
 	user_id
 	password
-	
 	access_key
 	pickup_type
 	from_country
@@ -61,31 +62,23 @@ See Shipping.pm POD for usage information.
 	test_server
 	no_ssl
 	event_handlers
-	
 	from_city
 	to_city
-
 	
 =cut
 
-package Business::Shipping::RateRequest::Online::UPS;
+$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
-
-use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-
 use base ( 'Business::Shipping::RateRequest::Online' );
-
-
 use Business::Shipping::RateRequest::Online;
 use Business::Shipping::Debug;
+use Business::Shipping::Config;
 use Business::Shipping::Package::UPS;
 use XML::Simple 2.05;
 use Cache::FileCache;
 use LWP::UserAgent;
-
 use Business::Shipping::CustomMethodMaker
 	new_with_init => 'new',
 	new_hash_init => 'hash_init',
@@ -250,8 +243,6 @@ sub _massage_values
 		}
 	}
 	
-	
-	
 	return;
 }
 
@@ -283,14 +274,14 @@ sub _gen_request_xml
 	my %shipment_tree = (
 		'Shipper' => [ {
 			'Address' => [ {
-				'CountryCode' => [ $self->from_country() ],
+				'CountryCode' => [ $self->from_country_abbrev() ],
 				'PostalCode' => [ $self->from_zip() ],
 			} ],
 		} ],
 		'ShipTo' => [ {
 			'Address' => [ {
 				'ResidentialAddress' 	=> [ $self->to_residential() 	],
-				'CountryCode' 			=> [ $self->to_country() 		],
+				'CountryCode' 			=> [ $self->to_country_abbrev()	],
 				'PostalCode' 			=> [ $self->to_zip() 			],
 				'City'					=> [ $self->to_city() 			],
 			} ],
@@ -341,22 +332,19 @@ sub _gen_request_xml
 	my $access_xml = '<?xml version="1.0"?>' . "\n" 
 		. XML::Simple::XMLout( $access_tree, KeepRoot => 1 );
 
-	#use Data::Dumper;
-	#print Dumper ( $request_tree );
-	
 	my $request_xml = $access_xml . "\n" . '<?xml version="1.0"?>' . "\n"
 		. XML::Simple::XMLout( $request_tree, KeepRoot => 1 );
+	
+	debug3( $request_xml );
 	
 	return ( $request_xml );
 }
 
+=item * get_total_charges()
 
+Returns the total charges.
 
-#
-# $ups->get_total_charges()
-#
-# This method returns the total charges.
-#
+=cut
 sub get_total_charges
 {
 	my ( $self ) = shift;
@@ -364,11 +352,12 @@ sub get_total_charges
 	return 0;
 }
 
-
 sub _handle_response
 {
 	trace '()';
 	my ( $self ) = @_;
+	
+	debug3( "response = " . $self->response()->content() );
 	
 	my $response_tree = XML::Simple::XMLin( 
 		$self->response()->content(), 
@@ -426,7 +415,29 @@ sub _handle_response
 	return $self->is_success( 1 );
 }
 
+no warnings;
+=item * to_country_abbrev()
 
+We have to override the to_country_abbrev function becuase Online::UPS
+likes its own spellings of certain country abbreviations (GB, etc.).
+
+=cut
+sub to_country_abbrev
+{
+	my ( $self ) = @_;
+	
+	return unless $self->to_country;
+	
+	#
+	# Do the UPS translations
+	#
+	my $online_ups_country_to_abbrev = cfg()->{ ups_information }->{ online_ups_country_to_abbrev };
+	my $countries = $self->config_to_hash( $online_ups_country_to_abbrev );
+	my $to_country_abbrev = $countries->{ $self->to_country } || $self->SUPER::to_country_abbrev();
+	return $to_country_abbrev;
+}
+
+use warnings;
 
 1;
 

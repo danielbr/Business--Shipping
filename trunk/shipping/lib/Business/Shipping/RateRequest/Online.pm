@@ -1,21 +1,19 @@
 # Business::Shipping::RateRequest::Online - Abstract class for shipping cost rating.
 # 
-# $Id: Online.pm,v 1.5 2004/01/03 03:11:20 db-ship Exp $
+# $Id: Online.pm,v 1.6 2004/01/21 22:39:53 db-ship Exp $
 # 
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
 
 package Business::Shipping::RateRequest::Online;
 
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+
 use strict;
 use warnings;
-
-use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 use base ( 'Business::Shipping::RateRequest' );
-
 use Business::Shipping::Debug;
 use XML::Simple;
 use LWP::UserAgent;
@@ -36,8 +34,6 @@ use Business::Shipping::CustomMethodMaker
 			slot => 'response',
 		}
 	];
-
-
 
 sub perform_action
 {

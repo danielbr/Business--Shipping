@@ -1,148 +1,13 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.11 2004/01/07 01:17:41 db-ship Exp $
+# $Id: Shipping.pm,v 1.12 2004/01/21 22:39:52 db-ship Exp $
 #
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 #
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
 
 package Business::Shipping;
-
-use strict;
-use warnings;
-
-use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-
-use Carp;
-use Business::Shipping::Debug;
-use Business::Shipping::CustomMethodMaker
-	new_hash_init => 'new',
-	grouped_fields => [
-		optional => [ 'tx_type' ]
-	],
-	get_set => [ 'error_msg' ];
-
-sub error
-{
-	my ( $self, $msg ) = @_;
-	
-	if ( defined $msg ) {
-		$self->error_msg( $msg );
-		Business::Shipping::Debug::log_error( $msg );
-	}
-	
-	return $self->error_msg();
-}
-
-sub event_handlers
-{
-	my $self = shift;
-	my $event_handlers = shift;
-	%Business::Shipping::Debug::event_handlers = %$event_handlers;
-	return;
-}
-
-sub validate
-{
-	trace '()';
-	my ( $self ) = shift;
-	
-	my @required = $self->required();
-	my @optional = $self->optional();
-	
-	debug( "required = " . join (', ', @required ) ); 
-	debug3( "optional = " . join (', ', @optional ) );	
-	
-	my @missing;
-	foreach my $required_field ( @required ) {
-		#debug( "Testing $required_field..." );
-		if ( ! $self->$required_field() ) {
-			push @missing, $required_field;
-		}
-		#debug( "...done." );
-	}
-	
-	if ( @missing ) {
-		$self->error( "Missing required argument " . join ", ", @missing );
-		debug( "returning undef" );
-		return undef;
-	}
-	else {
-		debug3( "returning success" );
-		return 1;
-	}
-}
-	
-sub rate_request
-{
-	my $class = shift;
-	my ( %opt ) = @_;
-	not $opt{ shipper } and Carp::croak( "shipper required" ) and return undef;
-
-	#
-	# This was made to support the specification of 'Offline::UPS'
-	#
-	my $full_shipper;
-	if ( $opt{ shipper } =~ /::/ ) {
-		$full_shipper = $opt{ shipper };
-		my @shipper_components = split( '::', $opt{ shipper } );	
-		$opt{ shipper } = pop @shipper_components;
-		
-	}
-	else {
-		$full_shipper = "Online::" . $opt{ shipper };
-	}
-		
-	my $package				= Business::Shipping->new_subclass( 'Package::' 			. $opt{ 'shipper' } );
-	my $shipment 			= Business::Shipping->new_subclass( 'Shipment::' 			. $opt{ 'shipper' } );
-	
-	my $subclass = 'RateRequest::' . $full_shipper;
-	my $new_rate_request;
-	eval {
-		$new_rate_request = Business::Shipping->new_subclass( $subclass );
-	};
-	die $@ if $@;
-	
-	$shipment->packages_push( $package );
-	$new_rate_request->shipment( $shipment );
-	
-	# init(), in turn, automatically delegates certain options to Shipment and Package.
-	$new_rate_request->init( %opt ); 
-	
-	return ( $new_rate_request );
-}
-
-sub new_subclass
-{
-	my $class = shift;
-	my $subclass = shift;
-	my $new_class = $class . '::' . $subclass;
-	
-	my ( %opt ) = @_;
-	
-	if ( not defined &$new_class ) {
-		#debug "$new_class not defined, going to import it.\n";
-		eval "require $new_class";
-		#Carp::croak( "unknown class (require) $new_class ($@)" ) if $@;
-		die( "unknown class (require) $new_class ($@)" ) if $@;
-		eval "import $new_class";
-		#Carp::croak( "import error $new_class ($@)" ) if $@;
-		die( "import error $new_class ($@)" ) if $@;
-	}
-	else {
-		#debug "$new_class already defined\n";
-		die( "$new_class already defined\n" );
-	}
-	
-	my $new_sub_object = eval "$new_class->new()";
-	return $new_sub_object;	
-}
-
-1;
-
-__END__
 
 =head1 NAME
 
@@ -160,6 +25,7 @@ Business::Shipping - API for shipping-related tasks
  Devel::Required (0.03)
  Error (any)
  LWP::UserAgent (any)
+ Math::BaseCnv (any)
  XML::DOM (any)
  XML::Simple (2.05)
 
@@ -177,7 +43,7 @@ Example usage for a rating request:
 		weight			=> 5.00,
 	);
 	
-	$rate_request->submit() or die $rate_request->error();
+	$rate_request->submit() or print $rate_request->error();
 	
 	print $rate_request->total_charges();
 
@@ -185,12 +51,12 @@ Example usage for a rating request:
 
 Business::Shipping is an API for shipping-related tasks.
 
-=head2 Shipping Tasks Implemented at this time:
+=head2 Shipping Tasks Implemented at this time
 
  * Shipping cost calculation
  * Tracking, availability, and other services are planned for future addition.
 
-=head2 Shipping Vendors Implemented at this time:
+=head2 Shipping Vendors Implemented at this time
 
  * Online UPS (using the Internet and UPS servers)
  * Offline UPS (using tables stored locally)
@@ -306,13 +172,13 @@ for error, debug, trace, and the like.  The value can be one of four options:
 
 For example:
 
- $rate_request->init( 
-	'event_handlers' => ({ 
-		'error' => 'STDOUT',
-		'debug' => undef,
+ $rate_request->event_handlers(
+ 	{ 
+		'error' => 'STDERR',
+		'debug' => 'STDERR',
 		'trace' => undef,
 		'debug3' => undef,
-	})
+	}
  );
  
 The default is 'STDERR' for error handling, and nothing for debug/trace 
@@ -327,3 +193,189 @@ However, if you don't save the error value before the next call, it could be
 overwritten by a new error.
 
 =cut
+
+$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+
+use strict;
+use warnings;
+use Carp;
+use Business::Shipping::Debug;
+use Business::Shipping::CustomMethodMaker
+	new_hash_init => 'new',
+	grouped_fields => [
+		optional => [ 'tx_type' ]
+	],
+	get_set => [ 'error_msg' ];
+
+sub error
+{
+	my ( $self, $msg ) = @_;
+	
+	if ( defined $msg ) {
+		$self->error_msg( $msg );
+		Business::Shipping::Debug::log_error( $msg );
+	}
+	
+	return $self->error_msg();
+}
+
+sub event_handlers
+{
+	my ( $self, $event_handlers ) = @_;
+	%Business::Shipping::Debug::event_handlers = %$event_handlers if defined $event_handlers;
+	return \%Business::Shipping::Debug::event_handlers;
+}
+
+sub validate
+{
+	trace '()';
+	my ( $self ) = shift;
+	
+	my @required = $self->required();
+	my @optional = $self->optional();
+	
+	debug( "required = " . join (', ', @required ) ); 
+	debug3( "optional = " . join (', ', @optional ) );	
+	
+	my @missing;
+	foreach my $required_field ( @required ) {
+		if ( ! $self->$required_field() ) {
+			push @missing, $required_field;
+		}
+	}
+	
+	if ( @missing ) {
+		$self->error( "Missing required argument " . join ", ", @missing );
+		debug( "returning undef" );
+		return undef;
+	}
+	else {
+		debug3( "returning success" );
+		return 1;
+	}
+}
+	
+sub rate_request
+{
+	my $class = shift;
+	my ( %opt ) = @_;
+	not $opt{ shipper } and Carp::croak( "shipper required" ) and return undef;
+
+	#
+	# This was made to support the specification of 'Offline::UPS'
+	#
+	my $full_shipper;
+	if ( $opt{ shipper } =~ /::/ ) {
+		$full_shipper = $opt{ shipper };
+		my @shipper_components = split( '::', $opt{ shipper } );	
+		$opt{ shipper } = pop @shipper_components;
+		
+	}
+	else {
+		$full_shipper = "Online::" . $opt{ shipper };
+	}
+		
+	my $package				= Business::Shipping->new_subclass( 'Package::' 			. $opt{ 'shipper' } );
+	my $shipment 			= Business::Shipping->new_subclass( 'Shipment::' 			. $opt{ 'shipper' } );
+	
+	my $subclass = 'RateRequest::' . $full_shipper;
+	my $new_rate_request;
+	eval {
+		$new_rate_request = Business::Shipping->new_subclass( $subclass );
+	};
+	die $@ if $@;
+	
+	$shipment->packages_push( $package );
+	$new_rate_request->shipment( $shipment );
+	
+	# init(), in turn, automatically delegates certain options to Shipment and Package.
+	$new_rate_request->init( %opt ); 
+	
+	return ( $new_rate_request );
+}
+
+sub new_subclass
+{
+	my $class = shift;
+	my $subclass = shift;
+	my $new_class = $class . '::' . $subclass;
+	
+	my ( %opt ) = @_;
+	
+	if ( not defined &$new_class ) {
+		#
+		# Clear previous errors
+		#
+		$@ = '';
+		
+		eval "require $new_class";
+		Carp::croak( "Error when trying to require $new_class: \n\t$@" ) if $@;
+		
+		eval "import $new_class";
+		Carp::croak( "Error when trying to import $new_class: $@" ) if $@;
+	}
+	
+	my $new_sub_object = eval "$new_class->new()";
+	return $new_sub_object;	
+}
+
+sub _translate_simple
+{
+	my ( $self, $value_to_translate, $translation_config_param ) = @_;
+	carp "Missing values" unless $value_to_translate and $translation_config_param;
+	debug( "Going to translate $value_to_translate ( " . ( $self->$value_to_translate() || 'undef' ) . " ) using $translation_config_param" );
+
+	my $aryref = cfg()->{ ups_information }->{ $translation_config_param };
+	my $hash = $self->config_to_hash( $aryref, "\t" );
+	my $new_value = $self->_hash_translator( $self->$value_to_translate(), $hash );
+	debug( "Setting $value_to_translate to new value: " . ( $new_value || 'undef' ) );
+	$self->$value_to_translate( $new_value );
+	
+	return;
+}
+
+sub simple_translate_config
+{
+	my ( $self, $config_aryref ) = @_;
+	
+	for ( @$config_aryref ) {
+		my ( $value_to_translate, $translation_config_param ) = split( "\t", $_ );
+		next unless $value_to_translate and $translation_config_param;
+		$self->_translate_simple( $value_to_translate, $translation_config_param );
+	}
+	
+	return;
+}
+
+=item * config_to_hash( $ary, $del )
+
+	$ary	Key/value pairs
+	$del	Delimiter for the above array (tab is default)
+
+Builds a hash from an array of lines containing key / value pairs, like so:
+
+key1	value1
+key2	value2
+key3	value3
+
+=cut
+sub config_to_hash
+{
+	my ( $self, $ary, $delimiter ) = @_;
+	return unless $ary;
+	#
+	# TODO: check ref( $ary ) eq 'ARRAY'
+	#
+	
+	$delimiter ||= "\t";
+	
+	my $hash = {};
+	foreach my $line ( @$ary ) {
+		my ( $key, $val ) = split( $delimiter, $line );
+		$hash->{ $key } = $val;
+	}
+	
+	return $hash;	
+}
+
+1;

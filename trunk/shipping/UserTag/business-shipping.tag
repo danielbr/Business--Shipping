@@ -1,21 +1,23 @@
+# [business-shipping] - Interchange Usertag for Business::Shipping
+#
+# $Id: business-shipping.tag,v 1.9 2004/01/21 22:39:51 db-ship Exp $
+#
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
+#
+# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+# 
 ifndef BUSINESS_SHIPPING
-Variable BUSINESS_SHIPPING	 1 # Ensures that [business-shipping] is only included once.
-Message -i Loading [business-shipping] usertag from Business::Shipping module...
+Variable BUSINESS_SHIPPING	 1 
+Message -i Loading [business-shipping] usertag...
 Require Module Business::Shipping
 UserTag  business-shipping  Order					shipper
 UserTag  business-shipping  AttrAlias 		mode	shipper
 UserTag  business-shipping  AttrAlias 		carrier	shipper
 UserTag  business-shipping  Addattr
 UserTag  business-shipping  Documentation 	<<EOD
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
-# This program is free software; you can redistribute it and/or modify it 
-# under the same terms as Perl itself.
-#
-# $Id: business-shipping.tag,v 1.8 2004/01/10 21:27:26 db-ship Exp $
-
 =head1 NAME
 
-[business-shipping] - Live rate lookup for UPS and USPS (using Business::Shipping)
+[business-shipping] - Interchange Usertag for Business::Shipping
 
 =head1 AUTHOR 
 
@@ -26,168 +28,159 @@ UserTag  business-shipping  Documentation 	<<EOD
 =head1 SYNOPSIS
 
 [business-shipping 
-	mode="USPS"
-	service="Airmail Parcel Post"
-	weight="4"
-	to_country="Albania"
-]
-
-[business-shipping
-	mode="UPS"
-	service="GNDRES"
-	from_zip="98682"
-	to_zip="98270"
-	to_residential=1
-	weight="3.5"
+	shipper='Offline::UPS'
+	service='GNDRES'
+	from_zip='98682'
+	to_zip='98270'
+	weight='5.00'
 ]
 	
+=head1 REQUIRED MODULES
+
+ Archive::Zip (any)
+ Bundle::DBD::CSV (any)
+ Cache::FileCache (any)
+ Class::MethodMaker (any)
+ Config::IniFiles (any)
+ Crypt::SSLeay (any)
+ Data::Dumper (any)
+ Devel::Required (0.03)
+ Error (any)
+ LWP::UserAgent (any)
+ Math::BaseCnv (any)
+ XML::DOM (any)
+ XML::Simple (2.05)
+
 =head1 INSTALLATION
 
-Here is a general outline of the installation in interchange.
+Here is a general outline for installing [business-shipping] in Interchange.
 
- * Follow installation instructions for Business::Shipping
-    - http://www.kavod.com/Business-Shipping
+ * Follow the instructions for installing Business::Shipping.
+    - (http://www.kavod.com/Business-Shipping/latest/doc/INSTALL.html)
  
  * Copy the business-shipping.tag file into one of these directories:
 	- interchange/usertags (IC 4.8.x)
-	- interchange/code/UserTags (IC 4.9.x)
+	- interchange/code/UserTags (IC 4.9+)
 
  * Add any shipping methods that are needed to catalog/products/shipping.asc
-   (The defaults that come with Interchange will work, but they will not use
-   the new software).
+ 
+ * Add the following Interchange variables to provide default information.
+   These can be added by copying/pasting into the variable.txt file, then
+   restarting Interchange.
    
-Note that "XPS" is used to denote fields that can be used for UPS or USPS.
-
-UPS_ACCESS_KEY	FJ28AWJN328A3	Shipping 
-UPS_USER_ID	userid	Shipping
-UPS_PASSWORD	mypassword	Shipping
-UPS_PICKUPTYPE	Daily Pickup	Shipping
-
--or-
-
-USPS_USER_ID	143264KAVOD7241	Shipping
-USPS_PASSWORD	awji2398r2	Shipping
+   Note that "XPS" is used to denote fields that can be used for UPS or USPS.
 
 XPS_FROM_COUNTRY	US	Shipping
 XPS_FROM_STATE	Washington	Shipping
 XPS_FROM_ZIP	98682	Shipping
 XPS_TO_COUNTRY_FIELD	country	Shipping
 XPS_TO_ZIP_FIELD	zip	Shipping
-
- * USPS International Service types:
- 
-	'Global Express Guaranteed Document Service',
-	'Global Express Guaranteed Non-Document Service',
-	'Global Express Mail (EMS)',
-	'Global Priority Mail - Flat-rate Envelope (large)',
-	'Global Priority Mail - Flat-rate Envelope (small)',
-	'Global Priority Mail - Variable Weight Envelope (single)',
-	'Airmail Letter Post',
-	'Airmail Parcel Post',
-	'Economy (Surface) Letter Post',
-	'Economy (Surface) Parcel Post',
+UPS_ACCESS_KEY	FJ28AWJN328A3	Shipping 
+UPS_USER_ID	userid	Shipping
+UPS_PASSWORD	mypassword	Shipping
+UPS_PICKUPTYPE	Daily Pickup	Shipping
+USPS_USER_ID	143264KAVOD7241	Shipping
+USPS_PASSWORD	awji2398r2	Shipping
 
  * Sample shipping.asc entry:
 
-USPS_AIRMAIL_POST: USPS International
+UPS_GROUND: UPS Ground
 	criteria	[criteria-intl]
-	
 	min			0
-	max			4
-	cost		f [business-shipping mode="USPS" service="Airmail Parcel Post" weight="@@TOTAL@@"]
-	
-	min			4
-	max			999999
-	cost		f [business-shipping mode="USPS" service="Airmail Parcel Post" weight="@@TOTAL@@"]
+	max			150
+	cost		f [business-shipping mode="Offline::UPS" service="GNDRES" weight="@@TOTAL@@"]
 
 =head1 UPGRADE from [ups-query]
 
-See the replacement [ups-query] usertag in this directory.
+See the replacement [ups-query] usertag in this directory.  
+Untested, so please report any bugs. 
 
 =cut
 EOD
 UserTag  business-shipping  Routine <<EOR
-
 use Business::Shipping;
 
 sub {
  	my ( $shipper, $opt ) = @_;
 	
-	my $debug = delete $opt->{ debug } || 1;
-	
+	my $debug = delete $opt->{ debug } || 0;
 	::logDebug( "[business-shipping " . uneval( $opt ) ) if $debug;
-	 
+	my $try_limit = delete $opt->{ 'try_limit' } || 2;
+	
 	unless ( $shipper and $opt->{weight} and $opt->{ 'service' }) {
 		Log ( "mode, weight, and service required" );
-		return ( undef );
+		return;
 	}
 	
+	#
 	# We pass the options mostly unmodifed to the underlying library, so here we
-	# take out anything that might confuse it.
-	delete $opt->{ 'reparse' };
-	delete $opt->{ 'mode' };
-	delete $opt->{ 'hide' };
+	# take out anything Interchange-specific that isn't necessary with a hash
+	# slice.
+	#
+	delete @{ $opt }{ 'reparse', 'mode', 'hide' };
 	
-	my $try_limit = delete $opt->{ 'try_limit' };
-	$try_limit ||= 2;
-	
-	# Business::Shipping takes a hash anyway, we might as well deref it now.
+	#
+	# Business::Shipping takes a hash.
+	#
 	my %opt = %$opt;
 
 	my $to_country_default = $Values->{ $Variable->{ XPS_TO_COUNTRY_FIELD } || 'country' };
-	if ( $to_country_default ) {
-		if ( $shipper eq 'USPS' ) {
-			$to_country_default = $Tag->data( 'country', 'name', $to_country_default );
-		}
-		elsif ( $shipper eq 'UPS' ) {
-			# Leave the country as a code
-		}
-	}
+	
+	#
+	# STDOUT goes to the IC debug files (usually '/tmp/debug')
+	# STDERR goes to the global error log (usually 'interchange/error.log').
+	#
+	# Defaults: Cache enabled.  Log errors only.
+	#	
+	;
+	my $defaults = {
+		'all' => {
+			'user_id'			=> $Variable->{ "${shipper}_USER_ID" },
+			'password'			=> $Variable->{ "${shipper}_PASSWORD" },
+			'to_country'		=> $Values->{ 
+				$Variable->{ XPS_TO_COUNTRY_FIELD } || 'country' 
+			},
+			'to_zip'			=> $Values->{ $Variable->{ XPS_TO_ZIP_FIELD } || 'zip' },
+			'from_country'		=> $Variable->{ XPS_FROM_COUNTRY },
+			'from_zip'			=> $Variable->{ XPS_FROM_ZIP },
+			'event_handlers'	=> (
+				{
+					'error' => 'STDERR',
+					'debug' => ( $debug ? 'STDOUT' : undef ),
+					'trace' => undef,
+					'debug3' => undef,
+				}
+			),
+			'cache'				=> ( defined $opt{ cache } ? $opt{ cache } : 1 ),
+		},
+		'Online::USPS' => {
+			'to_country' => $Tag->data( 
+				'country', 
+				'name', 
+				$Variable->{ XPS_TO_COUNTRY_FIELD } || 'country'
+			)
+		},
+		'Online::UPS' => {
+			'access_key'		=> ( $Variable->{ "${shipper}_ACCESS_KEY" } || undef ),
+		},
+		'Offline::UPS' => { 
+			'from_state'		=> $Variable->{ XPS_FROM_STATE },
+			'cache'				=> 0,
+		},
 
+	}
+	
 	#
-	# For interchange, STDOUT will cause it to go to the IC debug.
+	# Apply all of the above defaults.  Sorting the hash keys causes 'all' to
+	# be applied first, which allows each shipper to override the default.
+	# For example, Online::USPS overrides the to_country method.
 	#
-	my %event_handlers;
-	if ( $debug ) {
-		%event_handlers = ({
-			'debug' => 'STDERR',
-			'debug3' => 'STDERR',
-			'trace' => 'STDERR',
-			'error' => 'STDERR', 
-		});
-	}
-	else {
-		%event_handlers = ({
-			'debug' => undef,
-			'debug3' => undef,
-			'trace' => undef, 
-			'error' => 'STDERR', 
-		});
-	}
-		
-	my %defaults = (
-		%event_handlers, 
-		'user_id'			=> $Variable->{ "${shipper}_USER_ID" },
-		'password'			=> $Variable->{ "${shipper}_PASSWORD" },
-		'to_country'		=> $to_country_default,
-		'to_zip'			=> $Values->{ $Variable->{ XPS_TO_ZIP_FIELD } || 'zip' },
-		'from_country'		=> $Variable->{ XPS_FROM_COUNTRY },
-		'from_zip'			=> $Variable->{ XPS_FROM_ZIP },
-	);
-	
-	# Cache enabled by default.
-	if ( not defined $opt{ 'cache' } ) { $opt{ 'cache' } = 1; }
-	
-	if ( $shipper =~ /(UPS|Online::UPS)/ ) {
-		$defaults{ 'access_key' } = $Variable->{ "${shipper}_ACCESS_KEY" } if ( $Variable->{ "${shipper}_ACCESS_KEY" } );
-	}
-	
-	if ( $shipper =~ /Offline::UPS/ ) {
-		$defaults{ 'from_state' } = $Variable->{ XPS_FROM_STATE };
-	}
-	
-	for ( %defaults ) {
-		$opt{ $_ } ||= $defaults{ $_ } if ( $_ and defined $defaults{ $_ } ); 
+	foreach my $shipper_defaults ( sort keys %$defaults ) {
+		if ( $shipper_defaults eq $shipper or $shipper_defaults eq 'all' ) {
+			for ( keys %$shipper_defaults ) {
+				$opt{ $_ } ||= $defaults->{ $_ } if ( $_ and defined $defaults->{ $_ } );
+			}
+		}
 	}
 	
 	my $rate_request;
@@ -196,16 +189,27 @@ sub {
 	};
 	 
 	if ( ! defined $rate_request or $@ ) {
-		Log( "[business-shipping] failure when calling Business::Shipping->new(): $@ " ) if $@;
-		return undef;
+		Log( "[business-shipping] failure when calling Business::Shipping->new(): $@ " );
+		return;
 	}
 	
 	::logDebug( "calling Business::Shipping::RateRequest::${shipper}->submit( " . uneval( \%opt ) . " )" ) if $debug;
-	
 	$rate_request->init( %opt );
-	
 	my $tries = 0;
 	my $success;
+	#
+	# Retry the connection if you get one of these errors.  
+	# They usually indicate a problem on the shipper's server.
+	#
+	my @retry_errors = (
+		'HTTP Error. Status line: 500',
+		'HTTP Error. Status line: 500 Server Error',		
+		'HTTP Error. Status line: 500 read timeout',
+		'HTTP Error. Status line: 500 Bizarre copy of ARRAY',
+		'HTTP Error. Status line: 500 Connect failed:',
+		'HTTP Error. Status line: 500 Can\'t connect to production.shippingapis.com:80',
+	);
+	
 	for ( my $tries = 1; $tries <= $try_limit; $tries++ ) {
 		my $submit_results;
 		eval {
@@ -213,59 +217,51 @@ sub {
 		};
 		
 		if ( $submit_results and ! $@ ) {
+			#
 			# Success, no more retries
+			#
 			$success = 1;
 			last;
 		}
 		else {
-			Log( "Try $tries: " . $rate_request->error() . "$@" );
-			
-			for (	
-					'HTTP Error. Status line: 500',
-					'HTTP Error. Status line: 500 Server Error',		
-					'HTTP Error. Status line: 500 read timeout',
-					'HTTP Error. Status line: 500 Bizarre copy of ARRAY',
-					'HTTP Error. Status line: 500 Connect failed:',
-					'HTTP Error. Status line: 500 Can\'t connect to production.shippingapis.com:80',
-				) {
-				
+			Log( "Try $tries: error: " . $rate_request->error() . "$@" );
+			for ( @retry_errors ) {
 				if ( $rate_request->error() =~ /$_/ ) {
 					Log( 'Error was on server, trying again...' );
 				}
 			}
 		}
 	}
-	return undef unless $success;
+	return unless $success;
 	
 	my $charges;
 	
-	#my $charges = $rate_request->get_charges( $opt{ 'service' } );
-	#$charges = $rate_request->total_charges();
-	
-	# get_charges() *should* be implemented for all use cases, in the future.
+	#
+	# get_charges() should be implemented for all shippers in the future.
 	# For now, we just fall back on total_charges()
+	#
 	$charges ||= $rate_request->total_charges();
 	
 	print STDERR "Charges are now $charges!";
-	
+
+	#
+	# This is a debugging / support tool.  Set the XPS_GEN_INCIDENTS and
+	# SYSTEMS_SUPPORT_EMAIL variables to enable.
+	#
 	if ( ! $charges or $charges !~ /\d+/) {
-		# This is a debugging / support tool.  Set the XPS_GEN_INCIDENTS and
-		# SYSTEMS_SUPPORT_EMAIL variables to enable.
 		if ( $Variable->{ 'XPS_GEN_INCIDENTS' } ) {
-			
 			my $variables = uneval( \%opt ); 
 			my $error = $rate_request->error();
 			
-			# Not everyone has [incident], avoid errors.
+			#
+			# Ignore errors if [incident] is not there, or misbehaves.
+			#
 			eval {
 				$Tag->incident("[business-shipping]: $shipper error: $error. \n Options were: $variables");
 			};
-			
-			# Catch exception
-			my $eval_error = $@;
+			$@ = '';
 		}
 	}
-	
 	::logDebug( "[business-shipping] returning " . uneval( $charges ) ) if $debug;
 	
 	return $charges;

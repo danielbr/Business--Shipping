@@ -9,32 +9,33 @@ use Business::Shipping;
 my $rate_request = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
 
 $rate_request->submit(
-	service		=> 'XPD',
+	service		=> 'UPSSTD',
 	weight		=> 20,
-	to_country	=> 'GB',
 	from_zip	=> '98682',
-	from_state	=> 'Washington',
-	to_zip		=> 'RH98AX',
+	from_state	=> 'WA',
+	to_zip		=> 'N2H6S9',
+	to_country	=> 'Canada',
 	event_handlers => {
+		trace 	=> 'STDERR',
 		debug 	=> 'STDERR',
+		#debug3 	=> undef,
 		error	=> 'STDERR',
 	},
+	#download	=> 1,
 	#unzip		=> 1,
 	#convert		=> 1,
-	
 ) or die $rate_request->error();
 
 print "offline = " . $rate_request->total_charges() . "\n";
 
-
 my $rate_request_online = Business::Shipping->rate_request( shipper => 'Online::UPS' );
 
 $rate_request_online->submit(
-	service		=> 'XPD',
+	service		=> 'UPSSTD',
 	weight		=> 20,
-	to_country	=> 'GB',
 	from_zip	=> '98682',
-	to_zip		=> 'RH98AX',
+	to_zip		=> 'N2H6S9',
+	to_country	=> 'Canada',
 	event_handlers => {
 		debug 	=> 'STDERR',
 		error	=> 'STDERR',

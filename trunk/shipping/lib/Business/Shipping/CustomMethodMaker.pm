@@ -2,6 +2,11 @@
 ##  CustomMethodMaker
 #####################################################################
 package Business::Shipping::CustomMethodMaker;
+
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+
+use strict;
+use warnings;
 use base ( 'Class::MethodMaker' );
 
 =head2 grouped_fields_inherit
@@ -26,6 +31,7 @@ sub grouped_fields_inherit {
 		# 
 		# Can't locate auto/CustomMethodMaker/SUPER/[METHOD].al in @INC
 		#
+		no strict 'subs';
 		my @parent_slots = eval "
 			package $caller;
 			if ( \$self->can( SUPER::$method_name ) ) {

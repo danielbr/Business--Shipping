@@ -1,21 +1,20 @@
 # Business::Shipping::Package::USPS
 # 
-# $Id: USPS.pm,v 1.5 2003/12/22 03:49:06 db-ship Exp $
+# $Id: USPS.pm,v 1.6 2004/01/21 22:39:53 db-ship Exp $
 # 
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
 
 package Business::Shipping::Package::USPS;
 
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+
 use strict;
 use warnings;
-
 use vars qw( $VERSION );
 use base ( 'Business::Shipping::Package' );
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-
 use Business::Shipping::Debug;
 use Business::Shipping::CustomMethodMaker
 	new_with_init => 'new',

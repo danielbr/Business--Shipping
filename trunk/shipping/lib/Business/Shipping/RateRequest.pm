@@ -1,25 +1,22 @@
 # Business::Shipping::RateRequest - Abstract class
 # 
-# $Id: RateRequest.pm,v 1.4 2003/12/22 03:49:05 db-ship Exp $
+# $Id: RateRequest.pm,v 1.5 2004/01/21 22:39:52 db-ship Exp $
 # 
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
 
 package Business::Shipping::RateRequest;
 
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+
 use strict;
 use warnings;
-
-use vars qw( $VERSION );
 use base ( 'Business::Shipping' );
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-
 use Data::Dumper;
 use Business::Shipping::Debug;
 use Cache::FileCache;
-
 
 use Business::Shipping::CustomMethodMaker
 	new_hash_init => 'new',
@@ -37,13 +34,21 @@ use Business::Shipping::CustomMethodMaker
 			'comp_mthds' => [ 
 				'service', 
 				'from_country',
-				'to_country', 
+				'from_country_abbrev',
+				'to_country',
+				'to_country_abbrev',
 				'from_zip',
 				'to_zip',
 				'packages',
 				'default_package',
 				'weight',
 				'shipper',
+				'domestic',
+				'intl',
+				'domestic_or_ca',
+				'from_canada',
+				'to_canada',
+				'from_ak_or_hi',
 			],
 		}
 	];
@@ -60,13 +65,28 @@ sub submit
 {
 	my ( $self, %args ) = @_;
 	trace( "( " . uneval( %args ) . " )" );
+	
+	
+	#
+	# Tried to use this code to find error when I was getting 'Use of 
+	# undefined value' errors in the MethodMaker module.  It turned out that
+	# Shipping::Shipment had 'current_package_index' in a grouped_field_inherit
+	# section, and all the problems went away when I moved it to a 'get_set' 
+	# section.
+	#
+	# use Data::Dumper;
+	# print STDERR "args = " . Dumper( \%args ) . "\n";
+	#
+	#foreach my $key ( %args ) {
+	#	print STDERR "\texecuting \$self->$key( $args{$key} )\n";
+	#	$self->$key( $args{ $key } );
+	#}
+	#
+	
 	$self->init( %args ) if %args;
 	$self->_massage_values();
 	$self->validate() or return ( undef );
-	
-	
 	my $cache = Cache::FileCache->new() if $self->cache();
-	
 	if ( $self->cache() ) {
 		trace( 'cache enabled' );	
 
@@ -97,8 +117,8 @@ sub submit
 		trace( 'cache enabled, saving results.' );
 		#TODO: Allow setting of cache properties (time limit, enable/disable, etc.)
 		my $key = $self->gen_unique_key();
-		my $cache = Cache::FileCache->new();
-		$cache->set( $key, $results, "2 days" );
+		my $new_cache = Cache::FileCache->new();
+		$new_cache->set( $key, $results, "2 days" );
 	}
 	else {
 		trace( 'cache disabled, not saving results.' );
@@ -236,6 +256,18 @@ sub add_package
 	push( @{$self->packages()}, $new );
 	
 	return 1;
+}
+
+sub current_shipment
+{
+	#
+	# Right now, we only support one shipment per rate request, but 
+	# when that changes, this will be part of the API
+	#
+	
+	my ( $self ) = @_;
+	
+	return $self->shipment;
 }
 
 1;

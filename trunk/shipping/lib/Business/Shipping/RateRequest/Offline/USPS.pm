@@ -1,9 +1,9 @@
 #
-# TODO: This is just a place-holder.
+# TODO: Implement Offline::USPS.  This is just a place-holder.
 #
 # Business::Shipping::RateRequest::Offline::USPS
 #
-# $Id: USPS.pm,v 1.2 2003/12/22 03:49:06 db-ship Exp $
+# $Id: USPS.pm,v 1.3 2004/01/21 22:39:53 db-ship Exp $
 #
 # Copyright (C) 2003 Interchange Development Group
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. 
@@ -19,13 +19,71 @@
 
 package Business::Shipping::RateRequest::Offline::USPS;
 
+=head1 NAME
+
+Offline::USPS -- Calculates US Postal service rates (intl only)
+
+=head1 SYNOPSIS
+
+ (in catalog.cfg)
+
+    Database   usps             ship/usps.txt              TAB
+    Database   air_pp           ship/air_pp.txt            TAB
+    Database   surf_pp          ship/surf_pp.txt           TAB
+
+ (in shipping.asc)
+
+    air_pp: US Postal Air Parcel
+        crit            weight
+        min             0
+        max             0
+        cost            e No shipping needed!
+        at_least        4
+        adder           1
+        aggregate       70
+        table           air_pp
+
+        min             0
+        max             1000
+        cost            s Postal
+
+        min             70
+        max             9999999
+        cost            e Too heavy for Air Parcel
+
+    surf_pp:    US Postal Surface Parcel
+        crit            weight
+        min             0
+        max             0
+        cost            e No shipping needed!
+        at_least        4
+        adder           1
+        aggregate       70
+        table           surf_pp
+
+        min             0
+        max             1000
+        cost            s Postal
+
+        min             70
+        max             9999999
+        cost            e Too heavy for Postal Parcel
+
+=head1 DESCRIPTION
+
+Looks up a service zone by country in the C<usps> table, then looks in
+the appropriate rate table for a price by that zone.
+
+Can aggregate shipments greater than 70 pounds by assuming you will ship
+multiple 70-pound packages (plus one package with the remainder).
+
+=cut
+
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+
 use strict;
 use warnings;
-
-use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 use base ( 'Business::Shipping::RateRequest::Offline' );
-
 use Business::Shipping::Shipment::USPS;
 use Business::Shipping::Package::USPS;
 use Business::Shipping::Debug;
@@ -33,14 +91,11 @@ use Business::Shipping::Data;
 use Business::Shipping::Util;
 use Business::Shipping::Config;
 use Data::Dumper;
-
 use Business::Shipping::CustomMethodMaker
 	new_with_init => 'new',
 	new_hash_init => 'hash_init';
 
-use constant INSTANCE_DEFAULTS => (
-);
-
+use constant INSTANCE_DEFAULTS => ();
 sub init
 {
 	my $self   = shift;
@@ -184,65 +239,5 @@ sub calculate {
 
 	return $cost;
 }
-
-=head1 NAME
-
-Vend::Ship::Postal -- Calculate US Postal service international rates
-
-=head1 SYNOPSIS
-
- (in catalog.cfg)
-
-    Database   usps             ship/usps.txt              TAB
-    Database   air_pp           ship/air_pp.txt            TAB
-    Database   surf_pp          ship/surf_pp.txt           TAB
-
- (in shipping.asc)
-
-    air_pp: US Postal Air Parcel
-        crit            weight
-        min             0
-        max             0
-        cost            e No shipping needed!
-        at_least        4
-        adder           1
-        aggregate       70
-        table           air_pp
-
-        min             0
-        max             1000
-        cost            s Postal
-
-        min             70
-        max             9999999
-        cost            e Too heavy for Air Parcel
-
-    surf_pp:    US Postal Surface Parcel
-        crit            weight
-        min             0
-        max             0
-        cost            e No shipping needed!
-        at_least        4
-        adder           1
-        aggregate       70
-        table           surf_pp
-
-        min             0
-        max             1000
-        cost            s Postal
-
-        min             70
-        max             9999999
-        cost            e Too heavy for Postal Parcel
-
-=head1 DESCRIPTION
-
-Looks up a service zone by country in the C<usps> table, then looks in
-the appropriate rate table for a price by that zone.
-
-Can aggregate shipments greater than 70 pounds by assuming you will ship
-multiple 70-pound packages (plus one package with the remainder).
-
-=cut
 
 1;

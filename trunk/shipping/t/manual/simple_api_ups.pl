@@ -10,16 +10,16 @@ my $rate_request = Business::Shipping->rate_request(
 			'error' => 'STDERR',
 	},
 	
-	'from_zip' => "98682",
-	'to_country' => "MX",
-	'from_state' => "Washington",
-	'weight' => "2.25",
 	'shipper' => "Offline::UPS",
-	'service' => "XPD",
-	'to_zip' => "06400",
-	'cache' => "1",
-	'from_country' => "US",	
 	
+	'from_state' => "Washington",
+	'from_zip' => "98682",
+	'from_country' => "US",
+	
+	'weight' => 1,
+	'service' => "3DS",
+	'to_country' => "US",
+	'to_zip' => "28562",
 	
 );
 

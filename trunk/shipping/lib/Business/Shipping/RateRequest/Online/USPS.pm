@@ -1,8 +1,8 @@
 # Business::Shipping::RateRequest::Online::USPS - Abstract class for shipping cost rating.
 # 
-# $Id: USPS.pm,v 1.8 2004/01/03 03:11:20 db-ship Exp $
+# $Id: USPS.pm,v 1.9 2004/01/21 22:39:53 db-ship Exp $
 # 
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
@@ -41,13 +41,11 @@ See Shipping.pm POD for usage information.
 
 package Business::Shipping::RateRequest::Online::USPS;
 
+$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+
 use strict;
 use warnings;
-
-use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 use base( 'Business::Shipping::RateRequest::Online' );
-
 use Business::Shipping::Debug;
 use Business::Shipping::Package::USPS;
 use Business::Shipping::Shipment::USPS;
@@ -56,7 +54,6 @@ use XML::DOM;
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
-
 use Business::Shipping::CustomMethodMaker
 	new_with_init => 'new',
 	new_hash_init => 'hash_init',
@@ -87,8 +84,6 @@ foreach my $attribute ( 'ounces', 'pounds', 'container', 'size', 'machinable', '
 #sub ounces { return shift->default_package( @_ ); }
 #sub pounds { return shift->default_package( @_ ); }
 #sub container { return shift->default_package->container( @_ ); }
-
-
 
 # _gen_request_xml()
 # Generate the XML document.

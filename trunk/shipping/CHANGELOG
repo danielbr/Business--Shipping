@@ -1,14 +1,22 @@
 Revision history for Business::Shipping.
 
-1.03  Not yet released
+1.03  Jan 21 2004
+	- Offline::UPS now supports all services to Canada, which completes all of 
+	  the Offline::UPS countries.
+	- Major UserTag enhancements.  Defaults now readable.  Bug fixes, too.
 	- Bug fixes for International Shipping
 	- Add automatic translations for several values (state to abbreviation, 
 	  abbreviated country to the full name of the country, etc.) -- uses config.
+	- Move many datasets from the code into the configuration (USPS to_country,
+	  and others). 
 	- Minor UserTag compatibility updates (from_state)
-	- UserTag bug fixes.
 	- Minor documentation updates.
 	- Auto-update function added.
 	- Additional UPS Online/Offline tests: Canada, Mexico.
+	- Copyright update.
+	- Aesthetic updates to most modules.
+	- Documentation updates for several modules.
+	- More tests for Offline::UPS.
 
 1.02  Jan 06 2004
 	- Update all data tables from UPS (Jan 05 2004)
