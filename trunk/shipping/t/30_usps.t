@@ -6,16 +6,6 @@ use warnings;
 use Test::More 'no_plan';
 use Carp;
 use Business::Shipping;
-use Business::Shipping::Shipment;
-use Business::Shipping::Shipment::UPS;
-use Business::Shipping::Shipment::USPS;
-use Business::Shipping::Package;
-use Business::Shipping::Package::UPS;
-use Business::Shipping::Package::USPS;
-use Business::Shipping::RateRequest;
-use Business::Shipping::RateRequest::Online;
-use Business::Shipping::RateRequest::Online::UPS;
-use Business::Shipping::RateRequest::Online::USPS;
 
 my $standard_method = new Business::Shipping->rate_request( 'shipper' => 'USPS' );
 ok( defined $standard_method,	'USPS standard object construction' );

@@ -1,6 +1,6 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.8 2003/11/13 23:11:34 db-ship Exp $
+# $Id: Shipping.pm,v 1.9 2003/12/22 03:49:04 db-ship Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Carp;
 use Business::Shipping::Debug;
@@ -79,11 +79,32 @@ sub rate_request
 {
 	my $class = shift;
 	my ( %opt ) = @_;
-	not $opt{ 'shipper' } and Carp::croak( "shipper required" ) and return undef;
-	
+	not $opt{ shipper } and Carp::croak( "shipper required" ) and return undef;
+
+	#
+	# This was made to support the specification of 'Offline::UPS'
+	#
+	my $full_shipper;
+	if ( $opt{ shipper } =~ /::/ ) {
+		$full_shipper = $opt{ shipper };
+		my @shipper_components = split( '::', $opt{ shipper } );	
+		$opt{ shipper } = pop @shipper_components;
+		
+	}
+	else {
+		$full_shipper = "Online::" . $opt{ shipper };
+	}
+		
 	my $package				= Business::Shipping->new_subclass( 'Package::' 			. $opt{ 'shipper' } );
 	my $shipment 			= Business::Shipping->new_subclass( 'Shipment::' 			. $opt{ 'shipper' } );
-	my $new_rate_request	= Business::Shipping->new_subclass( 'RateRequest::Online::' . $opt{ 'shipper' } );
+	
+	my $subclass = 'RateRequest::' . $full_shipper;
+	my $new_rate_request;
+	eval {
+		$new_rate_request = Business::Shipping->new_subclass( $subclass );
+	};
+	die $@ if $@;
+	
 	$shipment->packages_push( $package );
 	$new_rate_request->shipment( $shipment );
 	
@@ -104,12 +125,15 @@ sub new_subclass
 	if ( not defined &$new_class ) {
 		#debug "$new_class not defined, going to import it.\n";
 		eval "require $new_class";
-		Carp::croak( "unknown class (require) $new_class ($@)" ) if $@;
+		#Carp::croak( "unknown class (require) $new_class ($@)" ) if $@;
+		die( "unknown class (require) $new_class ($@)" ) if $@;
 		eval "import $new_class";
-		Carp::croak( "import error $new_class ($@)" ) if $@;
+		#Carp::croak( "import error $new_class ($@)" ) if $@;
+		die( "import error $new_class ($@)" ) if $@;
 	}
 	else {
 		#debug "$new_class already defined\n";
+		die( "$new_class already defined\n" );
 	}
 	
 	my $new_sub_object = eval "$new_class->new()";
@@ -131,9 +155,7 @@ Example usage for a rating request:
 	use Business::Shipping;
 	
 	my $rate_request = Business::Shipping->rate_request(
-		shipper 		=> 'UPS',
-		user_id 		=> '',		
-		password 		=> '',
+		shipper 		=> 'Offline::UPS',
 		service 		=> 'GNDRES',
 		from_zip		=> '98682',
 		to_zip			=> '98270',
@@ -148,19 +170,25 @@ Example usage for a rating request:
 
 Business::Shipping is an API for shipping-related tasks.
 
-Currently, the only implemented task is shipping cost calculation, but tracking, 
-availability, and other services are planned for future addition.
+=head2 Shipping Tasks Implemented at this time:
 
-UPS and USPS have been implemented so far, but FedEX and perhaps others are 
-planned for future support.
+ * Shipping cost calculation
+ * Tracking, availability, and other services are planned for future addition.
+
+=head2 Shipping Vendors Implemented at this time:
+
+ * Online UPS (using the Internet and UPS servers)
+ * Offline UPS (using tables stored locally)
+ * Online USPS
+ * Offline FedEX and USPS are planned for support in the future.
 
 =head1 CLASS METHODS
 
 =head2 rate_request()
 
 This method is used to request shipping rate information from online provides.
-Later querying offline databases may be supported as well. A hash is accepted as input with
-the following key values:
+Later querying offline databases may be supported as well.  A hash is accepted
+as input with the following key values:
 
 =over 4
 
@@ -171,16 +199,18 @@ C<Business::Shipping::RateRequest::SHIPPER>.
 
 =item * user_id
 
-A user_id, if required by the provider. USPS requires this.
+A user_id, if required by the provider. Online::USPS and Online::UPS require
+this.
 
 =item * password
 
-A password,  if required by the provider. USPS requires this.
+A password,  if required by the provider. Online::USPS and Online::UPS require
+this.
 
 =item * service
 
-A valid service name for the provider. See the corresponding module declared
-through the C<shipper> option above for a complete list for each provider.
+A valid service name for the provider. See the corresponding module for a 
+complete list for each provider.
 
 =item * from_zip
 
@@ -192,40 +222,55 @@ The destination zipcode.
 
 =item * weight
 
-Weight of the shipment, in pounds, as a decimal number
+Weight of the shipment, in pounds, as a decimal number.
 
 =item * test_mode
 
-If true, connects to a test server instead of a live server, if possible. Defaults to 'true'.
+If true, connects to a test server instead of a live server, if possible. 
+Defaults to 0.
 
 =back
 
-A rate request object is returned if the query is successful, or 'undef' otherweise.
+An object is returned if the query is successful, or 'undef' otherweise.
 
 =head1 MULTI-PACKAGE API
 
- $shipment->set(
-	user_id		=> '',
-	password	=> '',
-	from_zip	=> '',
-	to_zip		=> '',
+=head2 Online::UPS Example
+
+ use Business::Shipping;
+ use Business::Shipping::Shipment::UPS;
+ 
+ my $shipment = Business::Shipping::Shipment::UPS->new();
+ 
+ $shipment->init(
+	from_zip	=> '98682',
+	to_zip		=> '98270',
+	service		=> 'GNDRES',
+	#
+	# user_id, etc. needed here.
+	#
  );
 
  $shipment->add_package(
 	id		=> '0',
-	weight		=> '',
+	weight		=> 5,
  );
 
  $shipment->add_package(
 	id		=> '1',
-	weight		=> '',
+	weight		=> 3,
  );
+ 
+ my $rate_request = Business::Shipping::rate_request( shipper => 'Online::UPS' );
+ #
+ # Add the shipment to the rate request.
+ #
+ $rate_request->shipment( $shipment );
+ $rate_request->submit() or print $rate_request->error();
 
- $shipment->submit() or print $shipment->error();
-
- print $shipment->package('0')->get_charges( 'Airmail Parcel Post' );
- print $shipment->package('1')->get_charges( 'Airmail Parcel Post' );
- print $shipment->get_total_price( 'Airmail Parcel Post' );
+ print $rate_request->package('0')->get_charges( 'GNDRES' );
+ print $rate_request->package('1')->get_charges( 'GNDRES' );
+ print $rate_request->get_total_price( 'GNDRES' );
 
 =head1 ERROR/DEBUG HANDLING
 
@@ -239,22 +284,23 @@ for error, debug, trace, and the like.  The value can be one of four options:
 
 For example:
 
- $shipment->set( 
+ $rate_request->init( 
 	'event_handlers' => ({ 
+		'error' => 'STDOUT',
 		'debug' => undef,
 		'trace' => undef,
-		'error' => 'croak',
+		'debug3' => undef,
 	})
  );
  
-The default is 'STDERR' for error handling, and nothing for debug/trace handling.
-Note that you can still access error messages even with no handler, by accessing
+The default is 'STDERR' for error handling, and nothing for debug/trace 
+handling.  The option 'debug3' adds even more verbosity to the debug.  Note 
+that you can still access error messages even with no handler, by accessing
 the return values of methods.  For example:
 
- $shipment->set( %values ) or print $shipment->error();
+ $rate_request->init( %values ) or print $rate_request->error();
 	
 However, if you don't save the error value before the next call, it could be
 overwritten by a new error.
 
 =cut
-

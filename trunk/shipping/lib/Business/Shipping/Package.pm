@@ -1,6 +1,6 @@
-# Business::Shipping::Package - Abstract class for shipping cost rating.
+# Business::Shipping::Package - Abstract class
 # 
-# $Id: Package.pm,v 1.2 2003/07/10 07:38:19 db-ship Exp $
+# $Id: Package.pm,v 1.3 2003/12/22 03:49:05 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -12,12 +12,9 @@ package Business::Shipping::Package;
 use strict;
 use warnings;
 
-use vars qw( @ISA $VERSION );
-@ISA = ( 'Business::Shipping' );
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-
-use Business::Shipping;
-use Data::Dumper;
+use vars qw( $VERSION );
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+use base ( 'Business::Shipping' );
 
 use Business::Shipping::CustomMethodMaker
 	new_hash_init => 'new',

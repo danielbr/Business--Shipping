@@ -46,6 +46,14 @@ my $rate_request = Business::Shipping->rate_request(
 	to_country		=> 'CA',
 	
 	weight			=> '7.50',
+	
+	event_handlers	=> {
+			'debug' => undef,
+			'debug3' => undef,
+			'trace' => undef, 
+			'error' => 'STDERR',
+	},
+	
 );
 
 not defined $rate_request and die $@;

@@ -1,6 +1,9 @@
 We greatly appreciate the assistance that all of the following individuals have 
 contributed.
 
+ * Mike Heins <mike@perusion.com> first wrote some offline UPS and USPS modules
+   for the Interchange project, I later adapted them for use here.
+   
  * Kevin Old <kold@carolina.rr.com> got the USPS XML generator working.
  
  * sauoq on PerlMonks.org provided valuable commentary and ideas.
@@ -10,5 +13,8 @@ contributed.
  * Mike Castle <dalgoda@ix.netcom.com> reported a POD nit.
  
  * Mark Stosberg <mark@stosberg.com> contributed documentation patches.
- 
+
+ * Richard Hornsby <rhornsby@io.osuedc.org> reported a bug that was fixed in
+   version 1.00.
+
 Thank you.

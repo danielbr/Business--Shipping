@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment::UPS
 # 
-# $Id: UPS.pm,v 1.3 2003/10/13 18:25:15 db-ship Exp $
+# $Id: UPS.pm,v 1.4 2003/12/22 03:49:06 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -12,11 +12,10 @@ package Business::Shipping::Shipment::UPS;
 use strict;
 use warnings;
 
-use vars qw( @ISA $VERSION );
-@ISA = ( 'Business::Shipping::Shipment' );
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+use vars qw( $VERSION );
+use base( 'Business::Shipping::Shipment' );
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
-use Business::Shipping::Debug;
 use Business::Shipping::Package;
 
 use Business::Shipping::CustomMethodMaker

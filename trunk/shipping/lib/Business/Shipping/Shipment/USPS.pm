@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment::USPS
 # 
-# $Id: USPS.pm,v 1.5 2003/08/20 12:58:48 db-ship Exp $
+# $Id: USPS.pm,v 1.6 2003/12/22 03:49:06 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -12,9 +12,9 @@ package Business::Shipping::Shipment::USPS;
 use strict;
 use warnings;
 
-use vars qw( @ISA $VERSION );
-@ISA = ( 'Business::Shipping::Shipment' );
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+use vars qw( $VERSION );
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+use base ( 'Business::Shipping::Shipment' );
 
 use Business::Shipping::Debug;
 use Business::Shipping::Package;
@@ -24,17 +24,6 @@ use Business::Shipping::Package;
 use Business::Shipping::CustomMethodMaker
 	new_with_init => 'new',
 	new_hash_init => 'hash_init';
-	#
-	# Here, we override the standard Shipping::Shipment::packages()
-	# with our own, since we need to forward some stuff for USPS.
-	#
-	#object_list => [ 
-	#	'Business::Shipping::Package::USPS' => {
-	#		'slot'		=> 'packages',
-	#		#'comp_mthds'	=> [ ]
-	#	},
-	#]
-	#
 
 use constant INSTANCE_DEFAULTS => (
 	shipper => 'USPS',
@@ -50,8 +39,8 @@ sub init
 }
 
 #
-# These methods should automatically override the ones provided for us in 
-# Shipping::Shipment, by the MethodMaker module, right?
+# These methods automatically override the ones provided for us in 
+# Shipping::Shipment by the MethodMaker module.
 #
 sub to_zip
 {

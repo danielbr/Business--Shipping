@@ -1,6 +1,6 @@
 ifndef BUSINESS_SHIPPING
 Variable BUSINESS_SHIPPING	 1 # Ensures that [business-shipping] is only included once.
-Message Loading [business-shipping] usertag from Business::Shipping module...
+Message -i Loading [business-shipping] usertag from Business::Shipping module...
 Require Module Business::Shipping
 UserTag  business-shipping  Order					shipper
 UserTag  business-shipping  AttrAlias 		mode	shipper
@@ -11,7 +11,7 @@ UserTag  business-shipping  Documentation 	<<EOD
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: business-shipping.tag,v 1.5 2003/10/13 18:25:14 db-ship Exp $
+# $Id: business-shipping.tag,v 1.6 2003/12/22 03:48:11 db-ship Exp $
 
 =head1 NAME
 
@@ -54,7 +54,7 @@ Here is a general outline of the installation in interchange.
 
  * Add any shipping methods that are needed to catalog/products/shipping.asc
    (The defaults that come with Interchange will work, but they will not use
-   the new software ).
+   the new software).
    
 Note that "XPS" is used to denote fields that can be used for UPS or USPS.
 
@@ -98,27 +98,21 @@ USPS_AIRMAIL_POST: USPS International
 	min			4
 	max			999999
 	cost		f [business-shipping mode="USPS" service="Airmail Parcel Post" weight="@@TOTAL@@"]
- 
+
+=head1 UPGRADE from [ups-query]
+
+See the replacement [ups-query] usertag in this directory.
+
 =cut
 EOD
 UserTag  business-shipping  Routine <<EOR
 
 use Business::Shipping;
-use Business::Shipping::Shipment;
-use Business::Shipping::Shipment::UPS;
-use Business::Shipping::Shipment::USPS;
-use Business::Shipping::Package;
-use Business::Shipping::Package::UPS;
-use Business::Shipping::Package::USPS;
-use Business::Shipping::RateRequest;
-use Business::Shipping::RateRequest::Online;
-use Business::Shipping::RateRequest::Online::UPS;
-use Business::Shipping::RateRequest::Online::USPS;
 
 sub {
  	my ( $shipper, $opt ) = @_;
 	
-	my $debug = 1;
+	my $debug = delete $opt->{ debug } || 1;
 	
 	::logDebug( "[business-shipping " . uneval( $opt ) ) if $debug;
 	 
@@ -155,9 +149,9 @@ sub {
 	my %event_handlers;
 	if ( $debug ) {
 		%event_handlers = ({
-			'debug' => 'STDOUT',
-			'debug3' => 'STDOUT',
-			'trace' => 'STDOUT',
+			'debug' => 'STDERR',
+			'debug3' => 'STDERR',
+			'trace' => 'STDERR',
 			'error' => 'STDERR', 
 		});
 	}
@@ -190,30 +184,40 @@ sub {
 	for ( %defaults ) {
 		$opt{ $_ } ||= $defaults{ $_ } if ( $_ and defined $defaults{ $_ } ); 
 	}
-
-	my $rate_request = Business::Shipping->rate_request( 'shipper' => $shipper );
+	
+	my $rate_request;
+	eval {
+		$rate_request = Business::Shipping->rate_request( 'shipper' => $shipper );
+	};
 	 
-	if ( ! defined $rate_request ) {
+	if ( ! defined $rate_request or $@ ) {
 		Log( "[business-shipping] failure when calling Business::Shipping->new(): $@ " ) if $@;
 		return undef;
 	}
 	
-	::logDebug( "calling Business::Shipping::${shipper}->submit( " . uneval( \%opt ) . " )" ) if $debug;
+	::logDebug( "calling Business::Shipping::RateRequest::${shipper}->submit( " . uneval( \%opt ) . " )" ) if $debug;
 	
 	$rate_request->init( %opt );
 	
 	my $tries = 0;
 	my $success;
 	for ( my $tries = 1; $tries <= $try_limit; $tries++ ) {
-		if ( $rate_request->submit() ) {
+		my $submit_results;
+		eval {
+			$submit_results = $rate_request->submit();
+		};
+		
+		if ( $submit_results and ! $@ ) {
 			# Success, no more retries
 			$success = 1;
 			last;
 		}
 		else {
-			Log( "Try $tries: " . $rate_request->error() );
+			Log( "Try $tries: " . $rate_request->error() . "$@" );
 			
 			for (	
+					'HTTP Error. Status line: 500',
+					'HTTP Error. Status line: 500 Server Error',		
 					'HTTP Error. Status line: 500 read timeout',
 					'HTTP Error. Status line: 500 Bizarre copy of ARRAY',
 					'HTTP Error. Status line: 500 Connect failed:',
@@ -221,7 +225,7 @@ sub {
 				) {
 				
 				if ( $rate_request->error() =~ /$_/ ) {
-					Log( 'Error was on USPS server, trying again...' );
+					Log( 'Error was on server, trying again...' );
 				}
 			}
 		}
@@ -260,4 +264,5 @@ sub {
 	return $charges;
 }
 EOR
+Message ...done.
 endif

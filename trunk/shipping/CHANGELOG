@@ -1,7 +1,25 @@
 Revision history for Business::Shipping.
 
-0.79  
-	- 
+1.00  Dec 21 2003
+	- Major updates: many new features prompt the jump into 1.0 land. 
+	- New Offline::UPS module: provides table-based rate requests, which are
+	  fast, local lookups that do not rely on the Internet.
+	- Config module added: provides ini-style configuration options for easy 
+	  customizability.
+	- Data module added: provides database access and related functions.
+	- Util module added: provides simple file and misc. utililties.
+	- New "support files" directories (configuration, data, etc.).
+	- New MakeMaker magic handles installation of the support file directories.
+	- Documentation updates (new INSTALL file, updated API usage info, etc.) 
+	- Update some syntax to 5.6 style.
+	- Fix bugs that used to require the user to import many unnecessary modules.
+	  Reported by Richard Hornsby <rhornsby@io.osuedc.org>.
+	- Mark Stosberg <mark@stosberg.com> contributed documentation patches:
+	  - rate_request()
+	  - Corrected Registration URL
+	- [business-shipping] Interchange Usertag enhancements:
+	  - Gracefully handles more 500 errors from the servers.
+	  - Performs Business-Shipping tasks within an eval.
 
 0.78  Nov 12 2003
 	- Cleanup old CustomMethodMaker tests
@@ -27,8 +45,7 @@ Revision history for Business::Shipping.
 		}
 		)
 		Vend::Interpolate:debug: [business-shipping] returning "15.25"
-	
-	- Cause: USPS changed "Airmail Letter Post" to "Airmail Letter-post".
+        - Cause: USPS changed "Airmail Letter Post" to "Airmail Letter-post".
 	- Usertag cleanup.
 	- More documentation.
 	- Business::Shipping thinned.
@@ -129,14 +146,14 @@ Revision history for Business::Shipping.
 		+ Tons.  Starting to settle down, though...  
 
 		
-0.00  Sun May 25 16:00:00 2003
+0.00  Sun May 25
 	- UPS fully ported to Business::Ship architecture
 	- Lots of other refactoring.
-	- Considering a Business::Ship::___::Internal for internal lookups.
-  		+ If done, it would be based off of Mike's recent commits.
+	- Considering a Business::Ship::*::Internal for internal lookups.
+  		+ If done, it would be based off of Mikes recent commits.
 
 		
-0.00  Fri May 9 12:51:00 2003
+0.00  Fri May 9
 	- Lots of clean up
     - Re-organizing order of methods for easier browsing.
 

@@ -1,6 +1,13 @@
 ######################################################
 ##  General TODO
 ######################################################
+ 
+ 
+ * [ENH] Need to check for support_files() config param, and exit if files
+   are missing.
+ 
+ * [ENH] Allow the user to set the timeout for http requests.  Sometimes 30
+   seconds is too long.
 
  * [DOC] Include the terms of use for each provider.
  
@@ -15,11 +22,13 @@
  
  * [BUG] Why do I have to 'use' all the modules in order for it to work?
  
+ * [ENH] Change all scripts from #! /usr/bin/perl to $! perl
+ 
  * [ENH] Country name translator strings to data outside your program.
  	# TODO: Move all of this, and any other data that is currently mixed with 
 	# code.
 	# A simple, file-based configuration system would be nice, like Interchange.
-	# Perhaps XML::Simple Configuration files?  Other?  Shipping::Config module
+	# Perhaps Config::Ini Configuration files?  Other?  Shipping::Config module
 	# will provide parser, importer.  Any internal modules that use 
 	# configuration will go through that module.  (it's an idea, anyway) 
  
@@ -79,8 +88,12 @@
 	- Shipping time (how long till it gets there)?
 	- Delivery/Signature confirmation?
 
+ * [ENH] After Table-based lookups are added, enable them as a fall-back to 
+   online lookups.  That way, if the UPS/USPS servers are down, it will
+   automatically utilize the table-lookup method.
+
 ######################################################
-##  USPS TODO
+##  USPS ONLINE TODO
 ######################################################
  
  * [BUG] Find a better way to correlate "Air mail" with all the various names
@@ -97,7 +110,25 @@
 	- http://pe.usps.gov/cpim/ftp/manuals/Imm/Immctry.pdf
  
 ######################################################
-##  UPS TODO
+##  UPS OFFLINE TODO
+######################################################
+
+ * [ENH] Look at the zone file comments to determine which zone file to use.
+   (i.e. 970.csv has "970-01 to 972-99" -- means it actually does 970.csv too).
+ 
+ * [ENH] Utilize GDBM, if available, to speed up lookups.
+
+ * [BUG] Can't seem to find zone file for 97214, what gives?
+
+ * [ENH] How to find the current fuel surcharge rate:
+   - http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html	
+   - m/Effective.+: ?(\d\.\d\d\)%/
+   
+ * [ENH] Extended Area Surcharge: 
+   - http://www.ups.com/media/en/extended_area_us.pdf
+
+######################################################
+##  UPS ONLINE TODO
 ######################################################
  
  * [BUG] Fix the multi-package API for UPS.  

@@ -3,6 +3,7 @@
 #
 todo
 doc/new-release
+\.gz$
 
 #
 # Version control files and dirs.
@@ -27,3 +28,4 @@ doc/new-release
 \.bak$
 ^#.*#$
 ^\.#
+

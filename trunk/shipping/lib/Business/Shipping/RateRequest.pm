@@ -1,6 +1,6 @@
-# Business::Shipping::RateRequest - Abstract class for shipping cost rating.
+# Business::Shipping::RateRequest - Abstract class
 # 
-# $Id: RateRequest.pm,v 1.3 2003/08/20 12:58:47 db-ship Exp $
+# $Id: RateRequest.pm,v 1.4 2003/12/22 03:49:05 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -12,13 +12,15 @@ package Business::Shipping::RateRequest;
 use strict;
 use warnings;
 
-use vars ( '$VERSION' );
-#@ISA = ( 'Business::Shipping' );
+use vars qw( $VERSION );
 use base ( 'Business::Shipping' );
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
+use Data::Dumper;
 use Business::Shipping::Debug;
 use Cache::FileCache;
+
+
 use Business::Shipping::CustomMethodMaker
 	new_hash_init => 'new',
 	boolean => [ 'is_success', 'cache' ],
@@ -62,6 +64,7 @@ sub submit
 	$self->_massage_values();
 	$self->validate() or return ( undef );
 	
+	
 	my $cache = Cache::FileCache->new() if $self->cache();
 	
 	if ( $self->cache() ) {
@@ -87,8 +90,6 @@ sub submit
 	$self->perform_action();
 	
 	my $results = $self->results();
-	
-	use Data::Dumper;
 	debug 'results = ' . Dumper( $results );
 	
 	# Only cache if there weren't any errors.
@@ -238,3 +239,4 @@ sub add_package
 }
 
 1;
+__END__

@@ -11,6 +11,8 @@ use Business::Shipping::Shipment::UPS;
 use Business::Shipping::Package;
 use Business::Shipping::Package::UPS;
 
+my $ups_online_msg = 'UPS: we need the username, password, and access license key';
+
 my $ups_online_rate_request = Business::Shipping::RateRequest::Online::UPS->new();
 ok( defined $ups_online_rate_request, 'Business::Shipping::RateRequest::Online::UPS->new() worked' );
 
@@ -99,8 +101,14 @@ $ups_online_rate_request->shipment( $ups_shipment );
 
 print Dumper $ups_online_rate_request;
 
-$ups_online_rate_request->submit() or die $ups_online_rate_request->error();
-print "\$" . $ups_online_rate_request->total_charges() . "\n";
+SKIP: {
+	skip( $ups_online_msg, 1 ) 
+		unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+
+	ok( $ups_online_rate_request->total_charges() > 0, 'ups online rate_request > 0 ' );
+	$ups_online_rate_request->submit() or die $ups_online_rate_request->error();
+	print "\$" . $ups_online_rate_request->total_charges() . "\n";
+}
 
  
 #$ups_online_rate_request->service( 'GNDRES' );

@@ -1,6 +1,6 @@
-# Business::Shipping::RateRequest - Abstract class for shipping cost rating.
+# Business::Shipping::Debug - Debugging Functions
 # 
-# $Id: Debug.pm,v 1.3 2003/08/07 22:45:46 db-ship Exp $
+# $Id: Debug.pm,v 1.4 2003/12/22 03:49:05 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION @EXPORT );
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use base ( 'Exporter', 'Business::Shipping' );
 @EXPORT = qw( uneval debug debug3 trace log_error );
@@ -93,6 +93,11 @@ sub _log
 	
 	$msg  = "$sub: $msg" if $sub and $msg;
 	$msg .= "\n" unless ( $msg =~ /\n$/ );
+	
+	#
+	# Take off the "Business::Shipping::" to save horizontal space
+	#
+	$msg =~ s/Business::Shipping:://;
 	
 	my @event_handlers = ( 'debug', 'debug3', 'trace', 'error' );
 	

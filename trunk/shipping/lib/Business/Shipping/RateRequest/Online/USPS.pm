@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::USPS - Abstract class for shipping cost rating.
 # 
-# $Id: USPS.pm,v 1.6 2003/11/12 21:41:23 db-ship Exp $
+# $Id: USPS.pm,v 1.7 2003/12/22 03:49:06 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -44,13 +44,13 @@ package Business::Shipping::RateRequest::Online::USPS;
 use strict;
 use warnings;
 
-use vars qw( @ISA $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-@ISA = ( 'Business::Shipping::RateRequest::Online' );
+use vars qw( $VERSION );
+$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+use base( 'Business::Shipping::RateRequest::Online' );
 
-use Business::Shipping::RateRequest::Online;
 use Business::Shipping::Debug;
 use Business::Shipping::Package::USPS;
+use Business::Shipping::Shipment::USPS;
 use XML::Simple 2.05;
 use XML::DOM;
 use LWP::UserAgent;

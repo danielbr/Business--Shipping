@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::UPS - Abstract class for shipping cost rating.
 # 
-# $Id: UPS.pm,v 1.9 2003/11/12 21:41:23 db-ship Exp $
+# $Id: UPS.pm,v 1.10 2003/12/22 03:49:06 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -74,8 +74,8 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-#@ISA = ( 'Business::Shipping::RateRequest::Online' );
+$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+
 use base ( 'Business::Shipping::RateRequest::Online' );
 
 
