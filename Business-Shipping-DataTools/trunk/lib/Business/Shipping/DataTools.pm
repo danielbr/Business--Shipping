@@ -60,9 +60,18 @@ sub do_update
         $self->convert( 1 );
     }
     
+    debug "data_dir = " . Business::Shipping::Config::data_dir();
+    
+    print "Downloading, please wait...\n";
     $self->do_download     if $self->download;
+    
+    print "Unzipping, please wait...\n";
     $self->do_unzip        if $self->unzip;
+    
+    print "Converting, please wait...\n";
     $self->do_convert_data if $self->convert;
+    
+    print "Done.\n";
     
     return;
 }
