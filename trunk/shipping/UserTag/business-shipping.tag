@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.20 2004/01/30 18:46:54 db-ship Exp $
+# $Id: business-shipping.tag,v 1.21 2004/02/03 01:51:11 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -18,6 +18,11 @@ UserTag  business-shipping  Documentation 	<<EOD
 =head1 NAME
 
 [business-shipping] - Interchange Usertag for Business::Shipping
+
+=head1 VERSION
+
+[business-shipping] usertag:	1.21
+Requires Business::Shipping:	1.04
 
 =head1 AUTHOR 
 
@@ -48,6 +53,7 @@ UserTag  business-shipping  Documentation 	<<EOD
  Error (any)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
+ Scalar::Util (1.10)
  XML::DOM (any)
  XML::Simple (2.05)
 
@@ -286,6 +292,13 @@ sub {
 					$report_incident = 0;
 				}
 			}
+			if ( $rate_request->invalid ) {
+				#
+				# Don't report invalid rate requests (like XDM to Brazil... Brazil only has XPD/XPR).
+				# Or if they didn't input a zip code, etc. 
+				#
+				$report_incident = 0;
+			}
 		}
 	}
 	
@@ -309,7 +322,7 @@ sub {
 
 		
 		my $error = $rate_request->error();
-		$error = $error ? "Error: $error." : 'errors: none.';
+		#$error = $error ? "Error: $error." : 'errors: none.';
 		
 		#
 		# Ignore errors if [incident] is missing or misbehaves.
@@ -317,7 +330,7 @@ sub {
 		eval {
 			$Tag->incident(
 				{
-					subject => $shipper . ( $error ? " Error: $error" : '' ), 
+					subject => $shipper . ( $error ? ": $error" : '' ), 
 					content => ( $error ? "Error:\t$error\n" : '' ) . $vars_out
 				}
 			);

@@ -2,11 +2,18 @@
 ##  General TODO
 ######################################################
 
+ * [ENH] How do I document the fact that some of the modules I require do not
+   build very easily in CPAN?  Right now, it's:
+     - SQL::Statement keeps trying to install, even after it is installed
+	 - XML::Parser::PerlSAX fails t/stream test 11.  
+
+ * [ENH] Make a Bundle::BusinessShipping.
+ 
  * [ENH] Allow error format to specified: With/without caller, line numbers.
 
  * [ENH] Add scripts/ directory somewhere.
 
- * [ENH] Use fields.pm to guard against autovivification. 
+ * [ENH] Evaluate fields.pm as a guard against autovivification. 
  
  * [ENH] Improve documentation (adding sections to all .pm files)
 

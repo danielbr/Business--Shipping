@@ -1,6 +1,28 @@
 Revision history for Business::Shipping.
 
 1.04  CVS
+	- Compatibility
+		+ Scalar::Util 1.10 is now required (to pretty up the code a little).
+	
+	- Offline::UPS
+		+ Major fix to the low/high number/name scheme.  For international, it 
+		  is now handled via split/rejoin, because the regex was choking on some
+		  of the country names.  This was causing many zip code combinations
+		  (that had lost their "high" in the last update), as well as some 
+		  countries, to fail.
+		+ Sense validity for several combinations of service and country/zip.
+		  (Ground Residential to Hawaii is now "invalid").
+		+ New test for the Netherlands.
+
+	- General
+		+ New configuration parameter for this style:
+		  service=XDM    to_country=Brazil
+		  service=XDM    to_country=Canada       reason=Not available.
+
+	- UserTag
+		+ Add feature for not reporting "invalid" requests to the incident
+		  generator.
+		+ Pretty up the incident e-mail a little.
 
 1.03  Jan 30 2004    
     - Compatibility:

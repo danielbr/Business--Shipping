@@ -1,6 +1,15 @@
 #!/bin/sh
 
 #
+#
+# TODO: If Business-Shipping-CVS doesn't exist, do a checkout.
+#
+# mkdir -p $SOURCE_PATH
+# cd $SOURCE_PATH
+# cvs -q -z3 -d :pserver:anonymous@cvs.kavod.com/home/ship/rep co -d Business-Shipping-CVS ship
+# mkdir -p ~/bin
+# ln -s $SOURCE_PATH/doc/Business-Shipping-update-source.sh ~/bin
+#
 # Required if you want to update the Interchange usertag too
 #
 # You can set them up in your ~/.bash_profile file.
@@ -15,15 +24,8 @@
 export SOURCE_PATH=${HOME}/src
 
 
-#
-# TODO: If Business-Shipping-CVS doesn't exist, do a checkout.
-#
-# mkdir -p $SOURCE_PATH
-# cd $SOURCE_PATH
-# cvs -d :pserver:anonymous@cvs.kavod.com/home/ship/rep co -d Business-Shipping-CVS ship
-#
 cd $SOURCE_PATH/Business-Shipping-CVS
-cvs -q up -dP
+cvs -q -z3 up -dP
 perl Makefile.PL
 make && make test && make install
 

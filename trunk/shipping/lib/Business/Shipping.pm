@@ -1,6 +1,6 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.14 2004/01/30 18:46:55 db-ship Exp $
+# $Id: Shipping.pm,v 1.15 2004/02/03 01:51:11 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 #
@@ -12,22 +12,6 @@ package Business::Shipping;
 =head1 NAME
 
 Business::Shipping - API for shipping-related tasks
-
-=head1 REQUIRED MODULES
-
- Archive::Zip (any)
- Bundle::DBD::CSV (any)
- Cache::FileCache (any)
- Class::MethodMaker (any)
- Config::IniFiles (any)
- Crypt::SSLeay (any)
- Data::Dumper (any)
- Devel::Required (0.03)
- Error (any)
- LWP::UserAgent (any)
- Math::BaseCnv (any)
- XML::DOM (any)
- XML::Simple (2.05)
 
 =head1 SYNOPSIS
 
@@ -64,6 +48,23 @@ Business::Shipping is an API for shipping-related tasks.
  * Offline FedEX and USPS are planned for support in the future.
 
 An object is returned if the operation is successful, or 'undef' otherwise.
+
+=head1 REQUIRED MODULES
+
+ Archive::Zip (any)
+ Bundle::DBD::CSV (any)
+ Cache::FileCache (any)
+ Class::MethodMaker (any)
+ Config::IniFiles (any)
+ Crypt::SSLeay (any)
+ Data::Dumper (any)
+ Devel::Required (0.03)
+ Error (any)
+ LWP::UserAgent (any)
+ Math::BaseCnv (any)
+ Scalar::Util (1.10)
+ XML::DOM (any)
+ XML::Simple (2.05)
 
 =head1 MULTI-PACKAGE API
 
@@ -187,7 +188,7 @@ Weight of the shipment, in pounds, as a decimal number.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.14 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.15 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -239,11 +240,10 @@ sub validate
 	
 	if ( @missing ) {
 		$self->error( "Missing required argument " . join ", ", @missing );
-		debug( "returning undef" );
-		return undef;
+		$self->invalid( 1 );
+		return;
 	}
 	else {
-		debug3( "returning success" );
 		return 1;
 	}
 }
@@ -369,6 +369,72 @@ sub config_to_hash
 	}
 	
 	return $hash;	
+}
+
+=item * config_to_ary_of_hashes( 'configuration_parameter' )
+
+Reads in the configuration hashref ( e.g. cfg()->{ primary }->{ secondary } ),
+then returns an array of hashes.  For example:
+
+This:
+
+[invalid_rate_requests]
+invalid_rate_requests_ups=<<EOF
+service=XDM	to_country=Canada	reason="Express Plus to Canada not available."
+service=XDM	to_country=Brazil
+EOF
+
+When called with this:
+
+my @invalid_rate_requests_ups = $self->config_to_ary_of_hashes( 
+	cfg()->{ invalid_rate_requests }->{ invalid_rate_requests_ups }
+);
+
+Returns this:
+
+[ 
+	{
+		to_country 	=> 'Canada',
+		service		=> 'XDM'
+	},
+	{
+		to_country 	=> 'Brazil',
+		service		=> 'XDM'
+	},
+]
+
+=cut
+sub config_to_ary_of_hashes
+{
+	my ( $self, $cfg ) = @_;
+		
+	my @ary;
+	foreach my $line ( @$cfg ) {
+		#
+		# Convert multiple tabs into one tab.
+		# Remove the leading tab.
+		# split on the tabs to get key=val pairs.
+		# split on the '='.
+		#
+		$line =~ s/\t+/\t/g;
+		$line =~ s/^\t//;
+		my @key_val_pairs = split( "\t", $line );
+		next unless @key_val_pairs;
+
+		#
+		# Each line becomes a hash.
+		#
+		my $hash = {};
+		foreach my $key_val_pair ( @key_val_pairs ) {
+			my ( $key, $val ) = split( '=', $key_val_pair );
+			next unless ( defined $key and defined $val );
+			$hash->{ $key } = $val;
+		}
+
+		push @ary, $hash if ( %$hash );
+	}
+
+	return @ary;
 }
 
 =back

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest - Abstract class
 # 
-# $Id: RateRequest.pm,v 1.6 2004/01/30 00:56:47 db-ship Exp $
+# $Id: RateRequest.pm,v 1.7 2004/02/03 01:51:12 db-ship Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -9,18 +9,19 @@
 
 package Business::Shipping::RateRequest;
 
-$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use base ( 'Business::Shipping' );
 use Data::Dumper;
 use Business::Shipping::Debug;
+use Business::Shipping::Config;
 use Cache::FileCache;
 
 use Business::Shipping::CustomMethodMaker
 	new_hash_init => 'new',
-	boolean => [ 'is_success', 'cache' ],
+	boolean => [ 'is_success', 'cache', 'invalid' ],
 	hash => [ 'results' ],
 	grouped_fields_inherit => [
 		required => [ 'shipper' ],
@@ -37,6 +38,7 @@ use Business::Shipping::CustomMethodMaker
 				'from_country_abbrev',
 				'to_country',
 				'to_country_abbrev',
+				'to_ak_or_hi',
 				'from_zip',
 				'to_zip',
 				'packages',
@@ -125,6 +127,68 @@ sub submit
 	}
 	
 	return $self->is_success();
+}
+
+
+=item * validate()
+
+Does some validation common to all RateRequest objects, but most of the 
+validation goes on in the subclass.
+
+=cut
+sub validate
+{
+	my ( $self ) = @_;
+	trace '()';
+	
+	my @invalid_rate_requests_ups = $self->config_to_ary_of_hashes( 
+		cfg()->{ invalid_rate_requests }->{ invalid_rate_requests_ups }
+	);
+	
+	foreach my $invalid_rate_request ( @invalid_rate_requests_ups ) {
+		#
+		# Look for an exact match
+		#
+		my $matches = 0;
+		foreach my $option ( keys %$invalid_rate_request ) {
+			
+			my $not_logic = 0;
+			if ( $invalid_rate_request->{ $option } =~ s/^\!// ) {
+				$not_logic = 1;
+			}
+			if ( $option eq 'reason' ) {
+				$matches++;  # Just fudge it so the count will be correct.
+			}		
+			elsif ( $self->can( $option ) and $self->$option() ) {
+				debug3( "checking $option... matches = $matches" );
+				if ( $not_logic ) {
+					if ( $self->$option() ne $invalid_rate_request->{ $option } ) {
+						$matches++;
+						debug3( $self->$option() . " does not equal " . $invalid_rate_request->{ $option } );
+					}
+				}
+				else {
+					if ( $self->$option() eq $invalid_rate_request->{ $option } ) {
+						debug3( $self->$option() . " equals " . $invalid_rate_request->{ $option } );
+						$matches++;
+					}
+				}
+			}
+		}
+		debug( "matches = $matches, keys = " . keys %$invalid_rate_request );
+		
+		#
+		# If all keys matched (i.e. the number of matches == the number of keys )
+		#
+		if ( $matches == keys %$invalid_rate_request ) {
+			my $reason = ( $invalid_rate_request->{ reason } ? '  ' . $invalid_rate_request->{ reason } : '' ); 
+			$self->invalid( 1 );
+			$self->error( "Rate request invalid.$reason" );
+			return;
+		}
+	}
+		
+	return 1;
 }
 
 sub get_unique_hash

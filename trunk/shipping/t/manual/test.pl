@@ -12,12 +12,14 @@ my $rate_request = Business::Shipping->rate_request(
 	},
 	from_zip	=> '98682',
 	from_state	=> 'WA',
+
 	
         shipper =>      'Offline::UPS',
         service =>      'XDM',
-        to_country =>   'NO',
-        weight =>       '5.9',
-        to_zip =>       'N-7025',
+        to_country =>   'AU',
+        weight =>       '5.5',
+        to_zip =>       '2261',
+
 
 );
 

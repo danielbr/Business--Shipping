@@ -9,18 +9,18 @@ use Business::Shipping;
 my $rate_request = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
 
 $rate_request->submit(
-	from_zip	=> '98682',
-	from_state	=> 'WA',
-	event_handlers => {
-		debug 	=> 'STDERR',
-		error	=> 'STDERR',
-		trace	=> 'STDERR',
-		debug3	=> 'STDERR',
-	},
+		from_state	=> 'Washington',	
+		shipper 		=> 'Offline::UPS',
+		cache			=> 0,
+		event_handlers	=> {
+			trace => 'STDERR',
+			debug => 'STDERR',
+			error => 'STDERR',
+		},
 
 	from_state	=> 'Washington',
 	from_zip	=> '98682',
-	service		=> 'XPR',
+	service		=> 'XDM',
 	weight		=> 20,
 	to_country	=> 'GB',
 	to_zip		=> 'RH98AX',

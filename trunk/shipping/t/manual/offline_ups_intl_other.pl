@@ -19,11 +19,10 @@ $rate_request->submit(
 	},
 
         shipper =>      'Offline::UPS',
-        service =>      'XPR',
-        to_country =>   'ZA',
-        weight =>       '2.5',
-        to_zip =>       '7700',
-
+        service =>      '3DS',
+        to_country =>   'US',
+        weight =>       '1',
+        to_zip =>       '76051',
 		
 ) or die $rate_request->error();
 

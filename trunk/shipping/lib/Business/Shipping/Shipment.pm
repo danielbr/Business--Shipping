@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment - Abstract class
 # 
-# $Id: Shipment.pm,v 1.5 2004/01/30 00:56:47 db-ship Exp $
+# $Id: Shipment.pm,v 1.6 2004/02/03 01:51:12 db-ship Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -9,7 +9,7 @@
 
 package Business::Shipping::Shipment;
 
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -304,6 +304,31 @@ sub from_ak_or_hi
 	}
 	
 	return 0;
+}
+
+sub to_ak_or_hi
+{
+	my ( $self ) = @_;
+	return unless $self->to_zip;
+	
+	my @ak_hi_zip_config_params = ( 
+		qw/ 
+		hi_special_zipcodes_124_224
+		hi_special_zipcodes_126_226
+		ak_special_zipcodes_124_224
+		ak_special_zipcodes_126_226
+		/
+	);
+	
+	for ( @ak_hi_zip_config_params ) {
+		my $zips = cfg()->{ ups_information }->{ $_ };
+		my $to_zip = $self->to_zip;
+		if ( $zips =~ /$to_zip/ ) { 
+			return 1;
+		}
+	}
+	
+	return;
 }
 
 1;
