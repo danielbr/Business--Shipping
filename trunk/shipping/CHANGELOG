@@ -1,223 +1,238 @@
 Revision history for Business::Shipping.
 
 1.03  Jan 21 2004
-	- NOTE: Math::BaseCnv now required (for Offline::UPS to Canada).
-	- Offline::UPS now supports all services to Canada, which completes all of 
-	  the Offline::UPS countries.
-	- Major UserTag enhancements.  Defaults now readable.  Bug fixes, too.
-	- Bug fixes for International Shipping
-	- Add automatic translations for several values (state to abbreviation, 
-	  abbreviated country to the full name of the country, etc.) -- uses config.
-	- Move many datasets from the code into the configuration (USPS to_country,
-	  and others). 
-	- Minor UserTag compatibility updates (from_state)
-	- Minor documentation updates.
-	- Auto-update function added.
-	- Additional UPS Online/Offline tests: Canada, Mexico.
-	- Copyright update.
-	- Aesthetic updates to most modules.
-	- Documentation updates for several modules.
-	- More tests for Offline::UPS.
-	- France, Russia, and other countries fixed for Offline::UPS.
-	- Fix "Multiple shipments to Canada return 0 except the first" bug, caused
-	  by poorly implemented Zones class attribute: now correctly implement as a
-	  static hash, accessed by function.
-	- Updated the Interchange UserTag simulator, and make it a part of the
-	  standard testing scheme (instead of a manual test).
-	- Minor fixes: Express Plus.
+    
+    - Compatibility:
+        - Math::BaseCnv now required (for Offline::UPS to Canada).
+        - from_state required for Offline::UPS.
+    
+    - General updates:
+        - Move many datasets from the code into the configuration (USPS to_country,
+          and others).
+        - Auto-update function added.
+        - Copyright update.
+        - Aesthetic updates to most modules.
+        - Documentation updates for several modules.
+    
+    - Offline::UPS updates:
+        - Bug fixes for International Shipping
+        - Add automatic translations for several values (state to abbreviation, 
+          abbreviated country to the full name of the country, etc.) -- uses 
+          config.
+        - France, Russia, and other countries fixed for Offline::UPS.
+        - Fix "Multiple shipments to Canada return 0 except the first" bug, caused
+          by poorly implemented Zones class attribute: now correctly implement as a
+          static hash, accessed by function.
+        - Minor fixes: Express Plus.
+        - Offline::UPS now supports all services to Canada, which completes all of 
+          the Offline::UPS countries.
+
+    - Tests:
+      - Additional UPS Online/Offline tests: Canada, Mexico.
+      - More tests for Offline::UPS.
+      - Updated the Interchange UserTag simulator, and make it a part of the
+        standard testing scheme (instead of a manual test).
+    
+    - UserTag Updates:
+        - Major UserTag enhancements.  
+        - Defaults now readable.  
+        - Bug fixes.
+        - Reporting updates.
+        - Add the [incident] usertag for reporting errors.
+        - Minor UserTag compatibility updates (from_state)
 
 1.02  Jan 06 2004
-	- Update all data tables from UPS (Jan 05 2004)
-	- Update fuel surcharge
-	- Installation documentation updates.
-	- Rename the update functions.
-	- Sample "auto update" script that will update the data files.
+    - Update all data tables from UPS (Jan 05 2004)
+    - Update fuel surcharge
+    - Installation documentation updates.
+    - Rename the update functions.
+    - Sample "auto update" script that will update the data files.
 
 1.01  Jan 02 2004
-	- Offline UPS support for International Express, ExpressPlus, and Expedited.
-	- Offline UPS support for Hawaii and Alaska.
-	- Tests for International and Hawaii/Alaska.
-	- Utilize Devel::Required to automatically generate required modules list.
-	- Patch Devel::Required so it can be customized.
-	- Documentation Updates.
-	- Some data format changes (east coast/west coast data update, add 'letter'
-	  to 1da chart, rename several of the files).
+    - Offline UPS support for International Express, ExpressPlus, and Expedited.
+    - Offline UPS support for Hawaii and Alaska.
+    - Tests for International and Hawaii/Alaska.
+    - Utilize Devel::Required to automatically generate required modules list.
+    - Patch Devel::Required so it can be customized.
+    - Documentation Updates.
+    - Some data format changes (east coast/west coast data update, add 'letter'
+      to 1da chart, rename several of the files).
 
 1.00  Dec 21 2003
-	- Major updates: many new features prompt the jump into 1.0 land. 
-	- New Offline::UPS module: provides table-based rate requests, which are
-	  fast, local lookups that do not rely on the Internet.
-	- Config module added: provides ini-style configuration options for easy 
-	  customizability.
-	- Data module added: provides database access and related functions.
-	- Util module added: provides simple file and misc. utililties.
-	- New "support files" directories (configuration, data, etc.).
-	- New MakeMaker magic handles installation of the support file directories.
-	- Documentation updates (new INSTALL file, updated API usage info, etc.) 
-	- Update some syntax to 5.6 style.
-	- Fix bugs that used to require the user to import many unnecessary modules.
-	  Reported by Richard Hornsby <rhornsby@io.osuedc.org>.
-	- Mark Stosberg <mark@stosberg.com> contributed documentation patches:
-	  - rate_request()
-	  - Corrected Registration URL
-	- [business-shipping] Interchange Usertag enhancements:
-	  - Gracefully handles more 500 errors from the servers.
-	  - Performs Business-Shipping tasks within an eval.
+    - Major updates: many new features prompt the jump into 1.0 land. 
+    - New Offline::UPS module: provides table-based rate requests, which are
+      fast, local lookups that do not rely on the Internet.
+    - Config module added: provides ini-style configuration options for easy 
+      customizability.
+    - Data module added: provides database access and related functions.
+    - Util module added: provides simple file and misc. utililties.
+    - New "support files" directories (configuration, data, etc.).
+    - New MakeMaker magic handles installation of the support file directories.
+    - Documentation updates (new INSTALL file, updated API usage info, etc.) 
+    - Update some syntax to 5.6 style.
+    - Fix bugs that used to require the user to import many unnecessary modules.
+      Reported by Richard Hornsby <rhornsby@io.osuedc.org>.
+    - Mark Stosberg <mark@stosberg.com> contributed documentation patches:
+      - rate_request()
+      - Corrected Registration URL
+    - [business-shipping] Interchange Usertag enhancements:
+      - Gracefully handles more 500 errors from the servers.
+      - Performs Business-Shipping tasks within an eval.
 
 0.78  Nov 12 2003
-	- Cleanup old CustomMethodMaker tests
-	- Cleanup POD
-	- Major cleanup to MANIFEST
-	- Moved credits to its own file.
-	- Text and HTML versions of documentation now in doc/
+    - Cleanup old CustomMethodMaker tests
+    - Cleanup POD
+    - Major cleanup to MANIFEST
+    - Moved credits to its own file.
+    - Text and HTML versions of documentation now in doc/
 
 0.77  Nov 11 2003
-	- Add UPS one-day air saver.
-	- Cleanup TODO list.
-	- Add COPYING file.
+    - Add UPS one-day air saver.
+    - Cleanup TODO list.
+    - Add COPYING file.
 
 0.76  Oct 13 2003
-	- Fixed bug report:
- 		calling Business::Shipping::USPS->submit( 
-		{
-		 'from_zip' => "98682",'cache' => "1",
-		 'to_country' => "Canada",'service' => "Airmail Letter Post",
-		 'to_zip' => "N2H6S9",'from_country' => "US",
-		 'weight' => "0.25",
-		 'shipper' => "USPS",
-		}
-		)
-		Vend::Interpolate:debug: [business-shipping] returning "15.25"
+    - Fixed bug report:
+         calling Business::Shipping::USPS->submit( 
+        {
+         'from_zip' => "98682",'cache' => "1",
+         'to_country' => "Canada",'service' => "Airmail Letter Post",
+         'to_zip' => "N2H6S9",'from_country' => "US",
+         'weight' => "0.25",
+         'shipper' => "USPS",
+        }
+        )
+        Vend::Interpolate:debug: [business-shipping] returning "15.25"
         - Cause: USPS changed "Airmail Letter Post" to "Airmail Letter-post".
-	- Usertag cleanup.
-	- More documentation.
-	- Business::Shipping thinned.
-	- Online::UPS thinned.
-	- Additional test for UPS Letter post to Canda.
+    - Usertag cleanup.
+    - More documentation.
+    - Business::Shipping thinned.
+    - Online::UPS thinned.
+    - Additional test for UPS Letter post to Canda.
 
 0.75  Aug 25 2003
-	- Additional USPS tests (Letter service, Canada service)
-	- Additional UPS tests (Canada)
-	- Fix ounce calculator.
-	- Misc minor and aesthetic updates.
+    - Additional USPS tests (Letter service, Canada service)
+    - Additional UPS tests (Canada)
+    - Fix ounce calculator.
+    - Misc minor and aesthetic updates.
 
 
 0.74  Aug 19 2003
-	- Clean up the business-shipping usertag a little bit.
-	- Other misc. cleanups.
-	- Re-write the pounds/ounces calculator.
-	- Remove lots of cruft.
+    - Clean up the business-shipping usertag a little bit.
+    - Other misc. cleanups.
+    - Re-write the pounds/ounces calculator.
+    - Remove lots of cruft.
 
 
 0.73  Aug 15 2003
-	- More tests
-	- Fix USPS International shipping: new "service matching" method.
-	- Documentation Updates
+    - More tests
+    - Fix USPS International shipping: new "service matching" method.
+    - Documentation Updates
 
-	
+    
 0.72  Aug 09 2003
-	- Many more tests.
-	- USPS Updates:
-		+ Added a great many new translations to the country translator 
-	- UPS Updates:
-		+ Added to_city
-	- ~10 additional tests.
+    - Many more tests.
+    - USPS Updates:
+        + Added a great many new translations to the country translator 
+    - UPS Updates:
+        + Added to_city
+    - ~10 additional tests.
 
-	
+    
 0.71  Aug 06 2003
-	- International USPS bug fixes.
-		+ Instead of guessing the service by name, we use service type, then
-		  mail type.  This may result in getting the wrong service, however.
-		  Needs more analyzation.
-	- Many, many additional tests.
-	- Very much improved debug/error handling.
+    - International USPS bug fixes.
+        + Instead of guessing the service by name, we use service type, then
+          mail type.  This may result in getting the wrong service, however.
+          Needs more analyzation.
+    - Many, many additional tests.
+    - Very much improved debug/error handling.
 
-	
+    
 0.70  Jul 07 2003
-	- Complete rewrite of the entire system
-	- Now more modular, object oriented, smaller, and simpler.
-	- License changed from Perl to GPL
-	- New cache system (faster, more reliable)
-	- Enhancements to Class::Methodmaker
-	- Fixed: When Cache is enabled, and you run [xps-query] consecutively, 
-	  UPS doesn't seem to notice the different service types (i.e. 'service' 
-	  isn't on the 'unique' list)
-	- Re-did the self meta-data
+    - Complete rewrite of the entire system
+    - Now more modular, object oriented, smaller, and simpler.
+    - License changed from Perl to GPL
+    - New cache system (faster, more reliable)
+    - Enhancements to Class::Methodmaker
+    - Fixed: When Cache is enabled, and you run [xps-query] consecutively, 
+      UPS doesn't seem to notice the different service types (i.e. 'service' 
+      isn't on the 'unique' list)
+    - Re-did the self meta-data
 
-	
+    
 0.04  Jun 24 2003
-	- Interchange usertag bugfixes
-	- Some USPS bugfixes.
-	- Additional debugging information.
-	- Reducing indirect notation.
-	- Experiencing some problems with xps-query.
-	- Gracefully handle ZIP+4 (by ignoring the +4)
-	- Lots of test updates
-	- Handle a few more countries correctly ("France,Metropolitan")
-	- Add some 'retry' support to the xps-query usertag
+    - Interchange usertag bugfixes
+    - Some USPS bugfixes.
+    - Additional debugging information.
+    - Reducing indirect notation.
+    - Experiencing some problems with xps-query.
+    - Gracefully handle ZIP+4 (by ignoring the +4)
+    - Lots of test updates
+    - Handle a few more countries correctly ("France,Metropolitan")
+    - Add some 'retry' support to the xps-query usertag
 
-	
+    
 0.03  Jun 04 2003
-	- Changed name to Business::Shipping.
-	- Fixed POD for the Ship.pm file.
-	- Add dependency requirements
-	- Misc updates.
+    - Changed name to Business::Shipping.
+    - Fixed POD for the Ship.pm file.
+    - Add dependency requirements
+    - Misc updates.
 
-	
+    
 0.02  Sat May 31 18:04:00 2003
-	- Testing overhaul
-	- Lots of bug fixes (uncovered by testing, mostly for USPS)
-	- Added "make readme"
-	- Moving stuff around again.
-	- Launched http://www.kavod.com/Business-Shipping
-	- API Changes:
-		+ None.
+    - Testing overhaul
+    - Lots of bug fixes (uncovered by testing, mostly for USPS)
+    - Added "make readme"
+    - Moving stuff around again.
+    - Launched http://www.kavod.com/Business-Shipping
+    - API Changes:
+        + None.
 
-		
+        
 0.01  Fri May 30 22:45:11 2003
-	- Moved everything around a lot
-	- Packaged everything like standard Perl modules
-	- Documentation now up to date with code.
-	- Updates to [xps-query]
-	- More refactoring all over the place
-	- Bug fixes
-	- UPS:
-		+ Added validation
-		+ Corrected caching
-		+ Accepts english pickup types ("daily pickup" vs. 01)
-	- API Changes:
-		+ Tons.  Starting to settle down, though...  
+    - Moved everything around a lot
+    - Packaged everything like standard Perl modules
+    - Documentation now up to date with code.
+    - Updates to [xps-query]
+    - More refactoring all over the place
+    - Bug fixes
+    - UPS:
+        + Added validation
+        + Corrected caching
+        + Accepts english pickup types ("daily pickup" vs. 01)
+    - API Changes:
+        + Tons.  Starting to settle down, though...  
 
-		
+        
 0.00  Sun May 25
-	- UPS fully ported to Business::Ship architecture
-	- Lots of other refactoring.
-	- Considering a Business::Ship::*::Internal for internal lookups.
-  		+ If done, it would be based off of Mikes recent commits.
+    - UPS fully ported to Business::Ship architecture
+    - Lots of other refactoring.
+    - Considering a Business::Ship::*::Internal for internal lookups.
+          + If done, it would be based off of Mikes recent commits.
 
-		
+        
 0.00  Fri May 9
-	- Lots of clean up
+    - Lots of clean up
     - Re-organizing order of methods for easier browsing.
 
-	- Documentation
+    - Documentation
     - Updates for USPS and Business::Ship API
     - Code and docs now in sync, except for UPS.
     - Sample shipping.asc entry for [xps-query]
-	
-	- Mapped all "package-level" methods/data accessors to
+    
+    - Mapped all "package-level" methods/data accessors to
       Business::Ship::default_package().
  
-	- USPS:
+    - USPS:
     - The beginnings of self-validation.
     - submit() and _handle_response() now separate
     - submit() moved to Business::Ship for UPS to share (later)
  
-	- UPS:
+    - UPS:
     - Getting ready for re-design to take advantage of new API. 
  
-	- [xps-query]:
+    - [xps-query]:
     - Fix bug wrt weights less than 0.5
-	
-	- Lots of misc.
+    
+    - Lots of misc.
 

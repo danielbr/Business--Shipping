@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS
 #
-# $Id: UPS.pm,v 1.10 2004/01/22 23:36:56 db-ship Exp $
+# $Id: UPS.pm,v 1.11 2004/01/28 16:46:09 db-ship Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003,2004 Kavod Technologies, Dan Browning. 
@@ -16,7 +16,7 @@
 
 package Business::Shipping::RateRequest::Offline::UPS;
 
-$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -997,9 +997,9 @@ sub determine_zone_info
 	# TODO: analyze all the zone files and use the metadata to build a map
 	# of which zips go to which file.
 	#
-	# Only apply if the zone file is purly numeric.
+	# Only apply if the zone is purly numeric.
 	#
-	if ( $zone_file =~ /^\d+$/ ) {
+	if ( $zone =~ /^\d+$/ ) {
 		for ( my $c = 10; $c >= 1; $c-- ) {
 			if ( ! -f $zone_file ) {
 				debug( "zone_file $zone_file doesn't exist, trying others nearby..." );

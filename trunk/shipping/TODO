@@ -2,6 +2,10 @@
 ##  General TODO
 ######################################################
  
+ * [ENH] Use fields.pm to guard against autovivification. 
+ 
+ * [ENH] Improve documentation (adding sections to all .pm files)
+
  * [ENH] Update to more recent C:MM syntax, like '-default', etc.
  
  * [ENH] Allow users to set path to support files.

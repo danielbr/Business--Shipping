@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.16 2004/01/23 00:03:25 db-ship Exp $
+# $Id: business-shipping.tag,v 1.17 2004/01/28 16:46:09 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -264,19 +264,36 @@ sub {
 	$charges ||= $rate_request->total_charges();
 
 	#
-	# This is a debugging / support tool.  Set the XPS_GEN_INCIDENTS and
-	# SYSTEMS_SUPPORT_EMAIL variables to enable.
+	# This is a debugging / support tool.  It uses these variables: 
+	#   XPS_GEN_INCIDENTS
+	#   SYSTEMS_SUPPORT_EMAIL
 	#
 	if ( ! $charges or $charges !~ /\d+/) {
+		
 		if ( $Variable->{ 'XPS_GEN_INCIDENTS' } ) {
-			my $variables = uneval( \%opt ); 
+			
+			my %important_vars = @opt{ 'shipper', 'service', 'to_country', 'weight', 'to_zip' };
+			my $vars_out;
+			
+			$vars_out .= "\nImportant variables:\n";
+			$vars_out .= "\t$_ => $important_vars{$_}\n"
+				foreach ( keys %important_vars );
+				
+			$vars_out .= "\nAll variables\n";
+			$vars_out = "\t$_ => $opt{$_}\n"
+				foreach ( keys %opt );
+				
+			$vars_out .= "\nActual values from the rate_request object\n";
+			$vars_out = "\t" . '$rate_request->$_() => ' . $rate_request->$_() . "\n"
+				foreach ( keys %opt );
+
 			my $error = $rate_request->error();
 			
 			#
-			# Ignore errors if [incident] is not there, or misbehaves.
+			# Ignore errors if [incident] is missing or misbehaves.
 			#
 			eval {
-				$Tag->incident("[business-shipping]: $shipper error: $error. \n Options were: $variables");
+				$Tag->incident("[business-shipping]: $shipper error: $error. \n Options were: $vars_out");
 			};
 			$@ = '';
 		}
