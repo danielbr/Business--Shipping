@@ -6,7 +6,7 @@ Business::Shipping::Package::UPS
 
 =head1 VERSION
 
-$Revision$
+$Rev$
 
 $Date$
 
@@ -16,7 +16,7 @@ $Date$
 
 =cut
 
-$VERSION = do { my @r=(q$Revision$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -27,7 +27,7 @@ use base ( 'Business::Shipping::Package' );
 UPS-only attribute.
 
 =cut
-
+ 
 use Class::MethodMaker 2.0
     [ 
       new    => [ qw/ -hash new / ],
