@@ -6,27 +6,31 @@ VERSION
 
 SYNOPSIS
   Rate request example
-        use Business::Shipping;
-    
-        my $rate_request = Business::Shipping->rate_request(
-            shipper   => 'Offline::UPS',
-            service   => 'GNDRES',
-            from_zip  => '98682',
-            to_zip    => '98270',
-            weight    =>  5.00,
-        );    
-    
-        $rate_request->submit() or die $rate_request->user_error();
-    
-        print $rate_request->total_charges();
+     use Business::Shipping;
+ 
+     my $rate_request = Business::Shipping->rate_request(
+         shipper   => 'Offline::UPS',
+         service   => 'GNDRES',
+         from_zip  => '98682',
+         to_zip    => '98270',
+         weight    =>  5.00,
+     );    
+ 
+     $rate_request->go() or die $rate_request->user_error();
+ 
+     print $rate_request->total_charges();
 
 FEATURES
-  United Parcel Service (UPS)
+    Business::Shipping currently supports three shippers:
+
+  UPS_Online: United Parcel Service
     * Shipment rate estimation using UPS Online WebTools.
-    * Shipment rate estimation using offline tables.
     * Shipment tracking.
 
-  United States Postal Service (USPS)
+  UPS_Offline: United Parcel Service
+    * Shipment rate estimation using offline tables.
+
+  USPS_Online: United States Postal Service
     * Shipment rate estimation using USPS Online WebTools.
     * Shipment tracking.
 
@@ -36,6 +40,9 @@ INSTALLATION
     See the INSTALL file for more details.
 
 REQUIRED MODULES
+    Some of these modules are not required to use only one shipper. See the
+    INSTALL file for more information.
+
      Bundle::DBD::CSV (any)
      Business::Shipping::DataFiles (any)
      Cache::FileCache (any)
@@ -43,7 +50,6 @@ REQUIRED MODULES
      Clone (any)
      Config::IniFiles (any)
      Crypt::SSLeay (any)
-     Getopt::Mixed (any)
      Log::Log4perl (any)
      LWP::UserAgent (any)
      Math::BaseCnv (any)
@@ -61,17 +67,17 @@ GETTING STARTED
     Be careful to read, understand, and comply with the terms of use for the
     provider that you will use.
 
-  UPS_Offline: For United Postal Service (UPS) offline rate requests
+  UPS_Offline: For United Parcel Service (UPS) offline rate requests
     No signup required. Business::Shipping::DataFiles has all of rate
     tables.
 
-  UPS_Online: For United Postal Service (UPS) Online XML: Free signup
-    * https://www.ups.com/servlet/registration?loc=en_US_EC
-    * (More info at http://www.ec.ups.com)
-    * Once you get a User Id and Password from UPS, you will need to login
-    and select "Get Access Key", then "Get XML Access Key".
-    * Legal Terms and Conditions:
+  UPS_Online: For United Parcel Service (UPS) Online XML: Free signup
+    * Read the legal terms and conditions:
     <http://www.ups.com/content/us/en/resources/service/terms/index.html>
+    * <https://www.ups.com/servlet/registration>
+    * After receiving a User Id and Password from UPS, login, then select
+    "Get Access Key", then "Get XML Access Key".
+    * Read more about UPS Online Tools at <http://www.ec.ups.com>
 
   USPS_Online: For United States Postal Service (USPS): Free signup
     * <http://www.uspswebtools.com/registration/>
@@ -79,11 +85,11 @@ GETTING STARTED
     * The online signup will result in a testing-only account (only a small
     sample of queries will work).
     * To activate the "production" use of your USPS account, you must follow
-    the USPS documentation. Currently, that means contacting the Internet
-    Customer Care Center by e-mail ("icustomercare@usps.com") or phone:
-    1-800-344-7779.
+    the USPS documentation. As of Sept 16 2004, that means contacting the
+    USPS Internet Customer Care Center by e-mail ("icustomercare@usps.com")
+    or phone: 1-800-344-7779.
 
-Uses of this software
+Use of this software
     It is appreciated when users mention their use of Business::Shipping to
     the author and/or on their website or in their application.
 
@@ -101,21 +107,16 @@ Uses of this software
     * Phatmotorsports.com
 
 WEBSITE
+    The website carries the most recent version.
+
     <http://www.kavod.com/Business-Shipping>
-
-    The website carries the most recent version, as well as instructions for
-    accessing the anonymous CVS repository.
-
-    <http://sf.net/projects/shipping>
-
-    Sourceforge.net provides hosting for the project.
 
 Preloading Modules
     To preload all modules, call Business::Shipping with this syntax:
 
      use Business::Shipping { preload => 'All' };
 
-    To preload the modules for just one certain shipper:
+    To preload the modules for just one shipper:
 
      use Business::Shipping { preload => 'USPS_Online' };
  
@@ -126,12 +127,10 @@ Preloading Modules
     * For mod_perl, to load the modules only once at startup instead of at
     startup and then additional modules later on. (Thanks to Chris Ochs
     <chris@paymentonline.com> for contributing to this information).
-    * For compatibilty with some security modules (e.g. Safe). Note that we
-    have not tested Safe, but this would be a prerequisite for someone to do
-    so.
+    * For compatibilty with some security modules (e.g. Safe).
     * To move the delay that would normally occur with the first request
     into startup time. That way, it takes longer to start up, but the first
-    user will not notice any delay.
+    user will not experience any delay.
 
 METHODS
   $obj->init( %args )
@@ -206,9 +205,11 @@ SEE ALSO
     Other CPAN modules that are simliar to Business::Shipping:
 
     * Business::Shipping::UPS_XML - Online cost estimation module that has
-    very few prerequisites.
+    very few prerequisites. Supports shipments that originate in USA and
+    Canada.
     * Business::UPS - Online cost estimation module that uses the UPS web
-    form instead of the UPS Online Tools.
+    form instead of the UPS Online Tools. For shipments that originate in
+    the USA only.
 
 SUPPORT
     This module is supported by the author. Please report any bugs or
@@ -219,13 +220,6 @@ SUPPORT
 
 KNOWN BUGS
     See the TODO file for a comprehensive list of known bugs.
-
-    * USPS_Online and no internet connection.
-        You will get the following error when there is no connection to the
-        internet when using USPS_Online:
-
-         Business::Shipping::USPS_Online::RateRequest::_handle_response: ()
-         File does not exist:  at .../USPS_Online/RateRequest.pm ...
 
 CREDITS
     See CREDITS file.

@@ -23,8 +23,9 @@
 	<li><a href="#features">FEATURES</a></li>
 	<ul>
 
-		<li><a href="#united_parcel_service__ups_">United Parcel Service (UPS)</a></li>
-		<li><a href="#united_states_postal_service__usps_">United States Postal Service (USPS)</a></li>
+		<li><a href="#ups_online__united_parcel_service">UPS_Online: United Parcel Service</a></li>
+		<li><a href="#ups_offline__united_parcel_service">UPS_Offline: United Parcel Service</a></li>
+		<li><a href="#usps_online__united_states_postal_service">USPS_Online: United States Postal Service</a></li>
 	</ul>
 
 	<li><a href="#installation">INSTALLATION</a></li>
@@ -32,12 +33,12 @@
 	<li><a href="#getting_started">GETTING STARTED</a></li>
 	<ul>
 
-		<li><a href="#ups_offline__for_united_postal_service__ups__offline_rate_requests">UPS_Offline: For United Postal Service (UPS) offline rate requests</a></li>
-		<li><a href="#ups_online__for_united_postal_service__ups__online_xml__free_signup">UPS_Online: For United Postal Service (UPS) Online XML: Free signup</a></li>
+		<li><a href="#ups_offline__for_united_parcel_service__ups__offline_rate_requests">UPS_Offline: For United Parcel Service (UPS) offline rate requests</a></li>
+		<li><a href="#ups_online__for_united_parcel_service__ups__online_xml__free_signup">UPS_Online: For United Parcel Service (UPS) Online XML: Free signup</a></li>
 		<li><a href="#usps_online__for_united_states_postal_service__usps___free_signup">USPS_Online: For United States Postal Service (USPS): Free signup</a></li>
 	</ul>
 
-	<li><a href="#uses_of_this_software">Uses of this software</a></li>
+	<li><a href="#use_of_this_software">Use of this software</a></li>
 	<li><a href="#website">WEBSITE</a></li>
 	<li><a href="#preloading_modules">Preloading Modules</a></li>
 	<li><a href="#methods">METHODS</a></li>
@@ -77,37 +78,43 @@
 </p>
 <h2><a name="rate_request_example">Rate request example</a></h2>
 <pre>
-    use Business::Shipping;
-    
-    my $rate_request = Business::Shipping-&gt;rate_request(
-        shipper   =&gt; 'Offline::UPS',
-        service   =&gt; 'GNDRES',
-        from_zip  =&gt; '98682',
-        to_zip    =&gt; '98270',
-        weight    =&gt;  5.00,
-    );    
-    
-    $rate_request-&gt;submit() or die $rate_request-&gt;user_error();
-    
-    print $rate_request-&gt;total_charges();</pre>
+ use Business::Shipping;
+ 
+ my $rate_request = Business::Shipping-&gt;rate_request(
+     shipper   =&gt; 'Offline::UPS',
+     service   =&gt; 'GNDRES',
+     from_zip  =&gt; '98682',
+     to_zip    =&gt; '98270',
+     weight    =&gt;  5.00,
+ );    
+ 
+ $rate_request-&gt;go() or die $rate_request-&gt;user_error();
+ 
+ print $rate_request-&gt;total_charges();</pre>
 <p>
 </p>
 <hr />
 <h1><a name="features">FEATURES</a></h1>
+<p>Business::Shipping currently supports three shippers:</p>
 <p>
 </p>
-<h2><a name="united_parcel_service__ups_">United Parcel Service (UPS)</a></h2>
+<h2><a name="ups_online__united_parcel_service">UPS_Online: United Parcel Service</a></h2>
 <ul>
 <li><strong><a name="item_shipment_rate_estimation_using_ups_online_webtools">Shipment rate estimation using UPS Online WebTools.</a></strong><br />
-</li>
-<li><strong><a name="item_shipment_rate_estimation_using_offline_tables_2e">Shipment rate estimation using offline tables.</a></strong><br />
 </li>
 <li><strong><a name="item_shipment_tracking_2e">Shipment tracking.</a></strong><br />
 </li>
 </ul>
 <p>
 </p>
-<h2><a name="united_states_postal_service__usps_">United States Postal Service (USPS)</a></h2>
+<h2><a name="ups_offline__united_parcel_service">UPS_Offline: United Parcel Service</a></h2>
+<ul>
+<li><strong><a name="item_shipment_rate_estimation_using_offline_tables_2e">Shipment rate estimation using offline tables.</a></strong><br />
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="usps_online__united_states_postal_service">USPS_Online: United States Postal Service</a></h2>
 <ul>
 <li><strong><a name="item_shipment_rate_estimation_using_usps_online_webtool">Shipment rate estimation using USPS Online WebTools.</a></strong><br />
 </li>
@@ -124,6 +131,8 @@
 See the INSTALL file for more details.
  
 =head1 REQUIRED MODULES</pre>
+<p>Some of these modules are not required to use only one shipper.  See the INSTALL
+file for more information.</p>
 <pre>
  Bundle::DBD::CSV (any)
  Business::Shipping::DataFiles (any)
@@ -132,7 +141,6 @@ See the INSTALL file for more details.
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
- Getopt::Mixed (any)
  Log::Log4perl (any)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
@@ -154,21 +162,22 @@ the Business::Shipping-&gt;log_level( $log_level ) class method (below).</p>
 provider that you will use.</p>
 <p>
 </p>
-<h2><a name="ups_offline__for_united_postal_service__ups__offline_rate_requests">UPS_Offline: For United Postal Service (UPS) offline rate requests</a></h2>
+<h2><a name="ups_offline__for_united_parcel_service__ups__offline_rate_requests">UPS_Offline: For United Parcel Service (UPS) offline rate requests</a></h2>
 <p>No signup required.  Business::Shipping::DataFiles has all of rate tables.</p>
 <p>
 </p>
-<h2><a name="ups_online__for_united_postal_service__ups__online_xml__free_signup">UPS_Online: For United Postal Service (UPS) Online XML: Free signup</a></h2>
+<h2><a name="ups_online__for_united_parcel_service__ups__online_xml__free_signup">UPS_Online: For United Parcel Service (UPS) Online XML: Free signup</a></h2>
 <ul>
-<li><strong><a name="item_https_3a_2f_2fwww_2eups_2ecom_2fservlet_2fregistra"><a href="https://www.ups.com/servlet/registration?loc=en_US_EC">https://www.ups.com/servlet/registration?loc=en_US_EC</a></a></strong><br />
+<li><strong><a name="item_read_the_legal_terms_and_conditions_3a_l_3chttp_3a">Read the legal terms and conditions: 
+<a href="http://www.ups.com/content/us/en/resources/service/terms/index.html">http://www.ups.com/content/us/en/resources/service/terms/index.html</a></a></strong><br />
 </li>
-<li><strong><a name="item__28more_info_at_http_3a_2f_2fwww_2eec_2eups_2ecom_">(More info at <a href="http://www.ec.ups.com)">http://www.ec.ups.com)</a></a></strong><br />
+<pre>
+
+=item * L&lt;https://www.ups.com/servlet/registration&gt;</pre>
+<li><strong><a name="item_after_receiving_a_user_id_and_password_from_ups_2c">After receiving a User Id and Password from UPS, login, then select
+        ``Get Access Key'', then ``Get XML Access Key''.</a></strong><br />
 </li>
-<li><strong><a name="item_once_you_get_a_user_id_and_password_from_ups_2c_yo">Once you get a User Id and Password from UPS, you will need to login and
-        select ``Get Access Key'', then ``Get XML Access Key''.</a></strong><br />
-</li>
-<li><strong><a name="item_legal_terms_and_conditions_3a_l_3chttp_3a_2f_2fwww">Legal Terms and Conditions: 
-        <a href="http://www.ups.com/content/us/en/resources/service/terms/index.html">http://www.ups.com/content/us/en/resources/service/terms/index.html</a></a></strong><br />
+<li><strong><a name="item_read_more_about_ups_online_tools_at_http_3a_2f_2fw">Read more about UPS Online Tools at <a href="http://www.ec.ups.com">http://www.ec.ups.com</a></a></strong><br />
 </li>
 </ul>
 <p>
@@ -183,15 +192,15 @@ provider that you will use.</p>
         sample of queries will work).</a></strong><br />
 </li>
 <li><strong><a name="item_mail">To activate the ``production'' use of your USPS account, you must follow 
-        the USPS documentation.  Currently, that means contacting the Internet 
-        Customer Care Center by e-mail (<code>icustomercare@usps.com</code>) or phone:
-        1-800-344-7779.</a></strong><br />
+        the USPS documentation.  As of Sept 16 2004, that means contacting the 
+        USPS Internet Customer Care Center by e-mail 
+        (<code>icustomercare@usps.com</code>) or phone: 1-800-344-7779.</a></strong><br />
 </li>
 </ul>
 <p>
 </p>
 <hr />
-<h1><a name="uses_of_this_software">Uses of this software</a></h1>
+<h1><a name="use_of_this_software">Use of this software</a></h1>
 <p>It is appreciated when users mention their use of Business::Shipping to the 
 author and/or on their website or in their application.</p>
 <ul>
@@ -216,11 +225,8 @@ author and/or on their website or in their application.</p>
 </p>
 <hr />
 <h1><a name="website">WEBSITE</a></h1>
+<p>The website carries the most recent version.</p>
 <p><a href="http://www.kavod.com/Business-Shipping">http://www.kavod.com/Business-Shipping</a></p>
-<p>The website carries the most recent version, as well as instructions for
-accessing the anonymous CVS repository.</p>
-<p><a href="http://sf.net/projects/shipping">http://sf.net/projects/shipping</a></p>
-<p>Sourceforge.net provides hosting for the project.</p>
 <p>
 </p>
 <hr />
@@ -228,7 +234,7 @@ accessing the anonymous CVS repository.</p>
 <p>To preload all modules, call Business::Shipping with this syntax:</p>
 <pre>
  use Business::Shipping { preload =&gt; 'All' };</pre>
-<p>To preload the modules for just one certain shipper:</p>
+<p>To preload the modules for just one shipper:</p>
 <pre>
  use Business::Shipping { preload =&gt; 'USPS_Online' };
  
@@ -240,12 +246,11 @@ when preloading is advantagous.  For example:</pre>
  startup and then additional modules later on.  (Thanks to Chris Ochs 
  &lt;<a href="mailto:chris@paymentonline.com">chris@paymentonline.com</a>&gt; for contributing to this information).</a></strong><br />
 </li>
-<li><strong><a name="item_modules">For compatibilty with some security modules (e.g. Safe).  Note that we 
- have not tested Safe, but this would be a prerequisite for someone to do so.</a></strong><br />
+<li><strong><a name="item_modules">For compatibilty with some security modules (e.g. Safe).</a></strong><br />
 </li>
 <li><strong><a name="item_to_move_the_delay_that_would_normally_occur_with_t">To move the delay that would normally occur with the first request into 
  startup time.  That way, it takes longer to start up, but the first user
- will not notice any delay.</a></strong><br />
+ will not experience any delay.</a></strong><br />
 </li>
 </ul>
 <p>
@@ -344,10 +349,10 @@ the 'preload' option.</p>
 </p>
 <ul>
 <li><strong><a name="item_business_3a_3ashipping_3a_3aups_xml__2d_online_cos">Business::Shipping::UPS_XML - Online cost estimation module that has 
-  very few prerequisites.
+very few prerequisites.  Supports shipments that originate in USA and Canada.
  
 =item * Business::UPS - Online cost estimation module that uses the UPS web form
-  instead of the UPS Online Tools.</a></strong><br />
+instead of the UPS Online Tools.  For shipments that originate in the USA only.</a></strong><br />
 </li>
 </ul>
 <p>This module is supported by the author.  Please report any bugs or feature 
@@ -363,19 +368,6 @@ automatically be notified of progress on your bug as the author makes changes.
 <p>See the TODO file for a comprehensive list of known bugs.
 
 </p>
-<ul>
-<li><strong><a name="item_usps_online_and_no_internet_connection_2e">USPS_Online and no internet connection.</a></strong><br />
-</li>
-You will get the following error when there is no connection to the internet 
-when using USPS_Online:
-
-
-<pre>
- Business::Shipping::USPS_Online::RateRequest::_handle_response: ()
- File does not exist:  at .../USPS_Online/RateRequest.pm ...
-
-</pre>
-<p></p></ul>
 <p>
 </p>
 <hr />

@@ -83,13 +83,13 @@ support_files_install :
 
 sub extra_WriteMakefile_options {
     
-    my $module = "Business::Shipping::DataFiles";
+    my $module = "Business::Shipping";
     my $question = qq(
              ---  $module Support files directory  ---
   
 $module module comes with various support files for configuration, logging, etc.
-Please input the path you would like to copy these files to.  You can 
-modify the path later by changing the Config.pm file.
+Please input the path you would like to copy these files to.  You can modify the
+path later by changing the Config.pm file.
 
 On many systems, this directory will only be accessible by the user who 
 installed perl, typically root.

@@ -11,10 +11,9 @@ doc/Artistic
 doc/GPL
 doc/INSTALL.html
 doc/INSTALL.pod
+doc/INSTALL.txt
 doc/README.html
-doc/README.pod
-doc/usage.html
-doc/usage.txt
+doc/README.txt
 INSTALL
 lib/Business/Shipping.pm
 lib/Business/Shipping/ClassAttribs.pm
@@ -55,10 +54,10 @@ README
 t/10_init.t
 t/20_business_shipping.t
 t/21_preload.t
-t/30_Online-USPS.t
-t/31_Tracking_USPS.t
-t/40_Online-UPS.t
-t/45_Offline-UPS.t
+t/30_USPS_Online.t
+t/31_USPS_Online_Tracking.t
+t/40_UPS_Online.t
+t/45_UPS_Offline.t
 t/50_all.t
 t/60_CustomMethodMaker.t
 t/61_Log4perl.t
