@@ -7,52 +7,103 @@ SYNOPSIS
             use Business::Shipping;
         
             my $rate_request = Business::Shipping->rate_request(
-                    shipper                 => 'UPS',
-                    user_id                 => '',          
-                    password                => '',
+                    shipper                 => 'Offline::UPS',
                     service                 => 'GNDRES',
                     from_zip                => '98682',
                     to_zip                  => '98270',
                     weight                  => 5.00,
-            };
+            );
         
-            $rate_request->submit() or die $shipping->error();
+            $rate_request->submit() or die $rate_request->error();
         
             print $rate_request->total_charges();
 
 ABSTRACT
     Business::Shipping is an API for shipping-related tasks.
 
-    Currently, the only implemented task is shipping cost calculation, but
-    tracking, availability, and other services are planned for future
-    addition.
+  Shipping Tasks Implemented at this time:
+     * Shipping cost calculation
+     * Tracking, availability, and other services are planned for future addition.
 
-    UPS and USPS have been implemented so far, but FedEX and perhaps others
-    are planned for future support.
+  Shipping Vendors Implemented at this time:
+     * Online UPS (using the Internet and UPS servers)
+     * Offline UPS (using tables stored locally)
+     * Online USPS
+     * Offline FedEX and USPS are planned for support in the future.
+
+CLASS METHODS
+  rate_request()
+    This method is used to request shipping rate information from online
+    provides. Later querying offline databases may be supported as well. A
+    hash is accepted as input with the following key values:
+
+    * shipper
+        The name of the shipper to use. Must correspond to a module by the
+        name of: "Business::Shipping::RateRequest::SHIPPER".
+
+    * user_id
+        A user_id, if required by the provider. Online::USPS and Online::UPS
+        require this.
+
+    * password
+        A password, if required by the provider. Online::USPS and
+        Online::UPS require this.
+
+    * service
+        A valid service name for the provider. See the corresponding module
+        for a complete list for each provider.
+
+    * from_zip
+        The origin zipcode.
+
+    * to_zip
+        The destination zipcode.
+
+    * weight
+        Weight of the shipment, in pounds, as a decimal number.
+
+    * test_mode
+        If true, connects to a test server instead of a live server, if
+        possible. Defaults to 0.
+
+    An object is returned if the query is successful, or 'undef' otherweise.
 
 MULTI-PACKAGE API
-     $shipment->set(
-            user_id         => '',
-            password        => '',
-            from_zip        => '',
-            to_zip          => '',
+  Online::UPS Example
+     use Business::Shipping;
+     use Business::Shipping::Shipment::UPS;
+ 
+     my $shipment = Business::Shipping::Shipment::UPS->new();
+ 
+     $shipment->init(
+            from_zip        => '98682',
+            to_zip          => '98270',
+            service         => 'GNDRES',
+            #
+            # user_id, etc. needed here.
+            #
      );
 
      $shipment->add_package(
             id              => '0',
-            weight          => '',
+            weight          => 5,
      );
 
      $shipment->add_package(
             id              => '1',
-            weight          => '',
+            weight          => 3,
      );
+ 
+     my $rate_request = Business::Shipping::rate_request( shipper => 'Online::UPS' );
+     #
+     # Add the shipment to the rate request.
+     #
+     $rate_request->shipment( $shipment );
+     $rate_request->submit() or print $rate_request->error();
 
-     $shipment->submit() or print $shipment->error();
-
-     print $shipment->package('0')->get_charges( 'Airmail Parcel Post' );
-     print $shipment->package('1')->get_charges( 'Airmail Parcel Post' );
-     print $shipment->get_total_price( 'Airmail Parcel Post' );
+     print $rate_request->package('0')->get_charges( 'GNDRES' );
+     print $rate_request->package('1')->get_charges( 'GNDRES' );
+     print $rate_request->get_total_price( 'GNDRES' );
 
 ERROR/DEBUG HANDLING
     The 'event_handlers' argument takes a hashref telling Business::Shipping
@@ -66,19 +117,21 @@ ERROR/DEBUG HANDLING
 
     For example:
 
-     $shipment->set( 
+     $rate_request->init( 
             'event_handlers' => ({ 
+                    'error' => 'STDOUT',
                     'debug' => undef,
                     'trace' => undef,
-                    'error' => 'croak',
+                    'debug3' => undef,
             })
      );
  
     The default is 'STDERR' for error handling, and nothing for debug/trace
-    handling. Note that you can still access error messages even with no
-    handler, by accessing the return values of methods. For example:
+    handling. The option 'debug3' adds even more verbosity to the debug.
+    Note that you can still access error messages even with no handler, by
+    accessing the return values of methods. For example:
 
-     $shipment->set( %values ) or print $shipment->error();
+     $rate_request->init( %values ) or print $rate_request->error();
         
     However, if you don't save the error value before the next call, it
     could be overwritten by a new error.

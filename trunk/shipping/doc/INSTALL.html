@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>INSTALLATION</title>
+<link rev="made" href="mailto:db@localhost.localdomain" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#installation">INSTALLATION</a></li>
+	<ul>
+
+		<li><a href="#prerequisites">Prerequisites</a></li>
+		<ul>
+
+			<li><a href="#module_installation_via_cpan">Module Installation via CPAN</a></li>
+			<li><a href="#notes">Notes</a></li>
+		</ul>
+
+		<li><a href="#manual_installation_of_business::shipping">Manual Installation of Business::Shipping</a></li>
+	</ul>
+
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="installation">INSTALLATION</a></h1>
+<p>
+</p>
+<h2><a name="prerequisites">Prerequisites</a></h2>
+<p>First make sure that you have all the prerequisite Perl modules.  You can 
+install them easily, using CPAN.</p>
+<p>
+</p>
+<h3><a name="module_installation_via_cpan">Module Installation via CPAN</a></h3>
+<p>The following CPAN usage example has all the needed modules on one line.</p>
+<pre>
+ perl -MCPAN -e shell
+ install Data::Dumper Digest::base Digest::SHA1 LWP::UserAgent Crypt::SSLeay XML::Simple XML::DOM Error Cache::FileCache Class::MethodMaker Bundle::DBD::CSV DBI DBD::CSV Archive::Zip Config::IniFiles
+ install Business::Shipping</pre>
+<p>
+</p>
+<h3><a name="notes">Notes</a></h3>
+<p>Note: The following comes with perl 5.8.2</p>
+<pre>
+ POSIX 
+ Fcntl
+ File::Find
+ File::Copy</pre>
+<p>
+</p>
+<h2><a name="manual_installation_of_business::shipping">Manual Installation of Business::Shipping</a></h2>
+<pre>
+ perl Makefile.PL &amp;&amp; make &amp;&amp; make test &amp;&amp; make install</pre>
+<p>Or, expressed on separate lines:</p>
+<pre>
+ perl Makefile.PL
+ make
+ make test
+ make install</pre>
+
+</body>
+
+</html>

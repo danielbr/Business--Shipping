@@ -2,6 +2,7 @@
 CHANGELOG
 COPYING
 CREDITS
+INSTALL
 MANIFEST			This list of files
 Makefile.PL
 README
@@ -609,7 +610,6 @@ data/989.csv
 data/990.csv
 data/993.csv
 data/994.csv
-data/NextDayAir
 data/a_1da
 data/a_1dasaver
 data/a_2da
@@ -708,13 +708,12 @@ data/wwrates.zip
 data/wwzones.zip
 data/wyoming.csv
 data/xarea.csv
-doc/Design-Information.txt
+doc/INSTALL.html
+doc/INSTALL.pod
 doc/MethodMaker-grouped-fields.patch
 doc/README.html
 doc/README.pod
 doc/USPS-Country-List.html
-doc/auto-split-into-multiple-packages.txt
-doc/offline-design-notes.txt
 doc/usage.html
 doc/usage.txt
 lib/Business/Shipping.pm
@@ -750,15 +749,16 @@ t/manual/CustomMethodMaker/test_SUPER_aggregate_problem_using_MethodMaker.pl
 t/manual/CustomMethodMaker/test_one_file.pl
 t/manual/business-config.pl
 t/manual/config-inifiles.pl
-t/manual/data-bench
 t/manual/dbd-csv.pl
 t/manual/misc_find_required_fields.pl
 t/manual/misc_find_unique_fields.pl
 t/manual/offline_ups.pl
+t/manual/offline_ups_alternate_syntax.pl
 t/manual/simple_api_ups.pl
 t/manual/simple_api_ups_offline.pl
 t/manual/simple_api_usps.pl
 t/manual/simple_test.pl
+t/manual/test-data/bench
 t/manual/usps_tester_simple.pl
 t/manual/xps-query-simulator-new.pl
 t/manual/xps-query-simulator-smallest.pl

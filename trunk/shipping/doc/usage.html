@@ -15,7 +15,24 @@
 	<li><a href="#name">NAME</a></li>
 	<li><a href="#synopsis">SYNOPSIS</a></li>
 	<li><a href="#abstract">ABSTRACT</a></li>
+	<ul>
+
+		<li><a href="#shipping_tasks_implemented_at_this_time:">Shipping Tasks Implemented at this time:</a></li>
+		<li><a href="#shipping_vendors_implemented_at_this_time:">Shipping Vendors Implemented at this time:</a></li>
+	</ul>
+
+	<li><a href="#class_methods">CLASS METHODS</a></li>
+	<ul>
+
+		<li><a href="#rate_request()"><code>rate_request()</code></a></li>
+	</ul>
+
 	<li><a href="#multipackage_api">MULTI-PACKAGE API</a></li>
+	<ul>
+
+		<li><a href="#online::ups_example">Online::UPS Example</a></li>
+	</ul>
+
 	<li><a href="#error/debug_handling">ERROR/DEBUG HANDLING</a></li>
 </ul>
 <!-- INDEX END -->
@@ -34,16 +51,14 @@
         use Business::Shipping;
         
         my $rate_request = Business::Shipping-&gt;rate_request(
-                shipper                 =&gt; 'UPS',
-                user_id                 =&gt; '',          
-                password                =&gt; '',
+                shipper                 =&gt; 'Offline::UPS',
                 service                 =&gt; 'GNDRES',
                 from_zip                =&gt; '98682',
                 to_zip                  =&gt; '98270',
                 weight                  =&gt; 5.00,
-        };
+        );
         
-        $rate_request-&gt;submit() or die $shipping-&gt;error();
+        $rate_request-&gt;submit() or die $rate_request-&gt;error();
         
         print $rate_request-&gt;total_charges();</pre>
 <p>
@@ -51,45 +66,115 @@
 <hr />
 <h1><a name="abstract">ABSTRACT</a></h1>
 <p>Business::Shipping is an API for shipping-related tasks.</p>
-<p>Currently, the only implemented task is shipping cost calculation, but tracking, 
-availability, and other services are planned for future addition.</p>
-<p>UPS and USPS have been implemented so far, but FedEX and perhaps others are 
-planned for future support.</p>
+<p>
+</p>
+<h2><a name="shipping_tasks_implemented_at_this_time:">Shipping Tasks Implemented at this time:</a></h2>
+<pre>
+ * Shipping cost calculation
+ * Tracking, availability, and other services are planned for future addition.</pre>
+<p>
+</p>
+<h2><a name="shipping_vendors_implemented_at_this_time:">Shipping Vendors Implemented at this time:</a></h2>
+<pre>
+ * Online UPS (using the Internet and UPS servers)
+ * Offline UPS (using tables stored locally)
+ * Online USPS
+ * Offline FedEX and USPS are planned for support in the future.</pre>
+<p>
+</p>
+<hr />
+<h1><a name="class_methods">CLASS METHODS</a></h1>
+<p>
+</p>
+<h2><a name="rate_request()"><code>rate_request()</code></a></h2>
+<p>This method is used to request shipping rate information from online provides.
+Later querying offline databases may be supported as well.  A hash is accepted
+as input with the following key values:</p>
+<ul>
+<li><strong><a name="item_shipper">shipper</a></strong><br />
+</li>
+The name of the shipper to use. Must correspond to a module by the name of:
+<code>Business::Shipping::RateRequest::SHIPPER</code>.
+<p></p>
+<li><strong><a name="item_user_id">user_id</a></strong><br />
+</li>
+A user_id, if required by the provider. Online::USPS and Online::UPS require
+this.
+<p></p>
+<li><strong><a name="item_password">password</a></strong><br />
+</li>
+A password,  if required by the provider. Online::USPS and Online::UPS require
+this.
+<p></p>
+<li><strong><a name="item_service">service</a></strong><br />
+</li>
+A valid service name for the provider. See the corresponding module for a 
+complete list for each provider.
+<p></p>
+<li><strong><a name="item_from_zip">from_zip</a></strong><br />
+</li>
+The origin zipcode.
+<p></p>
+<li><strong><a name="item_to_zip">to_zip</a></strong><br />
+</li>
+The destination zipcode.
+<p></p>
+<li><strong><a name="item_weight">weight</a></strong><br />
+</li>
+Weight of the shipment, in pounds, as a decimal number.
+<p></p>
+<li><strong><a name="item_test_mode">test_mode</a></strong><br />
+</li>
+If true, connects to a test server instead of a live server, if possible. 
+Defaults to 0.
+<p></p></ul>
+<p>An object is returned if the query is successful, or 'undef' otherweise.</p>
 <p>
 </p>
 <hr />
 <h1><a name="multipackage_api">MULTI-PACKAGE API</a></h1>
+<p>
+</p>
+<h2><a name="online::ups_example">Online::UPS Example</a></h2>
 <pre>
- $shipment-&gt;set(
-        user_id         =&gt; '',
-        password        =&gt; '',
-        from_zip        =&gt; '',
-        to_zip          =&gt; '',
- );
-
-</pre>
+ use Business::Shipping;
+ use Business::Shipping::Shipment::UPS;
+ 
+ my $shipment = Business::Shipping::Shipment::UPS-&gt;new();
+ 
+ $shipment-&gt;init(
+        from_zip        =&gt; '98682',
+        to_zip          =&gt; '98270',
+        service         =&gt; 'GNDRES',
+        #
+        # user_id, etc. needed here.
+        #
+ );</pre>
 <pre>
  $shipment-&gt;add_package(
         id              =&gt; '0',
-        weight          =&gt; '',
+        weight          =&gt; 5,
  );
 
 </pre>
 <pre>
  $shipment-&gt;add_package(
         id              =&gt; '1',
-        weight          =&gt; '',
+        weight          =&gt; 3,
  );
+ 
+ my $rate_request = Business::Shipping::rate_request( shipper =&gt; 'Online::UPS' );
+ #
+ # Add the shipment to the rate request.
+ #
+ $rate_request-&gt;shipment( $shipment );
+ $rate_request-&gt;submit() or print $rate_request-&gt;error();
 
 </pre>
 <pre>
- $shipment-&gt;submit() or print $shipment-&gt;error();
-
-</pre>
-<pre>
- print $shipment-&gt;package('0')-&gt;get_charges( 'Airmail Parcel Post' );
- print $shipment-&gt;package('1')-&gt;get_charges( 'Airmail Parcel Post' );
- print $shipment-&gt;get_total_price( 'Airmail Parcel Post' );
+ print $rate_request-&gt;package('0')-&gt;get_charges( 'GNDRES' );
+ print $rate_request-&gt;package('1')-&gt;get_charges( 'GNDRES' );
+ print $rate_request-&gt;get_total_price( 'GNDRES' );
 
 </pre>
 <p>
@@ -111,21 +196,23 @@ for error, debug, trace, and the like.  The value can be one of four options:
 
 </p>
 <pre>
- $shipment-&gt;set( 
+ $rate_request-&gt;init( 
         'event_handlers' =&gt; ({ 
+                'error' =&gt; 'STDOUT',
                 'debug' =&gt; undef,
                 'trace' =&gt; undef,
-                'error' =&gt; 'croak',
+                'debug3' =&gt; undef,
         })
  );
  
-The default is 'STDERR' for error handling, and nothing for debug/trace handling.
-Note that you can still access error messages even with no handler, by accessing
+The default is 'STDERR' for error handling, and nothing for debug/trace 
+handling.  The option 'debug3' adds even more verbosity to the debug.  Note 
+that you can still access error messages even with no handler, by accessing
 the return values of methods.  For example:
 
 </pre>
 <pre>
- $shipment-&gt;set( %values ) or print $shipment-&gt;error();
+ $rate_request-&gt;init( %values ) or print $rate_request-&gt;error();
         
 However, if you don't save the error value before the next call, it could be
 overwritten by a new error.

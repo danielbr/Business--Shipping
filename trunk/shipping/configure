@@ -1,0 +1,3 @@
+#! /bin/sh
+echo "Executing 'perl Makefile.PL'"
+perl Makefile.PL
