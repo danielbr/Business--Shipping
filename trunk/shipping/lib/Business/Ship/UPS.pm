@@ -1,20 +1,21 @@
-#Copyright (c) 2003 Kavod Technologies and Dan Browning. 
-#All rights reserved. This program is free software; you can 
-#redistribute it and/or modify it under the same terms as Perl 
-#itself.
+# Copyright (c) 2003 Kavod Technologies, Dan Browning, 
+# and Kevin Old.  
+# All rights reserved. This program is free software; you can 
+# redistribute it and/or modify it under the same terms as Perl 
+# itself.
 
-package Business::Ship::UPS;
+package Business::Ship::USPS;
 use strict;
 use warnings;
 
 =head1 NAME
 
-Business::Ship::UPS - A UPS Online Tools module
+Business::Ship::USPS - A USPS module
 
 =head1 SYNOPSIS
 
-	use Business::Ship::UPS;
-	my $ups = new Business::Ship::UPS;
+	use Business::Ship::USPS;
+	my $ups = new Business::Ship::USPS;
 	$ups->run_query(
 		access_license_number => '248B43N8NXN1S35J',
 		user_id => 'youruserid',
@@ -67,12 +68,12 @@ The following methods are available:
 =cut
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.1 $ =~ /(\d+)\.(\d+)/);
-use LWP::UserAgent ();
-use HTTP::Request ();
-use HTTP::Response ();
-use XML::Simple ();
-use Carp ();
+$VERSION = sprintf("%d.%03d", q$Revision: 1.2 $ =~ /(\d+)\.(\d+)/);
+use LWP::UserAgent;
+use HTTP::Request;
+use HTTP::Response;
+use XML::Simple 2.05;
+use Carp;
 
 =item B<new>
 
