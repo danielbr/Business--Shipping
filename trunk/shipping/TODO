@@ -11,6 +11,7 @@
 
 * [Enh] Add Subversion properties
   svn:ignore (svn propset svn:ignore -F .cvsignore .)
+        svn propset svn:ignore -F .cvsignore .
   copyright
   license  
 
