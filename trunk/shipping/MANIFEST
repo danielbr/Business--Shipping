@@ -711,7 +711,6 @@ doc/usage.html
 doc/usage.txt
 doc/USPS-Country-List.html
 INSTALL
-lib/Bundle/Business/Shipping.pm
 lib/Business/Shipping.pm
 lib/Business/Shipping/Config.pm
 lib/Business/Shipping/CustomMethodMaker.pm

@@ -7,7 +7,7 @@ use ExtUtils::MakeMaker;
 eval "use Devel::Required text => [ '' ], pod => [qw(lib/Business/Shipping.pm), qw(doc/README.pod), qw(doc/INSTALL.pod), qw(UserTag/business-shipping.tag)]";
 
 # Version for Business-Shipping as a whole.
-$VERSION = '1.05';
+$VERSION = '1.06';
 
 #
 # Defaults
