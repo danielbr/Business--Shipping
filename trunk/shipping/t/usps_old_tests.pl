@@ -21,7 +21,12 @@ my $shipment3 = new Business::Ship(
 	'test_mode'		=> 0,
 );
 
-#$shipment->set('event_handlers' => ({ 'debug' => STDOUT, 'trace' => 'STDOUT', 'error' => 'STDOUT', }),);
+$shipment->set( 'event_handlers' => ({ 
+	'debug' => 'STDOUT', 
+	'trace' => 'STDOUT', 
+	'error' => 'STDOUT', 
+	})
+);
 $shipment->set(
 	'user_id' 		=> $ENV{USPS_USER_ID},
 	'password' 		=> $ENV{USPS_PASSWORD},
@@ -42,8 +47,10 @@ $shipment->set(
 
 #print Dumper( $shipment );
 
-$shipment->submit() or die 'error on submit: ' . $shipment->error();
+$shipment->submit() or die $shipment->error();
 print "0.2 weight: " . $shipment->get_charges('Airmail Parcel Post') . "\n";
+
+exit;
 
 $shipment->set(
 		weight		=> 5.6,
@@ -172,7 +179,7 @@ Response #1:
 		<Prohibitions>Currency of the Albanian State Bank (Banknotes in lek). Extravagant clothes and other articles contrary to Albanians' taste. Items sent by political emigres.</Prohibitions>
 		<Restrictions>Hunting arms require an import permit. Medicines for personal use are admitted provided the addressee has a medical certificate.</Restrictions>
 		International Rates Calculator API 13
-		USPS Web Tool Kit User’s Guide <Observations>1. Letter packages may not contain dutiable articles. 2. Parcel post service extends only to: Berat Konispol Milot Bilisht Korce Peqin</Observations>
+		USPS Web Tool Kit Userï¿½s Guide <Observations>1. Letter packages may not contain dutiable articles. 2. Parcel post service extends only to: Berat Konispol Milot Bilisht Korce Peqin</Observations>
 		<CustomsForms>Postal Union Mail (LC/AO): PS Form 2976 or 2976-A (see 123.61) Parcel Post: PS Form 2976-A inside 2976-E (envelope)</CustomsForms>
 		<ExpressMail>Country Code AL Reciprocal Service Name EMS Required Customs Form/Endorsement 1. For correspondence and business papers: PS Form 2976, Customs - CN 22 (Old C 1) and Sender's Declaration (green label). Endorse item clearly next to mailing label as BUSINESS PAPERS.</ExpressMail>
 		<AreasServed>Tirana.</AreasServed>
@@ -205,19 +212,19 @@ Response #1:
 Valid Test Request #2
 http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx">< Package ID="0"><Pounds>0</Pounds><Ounces>1</Ounces><MailType>Postcards or Aerogrammes</MailType><Country>Algeria</Country></Package></IntlRateRequest>
 
-Pre-defined Error Request #1: “Invalid Weight for Pounds”
+Pre-defined Error Request #1: ï¿½Invalid Weight for Poundsï¿½
 The pre-defined error in this request is using non- numeric input for <Pounds>.
 http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx">< Package ID="0"><Pounds>two</Pounds><Ounces>0</Ounces><MailType>Package</MailType><Country>Albania</Country></Package></IntlRateRequest>
-Pre-defined Error Request #2: “Invalid Weight for Ounces”
+Pre-defined Error Request #2: ï¿½Invalid Weight for Ouncesï¿½
 The pre-defined error in this request is using non- numeric input for <Ounces>.
 http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx">< Package ID="0"><Pounds>2</Pounds><Ounces>zero</Ounces><MailType>Package</MailType><Country>Albania</Country></Package></IntlRateRequest>
-Error Request #3: “No Weight Entered”
+Error Request #3: ï¿½No Weight Enteredï¿½
 The pre-defined error in this request is leaving the inputs for both <Pounds> and <Ounces> empty.
 http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx"><Package ID="0"><Pounds>0</Pounds><Ounces>0</Ounces><MailType>Package</MailType><Country>Albania</Country></Package></IntlRateRequest>
-Pre-defined Error Request #4: “Invalid Mail Type”
-The pre-defined error in this request is using input other than: “package,” “postcards or aerogrammes,” “matter for the blind,” or “envelope” for <MailType>.
+Pre-defined Error Request #4: ï¿½Invalid Mail Typeï¿½
+The pre-defined error in this request is using input other than: ï¿½package,ï¿½ ï¿½postcards or aerogrammes,ï¿½ ï¿½matter for the blind,ï¿½ or ï¿½envelopeï¿½ for <MailType>.
 http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx">< Package ID="0"><Pounds>2</Pounds><Ounces>2</Ounces><MailType>Express</MailType><Country>Albania</Country></Package></IntlRateRequest>
-Pre-defined Error Request #5: “Invalid Country”
+Pre-defined Error Request #5: ï¿½Invalid Countryï¿½
 The pre-defined error in this request is using invalid input for <Country>. (This error was created for testing purposes only.)
 http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx"><Package ID="0"><Pounds>2</Pounds><Ounces>2</Ounces><MailType>Package</MailType><Country>Alabama</Country></Package></IntlRateRequest>
 

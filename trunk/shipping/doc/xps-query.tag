@@ -7,7 +7,7 @@ UserTag  xps-query  Documentation <<EOD
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: xps-query.tag,v 1.5 2003/05/31 22:39:49 db-ship Exp $
+# $Id: xps-query.tag,v 1.1 2003/06/01 07:31:05 db-ship Exp $
 
 =head1 NAME
 

@@ -2,7 +2,7 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: UPS.pm,v 1.1 2003/05/31 22:39:48 db-ship Exp $
+# $Id: UPS.pm,v 1.2 2003/06/01 07:31:03 db-ship Exp $
 
 package Business::Ship::UPS;
 use strict;
@@ -25,7 +25,7 @@ The following methods are available:
 =cut
 
 use vars qw( @ISA $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Ship;
 use Business::Ship::UPS::Package;
@@ -135,7 +135,8 @@ sub _metadata
 # 19 Letter Center 
 # 20 Air Service Center
 # 
-# This one is manually defined.
+# This one is manually defined.use strict;
+use warnings;
 #
 sub pickup_type
 {

@@ -2,14 +2,14 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: Package.pm,v 1.1 2003/05/31 22:39:48 db-ship Exp $
+# $Id: Package.pm,v 1.2 2003/06/01 07:31:03 db-ship Exp $
 
 package Business::Ship::Package;
 use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Ship;
 use Data::Dumper;
@@ -53,7 +53,7 @@ sub _country_name_translator
 		'Great Britain' => 'Great Britain and Northern Ireland',
 		'United Kingdom' => 'Great Britain and Northern Ireland',
 	);
-	if ( $country_translator{ $country } ) {
+	if ( $country and $country_translator{ $country } ) {
 		return $country_translator{ $country };
 	}
 	else {
@@ -79,8 +79,9 @@ sub is_empty
 	my $self = shift;
 	
 	for ( keys %options_defaults ) {
-		if ( $self->$_() 
-			 and $self->$_() ne $options_defaults{ $_ } ) {
+		if (	$self->$_() 
+				and $options_defaults{ $_ }
+				and $self->$_() ne $options_defaults{ $_ } ) {
 			return 0;
 		}
 	}		

@@ -2,8 +2,6 @@
 ##  General TODO
 ######################################################
  
- * Add "make README" to makefile as "pod2text README.pod  > README"
- 
  * Perhaps pull the shipper-related stuff out of Business::Ship into Business::Shipper. 
  	- Then Packages can inherit all of the sub building, debugging, etc. functions from
 	  Business::Ship.  USPS and UPS will then inherit what they need from Business::Shipper.

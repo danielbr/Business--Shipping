@@ -2,7 +2,7 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: Ship.pm,v 1.1 2003/05/31 22:39:47 db-ship Exp $
+# $Id: Ship.pm,v 1.2 2003/06/01 07:31:02 db-ship Exp $
 
 package Business::Ship;
 use strict;
@@ -14,9 +14,8 @@ Business::Ship - API for UPS and USPS
 
 =head1 SYNOPSIS
 
-use Business::Ship;
-
-my $shipment = new Business::Ship( 
+ use Business::Ship;
+ my $shipment = new Business::Ship( 
 	'shipper' 		=> 'USPS'
 	'user_id'		=> '',
 	'password'		=> '',
@@ -24,21 +23,14 @@ my $shipment = new Business::Ship(
 	'to_zip'		=> '',
 	'weight' 		=> '',
 	'service'		=> '',
-);
+ );
+ $shipment->submit() or print $shipment->error();
+ print $shipment->total_charges();
 
-$shipment->submit() or print $shipment->error();
+=head1 ABSTRACT
 
-print $shipment->total_charges();
-
-=head1 DESCRIPTION
-
-In normal use, the application creates a C<Business::Ship::*> object, and then
-configures it with values for user id, password, access key, etc.  The query is
-run via the submit() method, and the total_charges can be accessed via the
-total_charges() method.
-
-Note that you can set variables in the submit() method, via the set() method,
-or via the new() constructor.
+Business::Ship is an API for implementing shipping calculators.  UPS and USPS
+are currently supported.
 
 =head1 MULTI-PACKAGE API
 
@@ -97,7 +89,7 @@ overwritten by a new error.
 =cut
 
 use vars qw($VERSION);
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Data::Dumper;
 use Carp;
@@ -233,7 +225,8 @@ sub validate
 	my @missing_args;
 	
 	foreach my $required ( $self->_metadata( 'required' ) ) {
-		unless ( $self->$required() ) {
+		# In this case, 0 is a valid value (e.g. pounds might be 0, which is valid).
+		unless ( $self->$required() or $self->$required() == 0 ) {
 			push @missing_args, $required;	
 		}
 	}
@@ -358,6 +351,7 @@ sub _get_response
 {
 	my $self = shift;
 	my $request = shift;
+	$self->trace( 'called' );
 	
 	if ( $self->cache_enabled() ) {
 		my @unique_values = $self->_gen_unique_values();
@@ -461,7 +455,7 @@ sub trace
 sub error 
 {
     my ( $self, $msg ) = @_;
-	return $self->error_msg() unless $msg; 
+	return ( $self->error_msg() or '' ) unless $msg; 
 	$msg .= "\n" unless ( $msg =~ /\n$/ );
 	$self->is_success( undef );
 	$self->error_msg( $msg );
@@ -491,44 +485,3 @@ sub _log
 }
 
 1;
-
-=pod
- * TODO: Allow the use of Net::SSLeay as well as Crypt::SSLeay?
- * Here's how interchange does it...
-
-BEGIN {
-
-	my $selected;
-	eval {
-		package Vend::Payment;
-		require Net::SSLeay;
-		import Net::SSLeay qw(post_https make_form make_headers);
-		$selected = "Net::SSLeay";
-	};
-
-	$Vend::Payment::Have_Net_SSLeay = 1 unless $@;
-
-	unless ($Vend::Payment::Have_Net_SSLeay) {
-
-		eval {
-			package Vend::Payment;
-			require LWP::UserAgent;
-			require HTTP::Request::Common;
-			require Crypt::SSLeay;
-			import HTTP::Request::Common qw(POST);
-			$selected = "LWP and Crypt::SSLeay";
-		};
-
-		$Vend::Payment::Have_LWP = 1 unless $@;
-
-	}
-
-	unless ($Vend::Payment::Have_Net_SSLeay or $Vend::Payment::Have_LWP) {
-		die __PACKAGE__ . " requires Net::SSLeay or Crypt::SSLeay";
-	}
-
-	::logGlobal("%s payment module initialized, using %s", __PACKAGE__, $selected)
-		unless $Vend::Quiet;
-}
-
-=cut

@@ -1,8 +1,11 @@
 NAME
-    Business::Ship - Shipment rating API for UPS and USPS
+    Business::Ship - Shipping cost calculator for UPS and USPS
 
 INSTALLATION
-    perl Makefile.PL make make test make install
+     perl Makefile.PL
+     make
+     make test
+     make install
 
 DEPENDENCIES
      Bundle::LWP 
@@ -34,6 +37,12 @@ USAGE
                file, like the following example, or you can add them using the Admin UI.
 
      * See Business::Ship POD documentation for API notes.
+
+WEBSITE
+     http://www.kavod.com/Business-Ship
+ 
+    The website will carry the most recent version, as well as instructions
+    for accessing the anonymous CVS repository.
 
 COPYRIGHT AND LICENCE
     Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights

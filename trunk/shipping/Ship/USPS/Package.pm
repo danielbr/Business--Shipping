@@ -2,14 +2,14 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: Package.pm,v 1.1 2003/05/31 22:39:49 db-ship Exp $
+# $Id: Package.pm,v 1.2 2003/06/01 07:31:03 db-ship Exp $
 
 package Business::Ship::USPS::Package;
 use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Ship::Package;
 use Data::Dumper;
@@ -25,6 +25,7 @@ my %options_defaults = (
 	from_zip	=> undef,
 	to_zip		=> undef,
 	from_country	=> undef,
+	to_country	=> undef,
 );
 
 sub new
@@ -51,35 +52,29 @@ sub from_country
 }
 
 
-# Alias weight to pounds?
-# For now, just round weight up to the next pound. :-(
-# TODO: calculate correct ounces.
+# Alias pounds to 'weight'
+sub pounds { return shift->weight( @_ ) }
+
 sub weight
 {
 	my $self = shift;
 	$self->{'pounds'} = $self->_round_up( shift ) if @_;
 	
-	# USPS requires at least one pound.
-	if ( defined $self->{'pounds'} ) {
-		$self->{'pounds'} = 1 if $self->{'pounds'} < 1;
+	# Round up if United States... international can have less than 1 pound.
+	# TODO: Move intl() and domestic() functions into Business::Ship::USPS.  For Ship::USPS, alias
+	# them to the default package.
+	if ( $self->to_country() and $self->to_country() =~ /(USA?)|(United States)/ ) {
+		$self->{ 'pounds' } = 1 if $self->{ 'pounds' } < 1;
 	}
 	
 	return $self->{'pounds'};
 }
 
-# Alias pounds to 'weight'
-sub pounds { return shift->weight( @_ ) }
-
 sub _round_up
 {
-	my $self = shift;
-	my $f = shift;
-	if ( $f ) {
-		return ( sprintf( "%1.0f", $f ) );
-	}
-	else {
-		return ( undef );
-	}
+	my ( $self, $f ) = @_;
+	return undef unless defined $f; 
+	return sprintf( "%1.0f", $f );
 }
 
 sub get_unique_values

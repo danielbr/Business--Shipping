@@ -2,7 +2,7 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: USPS.pm,v 1.1 2003/05/31 22:39:48 db-ship Exp $
+# $Id: USPS.pm,v 1.2 2003/06/01 07:31:03 db-ship Exp $
 
 package Business::Ship::USPS;
 use strict;
@@ -26,7 +26,7 @@ http://www.uspsprioritymail.com/et_regcert.html
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Ship;
 use Business::Ship::USPS::Package;
@@ -42,55 +42,65 @@ use Data::Dumper;
 
 sub new
 {
-	my ( $class, %arg ) = @_;
-	
-	my %internal = (
-		ua			=> new LWP::UserAgent,
-		xs			=> new XML::Simple,
-		
-		# TODO: Abstract the packages() interface some more
-		# I think it should be:  
-		# $package = packages( $id );
-		# packages( 'id' => $new_package );
-		packages	=> [ new Business::Ship::USPS::Package ],
-		intl		=> undef,
-		domestic	=> undef,
-		package_subclass_name	=> 'USPS::Package',
-	);
-	
-	# These should be in USPS::Package now... called through build_subs_packages()
-	my %optional = (
-		
-	);
-
-	my %parent_defaults = (qw|
-		test_url	http://testing.shippingapis.com/ShippingAPItest.dll
-		prod_url	http://production.shippingapis.com/ShippingAPI.dll
-	|);
-	
-	my %alias_to_default_package = (
-		pounds		=> undef,
-		ounces		=> 0,
-		container	=> 'None',
-		size		=> 'Regular',
-		machinable	=> 'False',
-		mail_type	=> 'Package',
-		service 	=> undef,
-		from_zip	=> undef,
-		to_zip		=> undef,
-		to_country	=> undef,
-
-	);
-	
+	my($class, %args) = @_;	
 	my $self = $class->SUPER::new();
 	bless( $self, $class );
-	
-	# We need our internals for the rest of it...
-	$self->build_subs( keys %internal );
-	$self->build_alias_subs( keys %alias_to_default_package );
-	$self->set( %internal, %optional, %parent_defaults, %arg );
-	return $self;
+	return $self->initialize( %args );
 }
+
+
+sub _metadata
+{
+	my ( $self, $desired ) = @_;
+	
+	my $values = { 
+		'internal' => {
+			'ua'					=> LWP::UserAgent->new(),
+			'xs'					=> XML::Simple->new( ForceArray => 1, KeepRoot => 1 ),
+			'packages'				=> [ Business::Ship::USPS::Package->new() ],
+			'package_subclass_name'	=> 'USPS::Package',
+			'intl'					=> undef,
+			'domestic'				=> undef,
+		},
+		'required' => {
+			# Everything is either in Business::Ship, or in Business::Ship::USPS::Package
+		},
+		'parent_defaults' => {
+			'test_url'		=> 'http://testing.shippingapis.com/ShippingAPItest.dll',
+			'prod_url'		=> 'http://production.shippingapis.com/ShippingAPI.dll',
+		},
+		# TODO: automatically pull in the values from Ship::USPS::Package, map whatever is used.
+		'alias_to_default_package' => {
+			pounds		=> undef,
+			ounces		=> 0,
+			container	=> 'None',
+			size		=> 'Regular',
+			machinable	=> 'False',
+			mail_type	=> 'Package',
+			service 	=> undef,
+			from_zip	=> undef,
+			to_zip		=> undef,
+			to_country	=> undef,
+		},
+		'optional'		=> {
+			#none.
+			from_country	=> 'US',  # (to|from)_country are required, but they have defaults, so...?
+		},
+		'unique_values' => {
+			pickup_type				=> undef,
+			from_country			=> undef,
+			from_zip				=> undef,
+			to_residential			=> undef,
+			to_country				=> undef,
+			to_zip					=> undef,
+			service					=> undef,
+		},
+	};
+	
+	my %result = %{ $values->{ $desired } };
+	return wantarray ? keys( %result ) : \%result;
+}
+
 
 # This is to redirect calls to the package level (so that
 # people who wont ever ship multiple packages don't have to
@@ -111,6 +121,7 @@ sub build_subs_packages
 sub _gen_request_xml
 {
 	my $self = shift;
+	$self->trace( 'called' );
 	
 	# Note: The XML::Simple hash-tree-based generation method wont work with USPS,
 	# because they enforce the order of their parameters (unlike UPS).
@@ -203,19 +214,14 @@ sub _gen_request_xml
 sub _gen_request
 {
 	my ( $self ) = shift;
+	$self->trace( 'called' );
 	
 	my $request = $self->SUPER::_gen_request();
-	
-	# The "API=...&XML=" is the only part that is different from the parent...
-	my $request_prepend;
-	$request_prepend .= 'API=';
-	$request_prepend .= $self->domestic() ? 'Rate' : 'IntlRate';
-	$request_prepend .= '&XML=';
-	$request_prepend .= $self->_gen_request_xml();
-	
-	$request->content( $request_prepend . $request->content() )
+	# This is how USPS slightly varies from Business::Ship
+	my $new_content = 'API=' . ( $self->domestic() ? 'Rate' : 'IntlRate' ) . '&XML=' . $request->content();
+	$request->content( $new_content );
 	$request->header( 'content-length' => length( $request->content() ) );
-	
+	$self->debug( 'HTTP Request: ' . $request->as_string() );
 	return ( $request );
 }
 
@@ -256,7 +262,7 @@ sub _handle_response
 	$self->response_tree( $response_tree );
 	
 	if ( $self->domestic() ) {
-		#$self->total_charges( $response_tree->{Package}->{Postage} );
+		$self->total_charges( $response_tree->{Package}->{Postage} );
 		$self->default_package()->set_price( $self->service(), $response_tree->{Package}->{Postage} );
 	}
 	elsif ( $self->intl() ) {
@@ -300,7 +306,7 @@ sub _domestic_or_intl
 		$self->intl( 0 );
 		$self->domestic( 1 );
 	}
-	$self->debug( 'Domestic? ' . $self->domestic() );
+	$self->debug( $self->domestic() ? 'Domestic' : 'International' );
 	return;
 }
 

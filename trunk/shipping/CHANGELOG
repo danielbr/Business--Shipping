@@ -1,4 +1,14 @@
-Revision history for Perl module Business::Ship.
+Revision history for Business::Ship.
+
+0.02  Sat May 31 18:04:00 2003
+	- Testing overhaul
+	- Lots of bug fixes (uncovered by testing, mostly for USPS)
+	- Added "make readme"
+	- Moving stuff around again.
+	- Launched http://www.kavod.com/Business-Ship
+	- API Changes:
+		+ None.
+
 
 0.01  Fri May 30 22:45:11 2003
 	- Moved everything around a lot
@@ -14,19 +24,15 @@ Revision history for Perl module Business::Ship.
 	- API Changes:
 		+ Tons.  Starting to settle down, though...  
 
-###############################################################################
-##  04:00 PM 5/25/2003
-###############################################################################
-
-   - UPS fully ported to Business::Ship architecture
-   - Lots of other refactoring.
-   - Considering a Business::Ship::___::Internal for internal lookups.
+		
+0.00  Sun May 25 16:00:00 2003
+	- UPS fully ported to Business::Ship architecture
+	- Lots of other refactoring.
+	- Considering a Business::Ship::___::Internal for internal lookups.
   		+ If done, it would be based off of Mike's recent commits.
 
-###############################################################################
-##  12:51 AM 5/9/2003
-###############################################################################
- 
+		
+0.00  Fri May 9 12:51:00 2003
 	- Lots of clean up
     - Re-organizing order of methods for easier browsing.
 
@@ -36,7 +42,7 @@ Revision history for Perl module Business::Ship.
     - Sample shipping.asc entry for [xps-query]
 	
 	- Mapped all "package-level" methods/data accessors to
-   Business::Ship::default_package().
+      Business::Ship::default_package().
  
 	- USPS:
     - The beginnings of self-validation.
