@@ -16,7 +16,8 @@ DEPENDENCIES
      Error
      Cache::FileCache
      Data::Dumper
- 
+     Class::MethodMaker
+
 USAGE
      * To use USPS interface, you must first sign up online (for free).
             - http://www.uspsonlinetools.com
@@ -61,4 +62,5 @@ AUTHOR
 CREDITS
      * Kevin Old <kold@carolina.rr.com> got the USPS XML generator working.
      * sauoq on PerlMonks.org provided valuable commentary and ideas. 
+     * bbfu on PerlMonks.org got Class::MethodMaker working with SUPER. 
 
