@@ -263,8 +263,6 @@ print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 ##  Hawaii / Alaska
 ###########################################################################
 
-TODO: {
-      local $TODO = "Hawaii, Alaska, and a few misc tests need some investigation.";
   
 %test = (
 	service		=> '2DA',
@@ -291,7 +289,6 @@ SKIP: {
 
 
 
-
 my $rr = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
 
 $rr->submit(
@@ -305,13 +302,6 @@ $rr->submit(
 
 print "Hawaii 2DA (alternate calling method):" . $rr->total_charges() . "\n";
 ok( $rr->total_charges, "Hawaii 2DA (alternate calling method):" );
-
-
-
-
-
-
-
 
 
 
@@ -407,5 +397,9 @@ SKIP: {
 	ok( $shipment_online->total_charges(),	"UPS Online: " . $this_test_desc . $shipment_online->total_charges() );	
 }
 
-}; #/end TODO
+#TODO: {
+#      local $TODO = "Not yet implmented.";
+#
+#}; #/end TODO
+
 1;
