@@ -2,7 +2,7 @@
 # All rights reserved. This program is free software; you can redistribute it
 # and/or modify it under the same terms as Perl itself.
 #
-# $Id: UPS.pm,v 1.8 2003/04/30 08:25:47 db-ship Exp $
+# $Id: UPS.pm,v 1.9 2003/05/02 00:02:39 db-ship Exp $
 package Business::Ship::UPS;
 use strict;
 use warnings;
@@ -31,6 +31,17 @@ Business::Ship::UPS - A UPS module
 	);
 	my $total_charges = $ups->get_total_charges();
 
+=head1 TODO
+
+Need to make pickup_type codes:
+
+01 Daily Pickup 
+03 Customer Counter 
+06 One Time Pickup 
+07 On Call Air 
+19 Letter Center 
+20 Air Service Center
+
 =head1 DESCRIPTION
 
 In normal use, the application creates a C<Business::Ship::UPS> object, and then
@@ -58,6 +69,22 @@ the return values of methods.  For example:
 
 	$usp->run_query() or print $ups->error();  
 
+=head1 INSTALLATION
+
+You will also need to get a User Id, Password, and Access Key from UPS.
+ 
+ * Read about it online:
+ 
+http://www.ec.ups.com/ecommerce/gettools/gtools_intro.html 
+ 
+ * Sign up here:
+ 
+https://www.ups.com/servlet/registration?loc=en_US_EC
+ 
+ * When you recieve your information from UPS, you can enter into IC
+   via catalog variables.  You can add these to your products/variables.txt
+   file, like the following example, or you can add them using the Admin UI.
+
 =head1 METHODS
 
 The following methods are available:
@@ -67,7 +94,7 @@ The following methods are available:
 =cut
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.8 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.9 $ =~ /(\d+)\.(\d+)/);
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;

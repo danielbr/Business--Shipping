@@ -22,19 +22,16 @@ http://www.uspsprioritymail.com/et_regcert.html
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.10 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.11 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship;
 use Business::Ship::USPS::Package;
-
 
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
 use XML::Simple 2.05;
 use XML::DOM;
-
-
 use Data::Dumper;
 
 @ISA = qw( Business::Ship );
@@ -69,12 +66,12 @@ sub new
 		id			=> undef,
 		service		=> undef,
 		pounds		=> undef,
+		weight		=> undef,
 		ounces		=> 0,
 		container	=> 'None',
 		size		=> 'Regular',
 		machinable	=> 'False',
-		
-		mail_type	=> 'package',
+		mail_type	=> 'Package',
 	);
 	
 	# We need our internals for the rest of it...
@@ -224,7 +221,7 @@ sub _gen_request
 sub _massage_values
 {
 	my $self = shift;
-	$self->_set_pounds_ounces();
+	#$self->_set_pounds_ounces();
 	$self->_domestic_or_intl();
 	return;
 }
@@ -359,10 +356,12 @@ sub submit
 	my $response_tree = $self->{xs}->XMLin( $self->response()->content(), ForceArray => 0, KeepRoot => 0 );
 	
 	# TODO: Handle multiple packages errors.
-	if ( $response_tree->{Package}->{Error} ) {
-		my $error_number 		= $response_tree->{Package}->{Error}->{Number};
-		my $error_source 		= $response_tree->{Package}->{Error}->{Source};
-		my $error_description	= $response_tree->{Package}->{Error}->{Description};
+	if ( $response_tree->{Error} or $response_tree->{Package}->{Error} ) {
+		my $error = $response_tree->{Package}->{Error};
+		$error ||= $response_tree->{Error};
+		my $error_number 		= $error->{Number};
+		my $error_source 		= $error->{Source};
+		my $error_description	= $error->{Description};
 		$self->error( "$error_source: $error_description ($error_number)" );
 		return( undef );
 	}
@@ -376,7 +375,6 @@ sub submit
 		
 		# For now, total_charges will just be the first service returned.
 		$self->total_charges( $response_tree->{Package}->{Service}->[0]->{Postage} );
-		
 		foreach my $service ( @{ $response_tree->{Package}->{Service} } ) {
 			$self->debug( " Postage = " . $service->{Postage} );
 			$self->packages()->[0]->set_price( $service->{SvcDescription}, $service->{Postage} );

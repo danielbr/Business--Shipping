@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.4 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.5 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship::Package;
 use Data::Dumper;
@@ -18,7 +18,7 @@ my %options_defaults = (
 	container	=> 'None',
 	size		=> 'Regular',
 	machinable	=> 'False',
-	mail_type	=> 'package',
+	mail_type	=> 'Package',
 );
 
 sub new
@@ -36,6 +36,28 @@ sub new
 	bless( $self, $class );
 	
 	return $self;
+}
+
+# Alias weight to pounds?
+# For now, just round weight up to the next pound. :-(
+# TODO: calculate correct ounces.
+sub weight
+{
+	my $self = shift;
+	$self->{'pounds'} = $self->_round_up( shift ) if @_;
+	return $self->{'pounds'};
+}
+
+sub _round_up
+{
+	my $self = shift;
+	my $f = shift;
+	if ( $f ) {
+		return ( sprintf( "%1.0f", $f ) );
+	}
+	else {
+		return ( undef );
+	}
 }
 
 sub get_unique_values

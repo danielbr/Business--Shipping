@@ -9,7 +9,7 @@ use Data::Dumper;
 my $shipment = new Business::Ship::USPS;
 
 $shipment->set(
-	#'event_handlers' => ({ 'debug' => undef, 'trace' => 'STDOUT',}),
+	'event_handlers' => ({ 'debug' => STDOUT, 'trace' => 'STDOUT',}),
 	'user_id' 		=> $ENV{USPS_USER_ID},
 	'password' 		=> $ENV{USPS_PASSWORD},
 	'tx_type' 		=> 'rate', 
@@ -18,12 +18,21 @@ $shipment->set(
 
 #mail_type: "package", "postcards or aerogrammes", "matter for the blind", "envelope"
 $shipment->set( %intl_request_1 );
-$shipment->add_package(
-		pounds		=> 4,
+# Testing alternate method:
+
+$shipment->set(
+		weight		=> 5.6,
 		ounces		=> 0,
 		mail_type	=> 'Package',
 		to_country	=> 'Germany',
 );
+
+#$shipment->add_package(
+#		weight		=> 5.6,
+#		ounces		=> 0,
+#		mail_type	=> 'Package',
+#		to_country	=> 'Germany',
+#);
 
 my %test_request_1 = (qw/
 	test_mode	1

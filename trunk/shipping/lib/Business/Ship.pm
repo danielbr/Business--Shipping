@@ -2,7 +2,7 @@
 # All rights reserved. This program is free software; you can 
 # redistribute it and/or modify it under the same terms as Perl 
 # itself.
-# $Id: Ship.pm,v 1.11 2003/05/01 04:16:39 db-ship Exp $
+# $Id: Ship.pm,v 1.12 2003/05/02 00:02:38 db-ship Exp $
 package Business::Ship;
 use strict;
 use warnings;
@@ -31,11 +31,31 @@ Requires the following modules:
 Digest::SHA1
 Error
 
+
+installation instructions:
+
+ * Install all the necessary perl modules:
+   - Bundle::LWP 
+   - XML::Simple 
+   - XML::DOM
+   - Crypt::SSLeay
+   - Cache::FileCache
+   - You can install them with this command:
+   - C<perl -MCPAN -e 'install Bundle::LWP XML::Simple etc. etc.'>
+
+ * Sign up for USPS or UPS
+ 	- See instructions in Business::Ship module.
+	- Add Access ID and code using Admin UI->Preferences
+
+ * Copy the Ship/ directory into this directory:
+   interchange/lib/Business/
+
+
 =cut
 
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.11 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.12 $ =~ /(\d+)\.(\d+)/);
 
 use Data::Dumper;
 use Carp;
@@ -67,7 +87,7 @@ sub new
 		service 	=> undef,
 		from_zip	=> undef,
 		to_zip		=> undef,
-		weight		=> undef,
+		
 		total_charges	=> undef,
 		
 		cache		=> new Cache::FileCache,
@@ -152,6 +172,7 @@ sub trace
 sub error 
 {
     my ( $self, $msg ) = @_;
+	return $self->error_msg() unless $msg; 
 	$msg .= "\n" unless ( $msg =~ /\n$/ );
 	$self->success( undef );
 	$self->error_msg( $msg );

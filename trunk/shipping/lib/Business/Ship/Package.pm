@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.3 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.4 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship;
 use Data::Dumper;
@@ -35,7 +35,7 @@ sub to_country
 	my $self = shift;	
 	if ( @_ ) {
 		my $new_to_country = shift;
-		if ( $new_to_country =~ /^\w\w$/ ) {
+		if ( $new_to_country and $new_to_country =~ /^\w\w$/ ) {
 			$new_to_country = $self->_country_code_to_name( $new_to_country );
 		}
 		$self->{'to_country'} = $new_to_country;

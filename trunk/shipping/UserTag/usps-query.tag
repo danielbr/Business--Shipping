@@ -130,6 +130,7 @@ sub {
 			'tx_type' 		=> 'rate',
 		);
 		$shipment->add_package(
+			service		=> $opt->{'service'},
 			pounds		=> $opt->{'weight'},
 			mail_type	=> 'Package',
 			to_country	=> $opt->{'to_country'},
