@@ -57,24 +57,24 @@ ok ( $ups_shipment2->packages_count == 1,       "Shipment::UPS::packages_push " 
 
 
 
-$shipper = 'USPS';
+$shipper = 'USPS_Online';
 
-use Business::Shipping::Package::USPS;
-my $package_usps = Business::Shipping::Package::USPS->new;
-ok ( defined $package_usps,                    "Package::$shipper constructor" );
+use Business::Shipping::USPS_Online::Package;
+my $package_usps = Business::Shipping::USPS_Online::Package->new;
+ok ( defined $package_usps,                    "$shipper" . "::Package constructor" );
 
-use Business::Shipping::Shipment::USPS;
-my $shipment_usps = Business::Shipping::Package::USPS->new;
-ok ( defined $shipment_usps,                    "Shipment::$shipper constructor" );
+use Business::Shipping::USPS_Online::Shipment;
+my $shipment_usps = Business::Shipping::USPS_Online::Package->new;
+ok ( defined $shipment_usps,                    $shipper . '::Shipment constructor' );
 
-my $usps_package2  = Business::Shipping->new_subclass( 'Package::'  . $shipper );
-ok ( defined $usps_package2,                     "new_subclass() constructor: Package::$shipper" );
-my $usps_shipment2 = Business::Shipping->new_subclass( 'Shipment::' . $shipper );
-ok ( defined $usps_shipment2,                    "new_subclass() constructor: Shipment::$shipper" );
-my $usps_rron2     = Business::Shipping->new_subclass( 'RateRequest::Online::' . $shipper );
-ok ( defined $usps_rron2,                        "new_subclass() constructor: RateRequest::Online::$shipper" );
+my $usps_package2  = Business::Shipping->new_subclass( $shipper . '::Package' );
+ok ( defined $usps_package2,                     "new_subclass() constructor: $shipper" . "::Package" );
+my $usps_shipment2 = Business::Shipping->new_subclass( $shipper . '::Shipment' );
+ok ( defined $usps_shipment2,                    "new_subclass() constructor: $shipper" . "::Shipment" );
+my $usps_rron2     = Business::Shipping->new_subclass( $shipper . '::RateRequest' );
+ok ( defined $usps_rron2,                        "new_subclass() constructor: $shipper" . "::RateRequest" );
 $usps_shipment2->packages_push( $usps_package2 ) ;
-ok ( $usps_shipment2->packages_count == 1,       "Shipment::" . $shipper . "::packages_push " );
+ok ( $usps_shipment2->packages_count == 1,        $shipper . "::Shipment::packages_push " );
 
 # Test to see if $VERSION is being set correctly:
 

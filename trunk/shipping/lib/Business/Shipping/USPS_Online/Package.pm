@@ -2,7 +2,7 @@ package Business::Shipping::USPS_Online::Package;
 
 =head1 NAME
 
-Business::Shipping::Package::USPS
+Business::Shipping::USPS_Online::Package;
 
 =head1 VERSION
 

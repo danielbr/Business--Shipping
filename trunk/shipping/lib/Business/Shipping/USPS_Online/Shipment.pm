@@ -35,7 +35,7 @@ use Class::MethodMaker 2.0
       array =>  [ { -type    => 'Business::Shipping::USPS_Online::Package',
                     -default_ctor => 'new' }, 'packages' ],
       scalar => [ { -static  => 1, 
-                    -default => 'packages=>Business::Shipping::Package::USPS' 
+                    -default => 'packages=>Business::Shipping::USPS_Online::Package' 
                   }, 
                   'Has_a' 
                 ],
