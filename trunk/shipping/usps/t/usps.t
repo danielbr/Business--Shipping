@@ -9,7 +9,7 @@ use Data::Dumper;
 my $shipment = new Business::Ship::USPS;
 
 $shipment->set(
-	'event_handlers' => ({ 'debug' => STDOUT, 'trace' => 'STDOUT',}),
+	#'event_handlers' => ({ 'debug' => STDOUT, 'trace' => 'STDOUT',}),
 	'user_id' 		=> $ENV{USPS_USER_ID},
 	'password' 		=> $ENV{USPS_PASSWORD},
 	'tx_type' 		=> 'rate', 
@@ -24,8 +24,21 @@ $shipment->set(
 		weight		=> 5.6,
 		ounces		=> 0,
 		mail_type	=> 'Package',
-		to_country	=> 'Germany',
+		to_country	=> 'Great Britain',
 );
+
+my @countries_to_test = (
+	'Great Britain',
+	'Canada',
+	'New Zealand',
+	'Australia',
+);
+
+foreach my $country ( @countries_to_test ) {
+	$shipment->submit( 'to_country' => $country );
+	print "$country = " . $shipment->default_package()->get_price( 'Airmail Parcel Post' ) . "\n";
+	
+}
 
 #$shipment->add_package(
 #		weight		=> 5.6,

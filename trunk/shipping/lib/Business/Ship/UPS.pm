@@ -2,7 +2,7 @@
 # All rights reserved. This program is free software; you can redistribute it
 # and/or modify it under the same terms as Perl itself.
 #
-# $Id: UPS.pm,v 1.9 2003/05/02 00:02:39 db-ship Exp $
+# $Id: UPS.pm,v 1.10 2003/05/05 23:53:27 db-ship Exp $
 package Business::Ship::UPS;
 use strict;
 use warnings;
@@ -94,7 +94,7 @@ The following methods are available:
 =cut
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.9 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.10 $ =~ /(\d+)\.(\d+)/);
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
@@ -225,6 +225,45 @@ sub set
 		return ( 1 );
 	}
 }
+
+sub debug {
+    my ( $self, $msg ) = @_;
+    return $self->_log( 'debug', $msg );
+}
+
+sub error {
+    my ( $self, $msg ) = @_;
+
+        # Return the most recent error message if that is all they want
+        return ( pop @{$self->{'errors'}} ) unless ( $msg );
+
+        $msg .= "\n" unless ( $msg =~ /\n$/ );
+    return $self->_log( 'error', $msg );
+}
+
+sub _log
+{
+    my $self = shift;
+    my ( $type, $msg ) = @_;
+        my( $package, $filename, $line, $sub ) = caller(2);
+        $msg  = "$sub: $msg";
+        if ( $type eq 'error' ) {
+                push @{$self->{'errors'}}, $msg;
+        }
+
+        foreach my $eh ( keys %{$self->{'event_handlers'}} ) {
+                my $eh_value = $self->{'event_handlers'}->{$eh};
+                if ( $type eq $eh and $eh_value ) {
+                        print STDERR $msg if $eh_value eq "STDERR";
+                        print STDOUT $msg if $eh_value eq "STDOUT";
+                        Carp::carp   $msg if $eh_value eq "carp";
+                        Carp::croak  $msg if $eh_value eq "croak";
+                }
+        }
+
+        return ( $msg );
+}
+
 
 
 sub validate

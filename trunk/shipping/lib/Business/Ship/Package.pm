@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.4 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.5 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship;
 use Data::Dumper;
@@ -13,7 +13,6 @@ my %options_defaults = (
 	to_zip		=> undef,
 	weight		=> undef,
 	from_country	=> undef,
-	#to_country	=> undef, #manual
 	response	=> undef,
 );
 	
@@ -35,27 +34,28 @@ sub to_country
 	my $self = shift;	
 	if ( @_ ) {
 		my $new_to_country = shift;
-		if ( $new_to_country and $new_to_country =~ /^\w\w$/ ) {
-			$new_to_country = $self->_country_code_to_name( $new_to_country );
-		}
+		$new_to_country = $self->_country_name_translator( $new_to_country );
 		$self->{'to_country'} = $new_to_country;
 	} 
 	return $self->{'to_country'};
 }
 
-
-# Translate codes ('US') into names ('United States')
-# USPS uses the name instead of the code
-sub _country_code_to_name
+# Translate common usages (Great Britain) into the USPS proper name
+# (Great Britain and Northern Ireland).
+sub _country_name_translator
 {
-	my ( $self, $country_code ) = @_;
-	my %country_code_table = (qw/
-		US	United States
-	/);
-	
-	return ( $country_code_table{ $country_code } or $country_code );
+	my ( $self, $country ) = @_;
+	my %country_translator = (
+		'Great Britain' => 'Great Britain and Northern Ireland',
+		'United Kingdom' => 'Great Britain and Northern Ireland',
+	);
+	if ( $country_translator{ $country } ) {
+		return $country_translator{ $country };
+	}
+	else {
+		return $country;
+	}
 }
-
 
 sub set_price
 {
@@ -108,5 +108,17 @@ sub set
 		}
 	}
 }
+
+=pod
+# Translate codes ('US') into names ('United States')
+# USPS uses the name instead of the code
+sub _country_code_to_name
+{
+	my ( $self, $country_code ) = @_;
+		
+	return ( $country_code_table{ $country_code } or $country_code );
+}
+=cut
+
 
 1;
