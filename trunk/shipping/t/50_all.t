@@ -34,7 +34,6 @@ ok( $ups_package->packaging() eq 'TODO: put something here', 'Business::Shipping
 my $shipment = Business::Shipping::Shipment->new();
 ok( defined $shipment, 'Business::Shipping::Shipment->new()' );
 
-
 my $ups_shipment = Business::Shipping::Shipment::UPS->new();
 ok( defined $ups_shipment, 'Business::Shipping::Shipment::UPS->new()' );
 

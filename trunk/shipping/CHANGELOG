@@ -1,17 +1,32 @@
 Revision history for Business::Shipping.
 
+
+0.72  Aug 09 2003
+	- Many more tests.
+	- USPS Updates:
+		+ Added a great many new translations to the country translator 
+	- UPS Updates:
+		+ Added to_city
+	- ~10 additional tests.
+
+	
 0.71  Aug 06 2003
 	- International USPS bug fixes.
+		+ Instead of guessing the service by name, we use service type, then
+		  mail type.  This may result in getting the wrong service, however.
+		  Needs more analyzation.
 	- Many, many additional tests.
 	- Very much improved debug/error handling.
 
+	
 0.70  Jul 07 2003
 	- Complete rewrite of the entire system
 	- Now more modular, object oriented, smaller, and simpler.
-	- License changed to GPL
+	- License changed from Perl to GPL
 	- New cache system (faster, more reliable)
 	- Enhancements to Class::Methodmaker
 
+	
 0.04  Jun 24 2003
 	- Interchange usertag bugfixes
 	- Some USPS bugfixes.
@@ -23,12 +38,14 @@ Revision history for Business::Shipping.
 	- Handle a few more countries correctly ("France,Metropolitan")
 	- Add some 'retry' support to the xps-query usertag
 
+	
 0.03  Jun 04 2003
 	- Changed name to Business::Shipping.
 	- Fixed POD for the Ship.pm file.
 	- Add dependency requirements
 	- Misc updates.
 
+	
 0.02  Sat May 31 18:04:00 2003
 	- Testing overhaul
 	- Lots of bug fixes (uncovered by testing, mostly for USPS)
@@ -38,7 +55,7 @@ Revision history for Business::Shipping.
 	- API Changes:
 		+ None.
 
-
+		
 0.01  Fri May 30 22:45:11 2003
 	- Moved everything around a lot
 	- Packaged everything like standard Perl modules

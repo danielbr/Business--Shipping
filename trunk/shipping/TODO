@@ -14,8 +14,17 @@
    passed-parameters.
  
  * Bug Reports:
+   
    - Some of the intermittent errors:
+   
      "[xps-query]: USPS error: HTTP Error. Status line: 500 read timeoutContent:"
+     
+   - When trying to ship USPS to Afghanistan:
+   
+     "Runtime error: Not an ARRAY reference at 
+     /home/db/src/ship/lib/Business/Shipping/RateRequest/Online/USPS.pm 
+     line 259."
+     
  
  * When Cache is enabled, and you run [xps-query] consecutively, UPS doesn't seem 
    to notice the different service types (i.e. 'service' isn't on the 'unique' list)
@@ -53,6 +62,11 @@
 	}
  
  * Country name translator strings to data outside your program.
+ 	# TODO: Move all of this, and any other data that is currently mixed with code.
+	# A simple, file-based configuration system would be nice, like Interchange.
+	# Perhaps XML::Simple Configuration files?  Other?  Shipping::Config module
+	# will provide parser, importer.  Any internal modules that use configuration
+	# will go through that module.  (it's an idea, anyway) 
  
  * Perhaps pull the shipper-related stuff out of Business::Shipping into Business::Shipper. 
  	- Then Packages can inherit all of the sub building, debugging, etc. functions from
@@ -137,11 +151,14 @@
    
  * Support get_charges( 'service' ) for domestic types.
 
- * Test Estonia and Nigeria
-
 ######################################################
 ##  Business::Shipping::UPS TODO
 ######################################################
+ 
+ * Implement "to_city"
+ 
+ * Allow better names, like "One Day Air" instead of 1DA.
+   Better names for packaging too (instead of numbers).
  
  * Tests that *I* should run:
 

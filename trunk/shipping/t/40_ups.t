@@ -41,6 +41,22 @@ sub test
 	return $shipment;
 }
 
+sub simple_test
+{
+	my ( %args ) = @_;
+	my $shipment = test( %args );
+	$shipment->submit() or die $shipment->error();
+	my $total_charges = $shipment->total_charges(); 
+	my $msg = 
+			"UPS Simple Test: " 
+		.	( $args{ weight } ? $args{ weight } . " pounds" : ( $args{ pounds } . "lbs and " . $args{ ounces } . "ounces" ) )
+		.	" to " . ( $args{ to_city } ? $args{ to_city } . " " : '' )
+		.	$args{ to_zip } . " via " . $args{ service }
+		.	" = " . ( $total_charges ? '$' . $total_charges : "undef" );
+	ok( $total_charges,	$msg );
+}
+	
+
 # skip the rest of the test if we don't have username/password
 SKIP: {
 	skip( 'UPS: we need the username, password, and access license key', 2 ) 
@@ -105,7 +121,7 @@ SKIP: {
 		'to_country'		=> 'GB',	
 		'service'			=> 'XDM',
 		'to_residential'	=> '1',
-		#'to_city'			=> 'Godstone',
+		'to_city'			=> 'Godstone',
 		'to_zip'			=> 'RH98AX',
 		'weight'			=> '3.45',
 		'packaging' 		=> '02',
@@ -193,6 +209,76 @@ SKIP: {
 	);
 	$shipment->submit() or die $shipment->error();
 	ok( $shipment->total_charges(),		'UPS World Wide Expedited > 0' );
+	
+	
+	###########################################################################
+	##  UPS One Day Air -- Specific cases
+	###########################################################################
+	my %std_opts = (
+		'pickup_type'	 	=> 'daily pickup',
+		'from_zip'			=> '98682',
+		'to_residential'	=> '1',
+		'packaging' 		=> '02',
+	);
+	
+	simple_test(
+		%std_opts,
+		service				=> '1DA',
+		#'to_city'			=> 'Atlantic',
+		'to_zip'			=> '50022',
+		'weight'			=> '5.00',
+		'packaging' 		=> '02',
+	);
+	
+	simple_test(
+		%std_opts,
+		'service'			=> '1DA',
+		#'to_city'			=> 'Allison Park',
+		'to_zip'			=> '15101',
+		'weight'			=> '15.00',
+	);
+	
+	simple_test(
+		%std_opts,
+		'service'			=> '1DA',
+		#'to_city'			=> 'Costa Mesa',
+		'to_zip'			=> '92626',
+		'weight'			=> '15.00',
+	);
+	
+	
+	###########################################################################
+	##  Perth, Western Australia
+	###########################################################################
+	simple_test(
+		%std_opts,
+		service				=> 'XPD', 
+		to_country			=> 'AU',
+		to_city			=> 'Bicton',
+		to_zip				=> '6157',
+		weight				=> 5.5,
+	);
+	
+	#
+	# XDM not allowed to australia?
+	#
+	#simple_test(
+	#	%std_opts,
+	#	service				=> 'XDM',
+	#	to_country			=> 'AU',
+	#	to_city			=> 'Bicton',
+	#	to_zip				=> '6157',
+	#	weight				=> 5.5,
+	#);
+	
+	simple_test(
+		%std_opts,
+		service				=> 'XPR',
+		to_country			=> 'AU',
+		to_city			=> 'Bicton',
+		to_zip				=> '6157',
+		weight				=> 5.5,
+	);
 	
 	
 }

@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment::USPS
 # 
-# $Id: USPS.pm,v 1.3 2003/08/07 22:45:47 db-ship Exp $
+# $Id: USPS.pm,v 1.4 2003/08/10 17:08:14 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -14,7 +14,7 @@ use warnings;
 
 use vars qw( @ISA $VERSION );
 @ISA = ( 'Business::Shipping::Shipment' );
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping::Debug;
 use Business::Shipping::Package;
@@ -82,7 +82,6 @@ sub to_country
 	if ( @_ ) {
 		my $new_to_country = shift;
 		$new_to_country = $self->_country_name_translator( $new_to_country );
-		#$self->{ 'to_country' } = $new_to_country;
 		#debug ( "setting country to \'$new_to_country\'" );
 		$self->SUPER::to_country( $new_to_country );
 	} 
@@ -91,23 +90,60 @@ sub to_country
 }
 
 #
-# TODO: Move all of this, and any other data that is currently mixed with code.
-# A simple, file-based configuration system would be nice, like Interchange.
-# Perhaps XML::Simple Configuration files?  Other?  Shipping::Config module
-# will provide parser, importer.  Any internal modules that use configuration
-# will go through that module.  (it's an idea, anyway)  
+# TODO: Remove all this.  Separate code from data.
 #
 # Translate common usages (Great Britain) into the USPS proper name
 # (Great Britain and Northern Ireland).
+#
 sub _country_name_translator
 {
 	my ( $self, $country ) = @_;
+	
+	return if ( ! $country );
+	
 	my %country_translator = (
-		'Great Britain' => 'Great Britain and Northern Ireland',
-		'United Kingdom' => 'Great Britain and Northern Ireland',
+		'American Samoa' => 'US Possession',  # Note: Requires Zip Code.
+		'Bosnia And Herzegowina' => 'Bosnia-Herzegovina',  # note spelling
+		'Bosnia And Herzegovina' => 'Bosnia-Herzegovina',  
+		'Cocos (Keeling) Islands' => 'Australia',
+		'Cook Islands' => 'New Zealand',
+		'Corsica' => 'France',
+		'Cote d` Ivoire (Ivory Coast)' => 'Cote d lvoire (Ivory Coast)',
+		'East Timor' => 'Indonesia',
+		'Falkland Islands (Malvinas)' => 'Falkland Islands',
+		'France (Includes Monaco)' => 'France',
 		'France, Metropolitan' => 'France',
+		'French Polynesia (Tahiti)' => 'French Polynesia',
+		'Georgia' => 'Georgia, Republic of',
+		'Great Britain' => 'Great Britain and Northern Ireland',
+		'Holy See (Vatican City State)' => 'Vatican City',
+		'Ireland (Eire)' => 'Ireland',
+		'Macedonia' => 'Macedonia, Republic of',
+		'Madeira Islands' => 'Portugal',
+		'Marshall Islands' => 'US Possession',
+		'Mayotte' => 'France',
+		'Micronesia, Federated States Of' => 'US Possession',
+		'Moldova, Republic Of' => 'Moldova',
+		'Monaco' => 'France',
+		'Niue' => 'New Zealand',
+		'Norfolk Island' => 'Australia',
+		'Northern Mariana Islands' => 'US Possession',
+		'Palau' => 'US Possession',
+		'Pitcairn' => 'Pitcairn Island',
+		'Puerto Rico' => 'US Possession',
+		'Russian Federation' => 'Russia',
+		'Saint Kitts And Nevis' => 'St. Christopher and Nevis',
+		'South Georgia And The South Sand' => 'Falkland Islands',
+		'South Korea' => 'Korea, Republic of (South Korea)',
+		'Tahiti' => 'French Polynesia',
+		'Tokelau' => 'Western Samoa',
+		'United Kingdom' => 'Great Britain and Northern Ireland',
+		'Virgin Islands (U.S.)' => 'US Possession',
+		'Wallis and Furuna Islands' => 'Wallis and Futuna Islands',    #misspelling
+		'Yugoslavia' => 'Serbia-Montenegro',
+		'Zaire' => 'Congo, Democratic Republic of the',		
 	);
-	if ( $country and $country_translator{ $country } ) {
+	if ( $country_translator{ $country } ) {
 		return $country_translator{ $country };
 	}
 	else {

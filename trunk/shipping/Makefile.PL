@@ -2,7 +2,7 @@ use 5.006000;
 use ExtUtils::MakeMaker;
 
 # Version for Business-Shipping as a whole.
-$VERSION = '0.71';
+$VERSION = '0.72';
 
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
@@ -31,8 +31,3 @@ readme :
 	pod2text doc/README.pod > README
 MAKE_README
 }
-
-#
-# It is better to test with:
-# export TEST_VERBOSE=1; make test
-#

@@ -42,6 +42,22 @@ sub test
 	return $shipment;
 }
 
+sub simple_test
+{
+	my ( %args ) = @_;
+	my $shipment = test( %args );
+	$shipment->submit() or die $shipment->error();
+	my $total_charges = $shipment->total_charges(); 
+	my $msg = 
+			"USPS Simple Test: " 
+		.	( $args{ weight } ? $args{ weight } . " pounds" : ( $args{ pounds } . "lbs and " . $args{ ounces } . "ounces" ) )
+		.	" to " . ( $args{ to_city } ? $args{ to_city } . " " : '' )
+		.	$args{ to_zip } . " via " . $args{ service }
+		.	" = " . ( $total_charges ? '$' . $total_charges : "undef" );
+	ok( $total_charges,	$msg );
+}
+
+
 # skip the rest of the test if we don't have username/password
 SKIP: {
 	skip( 'USPS: we need the username and password', 5 ) 
@@ -181,9 +197,6 @@ SKIP: {
 	##########################################################################
 	##  SPECIFIC CIRCUMSTANCES
 	##########################################################################
-	# 22.5 pounds
-	# to 27713
-	# USPS Priority Mail
 	
 	$shipment = test(
 		service 	=> 'Priority',
@@ -193,6 +206,14 @@ SKIP: {
 	);
 	print "total charges = " . $shipment->total_charges() . "\n";
 	ok( $shipment->total_charges() > 20.00,		'USPS high weight is high price' );
+	
+	#simple_test(
+	#	from_zip	=> '98682',
+	#	service		=> 'Airmail Parcel Post',
+	#	to_country	=> 'Bosnia-Herzegowina',
+	#	weight		=> 5,
+	#);
+	
 	
 
 } # /skip
