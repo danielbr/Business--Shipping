@@ -28,4 +28,4 @@ doc/new-release
 \.bak$
 ^#.*#$
 ^\.#
-
+\.tmp$

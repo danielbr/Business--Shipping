@@ -7,7 +7,7 @@ Compatibility
 	
 General
     - Fix Bundle::Business::Shipping
-	- Remove unneeded .zip files from data/
+    - Remove unneeded .zip files from data/
 
 
 1.04  Feb 07 2004
