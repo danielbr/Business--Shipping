@@ -15,7 +15,7 @@ REQUIRED MODULES
      Config::IniFiles (any)
      Crypt::SSLeay (any)
      Data::Dumper (any)
-     Devel::Required (0.02)
+     Devel::Required (0.03)
      Error (any)
      LWP::UserAgent (any)
      XML::DOM (any)

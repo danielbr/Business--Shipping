@@ -108,6 +108,9 @@
 ##  UPS OFFLINE TODO
 ######################################################
 
+ * [ENH] Add support for Canada (UPS Standard, XPD, XPR, XDM)
+         - Requires new parsing method (Canada ZIP style, etc.)
+
  * [ENH] Add test for the support files directory.  (Just warn, because they 
          may be running the test as a non-priveledged user).
  

@@ -607,12 +607,14 @@ data/993.csv
 data/994.csv
 data/a_1da
 data/a_1dacwt
+data/a_1daeam
 data/a_1dasaver
 data/a_1dasavercwt
 data/a_2da
 data/a_2dacwt
 data/a_2dam
 data/a_2damcwt
+data/a_3ds
 data/a_3dscomm
 data/a_3dscwt
 data/accessorials
@@ -621,6 +623,7 @@ data/ak48gr
 data/ak_2da
 data/ak_2dam
 data/ak_nda
+data/ak_ndaeam
 data/ak_ndas
 data/akiakgc
 data/akiakgr
@@ -715,6 +718,7 @@ doc/MethodMaker-grouped-fields.patch
 doc/README.html
 doc/README.pod
 doc/USPS-Country-List.html
+doc/update-data.pl
 doc/usage.html
 doc/usage.txt
 lib/Business/Shipping.pm
@@ -756,6 +760,7 @@ t/manual/misc_find_required_fields.pl
 t/manual/misc_find_unique_fields.pl
 t/manual/offline_ups.pl
 t/manual/offline_ups_alternate_syntax.pl
+t/manual/offline_ups_ca.pl
 t/manual/offline_ups_hi.pl
 t/manual/offline_ups_intl.pl
 t/manual/offline_ups_intl_xdm.pl

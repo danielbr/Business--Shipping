@@ -4,13 +4,10 @@ use ExtUtils::MakeMaker;
 #
 # auto-update documentation if needed
 #
-$::DEVEL_REQUIRED_MAKEFILE_VARIABLE = 	'ABSTRACT_FROM';
-@::DEVEL_REQUIRED_DEFAULT_POD_FILES = 	( 'doc/README.pod' );
-@::DEVEL_REQUIRED_DEFAULT_TEXT_FILES =	( '' );
-eval "use Devel::Required";
+eval "use Devel::Required text => [ '' ], pod => [qw(lib/Business/Shipping.pm), qw(doc/README.pod), qw(doc/INSTALL.pod)]";
 
 # Version for Business-Shipping as a whole.
-$VERSION = '1.01';
+$VERSION = '1.02';
 
 #
 # Defaults
@@ -37,7 +34,7 @@ WriteMakefile(
 		'Config::IniFiles'		=> 0,
 		'Bundle::DBD::CSV'		=> 0,
 		'Archive::Zip'			=> 0,
-		'Devel::Required'		=> '0.02',
+		'Devel::Required'		=> '0.03',
 	},
 );
 

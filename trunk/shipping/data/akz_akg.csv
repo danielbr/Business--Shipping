@@ -30,23 +30,23 @@ Nikolaevsk,99556,C
 Ninilchik,99639,C
 North Pole,99705,B
 Palmer,99645,A
-Seward,99664,C,,
-Soldotna,99669,C,,
-Sterling,99672,C,,
-Wasilla,99654,A,,
-,99687,A,,
+Seward,99664,C
+Soldotna,99669,C
+Sterling,99672,C
+Wasilla,99654,A
+,99687,A
 
 
-Intra-Alaska Ground:,,,,
-Match the origin and destination areas ,,,,
-in the Intra-Alaska Ground Zone Chart ,,,,
-to determine your zone.,,,,
+Intra-Alaska Ground:,,
+Match the origin and destination areas ,,
+in the Intra-Alaska Ground Zone Chart ,,
+to determine your zone.,,
 
-Intra-Alaska Ground Zone Chart,,,,
-Origin,,Destination,,
-Area,,Area,,
-,,,,
-,A,B,C,
-A,2,2,2,
-B,2,2,3,
-C,2,3,2,
+Intra-Alaska Ground Zone Chart,,
+Origin,,Destination
+Area,,Area
+
+,A,B,C
+A,2,2,2
+B,2,2,3
+C,2,3,2

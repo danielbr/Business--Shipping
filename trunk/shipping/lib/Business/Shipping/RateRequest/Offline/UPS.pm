@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS
 #
-# $Id: UPS.pm,v 1.3 2004/01/03 03:11:20 db-ship Exp $
+# $Id: UPS.pm,v 1.4 2004/01/07 01:17:42 db-ship Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. 
@@ -26,7 +26,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 use base ( 'Business::Shipping::RateRequest::Offline' );
 
 use Business::Shipping::Shipment::UPS;
@@ -200,7 +200,6 @@ sub do_unzip
 	
 	return;
 }
-
 
 =item * do_convert_data()
 
@@ -382,9 +381,9 @@ sub rename_tables_that_have_a_dash
 	return $new_file;
 }
 
-sub _handle_response
+sub do_update
 {
-	my $self = $_[ 0 ];
+	my ( $self ) = @_;
 	
 	if ( $self->update ) {
 		$self->download( 1 );
@@ -395,6 +394,15 @@ sub _handle_response
 	$self->do_download() 		if $self->download;
 	$self->do_unzip() 			if $self->unzip;
 	$self->do_convert_data()	if $self->convert;
+	
+	return;
+}	
+
+sub _handle_response
+{
+	my $self = $_[ 0 ];
+	
+	$self->do_update();
 	
 	#
 	# Zones hash refrence not stored in object due to extreme size.
@@ -459,6 +467,7 @@ sub calc_residential_surcharge
 		return 0;
 	}
 }
+
 sub calc_fuel_surcharge
 {
 	my ( $self, $total_charges ) = @_;
@@ -470,6 +479,7 @@ sub calc_fuel_surcharge
 	
 	return $fuel_surcharge;
 }
+
 sub service_code_to_ups_name
 {
 	my ( $self, $service ) = @_;
@@ -686,8 +696,6 @@ sub calc_cost
 		return 0;
 	}
 		
-	
-		
 	debug( "cost = $cost" );
 	if($cost > 0) {
 		if($opt->{surcharge_table}) {
@@ -769,8 +777,11 @@ sub calc_zone_data
 	
 	return \%zones;
 }
+=item * make_three( $zone, $len )
 
+If a zip code doesn't have leading zeros, add them.
 
+=cut
 sub make_three {
 	my ($zone, $len) = @_;
 	$len = 3 if ! $len;
@@ -780,6 +791,13 @@ sub make_three {
 	return $zone;
 }
 
+=item * intl()
+
+ - uses to_country() value to calculate.
+
+ - returns 1/0 (true/false)
+
+=cut
 sub intl
 {
 	my $self = $_[ 0 ];
@@ -882,9 +900,8 @@ sub _massage_values
 			}
 		}
 	}
-	
-	
 }
+
 sub state_to_abbrv
 {
 	my ( $self, $state ) = @_;

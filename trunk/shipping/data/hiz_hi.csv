@@ -1,12 +1,12 @@
 Domestic Services,
 Zones for Service within Hawaii,
-,
+
 ,Zone
 Destination,Inter-Island
 ZIP Codes,Air
 96701-96863,12
-,
-,
+
+
 ,Zones
 Destination,Intra-Oahu
 ZIP Codes,Ground
@@ -28,6 +28,6 @@ ZIP Codes,Ground
 96801-28,1
 96853-54,2
 96857-63,2
-,
+
 Ft. DeRussy and ships in the harbor area are zone 1.,
-All other military bases within the above areas are zone 2.,
+All other military bases within the above areas are zone 2.

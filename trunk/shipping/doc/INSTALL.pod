@@ -1,11 +1,21 @@
 =head1 INSTALLATION
 
-=head2 Prerequisites
+=head1 REQUIRED MODULES
 
-First make sure that you have all the prerequisite Perl modules.  You can 
-install them easily, using CPAN.
+ Archive::Zip (any)
+ Bundle::DBD::CSV (any)
+ Cache::FileCache (any)
+ Class::MethodMaker (any)
+ Config::IniFiles (any)
+ Crypt::SSLeay (any)
+ Data::Dumper (any)
+ Devel::Required (0.03)
+ Error (any)
+ LWP::UserAgent (any)
+ XML::DOM (any)
+ XML::Simple (2.05)
 
-=head3 Module Installation via CPAN
+=head2 Module Installation via CPAN
 
 The following CPAN usage example has all the needed modules on one line.
 
@@ -13,16 +23,10 @@ The following CPAN usage example has all the needed modules on one line.
  install Data::Dumper Digest::base Digest::SHA1 LWP::UserAgent Crypt::SSLeay XML::Simple XML::DOM Error Cache::FileCache Class::MethodMaker Bundle::DBD::CSV DBI DBD::CSV Archive::Zip Config::IniFiles
  install Business::Shipping
 
-=head3 Notes
+=head1 MANUAL INSTALLATION
 
-Note: The following comes with perl 5.8.2
-
- POSIX 
- Fcntl
- File::Find
- File::Copy
-
-=head2 Manual Installation of Business::Shipping
+This will install the Business::Shipping module (if you haven't already 
+installed it via CPAN).
 
  perl Makefile.PL && make && make test && make install
 

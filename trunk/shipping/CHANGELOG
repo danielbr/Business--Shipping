@@ -1,5 +1,12 @@
 Revision history for Business::Shipping.
 
+1.02  Jan 06 2004
+	- Update all data tables from UPS (Jan 05 2004)
+	- Update fuel surcharge
+	- Installation documentation updates.
+	- Rename the update functions.
+	- Sample "auto update" script that will update the data files.
+
 1.01  Jan 02 2004
 	- Offline UPS support for International Express, ExpressPlus, and Expedited.
 	- Offline UPS support for Hawaii and Alaska.

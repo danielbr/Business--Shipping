@@ -1,6 +1,6 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.10 2004/01/03 03:11:19 db-ship Exp $
+# $Id: Shipping.pm,v 1.11 2004/01/07 01:17:41 db-ship Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Carp;
 use Business::Shipping::Debug;
@@ -157,7 +157,7 @@ Business::Shipping - API for shipping-related tasks
  Config::IniFiles (any)
  Crypt::SSLeay (any)
  Data::Dumper (any)
- Devel::Required (0.02)
+ Devel::Required (0.03)
  Error (any)
  LWP::UserAgent (any)
  XML::DOM (any)

@@ -1,5 +1,5 @@
 Worldwide Zone Chart for Shipments Originating in the U.S.,,,,,,
-"EFFECTIVE JANUARY 6, 2003",,,,,,
+"EFFECTIVE JANUARY 5, 2004",,,,,,
 "UPS Worldwide Express Plus, Express and Expedited",,,,,,
 
 To determine the zone take the receiver's Country and refer to the chart below:,,,,,,
@@ -34,6 +34,7 @@ Belgium,901,901,901,605,601,
 Belize,,906,900,,,
 Benin,,908,908,,,
 Bermuda,,902,900,,,
+Bhutan,,905,905,,,
 Bolivia,,906,900,,,Y
 Bonaire (Netherlands Antillies),,902,900,,,
 Bosnia,,907,907,,,
@@ -68,13 +69,14 @@ Denmark,903,903,903,607,603,Y
 Djibouti,,908,908,,,
 Dominica,,902,900,,,
 Dominican Republic,,902,900,606,602,Y
+East Timor,,905,905,,,
 Ecuador,,906,900,610,609,Y
 Egypt,,905,905,,,
 El Salvador,,906,900,610,609,
 England,901,901,901,605,601,Y
 Equatorial Guniea,,908,908,,,
 Eritrea,,908,908,,,
-Estonia,,907,907,,,
+Estonia,,907,907,610,609,
 Ethiopia,,908,908,,,
 Faroe Islands (Denmark),,903,903,,,Y
 Fiji,,907,907,,,
@@ -88,7 +90,7 @@ Georgia,,907,907,,,Y
 Germany,901,901,901,605,601,Y
 Ghana,,908,908,,,
 Gibraltar,,907,907,,,
-Greece,,903,903,,,Y
+Greece,,903,903,607,603,Y
 Greenland (Denmark),,903,903,,,Y
 Grenada,,902,900,,,
 Guadeloupe,,902,900,,,
@@ -105,6 +107,7 @@ Hungary,,907,907,610,609,Y
 Iceland,,903,903,,,
 India,,905,905,608,604,Y
 Indonesia,,904,904,608,604,Y
+Iraq,,905,905,,,
 Ireland - Republic Of,901,901,901,605,601,
 Israel,,905,905,,,
 Italy,901,901,901,605,601,Y
@@ -120,12 +123,12 @@ Kosrae (Federated States of Micronesia),,907,907,,,
 Kuwait,,905,905,,,
 Kyrgyzstan,,907,907,,,
 Laos,,907,907,,,
-Latvia,,907,907,,,
+Latvia,,907,907,610,609,
 Lebanon,,905,905,,,
 Lesotho,,908,908,,,
 Liberia,,908,908,,,
 Liechtenstein,,903,903,607,603,
-Lithuania,,907,907,,,
+Lithuania,,907,907,610,609,
 Luxembourg,901,901,901,605,601,
 Macau,,901,901,606,602,
 Macedonia,,907,907,,,
@@ -188,7 +191,7 @@ Seychelles,,908,908,,,
 Sierra Leone,,908,908,,,
 Singapore,,901,901,606,602,Y
 Slovakia,,907,907,610,609,Y
-Slovenia,,907,907,,,
+Slovenia,,907,907,610,609,
 Solomon Islands,,907,907,,,
 South Africa,,908,908,,,
 Spain,903,903,903,607,603,Y
@@ -238,21 +241,21 @@ Venezuela,,906,900,610,609,Y
 Vietnam,,904,904,,,Y
 Virgin Gorda (British Virgin Islands),,902,900,,,
 Wales (United Kingdom),,901,901,605,601,Y
-Wallis and Futuna Islands,,907,907
-Western Samoa,,907,907
-Yap (Federated States of Micronesia),,907,907
-Yemen,,905,905
-Yugoslavia,,907,907
-Zaire (Democratic Republic of the Congo),,908,908
-Zambia,,908,908
-Zimbabwe,,908,908
+Wallis and Futuna Islands,,907,907,,,
+Western Samoa,,907,907,,,
+Yap (Federated States of Micronesia),,907,907,,,
+Yemen,,905,905,,,
+Yugoslavia,,907,907,,,
+Zaire (Democratic Republic of the Congo),,908,908,,,
+Zambia,,908,908,,,
+Zimbabwe,,908,908,,,
 
-For shipments from Eastern U.S. in the following states:,,,
-"Alabama, Connecticut, Delaware, District of Columbia, Florida,",,,
-"Georgia, Illinois, Indiana, Iowa, Kentucky, Maine, Maryland, Massachusetts, Michigan, Missouri,",,,
-"New Hampshire, New Jersey, New York, North Carolina, Ohio, Pennsylvania, Rhode Island,",,,
-"South Carolina, Tennessee, Vermont, Virginia, West Virginia and Wisconsin.",,,
+For shipments from Eastern U.S. in the following states:,,,,,,
+"Alabama, Connecticut, Delaware, District of Columbia, Florida,",,,,,,
+"Georgia, Illinois, Indiana, Iowa, Kentucky, Maine, Maryland, Massachusetts, Michigan, Missouri,",,,,,,
+"New Hampshire, New Jersey, New York, North Carolina, Ohio, Pennsylvania, Rhode Island,",,,,,,
+"South Carolina, Tennessee, Vermont, Virginia, West Virginia and Wisconsin."
 
-For shipments from Western U.S. in the following states: ,,,
+For shipments from Western U.S. in the following states: 
 "Alaska, Arizona, Arkansas, California, Colorado, Hawaii, Idaho, Kansas, Louisiana, Minnesota, Mississippi, Montana,"
 "Nebraska, Nevada, New Mexico, North Dakota, Oklahoma, Oregon, South Dakota, Texas, Utah, Washington and Wyoming."
