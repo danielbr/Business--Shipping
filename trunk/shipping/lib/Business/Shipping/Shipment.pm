@@ -50,7 +50,7 @@ use Business::Shipping::Util;
 use Class::MethodMaker 2.0
     [
       new    => [ { -hash => 1 }, 'new' ],
-      scalar => [ qw/ current_package_index service from_zip from_city  to_zip to_city /   
+      scalar => [ qw/current_package_index from_zip from_city to_zip to_city/   
                 ],
       array  => [ { -type => 'Business::Shipping::Package' }, 'packages' ],
       scalar => [ { -static => 1, -default => 'packages=>Business::Shipping::Package' }, 'Has_a' ],

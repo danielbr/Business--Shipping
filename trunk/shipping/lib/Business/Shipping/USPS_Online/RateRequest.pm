@@ -323,9 +323,19 @@ sub _handle_response
         return $self->is_success( 0 );
     }
     debug( 'Setting charges to ' . $charges );
-    my $packages = [ { 'charges' => $charges, }, ];
-    my $shipper_name = $self->shipment->shipper() || 'Shipper';
-    my $results = { $shipper_name => $packages };
+    
+    my $results = [
+        {
+            name  => $self->shipper() || 'USPS_Online', 
+            rates => [
+                {
+                    charges   => $charges,
+                    charges_formatted => Business::Shipping::Util::currency( {}, $charges ),
+                },
+            ]
+        }
+    ];
+    
     $self->results( $results );
     
     trace 'returning success';

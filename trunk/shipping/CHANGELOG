@@ -1,6 +1,57 @@
 Revision history for Business::Shipping
 =======================================
 
+1.55  In Source Repository
+
+  General
+  
+    * Rewrite the 'service' parameter/function
+      - User can specify full names such as 'Ground Residential' instead of
+        GNDRES or 03.
+      - Backwards-compatible
+      - Allows easy retrieval of service names, codes, nicknames, etc.
+      - Prepares the way for new UPS_Online 'Shop' service.
+      
+    * Rewrite the 'results' feature
+      - Remove old 'packages' idea.
+      - Make room for new UPS_Online 'Shop' service.
+      - Not backwards-compatible, but results() was not intended to be public
+        before.
+      
+    * Misc code cleanups
+  
+  UPS_Online
+  
+    * New 'Shop' service.  Retrieve all the rates in one request.  Original 
+      implementation by Selena Brewington <computers@chrisking.com>, later
+      updated and modified. 
+      - New tests added to cover the shop feature.
+      - Example Usage:   
+      
+	 my $rr_shop = Business::Shipping->rate_request( 
+	     service      => 'shop',    
+	     shipper      => 'UPS_Online',
+	     from_zip     => '98682',
+	     to_zip       => '98270',
+	     weight       => 5.00,
+	     user_id      => $ENV{ UPS_USER_ID },
+	     password     => $ENV{ UPS_PASSWORD },
+	     access_key   => $ENV{ UPS_ACCESS_KEY }
+	 );
+	 
+	 $rr_shop->go() or die $rr_shop->user_error();
+	 
+	 foreach my $shipper ( @$results ) {
+	     print "Shipper: $shipper->{name}\n\n";
+	     foreach my $rate ( @{ $shipper->{ rates } } ) {
+		 print "  Service:  $rate->{name}\n";
+		 print "  Charges:  $rate->{charges_formatted}\n";
+		 print "  Delivery: $rate->{deliv_date_formatted}\n" 
+		     if $rate->{ deliv_date_formatted };
+		 print "\n";
+	     }
+	 }
+    
 
 1.54  Sep 21 2004
 

@@ -29,7 +29,7 @@ use Class::MethodMaker 2.0
     [ 
       new    => [ { -hash => 1 },  'new' ],
       scalar => [ { default => 1 }, 'to_residential' ],
-      scalar => [ '_service' ],
+      scalar => [ '_service', 'service_code', 'service_nick', 'service_name', 'service_nick2' ],
 
       # We need this offline boolean to know if from_state is required.
 
@@ -45,24 +45,10 @@ use Class::MethodMaker 2.0
 
 =head2 weight()
 
-=head2 service()
-
 =cut
 
 sub packaging { shift->package0->packaging( @_ ) }
 sub weight    { shift->package0->weight( @_ )    }
-sub service
-{
-    my ( $self, $service ) = @_;
-    
-    return $self->_service unless $service;
-    
-    # TODO: This is where the mode_map stuff goes.
-    
-    $self->_service( $service );
-    
-    return $service;
-}
 
 =head2 massage_values()
 
@@ -102,10 +88,12 @@ sub massage_values
 
     foreach my $package ( $self->packages ) {
         if ( not $package->packaging ) {
-            if ( $default_package_map{ $self->service() } ) {
-                $package->packaging( $default_package_map{ $self->service() } );
-            } else {
-                $package->packaging( '02' );
+            $package->packaging( '02' );
+            if ( $self->service_nick ) {
+                my $default_package_code = $default_package_map{ $self->service_nick };
+                if ( $default_package_code ) {
+                    $package->packaging( $default_package_code );
+                }
             }
         }
     }
@@ -173,6 +161,145 @@ sub from_ak_or_hi
     }
     
     return 0;
+}
+
+
+=head2 service
+
+Stores the name as the user entered it, and updates the sibling methods.
+
+=head2 service_code
+
+The correct UPS code (e.g. 03).
+
+=head2 service_nick
+
+The semi-official UPS nickname (e.g. 'GNDRES').
+
+=head2 service_name
+
+The official UPS name (e.g. 'Ground Residential').
+
+=head2 service_nick2
+
+The other nickname for that service (e.g. 'Ground'), used in offline UPS
+data files.
+
+=cut
+
+sub service
+{
+    my ( $self, $service ) = @_;
+    
+    if ( defined $service ) {
+        $self->{ service } = $service;
+        
+        my $service_map = $self->service_info( $service, 'get_map' );
+        
+        if ( $service_map ) {
+            
+            # Record whatever the user passed in.  If we need a certain format,
+            # we can always use the sibling methods.
+            
+            $self->{ service } = $service;
+            
+            # Setup the sibling method data 
+            
+            $self->service_code( $service_map->{ code } );
+            $self->service_nick( $service_map->{ nick } );
+            $self->service_name( $service_map->{ name } );
+            $self->service_nick2( $service_map->{ nick2 } );
+        }
+        else {
+            $self->user_error( "The service '$service' is not a valid service type" );
+        }
+        
+        # Default values for residential addresses.
+        
+        if ( not $self->to_residential ) {
+            if ( $self->service_name eq 'Ground Residential' ) {
+                $self->to_residential( 1 );
+            }
+            elsif ( $self->service_name eq 'Ground Commercial' ) {
+                $self->to_residential( 0 );
+            }
+        }        
+        
+    }
+    
+    return $self->{ service };
+}
+
+=head2 service_code_to_nick
+
+=head2 service_code_to_name
+
+=cut
+
+sub service_code_to_nick { return $_[ 0 ]->service_info( $_[ 1 ], 'nick' ); }
+sub service_code_to_name { return $_[ 0 ]->service_info( $_[ 1 ], 'name' ); }
+
+=head2 service_info
+
+Provides implementation details for service() and friends.
+
+=cut
+
+sub service_info
+{
+    my ( $self, $service, $type ) = @_;
+    
+    return unless $service and $type;
+    
+    return { name => 'Shop', code => 999, nick => 'SHOP', nick2 => 'Shop' } 
+        if $service eq 'shop' and $type eq 'get_map';
+        
+    
+    my $service_info_cfg = cfg()->{ ups_service_info };
+    my $service_info;
+    
+    # Reset counter for 'each'
+    keys %$service_info_cfg; 
+    
+    while ( my ( $name, $other_values ) = each %$service_info_cfg ) {
+        my ( $nick, $code, $nick2 ) = split( "\t", $other_values );
+        my $service_info_hash = {
+            name => $name,
+            nick  => $nick,
+            code  => $code,
+            nick2 => $nick2,
+        };
+        push @$service_info, $service_info_hash;
+    }
+    
+    my $matching_map;
+    my $match;
+    foreach my $service_map ( @$service_info ) {
+        
+        if ( $type eq 'get_map' ) {
+            if ( $service eq $service_map->{ code } ) {
+                $match = 1;
+            }
+            elsif ( lc $service eq lc $service_map->{ nick } ) {
+                $match = 1;
+            }
+            elsif ( lc $service eq lc $service_map->{ name } ) {
+                $match = 1;
+            }
+            if ( $match ) {
+                return $service_map;
+            }
+        }
+        else {
+            # Individual type
+            if ( $service_map->{ code } eq $service ) {
+                return $service_map->{ $type };
+                # TODO: check to see if none matched, then throw user_error
+            }
+        }
+    }
+    
+    return;
 }
 
 1;

@@ -111,7 +111,6 @@ use Class::MethodMaker 2.0
       scalar => [ { -type    => 'Business::Shipping::UPS_Offline::Shipment',
                     -default_ctor => 'new',
                     -forward => [ 
-                                    'service', 
                                     'from_country',
                                     'from_country_abbrev',
                                     'to_country',
@@ -166,26 +165,27 @@ sub validate
     trace '()';
     
     return if ( ! $self->SUPER::validate );
-    if ( $self->service and $self->service eq 'GNDRES' and $self->to_ak_or_hi ) {
-        $self->user_error( "Invalid Rate Request: Ground Residential to AK or HI." );
-        $self->invalid( 1 );
-        return 0;
+    
+    if ( $self->service_nick ) {
+        if ( $self->service_nick eq 'GNDRES' and $self->to_ak_or_hi ) {
+            $self->user_error( "Invalid Rate Request: Ground Residential to AK or HI." );
+            $self->invalid( 1 );
+            return 0;
+        }
+        
+        if ( $self->service_nick eq 'UPSSTD' and not $self->to_canada ) {
+            $self->user_error( "UPS Standard service is available to Canada only." );
+            $self->invalid( 1 );
+            return 0;
+        }
     }
     
-    if ( $self->service eq 'UPSSTD' and not $self->to_canada ) {
-        $self->user_error( "UPS Standard service is available to Canada only." );
-        $self->invalid( 1 );
-        return 0;
-    }
-    
-    if ( $self->to_canada and $self->to_zip =~ /\d\d\d\d\d/ ) {
+    if ( $self->to_canada and $self->to_zip and $self->to_zip =~ /\d\d\d\d\d/ ) {
         $self->user_error( "Cannot use US-style zip codes when sending to Canada" );
         $self->invalid( 1 );
         return 0;
     }
-    
-    $self->check_for_updates;
-    
+
     return 1;
 }
 
@@ -284,22 +284,18 @@ sub _handle_response
         $self->_total_charges 
     );
     
-    # 'return' method:
-    # 1. Save a "results" hash.
-    #
-    # TODO: multi-package support: loop over the packages
-
-    my $packages = [
-        { 
-            #description
-            #package_id
-            'charges' => $total_charges, 
-        },
+    my $results = [
+        {
+            name  => $self->shipper(), 
+            rates => [
+                {
+                    charges   => $total_charges,
+                    charges_formatted => Business::Shipping::Util::currency( {}, $total_charges ),
+                },
+            ]
+        }
     ];
     
-    my $results = {
-        $self->shipper() => $packages
-    };
     #debug3 'results = ' . uneval( $results );
     $self->results( $results );
     
@@ -330,7 +326,7 @@ sub calc_express_plus_adder
 
     my ( $self ) = @_;
     
-    if ( $self->service_code_to_ups_name( $self->service ) =~ /plus/i ) {
+    if ( $self->service_name =~ /plus/i ) {
          return cfg()->{ ups_information }->{ express_plus_adder } || 40.00 
     }
     
@@ -382,12 +378,12 @@ sub calc_residential_surcharge
     # TODO: Residential surcharge: confirm that all the right services are 
     # included/excluded
 
-    my $ups_service_name = $self->service_code_to_ups_name( $self->service );
+    my $ups_service_name = $self->service_name;
     my @exempt_services = qw/
-        UPS Ground Commercial
-        UPS Ground Residential
-        UPS Ground Hundredweight Service
-        UPS Standard
+        Ground Commercial
+        Ground Residential
+        Ground Hundredweight Service
+        Standard
     /;    
     
     return 1.40 if $self->to_residential;
@@ -405,18 +401,14 @@ sub calc_fuel_surcharge
     # http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html
     # The surcharge applies to all domestic and International transportation 
     # charges except UPS Ground Commercial, UPS Ground Residential, UPS Ground
-    # Hundredweight Service®, and UPS Standard to Canada.
+    # Hundredweight Service, and UPS Standard to Canada.
     
-    my $ups_service_name = $self->service_code_to_ups_name( $self->service );
+    my $ups_service_name = $self->service_name;
     my @exempt_services = qw/
-        GNDRES
-        GNDCOM
-        UPSSTD
-        Ground
-        UPS Ground Commercial
-        UPS Ground Residential
-        UPS Ground Hundredweight Service
-        UPS Standard
+        Ground Commercial
+        Ground Residential
+        Ground Hundredweight Service
+        Standard
     /;
     return 0 if grep /$ups_service_name/i, @exempt_services;
     
@@ -430,34 +422,6 @@ sub calc_fuel_surcharge
     $fuel_surcharge *= $self->_total_charges;
     
     return $fuel_surcharge;
-}
-
-=head2 service_code_to_ups_name
-
-=cut
-
-sub service_code_to_ups_name
-{
-    my ( $self, $service ) = @_;
-    
-    if ( ! $service ) {
-        $self->user_error( "Need service parameter." );
-        return;
-    }
-    #
-    # These are the names at the top of the zone file.
-    #
-    
-    my $translate_map = cfg()->{ service_codes_to_ups_names_in_zone_file };
-    
-    debug3( "translate_map = " . Dumper( $translate_map ) );
-        
-    if ( $translate_map->{ $service } ) {
-        return $translate_map->{ $service };
-    }
-    else {
-        return $service;
-    }
 }
 
 =head2 ups_name_to_table
@@ -682,7 +646,7 @@ sub rate_table_exceptions
     
     if ( $exceptions_hash->{ $type } ) {
         $table = $exceptions_hash->{ $type };
-        debug( "table exception found: $table" );
+        debug3( "table exception found: $table" );
     }
     else {
         debug3( "No table exception found.  Returning regular table $table" );
@@ -711,16 +675,16 @@ sub calc_cost
 {
     my ( $self ) = @_;
     
-    if ( ! $self->zone_name or ! $self->service ) {
+    if ( ! $self->zone_name or ! $self->service_nick2 ) {
         $self->user_error( "Need zone_name and service" );
         return;
     }
     
     my $zone_name = $self->zone_name;
     my $zref      = $self->Zones->{ $zone_name };
-    my $type      = $self->service_code_to_ups_name( $self->service() );
+    my $type      = $self->shipment->service_nick2;
     my $table     = $self->ups_name_to_table(        $type            );
-    $table        = $self->rate_table_exceptions(    $type, $table    );
+    $table        = $self->rate_table_exceptions(    $self->shipment->service_nick, $table    );
     
     
     my ( $key, $raw_key ) = $self->determine_keys; 
@@ -962,7 +926,7 @@ sub calc_zone_info
         debug( "to canada" );
         $zone = $self->make_three( $self->to_zip );
         
-        if ( $self->service =~ /UPSSTD/i ) {
+        if ( $self->service_nick eq 'UPSSTD' ) {
             #
             # TODO: Build a list of state names => "UPS Standard zone file names"
             # 

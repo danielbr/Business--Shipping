@@ -18,8 +18,8 @@ user_id
 password
 access_key
 
-If user_id, password, and/or access_key are not defined, then the following 
-shell environment variables will be used, if defiend:
+If user_id,  password,  and/or access_key are not defined,  then the following 
+shell environment variables will be used,  if defined:
 
 UPS_USER_ID
 UPS_PASSWORD
@@ -90,6 +90,7 @@ use Business::Shipping::Util;
 use XML::Simple 2.05;
 use Cache::FileCache;
 use LWP::UserAgent;
+use POSIX ( 'strftime' );
 
 =head2 access_key
 
@@ -103,45 +104,45 @@ use LWP::UserAgent;
 
 use Class::MethodMaker 2.0
     [
-      new => [ qw/ -hash new / ],
-      scalar => [ 'access_key' ],
-      scalar => [ { -static => 1, -default => 'access_key' }, 'Required' ],
-      scalar => [ { -static => 1, -default => 'test_server, no_ssl, to_city' }, 'Optional' ],
-      scalar => [ { -default => 'https://www.ups.com/ups.app/xml/Rate' }, 'prod_url' ],
-      scalar => [ { -default => 'https://wwwcie.ups.com/ups.app/xml/Rate' }, 'test_url' ],      
-      scalar => [ { -type    => 'Business::Shipping::UPS_Online::Shipment',
-                    -default_ctor => 'new',
+      new => [ qw/ -hash new / ], 
+      scalar => [ 'access_key' ], 
+      scalar => [ { -static => 1,  -default => 'access_key' },  'Required' ], 
+      scalar => [ { -static => 1,  -default => 'test_server,  no_ssl,  to_city' },  'Optional' ], 
+      scalar => [ { -default => 'https://www.ups.com/ups.app/xml/Rate' },  'prod_url' ], 
+      scalar => [ { -default => 'https://wwwcie.ups.com/ups.app/xml/Rate' },  'test_url' ],       
+      scalar => [ { -type    => 'Business::Shipping::UPS_Online::Shipment', 
+                    -default_ctor => 'new', 
                     -forward => [ 
-                                  'from_city',
-                                  'to_city',
-                                  'service', 
-                                  'from_country',
-                                  'from_country_abbrev',
-                                  'to_country',
-                                  'to_country_abbrev',
-                                  'to_ak_or_hi',
-                                  'from_zip',
-                                  'to_zip',
-                                  'packages',
-                                  'weight',
-                                  'shipper',
-                                  'domestic',
-                                  'intl',
-                                  'domestic_or_ca',
-                                  'from_canada',
-                                  'to_canada',
-                                  'from_ak_or_hi',
-                                  'packaging',
-                                  'to_residential',
-                                ],
-                   },
+                                  'from_city', 
+                                  'to_city', 
+                                  'service',  
+                                  'from_country', 
+                                  'from_country_abbrev', 
+                                  'to_country', 
+                                  'to_country_abbrev', 
+                                  'to_ak_or_hi', 
+                                  'from_zip', 
+                                  'to_zip', 
+                                  'packages', 
+                                  'weight', 
+                                  'shipper', 
+                                  'domestic', 
+                                  'intl', 
+                                  'domestic_or_ca', 
+                                  'from_canada', 
+                                  'to_canada', 
+                                  'from_ak_or_hi', 
+                                  'packaging', 
+                                  'to_residential', 
+                                ], 
+                   }, 
                    'shipment'
-                 ],
-      scalar => [ { -static => 1, 
+                 ], 
+      scalar => [ { -static => 1,  
                     -default => "shipment=>Business::Shipping::UPS_Online::Shipment" 
-                  }, 
+                  },  
                   'Has_a' 
-               ],
+               ], 
     ];
 
 =head2 from_state()
@@ -165,12 +166,12 @@ sub pickup_type
     my $alpha = 1 if ( $self->{ 'pickup_type' } =~ /\w+/ );
     if ( $alpha ) { 
         my %pickup_type_map = (
-            'daily pickup'       => '01',
-            'customer counter'   => '03',
-            'one time pickup'    => '06', 
-            'on call air'        => '07', 
-            'letter center'      => '19', 
-            'air service center' => '20',
+            'daily pickup'       => '01', 
+            'customer counter'   => '03', 
+            'one time pickup'    => '06',  
+            'on call air'        => '07',  
+            'letter center'      => '19',  
+            'air service center' => '20', 
         );
         $self->{ 'pickup_type' } = $pickup_type_map{ $self->{ 'pickup_type' } } 
             if $pickup_type_map{ $self->{ 'pickup_type' } }
@@ -189,51 +190,7 @@ sub _massage_values
     trace( 'called' );
     my ( $self ) = @_;
     
-    # The following is only for online usage.
-    # TODO: Move to UPS_Online/Shipment.pm
-    # Translate service values.
-    my %mode_map = (
-        qw/
-            1DM    14
-            1DML    14
-            1DA    01
-            1DAL    01
-            1DP    13
-            2DM    59
-            2DA    02
-            2DML    59
-            2DAL    02
-            3DS    12
-            GNDCOM    03
-            GNDRES    03
-            XPR    07
-            XDM    54
-            UPSSTD    11
-            XPRL    07
-            XDML    54
-            XPD    08
-        /
-    );
-    
-    # Default values for residential addresses.
-    if ( not $self->shipment->to_residential() ) {
-        if ( $self->shipment->service =~ /(03|GNDRES)/ ) {
-            $self->shipment->to_residential( 1 );
-        }
-        elsif ( $self->shipment->service eq 'GNDCOM' ) {
-            $self->shipment->to_residential( 0 );
-        }
-    }
 
-    my $service = $self->shipment->service;
-    
-    # Is the passed mode alpha ('1DA') or numeric ('02')?
-    my $alpha = 1 unless ( $service =~ /\d\d/ );
-
-    $service = $mode_map{ $service } if $alpha;
-
-    $self->shipment->service( $service );
-    
     $self->shipment->massage_values;
     return;
 }
@@ -257,10 +214,10 @@ sub _gen_request_xml
     my $access_tree = {
         'AccessRequest' => [
             {
-                'xml:lang' => 'en-US',
-                'AccessLicenseNumber' => [ $self->access_key() ],
-                'UserId' => [ $self->user_id() ],
-                'Password' => [ $self->password() ],
+                'xml:lang' => 'en-US', 
+                'AccessLicenseNumber' => [ $self->access_key() ], 
+                'UserId' => [ $self->user_id() ], 
+                'Password' => [ $self->password() ], 
             }
         ]
     };
@@ -270,55 +227,58 @@ sub _gen_request_xml
     my %shipment_tree = (
         'Shipper' => [ {
             'Address' => [ {
-                'CountryCode' => [ $self->from_country_abbrev() ],
-                'PostalCode' => [ $self->from_zip() ],
-            } ],
-        } ],
+                'CountryCode' => [ $self->from_country_abbrev() ], 
+                'PostalCode' => [ $self->from_zip() ], 
+            } ], 
+        } ], 
         'ShipTo' => [ {
             'Address' => [ {
-                'ResidentialAddress'     => [ $self->to_residential()     ],
-                'CountryCode'             => [ $self->to_country_abbrev()    ],
-                'PostalCode'             => [ $self->to_zip()             ],
-                'City'                    => [ $self->to_city()             ],
-            } ],
-        } ],
+                'ResidentialAddress'     => [ $self->to_residential()     ], 
+                'CountryCode'             => [ $self->to_country_abbrev()    ], 
+                'PostalCode'             => [ $self->to_zip()             ], 
+                'City'                    => [ $self->to_city()             ], 
+            } ], 
+        } ], 
         'Service' => [ {
-            'Code' => [ $self->service() ],
-        } ],
-        'ShipmentServiceSelfOptions' => { },
+            'Code' => [ $self->service_code ], 
+        } ], 
+        'ShipmentServiceSelfOptions' => { }, 
     );
     
     my @packages;
     foreach my $package ( $self->shipment->packages() ) {
         #
-        # TODO: Move to a different XML generation scheme, since all the packages 
+        # TODO: Move to a different XML generation scheme,  since all the packages 
         # in a multi-package shipment will have the name "Package"
         #
         $shipment_tree{ 'Package' } = [ {
                 'PackagingType' => [ {
-                    'Code' => [ $package->packaging() ],
-                    'Description' => [ 'Package' ],
-                } ],
+                    'Code' => [ $package->packaging() ], 
+                    'Description' => [ 'Package' ], 
+                } ], 
                 
-                'Description' => [ 'Rate Lookup' ],
+                'Description' => [ 'Rate Lookup' ], 
                 'PackageWeight' => [ {
-                    'Weight' => [ $package->weight() ],
-                } ],
-            } ],
+                    'Weight' => [ $package->weight() ], 
+                } ], 
+            } ], 
     }
+    
+    my $req_option = ucfirst $self->service if ucfirst $self->service eq 'Shop';
     
     my $request_tree = {
         'RatingServiceSelectionRequest' => [ { 
             'Request' => [ {
                 'TransactionReference' => [ {
-                    'CustomerContext' => [ 'Rating and Service' ],
-                    'XpciVersion' => [ 1.0001 ],  
-                } ],
-                'RequestAction' => [ 'Rate' ],
-            } ],
+                    'CustomerContext' => [ 'Rating and Service' ], 
+                    'XpciVersion' => [ 1.0001 ],   
+                } ], 
+                'RequestAction' => [ 'Rate' ], 
+                'RequestOption' => [ $req_option ], 
+            } ], 
             'PickupType' => [ {
                 'Code' => [ '01' ]
-            } ],
+            } ], 
             'Shipment' => [ {
                 %shipment_tree
             } ]
@@ -326,10 +286,10 @@ sub _gen_request_xml
     };
 
     my $access_xml = '<?xml version="1.0"?>' . "\n" 
-        . XML::Simple::XMLout( $access_tree, KeepRoot => 1 );
+        . XML::Simple::XMLout( $access_tree,  KeepRoot => 1 );
 
     my $request_xml = $access_xml . "\n" . '<?xml version="1.0"?>' . "\n"
-        . XML::Simple::XMLout( $request_tree, KeepRoot => 1 );
+        . XML::Simple::XMLout( $request_tree,  KeepRoot => 1 );
     
     debug3( $request_xml );
     
@@ -358,15 +318,15 @@ sub get_total_charges
 
 sub _handle_response
 {
-    trace '()';
+    #trace '()';
     my ( $self ) = @_;
     
     debug3( "response = " . $self->response()->content() );
     
     my $response_tree = XML::Simple::XMLin( 
-        $self->response()->content(), 
-        ForceArray => 0, 
-        KeepRoot => 0 
+        $self->response()->content(),  
+        ForceArray => 0,  
+        KeepRoot => 0,  
     );
     
     my $status_code = $response_tree->{Response}->{ResponseStatusCode};
@@ -375,44 +335,82 @@ sub _handle_response
     my $err_location = $response_tree->{Response}->{Error}->{ErrorLocation}->{ErrorLocationElementName} || '';
     if ( $error and $error !~ /Success/ ) {
         my $combined_error_msg = "$status_description ($status_code): $error @ $err_location"; 
-        $combined_error_msg =~ s/\s{3,}/ /g;
+        $combined_error_msg =~ s/\s{3, }/ /g;
         $self->user_error( $combined_error_msg );
         return;
     }
     
-    my $total_charges = $response_tree->{RatedShipment}->{TotalCharges}->{MonetaryValue};
-    if ( ! $total_charges ) {
-        return $self->clear_is_success();
+    my @services_results;
+    my $ups_results;
+    
+    if ( $self->service_name and $self->service_name eq 'Shop' ) {
+        if ( ref $response_tree->{ RatedShipment } ne 'ARRAY' ) {
+            $self->user_error( "UPS did not return shopped services" );
+            return $self->clear_is_success(); 
+        }
+        $ups_results = $response_tree->{ RatedShipment };
+    }
+    else {
+        # UPS doesn't provide an array for only one shipment,  so lets make one.
+        $ups_results = [ $response_tree->{ RatedShipment } ];
     }
     
-    # This should never happen.
-    for ( 'shipper', 'service' ) {
+    foreach my $ups_rate_info ( @$ups_results ) {
+        
+        my $service_code = $ups_rate_info->{ Service }->{ Code };
+        my $charges      = $ups_rate_info->{ TotalCharges }->{ MonetaryValue };
+        my $deliv_days   = $ups_rate_info->{ GuaranteedDaysToDelivery };
+        
+        # When there is no deliv_days,  XML::Simple sets it to an empty hash.
+        
+        $deliv_days = undef if ref $deliv_days eq 'HASH';
+        my $deliv_date;
+        my $deliv_date_formatted;
+        
+        if ( $deliv_days ) {
+            
+            # This code is more elegant, but we're reducing the number of required modules.
+            #
+            #use DateTime;
+            #my $dt = DateTime->now;
+            #$dt->add( DateTime::Duration->new( days => $deliv_days ) );
+            #$deliv_date = $dt->ymd;
+            
+            my @deliv_date = localtime( time + ( $deliv_days * 86400 ) );
+            $deliv_date = strftime "%Y-%m-%d", @deliv_date;
+            $deliv_date_formatted = strftime "%a, %b %e", @deliv_date;
+        }
+        
+        my $service_hash = {
+            code       => $service_code, 
+            nick       => $self->shipment->service_code_to_nick( $service_code ), 
+            name       => $self->shipment->service_code_to_name( $service_code ), 
+            deliv_days => $deliv_days, 
+            deliv_date => $deliv_date, 
+            charges    => $charges, 
+            charges_formatted    => Business::Shipping::Util::currency( {},  $charges ),
+            deliv_date_formatted => $deliv_date_formatted,
+        };
+        
+        push @services_results,  $service_hash;
+    }
+    
+    return $self->clear_is_success() unless ( @services_results );
+    
+    # Just in case.
+    
+    for ( 'shipper',  'service' ) {
         if ( ! $self->shipment->$_() ) {
             $self->shipment->$_( 'Unknown' );
         }
     }
     
-    #
-    # 'return' method:
-    # 1. Save a "results" hash.
-    #
-    # TODO: multi-package support: loop over the packages
-    #
-    my $packages = [
-        { 
-            #description
-            #package_id
-            'charges' => $total_charges, 
-        },
-        #{
-        #    #another package
-        #    # 'charges' => ...
-        #}
+    my $results = [
+        {
+            name  => $self->shipper(),  
+            rates => \@services_results, 
+        }
     ];
-    
-    my $results = {
-        $self->shipment->shipper() => $packages
-    };
     debug3 'results = ' . uneval(  $results );
     $self->results( $results );
     
@@ -424,7 +422,7 @@ no warnings 'redefine';
 =head2 to_country_abbrev()
 
 We have to override the to_country_abbrev function becuase UPS_Online
-likes its own spellings of certain country abbreviations (GB, etc.).
+likes its own spellings of certain country abbreviations (GB,  etc.).
 
 Redefines attribute.
 
@@ -444,6 +442,7 @@ sub to_country_abbrev
     
     return $to_country_abbrev || $self->to_country;
 }
+
 use warnings; # end redefine
 
 1;
@@ -452,11 +451,11 @@ __END__
 
 =head1 AUTHOR
 
-Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+Dan Browning E<lt>F<db@kavod.com>E<gt>,  Kavod Technologies,  L<http://www.kavod.com>.
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+Copyright (c) 2003-2004 Kavod Technologies,  Dan Browning. All rights reserved.
 This program is free software; you may redistribute it and/or modify it under
 the same terms as Perl itself. See LICENSE for more info.
 

@@ -2,6 +2,17 @@
 ##  General TODO
 ################################################################################
 
+    * [Enh] Allow a "Company" name to be placed in the results.  So that the user
+      sees "UPS" instead of "UPS_Online".
+
+    * [Enh] Instead of returning a results hash, allow the user to request a results
+      object.  It could overcome the inelegance of dereferencing the AOH.
+      
+    * [Enh] Logging enhancement: allow printf() style message passing arguments
+      so that if a value is undefined, there will not be an error.
+    
+    * Clean and apply 'shop rates' patch by selena brewington <computers@chrisking.com>
+    
     * UPS Tracking Numbers appear in the following formats:
        1Z 999 999 99 9999 999 9
        9999 9999 999 9
