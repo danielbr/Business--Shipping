@@ -1,4 +1,4 @@
-# $Id: Template.pm,v 1.1 2004/03/31 19:11:06 danb Exp $
+# $Id$
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,7 +13,7 @@ Business::Shipping::Package::Template
 
 =head1 VERSION
 
-$Revision: 1.1 $      $Date: 2004/03/31 19:11:06 $
+$Revision: 1.1 $      $Date$
 
 =head1 METHODS
 

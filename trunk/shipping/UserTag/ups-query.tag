@@ -9,7 +9,7 @@ UserTag  ups-query  Routine <<EOR
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
 #
-# $Id: ups-query.tag,v 1.8 2004/05/12 05:13:13 danb Exp $
+# $Id$
 
 =head1 NAME
 

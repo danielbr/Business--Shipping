@@ -1,6 +1,6 @@
 # Business::Shipping::Config - Configuration functions
 # 
-# $Id: Config.pm,v 1.9 2004/06/25 20:42:26 danb Exp $
+# $Id$
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Config - Configuration functions
 
 =head1 VERSION
 
-$Revision: 1.9 $      $Date: 2004/06/25 20:42:26 $
+$Revision: 1.9 $      $Date$
 
 =head1 DESCRIPTION
 

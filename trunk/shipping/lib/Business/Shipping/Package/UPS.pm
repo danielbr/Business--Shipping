@@ -6,7 +6,7 @@ Business::Shipping::Package::UPS
 
 =head1 VERSION
 
-$Revision: 1.10 $      $Date: 2004/06/25 20:42:27 $
+$Revision: 1.10 $      $Date$
 
 =head1 METHODS
 

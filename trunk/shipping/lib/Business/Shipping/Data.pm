@@ -10,7 +10,7 @@ Business::Shipping::Data - Database interface
 
 =head1 VERSION
 
-$Id: Data.pm,v 1.7 2004/06/24 03:09:23 danb Exp $
+$Id$
 
 =head1 DESCRIPTION
 

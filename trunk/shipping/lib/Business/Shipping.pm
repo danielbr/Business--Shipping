@@ -1,6 +1,6 @@
 # Business::Shipping - Interface for shippers (UPS, USPS)
 #
-# $Id: Shipping.pm,v 1.26 2004/06/25 22:20:06 danb Exp $
+# $Id$
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -101,9 +101,9 @@ use Business::Shipping::ClassAttribs;
 use Scalar::Util 'blessed';
 use Class::MethodMaker 2.0
     [ 
-      new    => [ qw/ -hash new  / ],
-      scalar => [ 'tx_type', 'shipper', '_user_error_msg' ],
-      scalar => [ { -static => 1, -default => 'tx_type' }, 'Optional' ]
+      new    => [ qw/ -hash new /                                     ],
+      scalar => [ 'tx_type', 'shipper', '_user_error_msg'             ],
+      scalar => [ { -static => 1, -default => 'tx_type' }, 'Optional' ],
     ];
 
 =head2 $self->init( %args )
@@ -264,6 +264,7 @@ sub rate_request
     my $package;
     my $shipment;
     my $new_rate_request;
+    $@ = '';
     eval { $package  = Business::Shipping->new_subclass( 'Package::'  . $opt{ 'shipper' } ); };
     die "Error when creating Package subclass: $@" if $@;
     die "package was undefined."  if not defined $package;

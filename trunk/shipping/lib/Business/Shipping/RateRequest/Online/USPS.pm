@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::USPS - Estimates shipping cost online
 # 
-# $Id: USPS.pm,v 1.16 2004/06/25 20:42:28 danb Exp $
+# $Id$
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ See Business::Shipping.pm POD for usage information.
 
 =head1 VERSION
 
-$Revision: 1.16 $      $Date: 2004/06/25 20:42:28 $
+$Revision: 1.16 $      $Date$
 
 =head1 SERVICE TYPES
 

@@ -1,6 +1,6 @@
 # Business::Shipping::KLogging - Logging interface
 # 
-# $Id: KLogging.pm,v 1.2 2004/06/24 03:09:23 danb Exp $
+# $Id$
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::KLogging - Logging interface
 
 =head1 VERSION
 
-$Revision: 1.2 $      $Date: 2004/06/24 03:09:23 $
+$Revision: 1.2 $      $Date$
 
 =head1 DESCRIPTION
 

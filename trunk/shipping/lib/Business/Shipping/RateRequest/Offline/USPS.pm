@@ -3,7 +3,7 @@
 #
 # Business::Shipping::RateRequest::Offline::USPS
 #
-# $Id: USPS.pm,v 1.9 2004/06/24 03:09:24 danb Exp $
+# $Id$
 #
 # Copyright (C) 2003 Interchange Development Group
 # Copyright (c) 2003, 2004 Kavod Technologies, Dan Browning. 

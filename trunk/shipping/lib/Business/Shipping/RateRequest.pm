@@ -10,7 +10,7 @@ Business::Shipping::RateRequest - Abstract class for shipping cost estimation
 
 =head1 VERSION
 
-$Revision: 1.15 $      $Date: 2004/06/25 20:42:26 $
+$Revision: 1.15 $      $Date$
 
 =head1 DESCRIPTION
 

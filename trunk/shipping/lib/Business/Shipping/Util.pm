@@ -4,7 +4,7 @@ Business::Shipping::Util - Miscellaneous functions
 
 =head1 VERSION
 
-$Revision: 1.10 $      $Date: 2004/06/25 22:20:07 $
+$Revision: 1.10 $      $Date$
 
 =head1 DESCRIPTION
 

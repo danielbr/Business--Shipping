@@ -1,6 +1,6 @@
 # Business::Shipping::Debug - Compatibility wrapper for Logging.  Depreciated.
 # 
-# $Id: Debug.pm,v 1.8 2004/03/31 19:11:05 danb Exp $
+# $Id$
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Debug - Compatibility wrapper for Logging.  Depreciated.
 
 =head1 VERSION
 
-$Revision: 1.8 $      $Date: 2004/03/31 19:11:05 $
+$Revision: 1.8 $      $Date$
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::Template - Cost estimation template
 # 
-# $Id: Template.pm,v 1.2 2004/05/06 20:15:27 danb Exp $
+# $Id$
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under

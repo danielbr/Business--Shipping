@@ -1,6 +1,6 @@
 # Business::Shipping::ClassAttribs - Class attribute functions
 # 
-# $Id: ClassAttribs.pm,v 1.3 2004/06/24 03:09:23 danb Exp $
+# $Id$
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::ClassAttribs - Class attribute functions
 
 =head1 VERSION
 
-$Revision: 1.3 $      $Date: 2004/06/24 03:09:23 $
+$Revision: 1.3 $      $Date$
 
 =head1 DESCRIPTION
 

@@ -2,20 +2,18 @@
 ##  General TODO
 ################################################################################
 
-* Resurrect the event_handlers() method.  Log4perl configuration should allow
-  manual overrides via event_handlers.
 
-* Business::Shipping::UPS_XML
+
+* [Enh] Resurrect the event_handlers() method.  Log4perl configuration should 
+  allow manual overrides via event_handlers.
+
+* [Enh] Business::Shipping::UPS_XML
   - Add to documentation as an alternative to Business::Shipping
   - Maybe utilize the Parser code?
 
-* [Enh] Add Subversion properties
-  svn:ignore (svn propset svn:ignore -F .cvsignore .)
-        svn propset svn:ignore -F .cvsignore .
-  copyright
-  license  
-
-* [Bug] Test Perl 5.6.2
+* [Bug] Test different Perl versions:
+  - 5.6.2
+  - Fedora Core 2 standard perl (5.8.3)  
 
 * [Enh] Unit tests for each class.
   
@@ -67,29 +65,24 @@ use Scalar::Util 1.10;
 
 Anyway, I think I need to investigate it some more.
  
-   -  "optimize for smaller memory footprint"
-   -  "or, optimize for execution speed (larger memory footprint)"
+   -  "optimize for smaller memory footprint, slower execution speed"
+   or
+   -  "optimize for faster execution speed, larger memory footprint"
 
-	If it is optimized for memory footprint, then it will read the table off the
-	disk (getting a benefit from OS filesystem cache, probably), then convert it to
-	the in-memory representation (hmm... I should save this internal representation
-	next time), then run the calculation.
+  Files are stored on the disk in a way that is easy to restore to in-memory 
+  representation (perhaps Storable).
+  
+  If it is optimized for memory footprint, then it will read the representation
+  off the disk, (getting a benefit from OS filesystem cache, probably), then run
+  calculation, then delete the in-memory representation.
+  
+  If optimized for speed, then it will read the representation off the disk and
+  keep it in memory.
 
 * [Enh] Split the data into its own package, and add it to the bundle.
    - Business::Shipping::Data
 
 * [Enh] Use Log::Dispatch::Email for incident notifications?
-
-* [Enh] Make the error handling more customizable
-   Each module should be able to specifiy it's parameters, so that, for example,
-   you could have lots of debugging/errors for RateRequest::Offline, but none 
-   for RateRequest::Online.
-   
-* [Enh] How do I document the fact that some of the modules I require do not
-   build very easily in CPAN?  Right now, it's:
-     - SQL::Statement keeps trying to install, even after it is installed
-	 - XML::Parser fails t/stream test 11.  
-	 - XML::Parser::PerlSAX
 
 * [Enh] Allow error format to specified: With/without caller, line numbers.
 
@@ -117,10 +110,10 @@ Anyway, I think I need to investigate it some more.
     - Doesn't require signup (no username/password, etc.)
     - Utilize the new Business::UPS 2.0.
  
- * [Enh] Additional module flexibility
-	- Allow the use of Net::SSLeay as well as Crypt::SSLeay
+* [Enh] Additional module flexibility
+  - Allow the use of Net::SSLeay as well as Crypt::SSLeay
 
- * [Enh] New feature ideas:
+* [Enh] New feature ideas:
  	- Address Verification
 	- Shipping status (package tracking)
 	- Service Availability
@@ -130,60 +123,60 @@ Anyway, I think I need to investigate it some more.
 	- Shipping time (how long till it gets there)?
 	- Delivery/Signature confirmation?
 
- * [Enh] Allow the user to enable one shipper as a secondary shipper, if the 
-   first should fail.  For example, if the UPS/USPS servers are down, it will
-   automatically utilize the table-lookup method.
+* [Enh] Allow the user to enable one shipper as a secondary shipper, if the 
+  first should fail.  For example, if the UPS/USPS servers are down, it will
+  automatically utilize the table-lookup method.
    
- * [Enh] Many of the functions that are currently in 
-   Shipping::RateRequest::Offline::UPS should probably be moved somewhere else.
-   They work on one shipment at a time, and having them in the RateRequest 
-   object makes it seem like they should be able to work on multiple shipments
-   at once.  Perhaps make the first parameter the given shipment to be worked 
-   on?
+* [Enh] Many of the functions that are currently in 
+  Shipping::RateRequest::Offline::UPS should probably be moved somewhere else.
+  They work on one shipment at a time, and having them in the RateRequest 
+  object makes it seem like they should be able to work on multiple shipments
+  at once.  Perhaps make the first parameter the given shipment to be worked 
+  on?
  
- * [Enh] Find or create some module that will automatically update the "=head1 
-   VERSION" POD based on the CVS "Revision" keyword or the perl $VERSION 
-   variable in the same file.
-   
- * [DOC] Need to create a list of common errors that will be encountered.
- 
- * [Enh] Change the many occurrences of $self->weight( 5 ) to 
-   $self->set_weight( 5 ) (and their like) for readability.
- 
- * [Enh] Setup a proper "announce", "cvs", and "users" mailing list where users
-   can sign up for updates and get information.   
- 
- * [Enh] Build a more advanced configuration system, with more config-file
-   flexibility.
- 
- * [Enh] [UNDER CONSIDERATION] Upgrade to Class::MethodMaker 2.00?
-   - It does not support several features, like 'grouped_fields'.
-   - It does not support grouped_fields_inherit
-   - It is prettier.
- 
- * [Enh] Test for thread-safety-ness.
-
- * [Enh] New feature for MethodMaker: parent_defaults => [ 'shipper' => 'UPS' ].
-   After initialization, calls parent methods with default values so the user 
-   does not have to write an "-init" method.
-
- * [Enh] Add support back in for multi-package API.
-
- * Allow the user to configure whether all modules are loaded at startup (as 
-   would be desirable for mod_perl), or when they are needed.  
-   
- * Put all the currently supported modules in the config.ini file, to make them
-   easier to add. 
+* [Enh] Find or create some module that will automatically update the "=head1 
+  VERSION" POD based on the CVS "Revision" keyword or the perl $VERSION 
+  variable in the same file.
   
-* Have an API for "give me all shipping options and prices for this source,
-  destination, and weight".
+* [Doc] Need to create a list of common errors that will be encountered.
+ 
+* [Enh] Change the many occurrences of $self->weight( 5 ) to 
+  $self->set_weight( 5 ) (and their like) for readability.
+ 
+* [Enh] Setup a proper "announce", "cvs", and "users" mailing list where users
+  can sign up for updates and get information.   
+ 
+* [Enh] Build a more advanced configuration system, with more config-file
+  flexibility.
+ 
+* [Enh] [UNDER CONSIDERATION] Upgrade to Class::MethodMaker 2.00?
+  - It does not support several features, like 'grouped_fields'.
+  - It does not support grouped_fields_inherit
+  - It is prettier.
+
+* [Enh] Test for thread-safety-ness.
+
+* [Enh] New feature for MethodMaker: parent_defaults => [ 'shipper' => 'UPS' ].
+  After initialization, calls parent methods with default values so the user 
+  does not have to write an "-init" method.
+
+* [Enh] Add support back in for multi-package API.
+
+* [Enh] Allow the user to configure whether all modules are loaded at startup 
+  (as would be desirable for mod_perl), or when they are needed.  
+   
+* [Enh] Put all the currently supported modules in the config.ini file, to make
+  them easier to add. 
+  
+* [Enh] Have an API for "give me all shipping options and prices for this 
+  source, destination, and weight".
   
 	use Business::Shipping;
 	
 	my $rate_request = Business::Shipping->rate_request(
 		shipper 	=> 'all',
-		to_zip 		=> '',
-		from_zip	=> '',
+		to_zip 		=> '...',
+		from_zip	=> '...',
 	);
 	
 	my $results = $rate_request->submit() or die $rate_requet->error();
@@ -217,7 +210,7 @@ Anyway, I think I need to investigate it some more.
    - Optional: Move the neutral code to Shipping::All:: to signify the fact that
      all code is derived from them.
 
-* Log4Perl enhancement
+* [Enh] Log4Perl enhancement
   - Remove "Business::Shipping" from the first part of logging output.
   - Perhaps a Filter object?
 
@@ -250,15 +243,15 @@ Anyway, I think I need to investigate it some more.
 ##  Offline::UPS TODO
 ################################################################################
 
+ * [Bug] Delivery Area Surcharge: check xarea table instead of always applying.
+   
+ * [Bug] Serbia: see t/manual/offline_ups_intl_other.pl
+
  * [Enh] http://perlmonks.org/index.pl?node_id=366587
 
  * [Enh] Add charges based on pickup type.  
    An alternate set of data is available for people who don't have an account 
    with UPS.  Is the only difference a $4.00 surcharge?
-
- * Delivery Area Surcharge: check xarea table instead of always applying.
-   
- * [Bug] Serbia: see t/manual/offline_ups_intl_other.pl
 
  * [Enh] Determine the upcoming fuel surcharge changes from UPS website, then 
    check to see if that date has passed.  If so, automatically update the fuel 
@@ -371,3 +364,5 @@ Anyway, I think I need to investigate it some more.
 ################################################################################
 
 * Upgrade to C:MM 2.02.
+
+* Tests

@@ -1,6 +1,6 @@
 # Business::Shipping::Tracking::UPS - Abstract class for tracking shipments
 # 
-# $Id: UPS.pm,v 1.6 2004/06/24 03:09:26 danb Exp $
+# $Id$
 # 
 # Copyright (c) 2004 InfoGears Inc.  All Rights Reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 

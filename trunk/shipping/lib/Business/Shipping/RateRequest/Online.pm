@@ -6,7 +6,7 @@ Business::Shipping::RateRequest::Online - Abstract class for shipping cost ratin
 
 =head1 VERSION
 
-$Revision: 1.11 $      $Date: 2004/06/24 03:09:24 $
+$Revision: 1.11 $      $Date$
 
 =head1 METHODS
 

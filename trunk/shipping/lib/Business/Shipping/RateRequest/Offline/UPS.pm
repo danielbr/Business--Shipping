@@ -19,7 +19,7 @@ Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
 
 =head1 VERSION
 
-$Revision: 1.25 $      $Date: 2004/06/25 20:42:27 $
+$Revision: 1.25 $      $Date$
 
 =head1 GLOSSARY
 

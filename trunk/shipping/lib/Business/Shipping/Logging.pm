@@ -10,7 +10,7 @@ Business::Shipping::Logging - Logging interface
 
 =head1 VERSION
 
-$Id: Logging.pm,v 1.3 2004/06/24 03:09:23 danb Exp $
+$Id$
 
 =head1 DESCRIPTION
 
