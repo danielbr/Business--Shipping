@@ -16,6 +16,7 @@ $Date$
 
 =cut
 
+
 $VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
