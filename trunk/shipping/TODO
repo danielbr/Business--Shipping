@@ -46,9 +46,9 @@
  
  * [ENH] Create Bundle::BusinessShipping
  
- * [ENH] The Shipping module itself should be able to be queried for what shippers it
-   handles. Each shipper should be able to be queried for what services it 
-   provides... maybe code would look like this:
+ * [ENH] The Shipping module itself should be able to be queried for what 
+   shippers it handles. Each shipper should be able to be queried for what 
+   services it provides... maybe code would look like this:
 
 	use Business::Shipping; 
 	
@@ -108,6 +108,18 @@
 ##  UPS OFFLINE TODO
 ######################################################
 
+ * [ENH] How to find the current fuel surcharge rate:
+   - http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html	
+   - m/Effective.+: ?(\d\.\d\d\)%/
+   
+ * [ENH] Extended Area Surcharge: 
+   - http://www.ups.com/media/en/extended_area_us.pdf
+   
+ * [ENH] Modify the system so that the easy-to-read data is read into memory
+         just once, and then is optimized for lookup speed, so the sequential
+		 lookups will be as fast as possible.  (Increases memory footprint, but
+		 it should be worth it).
+ 
  * [ENH] Add support for Canada (UPS Standard, XPD, XPR, XDM)
          - Requires new parsing method (Canada ZIP style, etc.)
 
@@ -133,13 +145,6 @@
    (i.e. 970.csv has "970-01 to 972-99" -- means it actually does 972.csv too).
  
  * [ENH] Utilize GDBM or SQL, if available, to speed up lookups.
-
- * [ENH] How to find the current fuel surcharge rate:
-   - http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html	
-   - m/Effective.+: ?(\d\.\d\d\)%/
-   
- * [ENH] Extended Area Surcharge: 
-   - http://www.ups.com/media/en/extended_area_us.pdf
 
 ######################################################
 ##  UPS ONLINE TODO
@@ -170,4 +175,4 @@
 ######################################################
 
  * [ENH] Test for ability to use within Safe?
-	([perl]$Tag->ups_query('', '', '');[/perl]) 
+         [perl]$Tag->business_shipping();[/perl] 

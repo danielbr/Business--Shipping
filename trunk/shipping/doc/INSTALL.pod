@@ -20,7 +20,9 @@
 The following CPAN usage example has all the needed modules on one line.
 
  perl -MCPAN -e shell
- install Data::Dumper Digest::base Digest::SHA1 LWP::UserAgent Crypt::SSLeay XML::Simple XML::DOM Error Cache::FileCache Class::MethodMaker Bundle::DBD::CSV DBI DBD::CSV Archive::Zip Config::IniFiles
+ install Data::Dumper LWP::UserAgent Crypt::SSLeay XML::Simple XML::DOM Error \
+         Cache::FileCache Class::MethodMaker Bundle::DBD::CSV Archive::Zip \
+         Config::IniFiles
  install Business::Shipping
 
 =head1 MANUAL INSTALLATION

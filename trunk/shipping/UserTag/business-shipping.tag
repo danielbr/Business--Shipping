@@ -11,7 +11,7 @@ UserTag  business-shipping  Documentation 	<<EOD
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: business-shipping.tag,v 1.6 2003/12/22 03:48:11 db-ship Exp $
+# $Id: business-shipping.tag,v 1.7 2004/01/09 20:51:17 db-ship Exp $
 
 =head1 NAME
 
@@ -172,6 +172,7 @@ sub {
 		'to_zip'			=> $Values->{ $Variable->{ XPS_TO_ZIP_FIELD } || 'zip' },
 		'from_country'		=> $Variable->{ XPS_FROM_COUNTRY },
 		'from_zip'			=> $Variable->{ XPS_FROM_ZIP },
+		'from_state'		=> $Variable->{ XPS_FROM_STATE },
 	);
 	
 	# Cache enabled by default.

@@ -1,5 +1,9 @@
 Revision history for Business::Shipping.
 
+1.03  Not yet released
+	- Minor UserTag compatibility updates.
+	- Minor documentation updates.
+
 1.02  Jan 06 2004
 	- Update all data tables from UPS (Jan 05 2004)
 	- Update fuel surcharge
