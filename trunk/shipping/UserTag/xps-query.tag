@@ -92,19 +92,29 @@ use Business::Ship::USPS;
 sub {
  	my ( $mode, $opt ) = @_;
 	
-	# We pass the options mostly unmodifed to the underlying library, so here we
-	# take out anything that might confuse it.
-	delete $opt->{ 'reparse' };
-	delete $opt->{ 'mode' }; 	
-	
 	# TODO: handle unpassed mode and weight in a better fashion (with Log(), etc.). 
 	unless ( $mode and $opt->{weight} ) {
 		Log ( "mode and weight required" );
 		return ( undef );
 	}
 	
+	# We pass the options mostly unmodifed to the underlying library, so here we
+	# take out anything that might confuse it.
+	delete $opt->{ 'reparse' };
+	delete $opt->{ 'mode' };
+
+	$opt->{ 'pounds' } = sprintf( "%1.0f", $opt->{ 'weight' } );
+	delete $opt->{ 'weight' }; 	
+	
+	
+	
 	# Business::Ship takes a hash anyway, we might as well deref it now.
 	my %opt = %$opt;
+	
+	my $to_country_default = $Values->{ $Variable->{ XPS_TO_COUNTRY_FIELD } or 'country' };
+	if ( $to_country_default ) {
+		$to_country_default = $Tag->data( 'country', 'name', $to_country_default );
+	}
 
 	my %defaults = (
 		# TODO: handle errors manually, instead of with croak.
@@ -112,7 +122,7 @@ sub {
 		'tx_type'			=> 'rate',
 		'user_id'			=> $Variable->{"${mode}_USER_ID"},
 		'password'			=> $Variable->{"${mode}_PASSWORD"},
-		'to_country'		=> $Values->{ $Variable->{ XPS_TO_COUNTRY_FIELD } or 'country' },
+		'to_country'		=> $to_country_default,
 		'to_zip'			=> $Values->{ $Variable->{ XPS_TO_ZIP_FIELD } or 'zip' },
 		'from_country'		=> $Values->{ $Variable->{ XPS_FROM_COUNTRY } or 'US' },
 		'from_zip'			=> $Values->{ $Variable->{ XPS_FROM_ZIP } },
@@ -124,9 +134,10 @@ sub {
 
 	my $shipment = new Business::Ship::USPS; #$mode
 	
-	::logDebug( "calling Business::Ship::${mode} with: " ); for ( keys %opt ) { ::logDebug( "\'$_\' => \'$opt{$_}\'" ); }
+	::logDebug( "calling 2 Business::Ship::${mode} with: " ); for ( keys %opt ) { ::logDebug( "\'$_\' => \'$opt{$_}\'" ); }
 	
-	$shipment->submit( %opt ) or ( Log $shipment->error() and return ( undef ) );
+	$shipment->set( %opt );
+	$shipment->submit() or ( Log $shipment->error() and return ( undef ) );
 	
 	return $shipment->get_price( $opt{ 'service' } );
 }

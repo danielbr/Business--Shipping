@@ -2,7 +2,7 @@
 # All rights reserved. This program is free software; you can 
 # redistribute it and/or modify it under the same terms as Perl 
 # itself.
-# $Id: Ship.pm,v 1.12 2003/05/02 00:02:38 db-ship Exp $
+# $Id: Ship.pm,v 1.13 2003/05/09 05:32:16 db-ship Exp $
 package Business::Ship;
 use strict;
 use warnings;
@@ -11,7 +11,12 @@ use warnings;
 
 use Business::Ship;
 
-my $shipment = new Business::Ship( 'UPS');
+my $shipment = new Business::Ship::USPS;
+#
+# - or - 
+# my $shipment = new Business::Ship( 'shipper' => 'USPS' );
+#
+ 
 $shipment->set(
 	user_id		=> '',
 	password	=> '',
@@ -55,20 +60,40 @@ installation instructions:
 
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.12 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.13 $ =~ /(\d+)\.(\d+)/);
 
 use Data::Dumper;
 use Carp;
 use Cache::FileCache;
 
 
+# This new() does a little magic so that it can be called as:
+# my $usps = new Business::Ship::USPS;
+#  - or -
+# my $usps = new Business::Ship( 'shipper' => 'USPS' );
 # If called with a 'shipper' argument, then return a sub object (like Ship::USPS)
-# If called without one, then return a Ship object (it's likely a sub-class is calling)
+# If called without one, then return a Ship object 
+#  - Like when a sub-class is calling as SUPER->new().
 sub new 
 {
 	my( $class, %args ) = @_;
+
+	# "Driver" (child-first) initiation, if used.
+	if ( $args{ 'shipper' } ) {
+		# Build a sub-object and return.
+		# The sub-object will call this parent new() method again, as SUPER->new()
+		# But 'shipper' wont be part of the arguments then, so the normal init will 
+		# be done.
+		my $shipper = delete $args{'shipper'};
+	    my $subclass = "${class}::$shipper";
+		if ( not defined &$subclass ) {
+			eval "use $subclass";
+			Carp::croak("unknown shipper $shipper ($@)") if $@;
+		}
+		return( eval "new $subclass" );
+    }
 	
-	# Defaults
+	# Regular Initiation
 	my %required = (
 		user_id		=> undef,
 		password	=> undef,

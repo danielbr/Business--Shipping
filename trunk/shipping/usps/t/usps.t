@@ -6,7 +6,20 @@ use Business::Ship::USPS;
 use Business::Ship::UPS;
 use Data::Dumper;
 
-my $shipment = new Business::Ship::USPS;
+my $shipment = new Business::Ship( 'shipper' => 'USPS' );
+
+#my $shipment = new Business::Ship::USPS;
+
+
+### Test
+# try calling enw with parameters
+
+my $shipment3 = new Business::Ship( 
+	'user_id' 		=> $ENV{USPS_USER_ID},
+	'password' 		=> $ENV{USPS_PASSWORD},
+	'tx_type' 		=> 'rate', 
+	'test_mode'		=> 0,
+);
 
 $shipment->set(
 	#'event_handlers' => ({ 'debug' => STDOUT, 'trace' => 'STDOUT',}),
@@ -20,7 +33,6 @@ $shipment->set(
 $shipment->set( %intl_request_1 );
 # Testing alternate method:
 
-
 $shipment->set(
 		weight		=> 0.2,
 		ounces		=> 0,
@@ -30,7 +42,6 @@ $shipment->set(
 
 $shipment->submit() or die 'error on submit: ' . $shipment->error();
 print "0.2 weight: " . $shipment->get_price('Airmail Parcel Post') . "\n";
-
 
 $shipment->set(
 		weight		=> 5.6,
