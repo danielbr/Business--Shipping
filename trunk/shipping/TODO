@@ -9,6 +9,11 @@
 
  * [BUG] Error on missing arguments isn't working very well (user_id, password)
 
+ * [ENH] Make the error handling more customizable
+   Each module should be able to specifiy it's parameters, so that, for example,
+   you could have lots of debugging/errors for RateRequest::Offline, but none 
+   for RateRequest::Online.
+   
  * [ENH] How do I document the fact that some of the modules I require do not
    build very easily in CPAN?  Right now, it's:
      - SQL::Statement keeps trying to install, even after it is installed
@@ -138,6 +143,16 @@
 ##  Offline::UPS TODO
 ######################################################
 
+ * [BUG] Error:  No zone found for geo code (key) Cyprus, type ExpeditedSM_EC.
+   Important variables:
+        shipper =>      'Offline::UPS',
+        service =>      'XPD',
+        to_country =>   'CY',
+        weight =>       '2',
+        to_zip =>       '2024',
+
+ * [ENH] Remove zip files from the build (save space)
+ 
  * [ENH] Performance enhancement: instead of transforming the data with
    calc_zone_data() everytime, just re-write the data file.
  

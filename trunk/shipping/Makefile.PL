@@ -7,7 +7,7 @@ use ExtUtils::MakeMaker;
 eval "use Devel::Required text => [ '' ], pod => [qw(lib/Business/Shipping.pm), qw(doc/README.pod), qw(doc/INSTALL.pod), qw(UserTag/business-shipping.tag)]";
 
 # Version for Business-Shipping as a whole.
-$VERSION = '1.04';
+$VERSION = '1.05';
 
 #
 # Defaults
@@ -23,21 +23,21 @@ WriteMakefile(
     AUTHOR		    => 'Dan Browning <db@kavod.com>',
 	CONFIGURE		=> \&extra_WriteMakefile_options,
     PREREQ_PM		=>	{
-		'XML::Simple'			=> '2.05',
-		'XML::DOM' 				=> 0,
-		'Data::Dumper'			=> 0,
-		'LWP::UserAgent'		=> 0,
-		'Crypt::SSLeay'			=> 0,
-		'Error'					=> 0,
+		'Archive::Zip'			=> 0,
+		'Bundle::DBD::CSV'		=> 0,
 		'Cache::FileCache'		=> 0,
 		'Class::MethodMaker'	=> 0,
 		'Config::IniFiles'		=> 0,
-		'Bundle::DBD::CSV'		=> 0,
-		'Archive::Zip'			=> 0,
+		'Crypt::SSLeay'			=> 0,
+		'Data::Dumper'			=> 0,
 		'Devel::Required'		=> '0.03',
+		'Error'					=> 0,
+		'Getopt::Mixed'			=> 0,
+		'LWP::UserAgent'		=> 0,
 		'Math::BaseCnv'			=> 0,
 		'Scalar::Util'			=> '1.10',
-		'Getopt::Mixed'			=> 0,
+		'XML::DOM' 				=> 0,
+		'XML::Simple'			=> '2.05',
 	},
 );
 

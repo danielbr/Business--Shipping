@@ -29,7 +29,7 @@ new-release - the Business::Shipping release script.
  # Upload the new version to CPAN, for PAUSE
  # Update to the next verision in Makefile.PL (if you haven't already)
  #
- export VERSION_AFTER_THIS_UPLOAD=1.04 
+ export VERSION_AFTER_THIS_UPLOAD=1.05 
  rm Business-Shipping-*.tar.gz
  make tardist
  bin/new-release.pl Business-Shipping-*.tar.gz

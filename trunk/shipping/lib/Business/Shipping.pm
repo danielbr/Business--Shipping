@@ -1,6 +1,6 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.16 2004/02/08 00:42:23 db-ship Exp $
+# $Id: Shipping.pm,v 1.17 2004/02/11 00:30:53 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 #
@@ -66,6 +66,10 @@ Offline FedEX and USPS are planned for support in the future.
  XML::DOM (any)
  XML::Simple (2.05)
 
+=head1 INSTALLATION
+
+C<perl -MCPAN -e 'install Bundle::Business::Shipping'>
+ 
 =head1 MULTI-PACKAGE API
 
 =head2 Online::UPS Example
@@ -141,7 +145,7 @@ overwritten by a new error.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.16 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.17 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
