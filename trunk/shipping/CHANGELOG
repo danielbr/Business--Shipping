@@ -1,7 +1,8 @@
 Revision history for Business::Shipping
 =======================================
 
-1.57
+
+1.57  
 
 
   General
@@ -33,6 +34,8 @@ Revision history for Business::Shipping
     
     * Store results using hash instead of a hash ref.
 
+    * Tests updated for all new code.
+    
   Tracking
   
     * Made a lot of bugfixes and changes to get the UPS and USPS Tracking 
@@ -50,7 +53,14 @@ Revision history for Business::Shipping
     
     * Added shipper to foward array in RateRequest shipment method.
 
-    
+    * [Fixed] Priority service always flat rate options.
+      - Caused by always passing 'container', which implies flat-rate.
+
+  UPS_Offline
+
+    * Fuel Surcharge updates  
+  
+      
 1.56  Jan 03 2005
 
 
