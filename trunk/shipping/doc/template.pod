@@ -1,0 +1,34 @@
+=head1 NAME
+
+Name - Summary of purpose
+
+=head1 VERSION
+
+$Revision: 1.1 $      $Date: 2004/02/08 00:42:23 $
+
+=head1 SYNOPSIS
+
+# Short examples of perl code that illustrate usage.
+
+=head1 DESCRIPTION
+
+=head2 Overview
+
+=head2 Constructor and initialization
+
+=head2 Class and object methods
+
+=head2 Other important information
+
+=head1 AUTHOR
+
+ Dan Browning         <db@kavod.com>
+ Kavod Technologies   http://www.kavod.com
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
+Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+
+=cut
+

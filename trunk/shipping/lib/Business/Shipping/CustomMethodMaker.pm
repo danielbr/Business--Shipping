@@ -3,7 +3,7 @@
 #####################################################################
 package Business::Shipping::CustomMethodMaker;
 
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -11,7 +11,8 @@ use base ( 'Class::MethodMaker' );
 
 =head2 grouped_fields_inherit
 
-Works like grouped_fields, except that it also calls the parent class.
+Works like grouped_fields, except that it also calls the parent class.  Great
+for implementing auto-concatenating lists like "required fields".
 
 =cut
 sub grouped_fields_inherit {

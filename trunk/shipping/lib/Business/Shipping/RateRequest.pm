@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest - Abstract class
 # 
-# $Id: RateRequest.pm,v 1.7 2004/02/03 01:51:12 db-ship Exp $
+# $Id: RateRequest.pm,v 1.8 2004/02/08 00:42:24 db-ship Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -9,7 +9,7 @@
 
 package Business::Shipping::RateRequest;
 
-$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -175,7 +175,7 @@ sub validate
 				}
 			}
 		}
-		debug( "matches = $matches, keys = " . keys %$invalid_rate_request );
+		#debug( "matches = $matches, keys = " . keys %$invalid_rate_request );
 		
 		#
 		# If all keys matched (i.e. the number of matches == the number of keys )

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS
 #
-# $Id: UPS.pm,v 1.16 2004/02/03 14:53:34 db-ship Exp $
+# $Id: UPS.pm,v 1.17 2004/02/08 00:42:24 db-ship Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003,2004 Kavod Technologies, Dan Browning. 
@@ -16,7 +16,7 @@
 
 package Business::Shipping::RateRequest::Offline::UPS;
 
-$VERSION = do { my @r=(q$Revision: 1.16 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.17 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -127,17 +127,19 @@ sub convert_ups_rate_file
 		last if ( $line =~ /^Weight Not To Exceed/ );
 	}
 	
-	# Remove "Weight Not To " from this line
-	$line =~ s/^Weight Not To//;
-	
-	# Remove all occurences of "Zone" from this line
-	$line =~ s/Zone//g;
-	
-	# Remove all the left-over spaces.
-	$line =~ s/ //g;
-	
-	# Now-adjusted Header
-	print NEW_RATE_FILE $line if $line;
+	if ( $line ) {
+		# Remove "Weight Not To " from this line
+		$line =~ s/^Weight Not To//;
+		
+		# Remove all occurences of "Zone" from this line
+		$line =~ s/Zone//g;
+		
+		# Remove all the left-over spaces.
+		$line =~ s/ //g;
+		
+		# Now-adjusted Header
+		print NEW_RATE_FILE $line;
+	}
 	
 	#
 	# Remove blank lines before the data starts, if any
@@ -254,7 +256,6 @@ sub do_convert_data
 			return if ( $_ eq $cvs_files_skip_regex );
 		}
 		
-		
 		# Only csv files
 		return if ( $_ !~ /\.csv$/i );
 		
@@ -300,7 +301,12 @@ sub do_convert_data
 		$_ = rename_tables_that_start_with_numbers( $_);
 		$_ = rename_tables_that_have_a_dash( $_ );
 	}
-	Business::Shipping::Util::remove_windows_carriage_returns( 'ewwzone.csv' );
+	#
+	# Convert the ewwzone.csv file manually, since it is skipped, above.
+	#
+	Business::Shipping::Util::remove_windows_carriage_returns( 
+		cfg()->{ general }->{ data_dir } . '/ewwzone.csv' 
+	);
 	$self->convert_zone_file( 'ewwzone.csv' );
 	
 }
@@ -859,11 +865,11 @@ sub calc_cost
 
 		debug( "point (i.e. field index) found!  It is $point.  Fieldname referenced by point is $fieldnames[$point]" );
 	}
-
+	
 	debug( "point = $point, looking in zone data..." );
 	for ( @{ $zdata }[ 1.. $#{ $zdata } ] ) {
 		@data = split /\t/, $_;
-		#debug3( "data = " . join( ',', @data ) );
+		debug( "data = " . join( ',', @data ) );
 		if ( $self->current_shipment->domestic_or_ca ) {
 
 			my $low		= $data[0];
@@ -889,6 +895,7 @@ sub calc_cost
 		else {
 			next unless ( $data[0] and $key eq $data[0] );
 			$zone = $data[ ( $point - 1) ];
+			debug( "found key! data = " . join( ',', @data ) );
 		}
 		last;
 	}

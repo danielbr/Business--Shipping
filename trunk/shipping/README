@@ -21,6 +21,7 @@ REQUIRED MODULES
      Error (any)
      LWP::UserAgent (any)
      Math::BaseCnv (any)
+     Scalar::Util (1.10)
      XML::DOM (any)
      XML::Simple (2.05)
 

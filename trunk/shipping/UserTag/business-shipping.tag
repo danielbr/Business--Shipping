@@ -1,13 +1,13 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.22 2004/02/03 14:49:33 db-ship Exp $
+# $Id: business-shipping.tag,v 1.23 2004/02/08 00:42:22 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
 ifndef USERTAG_BUSINESS_SHIPPING
-Variable USERTAG_BUSINESS_SHIPPING	 1 
+Variable USERTAG_BUSINESS_SHIPPING	 1
 Message -i Loading [business-shipping] usertag...
 Require Module Business::Shipping
 UserTag  business-shipping  Order					shipper
@@ -21,7 +21,7 @@ UserTag  business-shipping  Documentation 	<<EOD
 
 =head1 VERSION
 
-[business-shipping] usertag:	$Revision: 1.22 $
+[business-shipping] usertag:	$Revision: 1.23 $
 Requires Business::Shipping:	 Revision: 1.04
 
 =head1 AUTHOR 
@@ -51,6 +51,7 @@ Requires Business::Shipping:	 Revision: 1.04
  Data::Dumper (any)
  Devel::Required (0.03)
  Error (any)
+ Getopt::Mixed (any)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
  Scalar::Util (1.10)
@@ -80,6 +81,7 @@ XPS_FROM_COUNTRY	US	Shipping
 XPS_FROM_STATE	WA	Shipping
 XPS_FROM_ZIP	98682	Shipping
 XPS_TO_COUNTRY_FIELD	country	Shipping
+XPS_TO_CITY_FIELD	country	Shipping
 XPS_TO_ZIP_FIELD	zip	Shipping
 UPS_ACCESS_KEY	AB12CDEF345G6	Shipping 
 UPS_USER_ID	userid	Shipping

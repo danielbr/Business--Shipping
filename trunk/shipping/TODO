@@ -2,21 +2,23 @@
 ##  General TODO
 ######################################################
 
+ * [BUG] Bundle::Business::Shipping doesn't work
+   - It probably should be Business/Shipping.pm instead of just Shipping.pm.
+
+ * [ENH] Confirm that the auto-update feature works well.
+
+ * [BUG] Error on missing arguments isn't working very well (user_id, password)
+
  * [ENH] How do I document the fact that some of the modules I require do not
    build very easily in CPAN?  Right now, it's:
      - SQL::Statement keeps trying to install, even after it is installed
-	 - XML::Parser::PerlSAX fails t/stream test 11.  
+	 - XML::Parser fails t/stream test 11.  
+	 - XML::Parser::PerlSAX
 
- * [ENH] Make a Bundle::BusinessShipping.
- 
  * [ENH] Allow error format to specified: With/without caller, line numbers.
-
- * [ENH] Add scripts/ directory somewhere.
 
  * [ENH] Evaluate fields.pm as a guard against autovivification. 
  
- * [ENH] Improve documentation (adding sections to all .pm files)
-
  * [ENH] Update to more recent C:MM syntax, like '-default', etc.
  
  * [ENH] Allow users to set path to support files.
@@ -37,28 +39,20 @@
 	 "Business::Shipping::RateRequest::Online::USPS::_handle_response: ()
      File does not exist:  at .../RateRequest/Online/USPS.pm line 202"
  
- * [BUG] Only Cache the response if it was a success (very important).
+ * [BUG] Add a test that will confirm that we only cache responses that are a
+   success.
  
- * [BUG] Error on missing arguments isn't working very well ( user_id, password)
+ * [ENH] Evaluate Log4Perl.
 
- * [ENH] Enhance the debugging/error handling features: allow user to pass in a 
-   callback ref conforming to some (customizable?) calling standard. 
-
- * [ENH] Is non-ssl communication with either provider possible?
+ * [ENH] Is non-ssl communication with either Online provider possible?
  
  * [ENH] Migrate the "retry on failure" code from business-shipping.tag to 
    Business::Shipping proper.  Default to tries=2, but allow that to be
    overridden.  ("Failure" means HTTP 500 errors.)
 
- * [ENH] FedEx module: Christopher L Wenham from Synesmedia has created an 
-   Interchange usertag that uses FedEx::DirectConnect for various functions.  
-   Evaluate.
-  
  * [ENH] Business::Shipping::OldUPS
     - Doesn't require signup (no username/password, etc.)
     - Utilize the new Business::UPS 2.0.
- 
- * [ENH] Create Bundle::BusinessShipping
  
  * [ENH] The Shipping module itself should be able to be queried for what 
    shippers it handles. Each shipper should be able to be queried for what 
@@ -84,7 +78,7 @@
 		}
 	}
 	
- * [ENH] Additionall module flexibility
+ * [ENH] Additional module flexibility
 	- Allow the use of Net::SSLeay as well as Crypt::SSLeay
 
  * [ENH] New feature ideas:
@@ -97,19 +91,20 @@
 	- Shipping time (how long till it gets there)?
 	- Delivery/Signature confirmation?
 
- * [ENH] After Table-based lookups are added, enable them as a fall-back to 
-   online lookups.  That way, if the UPS/USPS servers are down, it will
+ * [ENH] Allow the user to enable one shipper as a secondary shipper, if the 
+   first should fail.  For example, if the UPS/USPS servers are down, it will
    automatically utilize the table-lookup method.
    
  * [ENH] Many of the functions that are currently in 
-   Shipping::RateRequest::Offline::UPS should probably be moved to a 
-   corresponding Shipment module (like calc_cost), becuase they work on a given
-   "current" shipment, not the entire rate request as a whole.  They happen to 
-   work because the RateRequest object aliases those functions (using 
-   'comp_mthds') to the 'shipment' object, slotted in the RateRequest object.
+   Shipping::RateRequest::Offline::UPS should probably be moved somewhere else.
+   They work on one shipment at a time, and having them in the RateRequest 
+   object makes it seem like they should be able to work on multiple shipments
+   at once.  Perhaps make the first parameter the given shipment to be worked 
+   on?
  
  * [ENH] Find or create some module that will automatically update the "=head1 
-   VERSION" POD based on the $VERSION in the same file.
+   VERSION" POD based on the CVS "Revision" keyword or the perl $VERSION 
+   variable in the same file.
    
  * [DOC] Need to create a list of common errors that will be encountered.
  
@@ -118,9 +113,12 @@
  
  * [ENH] Setup a proper "announce", "cvs", and "users" mailing list where users
    can sign up for updates and get information.   
+ 
+ * [ENH] Build a more advanced configuration system, with more config-file
+   flexibility.
    
 ######################################################
-##  USPS ONLINE TODO
+##  Online::USPS TODO
 ######################################################
 
  * [BUG] Find a better way to correlate "Air mail" with all the various names
@@ -137,7 +135,7 @@
 	- http://pe.usps.gov/cpim/ftp/manuals/Imm/Immctry.pdf
  
 ######################################################
-##  UPS OFFLINE TODO
+##  Offline::UPS TODO
 ######################################################
 
  * [ENH] Performance enhancement: instead of transforming the data with
@@ -233,7 +231,7 @@
  * [ENH] Utilize GDBM or SQL, if available, to speed up lookups.
 
 ######################################################
-##  UPS ONLINE TODO
+##  Online::UPS TODO
 ######################################################
  
  * [BUG] Fix the multi-package API for UPS.  
@@ -264,5 +262,13 @@
    now it can actually be "Offline::UPS" or anything else.  Works for now, but
    should be fixed.
 
- * [ENH] Test for ability to use within Safe?
-         [perl]$Tag->business_shipping();[/perl] 
+ * [ENH] Test for ability to use within Safe?  Or catalog-level usertag?
+   [perl]$Tag->business_shipping();[/perl] 
+
+######################################################
+##  Online::FedEx 
+######################################################
+		 
+ * [ENH] FedEx module: Christopher L Wenham from Synesmedia has created an 
+   Interchange usertag that uses FedEx::DirectConnect for various functions.  
+   Evaluate.

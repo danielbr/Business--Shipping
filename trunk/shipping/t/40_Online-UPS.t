@@ -292,6 +292,30 @@ SKIP: {
 		weight			=> 0.5,
 	);
 	
+	###########################################################################
+	##  From Canada, To Canada
+	###########################################################################
+	simple_test(
+		
+		#
+		# Should be ~ $22.50
+		#
+		service			=> 'UPSSTD', 
+		weight			=> 5,
+		to_residential	=> 1,
+		packaging 		=> '02',
+		
+		from_country	=> 'CA',
+		#from_city		=> 'Richmond',
+		from_zip		=> 'V6X3E1',
+		
+		to_country		=> 'CA',
+		to_city			=> 'Kitchener',
+		to_zip			=> 'N2H6S9',
+	);
+	
+	
+
 	
 }
 

@@ -1,33 +1,18 @@
 NAME
     Business::Shipping - API for shipping-related tasks
 
-REQUIRED MODULES
-     Archive::Zip (any)
-     Bundle::DBD::CSV (any)
-     Cache::FileCache (any)
-     Class::MethodMaker (any)
-     Config::IniFiles (any)
-     Crypt::SSLeay (any)
-     Data::Dumper (any)
-     Devel::Required (0.03)
-     Error (any)
-     LWP::UserAgent (any)
-     Math::BaseCnv (any)
-     XML::DOM (any)
-     XML::Simple (2.05)
-
 SYNOPSIS
-    Example usage for a rating request:
+    Example rate request:
 
             use Business::Shipping;
         
             my $rate_request = Business::Shipping->rate_request(
-                    shipper                 => 'Offline::UPS',
-                    service                 => 'GNDRES',
-                    from_zip                => '98682',
-                    to_zip                  => '98270',
-                    weight                  => 5.00,
-            );
+                    shipper         => 'Offline::UPS',
+                    service         => 'GNDRES',
+                    from_zip        => '98682',
+                    to_zip          => '98270',
+                    weight          =>  5.00,
+            );      
         
             $rate_request->submit() or die $rate_request->error();
         
@@ -44,10 +29,24 @@ ABSTRACT
      * Online UPS (using the Internet and UPS servers)
      * Offline UPS (using tables stored locally)
      * Online USPS
-     * Offline FedEX and USPS are planned for support in the future.
 
-    An object is returned if the operation is successful, or 'undef'
-    otherwise.
+    Offline FedEX and USPS are planned for support in the future.
+
+REQUIRED MODULES
+     Archive::Zip (any)
+     Bundle::DBD::CSV (any)
+     Cache::FileCache (any)
+     Class::MethodMaker (any)
+     Config::IniFiles (any)
+     Crypt::SSLeay (any)
+     Data::Dumper (any)
+     Devel::Required (0.03)
+     Error (any)
+     LWP::UserAgent (any)
+     Math::BaseCnv (any)
+     Scalar::Util (1.10)
+     XML::DOM (any)
+     XML::Simple (2.05)
 
 MULTI-PACKAGE API
   Online::UPS Example
@@ -156,12 +155,45 @@ CLASS METHODS
     * weight
         Weight of the shipment, in pounds, as a decimal number.
 
-    * config_to_hash( $ary, $del )
-                $ary    Key/value pairs
-                $del    Delimiter for the above array (tab is default)
+  config_to_hash( $ary, $del )
+            $ary    Key/value pairs
+            $del    Delimiter for the above array (tab is default)
 
-        Builds a hash from an array of lines containing key / value pairs,
-        like so:
+    Builds a hash from an array of lines containing key / value pairs, like
+    so:
 
-        key1 value1 key2 value2 key3 value3
+     key1   value1
+     key2   value2
+     key3   value3
+
+  config_to_ary_of_hashes( 'configuration_parameter' )
+    Reads in the configuration hashref ( e.g. cfg()->{ primary }->{
+    secondary } ), then returns an array of hashes. For example:
+
+    This:
+
+     [invalid_rate_requests]
+     invalid_rate_requests_ups=<<EOF
+     service=XDM    to_country=Canada       reason=Not available.
+     service=XDM    to_country=Brazil
+     EOF
+
+    When called with this:
+
+     my @invalid_rate_requests_ups = $self->config_to_ary_of_hashes( 
+         cfg()->{ invalid_rate_requests }->{ invalid_rate_requests_ups }
+     );
+
+    Returns this:
+
+     [ 
+         {
+             to_country => 'Canada',
+             service    => 'XDM'
+         },
+         {
+             to_country => 'Brazil',
+             service    => 'XDM'
+         },
+     ]
 

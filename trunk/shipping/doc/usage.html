@@ -13,7 +13,6 @@
 <ul>
 
 	<li><a href="#name">NAME</a></li>
-	<li><a href="#required_modules">REQUIRED MODULES</a></li>
 	<li><a href="#synopsis">SYNOPSIS</a></li>
 	<li><a href="#abstract">ABSTRACT</a></li>
 	<ul>
@@ -22,6 +21,7 @@
 		<li><a href="#shipping_vendors_implemented_at_this_time">Shipping Vendors Implemented at this time</a></li>
 	</ul>
 
+	<li><a href="#required_modules">REQUIRED MODULES</a></li>
 	<li><a href="#multipackage_api">MULTI-PACKAGE API</a></li>
 	<ul>
 
@@ -33,6 +33,8 @@
 	<ul>
 
 		<li><a href="#rate_request()"><code>rate_request()</code></a></li>
+		<li><a href="#config_to_hash(_$ary,_$del_)">config_to_hash( $ary, $del )</a></li>
+		<li><a href="#config_to_ary_of_hashes(_'configuration_parameter'_)">config_to_ary_of_hashes( 'configuration_parameter' )</a></li>
 	</ul>
 
 </ul>
@@ -46,36 +48,18 @@
 <p>
 </p>
 <hr />
-<h1><a name="required_modules">REQUIRED MODULES</a></h1>
-<pre>
- Archive::Zip (any)
- Bundle::DBD::CSV (any)
- Cache::FileCache (any)
- Class::MethodMaker (any)
- Config::IniFiles (any)
- Crypt::SSLeay (any)
- Data::Dumper (any)
- Devel::Required (0.03)
- Error (any)
- LWP::UserAgent (any)
- Math::BaseCnv (any)
- XML::DOM (any)
- XML::Simple (2.05)</pre>
-<p>
-</p>
-<hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>Example usage for a rating request:</p>
+<p>Example rate request:</p>
 <pre>
         use Business::Shipping;
         
         my $rate_request = Business::Shipping-&gt;rate_request(
-                shipper                 =&gt; 'Offline::UPS',
-                service                 =&gt; 'GNDRES',
-                from_zip                =&gt; '98682',
-                to_zip                  =&gt; '98270',
-                weight                  =&gt; 5.00,
-        );
+                shipper         =&gt; 'Offline::UPS',
+                service         =&gt; 'GNDRES',
+                from_zip        =&gt; '98682',
+                to_zip          =&gt; '98270',
+                weight          =&gt;  5.00,
+        );      
         
         $rate_request-&gt;submit() or die $rate_request-&gt;error();
         
@@ -97,9 +81,27 @@
 <pre>
  * Online UPS (using the Internet and UPS servers)
  * Offline UPS (using tables stored locally)
- * Online USPS
- * Offline FedEX and USPS are planned for support in the future.</pre>
-<p>An object is returned if the operation is successful, or 'undef' otherwise.</p>
+ * Online USPS</pre>
+<p>Offline FedEX and USPS are planned for support in the future.</p>
+<p>
+</p>
+<hr />
+<h1><a name="required_modules">REQUIRED MODULES</a></h1>
+<pre>
+ Archive::Zip (any)
+ Bundle::DBD::CSV (any)
+ Cache::FileCache (any)
+ Class::MethodMaker (any)
+ Config::IniFiles (any)
+ Crypt::SSLeay (any)
+ Data::Dumper (any)
+ Devel::Required (0.03)
+ Error (any)
+ LWP::UserAgent (any)
+ Math::BaseCnv (any)
+ Scalar::Util (1.10)
+ XML::DOM (any)
+ XML::Simple (2.05)</pre>
 <p>
 </p>
 <hr />
@@ -187,7 +189,7 @@ or offline tables.  A hash is accepted as input with the following key values:</
 <li><strong><a name="item_shipper">shipper</a></strong><br />
 </li>
 The name of the shipper to use. Must correspond to a module by the name of:
-<code>Business::Shipping::RateRequest::SHIPPER</code>.  For example, ``Offline::UPS''.
+<code>Business::Shipping::RateRequest::SHIPPER</code>.  For example, <code>Offline::UPS</code>.
 <p></p>
 <li><strong><a name="item_user_id">user_id</a></strong><br />
 </li>
@@ -223,23 +225,61 @@ The destination country.  Required for international shipments only.
 <li><strong><a name="item_weight">weight</a></strong><br />
 </li>
 Weight of the shipment, in pounds, as a decimal number.
-<p></p>
-<li><strong><a name="item_config_to_hash">config_to_hash( $ary, $del )</a></strong><br />
-</li>
+<p></p></ul>
+<p>
+</p>
+<h2><a name="config_to_hash(_$ary,_$del_)">config_to_hash( $ary, $del )</a></h2>
 <pre>
         $ary    Key/value pairs
-        $del    Delimiter for the above array (tab is default)
-
-</pre>
-<p>Builds a hash from an array of lines containing key / value pairs, like so:
+        $del    Delimiter for the above array (tab is default)</pre>
+<p>Builds a hash from an array of lines containing key / value pairs, like so:</p>
+<pre>
+ key1   value1
+ key2   value2
+ key3   value3</pre>
+<p>
+</p>
+<h2><a name="config_to_ary_of_hashes(_'configuration_parameter'_)">config_to_ary_of_hashes( 'configuration_parameter' )</a></h2>
+<p>Reads in the configuration hashref ( e.g. cfg()-&gt;{ primary }-&gt;{ secondary } ),
+then returns an array of hashes.  For example:
 
 </p>
-<p><table cellspacing="0" cellpadding="0"><tr><td>key1<td>value1
-<tr><td>key2<td>value2
-<tr><td>key3<td>value3
-<tr><td>
-</table></p>
-</ul>
+<p>This:
+
+</p>
+<pre>
+ [invalid_rate_requests]
+ invalid_rate_requests_ups=&lt;&lt;EOF
+ service=XDM    to_country=Canada       reason=Not available.
+ service=XDM    to_country=Brazil
+ EOF
+
+</pre>
+<p>When called with this:
+
+</p>
+<pre>
+ my @invalid_rate_requests_ups = $self-&gt;config_to_ary_of_hashes( 
+     cfg()-&gt;{ invalid_rate_requests }-&gt;{ invalid_rate_requests_ups }
+ );
+
+</pre>
+<p>Returns this:
+
+</p>
+<pre>
+ [ 
+     {
+         to_country =&gt; 'Canada',
+         service    =&gt; 'XDM'
+     },
+     {
+         to_country =&gt; 'Brazil',
+         service    =&gt; 'XDM'
+     },
+ ]
+
+</pre>
 
 </body>
 

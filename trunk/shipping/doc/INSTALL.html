@@ -43,17 +43,19 @@
  Error (any)
  LWP::UserAgent (any)
  Math::BaseCnv (any)
+ Scalar::Util (1.10)
  XML::DOM (any)
  XML::Simple (2.05)</pre>
 <p>
 </p>
 <h2><a name="module_installation_via_cpan">Module Installation via CPAN</a></h2>
-<p>The following CPAN usage example has all the needed modules on one line.</p>
+<p>The following CPAN usage example has all the needed modules on one line.
+Note that you may need to do ``force install XML::Parser::SAX''.</p>
 <pre>
  perl -MCPAN -e shell
- install Data::Dumper LWP::UserAgent Crypt::SSLeay XML::Simple XML::DOM Error \
-         Cache::FileCache Class::MethodMaker Bundle::DBD::CSV Archive::Zip \
-         Config::IniFiles
+ install Archive::Zip Bundle::DBD::CSV Cache::FileCache Class::MethodMaker \
+         Config::IniFiles Crypt::SSLeay Data::Dumper Devel::Required Error \
+                 LWP::UserAgent Math::BaseCnv XML::DOM XML::Simple
  install Business::Shipping</pre>
 <p>
 </p>

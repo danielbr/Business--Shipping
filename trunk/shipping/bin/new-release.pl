@@ -32,7 +32,7 @@ new-release - the Business::Shipping release script.
  export VERSION_AFTER_THIS_UPLOAD=1.04 
  rm Business-Shipping-*.tar.gz
  make tardist
- doc/new-release Business-Shipping-*.tar.gz
+ bin/new-release.pl Business-Shipping-*.tar.gz
  cpan-upload -user `cat ~/.apps/.PAUSE-user` -password `cat ~/.apps/.PAUSE-password` -mailto 'db@kavod.com' -non_interactive Business-Shipping-*.tar.gz
  perl -pi -e "s/\$VERSION = \'.\...\'/\$VERSION = \'${VERSION_AFTER_THIS_UPLOAD}\'/g" Makefile.PL
  

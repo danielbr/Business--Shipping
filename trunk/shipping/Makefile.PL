@@ -37,6 +37,7 @@ WriteMakefile(
 		'Devel::Required'		=> '0.03',
 		'Math::BaseCnv'			=> 0,
 		'Scalar::Util'			=> '1.10',
+		'Getopt::Mixed'			=> 0,
 	},
 );
 
