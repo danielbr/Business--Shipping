@@ -1,9 +1,10 @@
 Revision history for Business::Shipping.
 
-1.03  Jan 21 2004
+1.03  Not yet released.
     
     - Compatibility:
-        - Math::BaseCnv now required (for Offline::UPS to Canada).
+        - Math::BaseCnv now required (for Offline::UPS to Canada, to convert 
+          their witty base-36 zip codes to the lowly decimal number system).
         - from_state required for Offline::UPS.
     
     - General updates:
