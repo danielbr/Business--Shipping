@@ -8,8 +8,8 @@ Business::Shipping::Package::UPS
 
 $Revision$
 
-
 $Date$
+
 
 =head1 METHODS
 
