@@ -1,5 +1,5 @@
 NAME
-    Business::Shipping - Interface for shippers (UPS, USPS)
+    Business::Shipping - Cost estimation and tracking for UPS and USPS
 
 SYNOPSIS
   Rate request example
@@ -13,7 +13,7 @@ SYNOPSIS
             weight    =>  5.00,
         );    
     
-        $rate_request->submit() or die $rate_request->user_error();
+        $rate_request->submit() or logdie $rate_request->user_error();
     
         print $rate_request->total_charges();
 
@@ -31,11 +31,19 @@ SYNOPSIS
     * FedEX shipment cost estimation
 
 REQUIRED MODULES
-    Bundle::DBD::CSV (any) Cache::FileCache (any) Class::MethodMaker::Engine
-    (any) Clone (any) Config::IniFiles (any) Crypt::SSLeay (any)
-    Getopt::Mixed (any) Log::Log4perl (any) LWP::UserAgent (any)
-    Math::BaseCnv (any) Scalar::Util (1.10) XML::DOM (any) XML::Simple
-    (2.05)
+     Bundle::DBD::CSV (any)
+     Cache::FileCache (any)
+     Class::MethodMaker::Engine (any)
+     Clone (any)
+     Config::IniFiles (any)
+     Crypt::SSLeay (any)
+     Getopt::Mixed (any)
+     Log::Log4perl (any)
+     LWP::UserAgent (any)
+     Math::BaseCnv (any)
+     Scalar::Util (1.10)
+     XML::DOM (any)
+     XML::Simple (2.05)
 
 INSTALLATION
     "perl -MCPAN -e 'install Bundle::Business::Shipping'"
@@ -44,7 +52,9 @@ INSTALLATION
 
 ERROR/DEBUG HANDLING
     Log4perl is used for logging error, debug, etc. messages. See
-    config/log4perl.conf.
+    config/log4perl.conf. For simple manipulation of the current log level,
+    use the Business::Shipping->log_level( $log_level ) class method
+    (below).
 
 METHODS
   $self->init( %args )
@@ -96,6 +106,11 @@ METHODS
 
   Business::Shipping->new_subclass( "Subclass::Name", %opt )
     Generates a subclass, such as a Shipment object.
+
+  Business::Shipping->log_level( $log_level )
+    Sets the log level for all Business::Shipping objects.
+
+    $log_level can be 'debug', 'info', 'warn', 'error', or 'fatal'.
 
 AUTHOR
     Dan Browning <db@kavod.com>, Kavod Technologies, <http://www.kavod.com>.

@@ -2,9 +2,13 @@
 ##  General TODO
 ################################################################################
 
-    
-
-* [Enh] CPAN tarball cannot be downloaded (404).
+* [Enh] Split the data into its own package, and add it to the bundle.
+  - Business::Shipping::Data
+  - Benefits: 
+    + Allows data to be updated separately from the code.
+    + It changes less often, so frequent code updates will not result it long
+      downloads.
+    + Update scripts can just do a CPAN install of the latest data module.
 
 * [Enh] Test on Sourceforge Compile Farm systems.
   - Also test using older perl versions (e.g. 5.6.x).
@@ -18,8 +22,6 @@
 
 * [Enh] Unit tests for each class.
   
-* [Enh] Remove default_package() and determine_shipper_from_self().
-
 * [Enh] Conform to coding style: private methods should be prefixed with an
    underscore. 
  
@@ -85,14 +87,6 @@ Anyway, I think I need to investigate it some more.
   
   If optimized for speed, then it will read the representation off the disk and
   keep it in memory.
-
-* [Enh] Split the data into its own package, and add it to the bundle.
-  - Business::Shipping::Data
-  - Benefits: 
-    + Allows data to be updated separately from the code.
-    + It changes less often, so frequent code updates will not result it long
-      downloads.
-    + Update scripts can just do a CPAN install of the latest data module.
 
 * [Enh] KLogging: Allow error format to specified 
   - With/without caller, line numbers.

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Business::Shipping - Interface for shippers</title>
+<title>Business::Shipping - Cost estimation and tracking for UPS and USPS</title>
 <link rev="made" href="mailto:root@localhost" />
 </head>
 
@@ -30,6 +30,7 @@
 		<li><a href="#_self_validate__">$self-&gt;<code>validate()</code></a></li>
 		<li><a href="#rate_request__"><code>rate_request()</code></a></li>
 		<li><a href="#business__shipping_new_subclass__subclass__name___opt__">Business::Shipping-&gt;new_subclass( ``Subclass::Name'', %opt )</a></li>
+		<li><a href="#business__shipping_log_level___log_level__">Business::Shipping-&gt;log_level( $log_level )</a></li>
 	</ul>
 
 	<li><a href="#author">AUTHOR</a></li>
@@ -41,7 +42,7 @@
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
-<p>Business::Shipping - Interface for shippers (UPS, USPS)</p>
+<p>Business::Shipping - Cost estimation and tracking for UPS and USPS</p>
 <p>
 </p>
 <hr />
@@ -60,7 +61,7 @@
         weight    =&gt;  5.00,
     );    
     
-    $rate_request-&gt;submit() or die $rate_request-&gt;user_error();
+    $rate_request-&gt;submit() or logdie $rate_request-&gt;user_error();
     
     print $rate_request-&gt;total_charges();</pre>
 <p>
@@ -95,19 +96,20 @@
 </p>
 <hr />
 <h1><a name="required_modules">REQUIRED MODULES</a></h1>
-<p>Bundle::DBD::CSV (any)
-Cache::FileCache (any)
-Class::MethodMaker::Engine (any)
-Clone (any)
-Config::IniFiles (any)
-Crypt::SSLeay (any)
-Getopt::Mixed (any)
-Log::Log4perl (any)
-LWP::UserAgent (any)
-Math::BaseCnv (any)
-Scalar::Util (1.10)
-XML::DOM (any)
-XML::Simple (2.05)</p>
+<pre>
+ Bundle::DBD::CSV (any)
+ Cache::FileCache (any)
+ Class::MethodMaker::Engine (any)
+ Clone (any)
+ Config::IniFiles (any)
+ Crypt::SSLeay (any)
+ Getopt::Mixed (any)
+ Log::Log4perl (any)
+ LWP::UserAgent (any)
+ Math::BaseCnv (any)
+ Scalar::Util (1.10)
+ XML::DOM (any)
+ XML::Simple (2.05)</pre>
 <p>
 </p>
 <hr />
@@ -119,7 +121,8 @@ XML::Simple (2.05)</p>
 
 =head1 ERROR/DEBUG HANDLING</pre>
 <p>Log4perl is used for logging error, debug, etc. messages.  See 
-config/log4perl.conf.
+config/log4perl.conf.  For simple manipulation of the current log level, use
+the Business::Shipping-&gt;log_level( $log_level ) class method (below).
 </p>
 <pre>
 
@@ -185,7 +188,14 @@ Weight of the shipment, in pounds, as a decimal number.
 <p>
 </p>
 <h2><a name="business__shipping_new_subclass__subclass__name___opt__">Business::Shipping-&gt;new_subclass( ``Subclass::Name'', %opt )</a></h2>
-<p>Generates a subclass, such as a Shipment object.
+<p>Generates a subclass, such as a Shipment object.</p>
+<p>
+</p>
+<h2><a name="business__shipping_log_level___log_level__">Business::Shipping-&gt;log_level( $log_level )</a></h2>
+<p>Sets the log level for all Business::Shipping objects.
+
+</p>
+<p>$log_level can be 'debug', 'info', 'warn', 'error', or 'fatal'.
 
 </p>
 <p>
