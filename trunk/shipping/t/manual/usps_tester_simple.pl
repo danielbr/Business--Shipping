@@ -44,19 +44,17 @@ my $rate_request;
 ###############################################################################
 print "\n\n\nTesting International USPS...\n\n";
 $rate_request = Business::Shipping->rate_request(
-	shipper 		=> 'USPS', 
-	service 		=> 'Airmail Parcel Post',
-	
-	event_handlers => { 'trace' => 'STDERR', debug => 'STDERR', debug3 => 'STDERR' },
-	
-	from_zip		=> '98682',
-	user_id 		=> $ENV{ USPS_USER_ID },		
-	password 		=> $ENV{ USPS_PASSWORD },
-	
-
-	to_zip => 6157,
-	to_country => 'Australia',
-	weight => 5.00,
+		shipper 		=> 'USPS', 
+		event_handlers => { 'trace' => 'STDERR', debug => 'STDERR', debug3 => 'STDERR' },
+		service 		=> 'Airmail Parcel Post',
+		
+		from_zip		=> '98682',
+		user_id 		=> $ENV{ USPS_USER_ID },		
+		password 		=> $ENV{ USPS_PASSWORD },
+		
+		to_country		=> 'Canada',
+		to_zip			=> 'N2H6S9',
+		weight			=> 5.49,
 
 );
 

@@ -1,6 +1,6 @@
 # Business::Shipping::Package::USPS
 # 
-# $Id: USPS.pm,v 1.3 2003/08/20 12:58:48 db-ship Exp $
+# $Id: USPS.pm,v 1.4 2003/08/25 21:48:43 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -14,7 +14,7 @@ use warnings;
 
 use vars qw( @ISA $VERSION );
 @ISA = ( 'Business::Shipping::Package' );
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping::Debug;
 use Business::Shipping::CustomMethodMaker
@@ -72,7 +72,10 @@ sub weight_to_imperial
 	my ( $self, $in_weight ) = @_;
 	
 	my $pounds = $self->_round_up( $in_weight );
-	my $remainder = $in_weight - $pounds;
+	my $remainder = $pounds - $in_weight;
+	
+	# For some weights (e.g. 2.4), this is necessary.
+	$remainder = -$remainder if $remainder < 0;
 	
 	my $ounces;
 	if ( $remainder ) {

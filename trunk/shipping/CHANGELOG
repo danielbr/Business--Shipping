@@ -1,5 +1,12 @@
 Revision history for Business::Shipping.
 
+0.75
+	- Additional USPS tests (Letter service, Canada service)
+	- Additional UPS tests (Canada)
+	- Fix ounce calculator.
+	- Misc minor and aesthetic updates.
+
+
 0.74  Aug 19 2003
 	- Clean up the business-shipping usertag a little bit.
 	- Other misc. cleanups.

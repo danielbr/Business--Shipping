@@ -11,7 +11,7 @@ UserTag  business-shipping  Documentation 	<<EOD
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: business-shipping.tag,v 1.3 2003/08/20 12:58:47 db-ship Exp $
+# $Id: business-shipping.tag,v 1.4 2003/08/25 21:48:43 db-ship Exp $
 
 =head1 NAME
 
@@ -151,16 +151,14 @@ sub {
 		
 		# For interchange, STDOUT will cause it to go to the IC debug.
 		'event_handlers'	=> ({ 
-			'debug' => undef, 
-			#'debug' => 'STDOUT',
+			'debug' => 'STDOUT',
+			
+			'debug3' => 'STDOUT',
 			
 			'error' => 'STDERR', 
-			#'error' => 'STDOUT',
-			
-			'trace' => undef,		 
-			#'trace' => 'STDOUT', 
+
+			'trace' => 'STDOUT', 
 		}),
-		#'tx_type'			=> 'rate',
 		
 		'user_id'			=> $Variable->{ "${shipper}_USER_ID" },
 		'password'			=> $Variable->{ "${shipper}_PASSWORD" },
@@ -245,7 +243,7 @@ sub {
 		}
 	}
 	
-	::logDebug( "[business-shipping] returning" . uneval( $charges ) );
+	::logDebug( "[business-shipping] returning " . uneval( $charges ) );
 	
 	return $charges;
 }

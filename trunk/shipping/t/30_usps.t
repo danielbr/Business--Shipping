@@ -204,7 +204,7 @@ SKIP: {
 		to_zip		=> 27713,
 		from_zip	=> 98682,
 	);
-	print "\ttotal charges = " . $shipment->total_charges() . "\n";
+	#print "\ttotal charges = " . $shipment->total_charges() . "\n";
 	ok( $shipment->total_charges() > 20.00,		'USPS high weight is high price' );
 	
 	#simple_test(
@@ -227,8 +227,43 @@ SKIP: {
 		
 		to_zip => 6157,
 		to_country => 'Australia',
-		weight => 5.00,
+		weight => 0.50,
 	);
-	ok( $shipment->total_charges() > 25.00,		'USPS matching australia service correctly' );
+	my $airmail_parcel_post_to_AU = $shipment->total_charges();
+	ok( $airmail_parcel_post_to_AU,		'USPS australia' );
+	
+	
+	# Test the letter service.
+	$shipment = test(
+		service 		=> 'Airmail Letter Post',
+		
+		from_zip		=> '98682',
+		user_id 		=> $ENV{ USPS_USER_ID },		
+		password 		=> $ENV{ USPS_PASSWORD },
+		
+		to_zip => 6157,
+		to_country => 'Australia',
+		weight => 0.50,
+	);
+	my $airmail_letter_post_to_AU = $shipment->total_charges();
+	#print "\ttotal charges = $airmail_letter_post_to_AU\n";
+	ok( $airmail_letter_post_to_AU < $airmail_parcel_post_to_AU, 'USPS Letter is cheaper than Parcel' );
+	
+	#######################################################################
+	##  Canada Services
+	#######################################################################
+	
+	$shipment = test(
+		service 		=> 'Airmail Parcel Post',
+		
+		from_zip		=> '98682',
+		user_id 		=> $ENV{ USPS_USER_ID },		
+		password 		=> $ENV{ USPS_PASSWORD },
+		
+		to_country		=> 'Canada',
+		to_zip			=> 'N2H6S9',
+		weight			=> 5.5,
+	);
+	ok( $shipment->total_charges(), 'USPS Parcel Post to Canada' );
 
 } # /skip

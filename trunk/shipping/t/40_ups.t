@@ -252,11 +252,11 @@ SKIP: {
 	###########################################################################
 	simple_test(
 		%std_opts,
-		service				=> 'XPD', 
-		to_country			=> 'AU',
+		service			=> 'XPD', 
+		to_country		=> 'AU',
 		to_city			=> 'Bicton',
-		to_zip				=> '6157',
-		weight				=> 5.5,
+		to_zip			=> '6157',
+		weight			=> 5.5,
 	);
 	
 	#
@@ -264,20 +264,32 @@ SKIP: {
 	#
 	#simple_test(
 	#	%std_opts,
-	#	service				=> 'XDM',
-	#	to_country			=> 'AU',
+	#	service			=> 'XDM',
+	#	to_country		=> 'AU',
 	#	to_city			=> 'Bicton',
-	#	to_zip				=> '6157',
-	#	weight				=> 5.5,
+	#	to_zip			=> '6157',
+	#	weight			=> 5.5,
 	#);
 	
 	simple_test(
 		%std_opts,
-		service				=> 'XPR',
-		to_country			=> 'AU',
+		service			=> 'XPR',
+		to_country		=> 'AU',
 		to_city			=> 'Bicton',
-		to_zip				=> '6157',
-		weight				=> 5.5,
+		to_zip			=> '6157',
+		weight			=> 5.5,
+	);
+	
+	###########################################################################
+	##  Standard to Canada
+	###########################################################################
+	simple_test(
+		%std_opts,
+		service			=> 'UPSSTD', 
+		to_country		=> 'CA',
+		to_city			=> 'Kitchener',
+		to_zip			=> 'N2H6S9',
+		weight			=> 5.5,
 	);
 	
 	
