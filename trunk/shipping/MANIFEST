@@ -1,7 +1,4 @@
 bin/Business-Shipping-update-source.sh
-bin/gen_bundle.sh
-bin/sf-backup.sh
-bin/update-data.pl
 CHANGELOG
 config/config.ini
 config/log4perl.conf
