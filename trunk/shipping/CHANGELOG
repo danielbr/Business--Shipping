@@ -3,8 +3,15 @@ Revision history for Business::Shipping.
 1.04  CVS
 	- Compatibility
 		+ Scalar::Util 1.10 is now required (to pretty up the code a little).
-		+ Created a Bundle::Business::Shipping module, uploaded to CPAN.
+		+ Created a Bundle::Business::Shipping module, uploaded to CPAN, and add
+		  to CVS.
 	
+	- General
+		+ New configuration parameter for this style:
+		  service=XDM    to_country=Brazil
+		  service=XDM    to_country=Canada       reason=Not available.
+		+ Scripts moved from doc/ to bin/
+
 	- Offline::UPS
 		+ Major fix to the low/high number/name scheme.  For international, it 
 		  is now handled via split/rejoin, because the regex was choking on some
@@ -15,11 +22,7 @@ Revision history for Business::Shipping.
 		+ Sense validity for several combinations of service and country/zip.
 		  (Ground Residential to Hawaii is now "invalid").
 		+ New test for the Netherlands.
-
-	- General
-		+ New configuration parameter for this style:
-		  service=XDM    to_country=Brazil
-		  service=XDM    to_country=Canada       reason=Not available.
+		+ Update to February fuel surcharge (5%)
 
 	- UserTag
 		+ Add feature for not reporting "invalid" requests to the incident
