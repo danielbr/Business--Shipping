@@ -29,7 +29,7 @@ Eventually, it should run a gamut of tests, for all modules, etc.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r }; 
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r }; 
 
 use strict;
 use warnings;
@@ -208,45 +208,60 @@ sub xps_query {
 my $charges;
 my $opt;
 
+sub skip_usps
+{
+	skip( 'Online::USPS: Username and password required for this test.', 1 ) 
+		unless ( $ENV{ USPS_USER_ID } and $ENV{ USPS_PASSWORD } );
+}
 
+sub skip_ups
+{
+	skip( 'Online::UPS: Username, password, and UPS access key required for this test.', 1 ) 
+		unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+}
 
-print "testing USPS...\n";
-$opt = {
-	'user_id'	=> $ENV{ USPS_USER_ID },
-	'password' => $ENV{ USPS_PASSWORD },
-	'reparse' => "1",
-	'service' => "Priority",
-	'mode' => "USPS",
-	'weight'	=> 10,
-	'from_zip'	=> '20770',
-	'to_zip'	=> '20852',
-};
-$charges = xps_query( 'USPS', $opt );
-print $charges if $charges;
-print "\n\n";
+SKIP: { skip_usps();
+	print "testing Online::USPS...\n";
+	$opt = {
+		'user_id'	=> $ENV{ USPS_USER_ID },
+		'password' => $ENV{ USPS_PASSWORD },
+		'reparse' => "1",
+		'service' => "Priority",
+		'mode' => "USPS",
+		'weight'	=> 10,
+		'from_zip'	=> '20770',
+		'to_zip'	=> '20852',
+	};
+	$charges = xps_query( 'Online::USPS', $opt );
+	print $charges if $charges;
+	print "\n\n";
+}
 
+SKIP: { skip_usps();
+	print "testing USPS again...\n";
+	$charges = xps_query( 'USPS', $opt );
+	print $charges if $charges;
+	print "\n\n";
+}
 
-print "testing USPS again...\n";
-$charges = xps_query( 'USPS', $opt );
-print $charges if $charges;
-print "\n\n";
+SKIP: { skip_ups();
+	print "testing UPS...\n";
+	$opt = {
+		'reparse' => "1",
+		'service' => "GNDRES",
+		'mode' => "UPS",
+		'weight' => "2.5",
+		'to_zip'	=> '98607',
+		'from_zip'	=> '98682',
+		'access_key' => $ENV{ UPS_ACCESS_KEY },
+		'user_id' => $ENV{ UPS_USER_ID },
+		'password' => $ENV{ UPS_PASSWORD },
+	};
+	
+	$charges = xps_query( 'UPS', $opt );
+	print $charges if $charges;
+	print "\n\n";
 
-
-print "testing UPS...\n";
-$opt = {
-	'reparse' => "1",
-	'service' => "GNDRES",
-	'mode' => "UPS",
-	'weight' => "2.5",
-	'to_zip'	=> '98607',
-	'from_zip'	=> '98682',
-	'access_key' => $ENV{ UPS_ACCESS_KEY },
-	'user_id' => $ENV{ UPS_USER_ID },
-	'password' => $ENV{ UPS_PASSWORD },
-};
-$charges = xps_query( 'UPS', $opt );
-print $charges if $charges;
-print "\n\n";
-
+}
 
 ok( 1, 'reached end of the test simulator' );

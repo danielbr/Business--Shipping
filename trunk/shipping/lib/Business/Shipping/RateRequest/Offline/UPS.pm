@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS
 #
-# $Id: UPS.pm,v 1.9 2004/01/22 23:00:47 db-ship Exp $
+# $Id: UPS.pm,v 1.10 2004/01/22 23:36:56 db-ship Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003,2004 Kavod Technologies, Dan Browning. 
@@ -16,7 +16,7 @@
 
 package Business::Shipping::RateRequest::Offline::UPS;
 
-$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -425,7 +425,7 @@ sub _handle_response
 	$self->do_update();
 	$self->calc_zone_data();
 	$total_charges  = $self->calc_cost();
-	$total_charges += $self->calc_express_plus_adder();
+	$total_charges += $self->calc_express_plus_adder( $total_charges );
 	$total_charges += $self->calc_fuel_surcharge( $total_charges );
 	$total_charges += $self->calc_residential_surcharge( $total_charges );
 	
@@ -455,18 +455,16 @@ sub _handle_response
 
 sub calc_express_plus_adder
 {
-	trace '()';
-	my ( $self ) = @_;
-	my $adder;
 
-	#
-	# TODO: We must have some amount to add it to, before we add it.
-	#
+	my ( $self, $total_charges ) = @_;
+	trace "( $total_charges )";
+	return 0 unless $total_charges;
+	
 	if ( $self->service_code_to_ups_name( $self->service() ) =~ /plus/i ) {
- 		$adder = cfg()->{ ups_information }->{ express_plus_adder } || 40.00;
+ 		return cfg()->{ ups_information }->{ express_plus_adder } || 40.00;
 	}
 	
-	return $adder || 0.00;
+	return 0.00;
 }
 
 #

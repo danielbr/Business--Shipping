@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.14 2004/01/22 23:00:46 db-ship Exp $
+# $Id: business-shipping.tag,v 1.15 2004/01/22 23:36:56 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -103,7 +103,7 @@ use Business::Shipping;
 sub {
  	my ( $shipper, $opt ) = @_;
 	
-	my $debug = delete $opt->{ debug } || 0;
+	my $debug = delete $opt->{ debug } || 1;
 	::logDebug( "[business-shipping " . uneval( $opt ) ) if $debug;
 	my $try_limit = delete $opt->{ 'try_limit' } || 2;
 	
@@ -128,6 +128,7 @@ sub {
 	# Business::Shipping takes a hash.
 	#
 	my %opt = %$opt;
+	$opt = undef;
 
 	my $to_country_default = $Values->{ $Variable->{ XPS_TO_COUNTRY_FIELD } || 'country' };
 	
@@ -174,8 +175,6 @@ sub {
 		},
 	};
 	
-	print STDERR $defaults;
-	
 	#
 	# Apply all of the above defaults.  Sorting the hash keys causes 'all' to
 	# be applied first, which allows each shipper to override the default.
@@ -194,7 +193,7 @@ sub {
 			}
 		}
 	}
-	::logDebug( "After processing all defaults, the options are now: " . uneval( $opt ) ) if $debug;
+	::logDebug( "After processing all defaults, the options are now: " . uneval( \%opt ) ) if $debug;
 	
 	my $rate_request;
 	eval {
@@ -228,7 +227,6 @@ sub {
 		eval {
 			$submit_results = $rate_request->submit();
 		};
-		
 		if ( $submit_results and ! $@ ) {
 			#
 			# Success, no more retries
@@ -238,10 +236,20 @@ sub {
 		}
 		else {
 			Log( "Try $tries: error: " . $rate_request->error() . "$@" );
+			my $error_on_server;
 			for ( @retry_errors ) {
 				if ( $rate_request->error() =~ /$_/ ) {
-					Log( 'Error was on server, trying again...' );
+					$error_on_server = 1;
+					
 				}
+			}
+			
+			if ( $error_on_server ) {
+				Log( 'Error was on server, trying again...' );
+			}
+			else {
+				Log( 'Error was not on the server, giving up...' );
+				last;
 			}
 		}
 	}
@@ -254,8 +262,6 @@ sub {
 	# For now, we just fall back on total_charges()
 	#
 	$charges ||= $rate_request->total_charges();
-	
-	print STDERR "Charges are now $charges!";
 
 	#
 	# This is a debugging / support tool.  Set the XPS_GEN_INCIDENTS and

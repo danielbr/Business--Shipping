@@ -22,6 +22,8 @@ Revision history for Business::Shipping.
 	- Fix "Multiple shipments to Canada return 0 except the first" bug, caused
 	  by poorly implemented Zones class attribute: now correctly implement as a
 	  static hash, accessed by function.
+	- Updated the Interchange UserTag simulator, and make it a part of the
+	  standard testing scheme (instead of a manual test).
 
 1.02  Jan 06 2004
 	- Update all data tables from UPS (Jan 05 2004)
