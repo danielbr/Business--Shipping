@@ -29,3 +29,5 @@ my $rate_request = Business::Shipping->rate_request(
 $rate_request->submit() or die $rate_request->error();
 
 print $rate_request->total_charges() . "\n";
+
+
