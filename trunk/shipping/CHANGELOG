@@ -45,12 +45,17 @@ Revision history for Business::Shipping
         http_proxy=http://proxy.my.place/
         no_proxy="localhost,my.domain"
         export http_proxy no_proxy
+	
+    * [Done] [Enh] Provide multiple bundles (in the same distribution)
+      - Bundle::Business::Shipping
+      - Bundle::Business::Shipping::UPS_Offline
+      - Bundle::Business::Shipping::etc.
   
   All Online Modules
   
       * [Done] [Enh] Migrate the "retry on failure" code from the interchange 
-      usertag [business-shipping] to Business::Shipping proper.  Default to 
-      tries = 2.
+        usertag [business-shipping] to Business::Shipping proper.  Default to 
+        tries = 2.
     
   Tracking
   

@@ -2,12 +2,91 @@
 
 INSTALL - How to install Business::Shipping
 
-=head1 NOTE
+=head1 NOTES
 
-Be sure to read the "GETTING STARTED" section of the README if you plan to use
-any online services (e.g. shipment tracking).
+=head2 Getting Started
 
-=head1 REQUIRED MODULES
+Be sure to read the "GETTING STARTED" section of the README, because some 
+services (e.g. online rate requests) require that the user signup for a username
+and password.
+
+=head2 Forcing installation
+
+As of Sept 16, 2004, the following CPAN modules in Bundle::Business::Shipping 
+did not pass their own tests on the author's system:
+
+=over 4
+
+=item * DBD::CSV: Failed 1/14 test scripts, 92.86% okay.
+
+=item * XML::DOM: Failed 5/21 test scripts, 76.19% okay. 
+
+=back
+
+Even so, they seem to work fine after installation, but CPAN will not install 
+them unless the "force" command prefix is used.  
+
+=head2 Forcing version 2.x of Class::MethodMaker
+
+Class::MethodMaker::Engine is used as a prerequisite because it forces CPAN to 
+retreive version 2.x of Class::MethodMaker.
+
+=head2 Choosing your bundle
+
+If you are planning on using all of the shipping methods, install 
+C<Bundle::Business::Shipping>.  However, if you would only like to install the
+required modules for one shipper, you can select it individually:
+
+=over 4
+
+=item * Bundle::Business::Shipping::UPS_Online
+
+=item * Bundle::Business::Shipping::UPS_Offline
+
+=item * Bundle::Business::Shipping::USPS_Online
+
+=back
+
+=head1 CPAN INSTALLATION
+
+All shippers:
+
+ perl -MCPAN -e 'force install DBD::CSV XML::DOM'
+ perl -MCPAN -e 'install Bundle::Business::Shipping'
+
+UPS_Online only:
+
+ perl -MCPAN -e 'force install XML::DOM'
+ perl -MCPAN -e 'install Bundle::Business::Shipping::UPS_Offline'
+
+UPS_Offline only:
+
+ perl -MCPAN -e 'force install DBD::CSV'
+ perl -MCPAN -e 'install Bundle::Business::Shipping::UPS_Offline'
+ 
+USPS_Online only:
+
+ perl -MCPAN -e 'force install XML::DOM'
+ perl -MCPAN -e 'install Bundle::Business::Shipping::USPS_Online'
+ 
+=head1 MANUAL INSTALLATION
+
+Be sure to install all required modules before installing.  After unpacking the 
+tarball, execute this command:
+
+ perl Makefile.PL && make && make test && make install
+
+Or, expressed as separate commands:
+
+ perl Makefile.PL
+ make
+ make test
+ make install
+
+=head1 All required modules
+
+Each Bundle lists the required modules for each shipper type.  Here is the 
+combined list:
 
  Bundle::DBD::CSV (any)
  Business::Shipping::DataFiles (any)
@@ -23,41 +102,5 @@ any online services (e.g. shipment tracking).
  Scalar::Util (1.10)
  XML::DOM (any)
  XML::Simple (2.05)
-
-=head2 CPAN INSTALLATION
-
- perl -MCPAN -e 'force install DBD::CSV XML::DOM'
- perl -MCPAN -e 'install Bundle::Business::Shipping'
-
-As of Sept 16, 2004, the following CPAN modules in Bundle::Business::Shipping do
-not pass their own tests on the author's system:
-
-=over 4
-
-=item * DBD::CSV: Failed 1/14 test scripts, 92.86% okay.
-
-=item * XML::DOM: Failed 5/21 test scripts, 76.19% okay. 
-
-=back
-
-Even so, they seem to work fine after installation, but CPAN will not install 
-them unless the "force" command prefix is used.  
-
-Also, we have listed Class::MethodMaker::Engine as a required module because it
-forces CPAN to retreive version 2.x of Class::MethodMaker. 
-
-=head1 MANUAL INSTALLATION
-
-Be sure to install all required modules before installing.  After unpacking the 
-tarball, execute this command:
-
- perl Makefile.PL && make && make test && make install
-
-Or, expressed as separate commands:
-
- perl Makefile.PL
- make
- make test
- make install
 
 =cut

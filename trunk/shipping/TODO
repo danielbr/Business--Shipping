@@ -2,14 +2,12 @@
 ##  General TODO
 ################################################################################
 
+    * [Enh] Country Support
+      - Which origin countries do UPS_Online and UPS_Offline support?
+    
     * [Enh] Test on Sourceforge Compile Farm systems.
       - Also test using older perl versions (e.g. 5.6.x).
  
-    * [Enh] Provide multiple bundles (in the same distribution)
-      - Bundle::Business::Shipping - Everything
-      - Bundle::Business::Shipping::UPS_Offline - Minimal
-      - Bundle::Business::Shipping::etc. - Minimal
-	
     * [Enh] Auto-generate a todo-list addendum from the "# TODO:" comments 
       strewn throughout the source code.
 
