@@ -13,6 +13,7 @@ Revision history for Business::Shipping.
         - Copyright update.
         - Aesthetic updates to most modules.
         - Documentation updates for several modules.
+        - Example script added for updating the Business::Shipping module.
     
     - Offline::UPS updates:
         - Bug fixes for International Shipping
