@@ -1,0 +1,85 @@
+NAME
+    Business::Shipping - API for shipping-related tasks
+
+SYNOPSIS
+    Example usage for a rating request:
+
+            use Business::Shipping;
+        
+            my $rate_request = Business::Shipping->rate_request(
+                    shipper                 => 'UPS',
+                    user_id                 => '',          
+                    password                => '',
+                    service                 => 'GNDRES',
+                    from_zip                => '98682',
+                    to_zip                  => '98270',
+                    weight                  => 5.00,
+            };
+        
+            $rate_request->submit() or die $shipping->error();
+        
+            print $rate_request->total_charges();
+
+ABSTRACT
+    Business::Shipping is an API for shipping-related tasks.
+
+    Currently, the only implemented task is shipping cost calculation, but
+    tracking, availability, and other services are planned for future
+    addition.
+
+    UPS and USPS have been implemented so far, but FedEX and perhaps others
+    are planned for future support.
+
+MULTI-PACKAGE API
+     $shipment->set(
+            user_id         => '',
+            password        => '',
+            from_zip        => '',
+            to_zip          => '',
+     );
+
+     $shipment->add_package(
+            id              => '0',
+            weight          => '',
+     );
+
+     $shipment->add_package(
+            id              => '1',
+            weight          => '',
+     );
+
+     $shipment->submit() or print $shipment->error();
+
+     print $shipment->package('0')->get_charges( 'Airmail Parcel Post' );
+     print $shipment->package('1')->get_charges( 'Airmail Parcel Post' );
+     print $shipment->get_total_price( 'Airmail Parcel Post' );
+
+ERROR/DEBUG HANDLING
+    The 'event_handlers' argument takes a hashref telling Business::Shipping
+    what to do for error, debug, trace, and the like. The value can be one
+    of four options:
+
+     * 'STDERR'
+     * 'STDOUT'
+     * 'carp'
+     * 'croak'
+
+    For example:
+
+     $shipment->set( 
+            'event_handlers' => ({ 
+                    'debug' => undef,
+                    'trace' => undef,
+                    'error' => 'croak',
+            })
+     );
+ 
+    The default is 'STDERR' for error handling, and nothing for debug/trace
+    handling. Note that you can still access error messages even with no
+    handler, by accessing the return values of methods. For example:
+
+     $shipment->set( %values ) or print $shipment->error();
+        
+    However, if you don't save the error value before the next call, it
+    could be overwritten by a new error.
+

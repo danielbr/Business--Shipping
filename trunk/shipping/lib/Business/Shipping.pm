@@ -1,6 +1,6 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.6 2003/10/13 18:25:14 db-ship Exp $
+# $Id: Shipping.pm,v 1.7 2003/11/12 21:41:23 db-ship Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Carp;
 use Business::Shipping::Debug;
@@ -116,13 +116,17 @@ sub new_subclass
 	return $new_sub_object;	
 }
 
+1;
+
+__END__
+
 =head1 NAME
 
-Business::Shipping - API for UPS and USPS
+Business::Shipping - API for shipping-related tasks
 
 =head1 SYNOPSIS
 
-Simple API for rating requests.
+Example usage for a rating request:
 
 	use Business::Shipping;
 	
@@ -206,5 +210,3 @@ overwritten by a new error.
 
 =cut
 
-
-1;

@@ -1,11 +1,72 @@
 # Business::Shipping::RateRequest::Online::UPS - Abstract class for shipping cost rating.
 # 
-# $Id: UPS.pm,v 1.8 2003/10/13 18:43:58 db-ship Exp $
+# $Id: UPS.pm,v 1.9 2003/11/12 21:41:23 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
+
+=head1 NAME
+
+Business::Shipping::UPS 
+
+See Shipping.pm POD for usage information.
+
+=head1 SERVICE TYPES
+
+=head2 Domestic
+
+	1DM		
+	1DML	
+	1DA		One Day Air
+	1DAL	
+	2DM	
+	2DA		Two Day Air
+	2DML	
+	2DAL	
+	3DS		Three Day Select	
+	GNDCOM	Ground Commercial
+	GNDRES	Ground Residential
+	
+=head2 International
+ 
+	XPR		UPS Worldwide Express
+	XDM		UPS Worldwide Express Plus
+	UPSSTD	UPS Standard
+	XPRL	UPS Worldwide Express Letter
+	XDML	UPS Worldwide Express Plus Letter
+	XPD		UPS Worldwide Expedited
+
+=head1 ARGUMENTS
+
+=head2 Required
+
+	user_id
+	password
+	
+	access_key
+	pickup_type
+	from_country
+	from_zip
+	to_country
+	to_zip
+	to_residential
+	service
+	packaging
+	weight
+	
+=head2 Optional
+
+	test_server
+	no_ssl
+	event_handlers
+	
+	from_city
+	to_city
+
+	
+=cut
 
 package Business::Shipping::RateRequest::Online::UPS;
 
@@ -13,7 +74,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 #@ISA = ( 'Business::Shipping::RateRequest::Online' );
 use base ( 'Business::Shipping::RateRequest::Online' );
 
@@ -270,11 +331,11 @@ sub _gen_request_xml
 
 
 
-=item $ups->get_total_charges()
-
-This method returns the total charges.
-
-=cut
+#
+# $ups->get_total_charges()
+#
+# This method returns the total charges.
+#
 sub get_total_charges
 {
 	my ( $self ) = shift;
@@ -345,76 +406,7 @@ sub _handle_response
 }
 
 
-=back
-
-=head1 SEE ALSO
-
-	http://www.ec.ups.com
-
-=head1 COPYRIGHT
-
-	Copyright (c) 2003 Kavod Technologies, Dan Browning.
-	All rights reserved. This program is free software; you can redistribute it
-	and/or modify it under the same terms as Perl itself.
-
-	UPS is a registered trademark of United Parcel Service. 
-
-=cut
-
-
-
-=item B<new>
-
-Required Arguments:
-
-	user_id
-	password
-	
-	access_key
-	pickup_type
-	from_country
-	from_zip
-	to_country
-	to_zip
-	to_residential
-	service
-	packaging
-	weight
-	
-Optional Arguments:
-
-	
-	test_server
-	no_ssl
-	event_handlers
-	
-	from_city
-	to_city
-
-Services:
-
-1DM		
-1DML	
-1DA		One Day Air
-1DAL	
-2DM	
-2DA		Two Day Air
-2DML	
-2DAL	
-3DS		Three Day Select	
-GNDCOM	Ground Commercial
-GNDRES	Ground Residential
-XPR		UPS Worldwide Express
-XDM		UPS Worldwide Express Plus
-UPSSTD	UPS Standard
-XPRL	UPS Worldwide Express Letter
-XDML	UPS Worldwide Express Plus Letter
-XPD		UPS Worldwide Expedited
-
-
-=cut
-
-
 
 1;
 
+__END__

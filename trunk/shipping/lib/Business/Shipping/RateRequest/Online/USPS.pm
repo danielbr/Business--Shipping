@@ -1,11 +1,43 @@
 # Business::Shipping::RateRequest::Online::USPS - Abstract class for shipping cost rating.
 # 
-# $Id: USPS.pm,v 1.5 2003/08/20 12:58:48 db-ship Exp $
+# $Id: USPS.pm,v 1.6 2003/11/12 21:41:23 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
 # Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
 # 
+
+=head1 NAME
+
+Business::Shipping::USPS - A USPS module 
+
+See Shipping.pm POD for usage information.
+
+=head1 SERVICE TYPES
+
+=head2 Domestic
+
+	EXPRESS
+	Priority
+	Parcel
+	Library
+	BPM
+	Media
+
+=head2 International
+ 
+	'Global Express Guaranteed Document Service',
+	'Global Express Guaranteed Non-Document Service',
+	'Global Express Mail (EMS)',
+	'Global Priority Mail - Flat-rate Envelope (large)',
+	'Global Priority Mail - Flat-rate Envelope (small)',
+	'Global Priority Mail - Variable Weight Envelope (single)',
+	'Airmail Letter Post',
+	'Airmail Parcel Post',
+	'Economy (Surface) Letter Post',
+	'Economy (Surface) Parcel Post',
+
+=cut
 
 package Business::Shipping::RateRequest::Online::USPS;
 
@@ -13,9 +45,8 @@ use strict;
 use warnings;
 
 use vars qw( @ISA $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @ISA = ( 'Business::Shipping::RateRequest::Online' );
-
 
 use Business::Shipping::RateRequest::Online;
 use Business::Shipping::Debug;
@@ -310,68 +341,6 @@ sub _domestic_or_intl
 	debug( $self->domestic() ? 'Domestic' : 'International' );
 	return;
 }
-
-=pod
-
- * Domestic Service types:
- 	EXPRESS
-	Priority
-	Parcel
-	Library
-	BPM
-	Media
-
- * International Service types:
- 
-	'Global Express Guaranteed Document Service',
-	'Global Express Guaranteed Non-Document Service',
-	'Global Express Mail (EMS)',
-	'Global Priority Mail - Flat-rate Envelope (large)',
-	'Global Priority Mail - Flat-rate Envelope (small)',
-	'Global Priority Mail - Variable Weight Envelope (single)',
-	'Airmail Letter Post',
-	'Airmail Parcel Post',
-	'Economy (Surface) Letter Post',
-	'Economy (Surface) Parcel Post',
-
-
-=cut
-
-=head1 SEE ALSO
-
-	http://www.uspswebtools.com/
-
-=head1 AUTHOR
-
-	Dan Browning <db@kavod.com>
-	Kavod Technologies
-	http://www.kavod.com
-
-=head1 COPYRIGHT
-
-	Copyright (c) 2003 Kavod Technologies, Dan Browning, and Kevin Old.
-	All rights reserved. This program is free software; you can redistribute it
-	and/or modify it under the same terms as Perl itself.
-
-=cut
-
-=head1 NAME
-
-Business::Shipping::USPS - A USPS module 
-
-Documentation forthcoming.
-
- * Register for the API here:
- 
-http://www.uspsprioritymail.com/et_regcert.html
-
- * You will need to call or e-mail to active the account for "Production" usage
- * Otherwise, it will only work with special test queries.
-
-#TODO: Utilize $self->_metadata( 'optionname' ) and $self->initialize(), like UPS. 
- 
-=cut
-
 
 1;
 

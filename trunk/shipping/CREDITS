@@ -1,0 +1,12 @@
+We greatly appreciate the help that all of the following individuals have 
+contributed.
+
+ * Kevin Old <kold@carolina.rr.com> got the USPS XML generator working.
+ 
+ * sauoq on PerlMonks.org provided valuable commentary and ideas.
+ 
+ * bbfu on PerlMonks.org got Class::MethodMaker working with SUPER.
+ 
+ * Mike Castle <dalgoda@ix.netcom.com> reported a POD nit.
+ 
+Thank you.

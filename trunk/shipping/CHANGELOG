@@ -1,11 +1,18 @@
 Revision history for Business::Shipping.
 
-0.77
+0.78  Nov 12 2003
+	- Cleanup old CustomMethodMaker tests
+	- Cleanup POD
+	- Major cleanup to MANIFEST
+	- Moved credits to its own file.
+	- Text and HTML versions of documentation now in doc/
+
+0.77  Nov 11 2003
 	- Add UPS one-day air saver.
 	- Cleanup TODO list.
 	- Add COPYING file.
 
-0.76
+0.76  Oct 13 2003
 	- Fixed bug report:
  		calling Business::Shipping::USPS->submit( 
 		{
@@ -25,7 +32,7 @@ Revision history for Business::Shipping.
 	- Online::UPS thinned.
 	- Additional test for UPS Letter post to Canda.
 
-0.75
+0.75  Aug 25 2003
 	- Additional USPS tests (Letter service, Canada service)
 	- Additional UPS tests (Canada)
 	- Fix ounce calculator.

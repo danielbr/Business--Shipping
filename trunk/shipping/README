@@ -21,20 +21,28 @@ DEPENDENCIES
 GETTING STARTED
      * For USPS: Sign up online for free:
  
-            - http://www.uspswebtools.com
+        - http://www.uspsprioritymail.com/et_regcert.html
         
-            - The online signup will result in a testing-only account (only a small
-              sample of queries will work).  To activate the "production" use of your
-              USPS account, you must follow the USPS documentation.  Currently, that
-              means contacting the Internet Customer Care Center by e-mail or phone:
+            - (More info at http://www.uspswebtools.com)
+
+        - The online signup will result in a testing-only account (only a small
+              sample of queries will work).  
+          
+            - To activate the "production" use of your USPS account, you must follow the
+              USPS documentation.  Currently, that means contacting the Internet 
+              Customer Care Center by e-mail or phone:
+          
                 icustomercare@usps.com
+                
                     1-800-344-7779
     
      * For UPS: Sign up online for free:
- 
-            - https://www.ups.com/servlet/registration?loc=en_US_EC
 
-            - You will get a User Id, Password, and Access Key from UPS.
+       - https://www.ups.com/servlet/registration?loc=en_US_EC
+   
+       - (More info at http://www.ec.ups.com)
+   
+       - You will get a User Id, Password, and Access Key from UPS.
  
 USAGE EXAMPLES
      * See Shipping.pm POD documentation for API and usage examples.
@@ -57,13 +65,11 @@ COPYRIGHT AND LICENCE
     more info.
 
 AUTHOR
-            Dan Browning
-            Kavod Technologies
-            <db@kavod.com>
-            http://www.kavod.com
+     Dan Browning
+     Kavod Technologies
+     <db@kavod.com>
+     http://www.kavod.com
 
 CREDITS
-     * Kevin Old <kold@carolina.rr.com> got the USPS XML generator working.
-     * sauoq on PerlMonks.org provided valuable commentary and ideas. 
-     * bbfu on PerlMonks.org got Class::MethodMaker working with SUPER. 
+     * See CREDITS file. 
 

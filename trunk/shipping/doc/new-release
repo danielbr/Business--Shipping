@@ -25,8 +25,11 @@ new-release - the Business::Shipping release script.
  cvs diff | more
  vi CHANGELOG
  
- # Update the README
- make readme
+ # Update the documentation
+ make docs
+ 
+ # Update the manifest
+ make manifest
  
  # Commit to CVS
  cvs commit

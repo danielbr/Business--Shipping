@@ -2,7 +2,7 @@ use 5.006000;
 use ExtUtils::MakeMaker;
 
 # Version for Business-Shipping as a whole.
-$VERSION = '0.77';
+$VERSION = '0.78';
 
 #
 # perl -MCPAN -e shell
@@ -32,8 +32,11 @@ WriteMakefile(
 );
 
 sub MY::postamble {
-	return <<'MAKE_README';
-readme :
+	return <<'MAKE_DOCS';
+docs :
 	pod2text doc/README.pod > README
-MAKE_README
+	pod2html doc/README.pod > doc/README.html
+	pod2text lib/Business/Shipping.pm > doc/usage.txt
+	pod2html lib/Business/Shipping.pm > doc/usage.html
+MAKE_DOCS
 }

@@ -1,0 +1,29 @@
+#
+# My stuff
+#
+todo
+doc/new-release
+
+#
+# Version control files and dirs.
+#
+\bRCS\b
+\bCVS\b
+,v$
+
+#
+# Makemaker generated files and dirs.
+#
+^MANIFEST\.
+^Makefile$
+^blib/
+^MakeMaker-\d
+
+#
+# Temp, old, backup and emacs backup files.
+#
+~$
+\.old$
+\.bak$
+^#.*#$
+^\.#

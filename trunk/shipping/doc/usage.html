@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Business::Shipping - API for shipping-related tasks</title>
+<link rev="made" href="mailto:db@localhost.localdomain" />
+</head>
+
+<body style="background-color: white">
+
+<p><a name="__index__"></a></p>
+<!-- INDEX BEGIN -->
+
+<ul>
+
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<li><a href="#abstract">ABSTRACT</a></li>
+	<li><a href="#multipackage_api">MULTI-PACKAGE API</a></li>
+	<li><a href="#error/debug_handling">ERROR/DEBUG HANDLING</a></li>
+</ul>
+<!-- INDEX END -->
+
+<hr />
+<p>
+</p>
+<h1><a name="name">NAME</a></h1>
+<p>Business::Shipping - API for shipping-related tasks</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>Example usage for a rating request:</p>
+<pre>
+        use Business::Shipping;
+        
+        my $rate_request = Business::Shipping-&gt;rate_request(
+                shipper                 =&gt; 'UPS',
+                user_id                 =&gt; '',          
+                password                =&gt; '',
+                service                 =&gt; 'GNDRES',
+                from_zip                =&gt; '98682',
+                to_zip                  =&gt; '98270',
+                weight                  =&gt; 5.00,
+        };
+        
+        $rate_request-&gt;submit() or die $shipping-&gt;error();
+        
+        print $rate_request-&gt;total_charges();</pre>
+<p>
+</p>
+<hr />
+<h1><a name="abstract">ABSTRACT</a></h1>
+<p>Business::Shipping is an API for shipping-related tasks.</p>
+<p>Currently, the only implemented task is shipping cost calculation, but tracking, 
+availability, and other services are planned for future addition.</p>
+<p>UPS and USPS have been implemented so far, but FedEX and perhaps others are 
+planned for future support.</p>
+<p>
+</p>
+<hr />
+<h1><a name="multipackage_api">MULTI-PACKAGE API</a></h1>
+<pre>
+ $shipment-&gt;set(
+        user_id         =&gt; '',
+        password        =&gt; '',
+        from_zip        =&gt; '',
+        to_zip          =&gt; '',
+ );
+
+</pre>
+<pre>
+ $shipment-&gt;add_package(
+        id              =&gt; '0',
+        weight          =&gt; '',
+ );
+
+</pre>
+<pre>
+ $shipment-&gt;add_package(
+        id              =&gt; '1',
+        weight          =&gt; '',
+ );
+
+</pre>
+<pre>
+ $shipment-&gt;submit() or print $shipment-&gt;error();
+
+</pre>
+<pre>
+ print $shipment-&gt;package('0')-&gt;get_charges( 'Airmail Parcel Post' );
+ print $shipment-&gt;package('1')-&gt;get_charges( 'Airmail Parcel Post' );
+ print $shipment-&gt;get_total_price( 'Airmail Parcel Post' );
+
+</pre>
+<p>
+</p>
+<hr />
+<h1><a name="error/debug_handling">ERROR/DEBUG HANDLING</a></h1>
+<p>The 'event_handlers' argument takes a hashref telling Business::Shipping what to do
+for error, debug, trace, and the like.  The value can be one of four options:
+
+</p>
+<pre>
+ * 'STDERR'
+ * 'STDOUT'
+ * 'carp'
+ * 'croak'
+
+</pre>
+<p>For example:
+
+</p>
+<pre>
+ $shipment-&gt;set( 
+        'event_handlers' =&gt; ({ 
+                'debug' =&gt; undef,
+                'trace' =&gt; undef,
+                'error' =&gt; 'croak',
+        })
+ );
+ 
+The default is 'STDERR' for error handling, and nothing for debug/trace handling.
+Note that you can still access error messages even with no handler, by accessing
+the return values of methods.  For example:
+
+</pre>
+<pre>
+ $shipment-&gt;set( %values ) or print $shipment-&gt;error();
+        
+However, if you don't save the error value before the next call, it could be
+overwritten by a new error.
+
+</pre>
+
+</body>
+
+</html>
