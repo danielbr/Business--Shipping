@@ -10,4 +10,3 @@ requires:
     Log::Log4perl:              0
     Scalar::Util                1.10
 distribution_type: module
-generated_by: Module::Build version 0.25_03
