@@ -2,7 +2,21 @@
 ##  General TODO
 ################################################################################
 
+* Resurrect the event_handlers() method.  Log4perl configuration should allow
+  manual overrides via event_handlers.
+
+* Business::Shipping::UPS_XML
+  - Add to documentation as an alternative to Business::Shipping
+  - Maybe utilize the Parser code?
+
+* [Enh] Add Subversion properties
+  svn:ignore (svn propset svn:ignore -F .cvsignore .)
+  copyright
+  license  
+
 * [Bug] Test Perl 5.6.2
+
+* [Enh] Unit tests for each class.
   
 * [Enh] Remove default_package() and determine_shipper_from_self().
 

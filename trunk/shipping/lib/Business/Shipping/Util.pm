@@ -1,14 +1,3 @@
-# Business::Shipping::Util - Miscellaneous functions
-# 
-# $Id: Util.pm,v 1.10 2004/06/25 22:20:07 danb Exp $
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-# 
-
-package Business::Shipping::Util;
-
 =head1 NAME
 
 Business::Shipping::Util - Miscellaneous functions
@@ -27,6 +16,8 @@ Many file-related functions, some others.
 
 =cut
 
+package Business::Shipping::Util;
+
 $VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT  = ( 'element_in_array' );
 
@@ -39,6 +30,7 @@ use Carp;
 use File::Find;
 use File::Copy;
 use Fcntl ':flock';
+use English;
 
 =item * download_to_file( $url, $file )
 
@@ -88,9 +80,7 @@ sub currency
 
 =cut
 
-#
 # Extracts all files from the given zip
-#
 
 =pod
 
@@ -136,9 +126,9 @@ sub filename_only
 
 =cut
 
-#
 # Return ( directory_path, file_name ) from any path.
-#
+# TODO: Use correct File:: Module, and be Windows-compatible
+
 sub split_dir_file
 {
     my $path = shift;
@@ -195,6 +185,8 @@ sub remove_elements_of_x_that_are_in_y
 
 =cut
 
+# TODO: Windows compat: call binmode() if Windows.
+
 sub remove_windows_carriage_returns
 {
     my $file = shift;
@@ -202,14 +194,12 @@ sub remove_windows_carriage_returns
     
     open(    IN,        $file      );
     flock(   IN,        LOCK_EX    );
-    binmode( IN                    ) if $Global::Windows;
+    
     open(    OUT,       ">$file.1" );
     flock(   OUT,       LOCK_EX    );
-    binmode( OUT                   ) if $Global::Windows;
 
-    #
     # read it all in at once.
-    #
+
     undef $/;
     my $contents = <IN>;
     $contents =~ s/\r\n/\n/g;
@@ -222,9 +212,10 @@ sub remove_windows_carriage_returns
     copy(   "$file.1", $file       );
     unlink( "$file.1"              );
     
-    #
+
     # return to normal line endings.
-    #
+    # TODO: Use English;
+
     $/ = "\n";
     return;
 }
@@ -238,7 +229,11 @@ sub readfile
     my ( $file ) = @_;
     
     return undef unless open( READIN, "< $file" );
+    
+    # TODO: Use English;
+    
     undef $/;
+    
     my $contents = <READIN>;
     close( READIN );
     
@@ -270,7 +265,8 @@ sub get_fh
     my ( $filename ) = @_;
 
     my $file_handle;
-    open $file_handle, "$filename" || carp "could not open file: $filename.  Error: $@";
+    open $file_handle, "$filename" 
+        || carp "could not open file: $filename.  Error: $!";
     
     return $file_handle;
 }

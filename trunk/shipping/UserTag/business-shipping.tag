@@ -1,13 +1,11 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.33 2004/06/25 22:20:05 danb Exp $
-#
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-#
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
 
-ifndef USERTAG_BUSINESS_SHIPPING
-Variable USERTAG_BUSINESS_SHIPPING     1
+ifndef DEF_USERTAG_BUSINESS_SHIPPING
+Variable DEF_USERTAG_BUSINESS_SHIPPING     1
 Message -i Loading [business-shipping] usertag...
 Require Module Business::Shipping
 UserTag  business-shipping  Order         shipper
@@ -26,9 +24,7 @@ Requires Business::Shipping:     Revision: 1.04+
 
 =head1 AUTHOR 
 
-    Dan Browning
-    <db@kavod.com>
-    http://www.kavodtechnologies.com
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
     
 =head1 SYNOPSIS
 
@@ -100,6 +96,12 @@ UPS_GROUND: UPS Ground
 
 See the replacement [ups-query] usertag in this directory.  
 Untested, so please report any bugs. 
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
 
 =cut
 EOD
@@ -197,7 +199,7 @@ sub {
     };
      
     if ( ! defined $rate_request or $@ ) {
-        Log( "[business-shipping] failure when calling Business::Shipping->new(): $@ " );
+        Log( "[business-shipping] failure when calling Business::Shipping->rate_request(): $@ " );
         return;
     }
     
@@ -225,9 +227,9 @@ sub {
             $submit_results = $rate_request->submit();
         };
         if ( $submit_results and ! $@ ) {
-            #
+
             # Success, no more retries
-            #
+
             $success = 1;
             last;
         }
@@ -327,21 +329,6 @@ sub {
     
     return $charges;
 }
-
-__END__
-
-=head1 AUTHOR
-
-Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
-
-=head1 COPYRIGHT AND LICENCE
-
-Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-This program is free software; you may redistribute it and/or modify it under
-the same terms as Perl itself. See LICENSE for more info.
-
-=cut
-
 EOR
 Message ...done.
 endif

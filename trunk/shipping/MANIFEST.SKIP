@@ -9,6 +9,7 @@
 ,v$
 \.cvsignore$
 \.empty$
+\.svn
 
 # Log files
 

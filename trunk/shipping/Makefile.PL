@@ -13,9 +13,9 @@ use English;
 
 # Auto-update REQUIRED MODULES documentation if needed
 #eval "use Devel::Required text => [ '' ], pod => [qw(lib/Business/Shipping.pm), qw(doc/README.pod), qw(doc/INSTALL.pod), qw(UserTag/business-shipping.tag)]";
-#
+
 # Defaults
-#
+
 my %my_globals = (
 	SUPPORT_FILES_DIR	=> '/var/perl/Business-Shipping'
 );
@@ -41,15 +41,13 @@ WriteMakefile(
 		'XML::DOM' 				     => 0,
 		'XML::Simple'			     => '2.05',
 	},
-		#'Archive::Zip'			     => 0,
-    	#'Devel::Required'	      	 => '0.03',
-		#'Data::Dumper'			     => 0,
+		#'Archive::Zip'			     => 0,      # For updates only
+    	#'Devel::Required'	      	 => '0.03', # For documentation updates only
 
 );
 
-#
 # Override the standard "install" target, so that it calls "support_files_install"
-#
+
 sub MY::install {
 	package MY;
 	my $inherited = shift->SUPER::install(@_);
@@ -158,6 +156,7 @@ sub subst
         open( OLD,   "<$file.tmp" ) or die "Open failed: $OS_ERROR";
         
         # Read in the entire file for speed.
+        # This regex taken from Interchange (http://www.icdevgroup.org).
         
         undef $INPUT_RECORD_SEPARATOR;
         $_ = <OLD>;
