@@ -2,7 +2,10 @@
 ##  General TODO
 ######################################################
  
- * General consensus seems to be that Business::Shipping is better.
+ * Implement a "update on commit" trigger for
+   http://www.kavod.com/Business-Shipping/Business-Shipping-CVS
+   
+ * General consensus seems to be that Business::Shippingping is better.
    http://www.perlmonks.org/index.pl?node_id=262176
  
  * include the terms of use for each module.
@@ -11,10 +14,10 @@
    handles. Each shipper should be able to be queried for what services it 
    provides... maybe code would look like this:
 
-	use Business::Shipping; 
+	use Business::Shippingping; 
 	
 	# Query the module for installed shipper specific modules.
-	my @shippers = Business::Shipping::available_shippers(); 
+	my @shippers = Business::Shippingping::available_shippers(); 
 	
 	my %shipping_option; 
 	for my $shipper (@shippers) { 
@@ -30,29 +33,26 @@
 	
 		}
 	}
-
- 
- * The POD is pretty well broken, at least for the Ship.pm file.
  
  * Country name translator strings to data outside your program.
  
- * Perhaps pull the shipper-related stuff out of Business::Ship into Business::Shipper. 
+ * Perhaps pull the shipper-related stuff out of Business::Shipping into Business::Shippingper. 
  	- Then Packages can inherit all of the sub building, debugging, etc. functions from
-	  Business::Ship.  USPS and UPS will then inherit what they need from Business::Shipper.
-	- Business::Shipper would also be @ISA=Business::Ship.
+	  Business::Shipping.  USPS and UPS will then inherit what they need from Business::Shippingper.
+	- Business::Shippingper would also be @ISA=Business::Shipping.
 	- Should be done without breaking backwards-compatibility.
  
  * Upgrade the debugging/error handling features: allow user to pass in a callback ref.
  
  * Documentation
  
- * Business::Ship::FedEx module
+ * Business::Shipping::FedEx module
  	- Utilize the recently released Business::FedEx::DirectConnect module.
 
  * More flexible handling of SSL?
 	- Allow the use of Net::SSLeay as well as Crypt::SSLeay?
 
- * Business::Ship::OldUPS interface?
+ * Business::Shipping::OldUPS interface?
  	- Utilize Business::UPS?  Advantage:  no username/id...
 	
  * New feature ideas:
@@ -68,6 +68,26 @@
  
  * Documentation: explain what else is out there (Business::UPS, FedEx, static table lookup)
  
+ * So, it sounds like a "shipment" is another useful abstraction. It would be 
+   shipper-specific and so you probably would have a 
+   Business::Shippingping::<carrier>::Shipment package defined for each carrier. 
+   A shipment would contain one or more packages. It would have an origin or 
+   destination just as the packages it contains. In fact, you'd probably want 
+   to assert that the packages in a shipment all had the same origins and 
+   destinations. The shipment would have a schedule attached to it. You'd 
+   likely track the shipment (rather than tracking a package.) I suspect 
+   you would want to avoid instantiating a Shipment until after one is 
+   actually scheduled; you shouldn't need these classes to determine the 
+   shipping rates.
+   
+ * A more effecient cacheing method:
+   - Cache the end-result (amounts, etc), then look it up at submit() time based on the
+     same _unique_values.  Would require that ignore_extra_info=1, so that all the country
+     information (customs, etc.) wouldn't be saved (kb on disk).
+   - More efficient methods besides FileCache?
+
+
+ 
 ######################################################
 ##  Interchange usertags TODO
 ######################################################
@@ -76,7 +96,7 @@
 	([perl]$Tag->ups_query('', '', '');[/perl]) 
 	
 ######################################################
-##  Business::Ship::USPS TODO
+##  Business::Shipping::USPS TODO
 ######################################################
 
  * Pull the test cases & responses out of the PDF docs and program them so 
@@ -92,7 +112,7 @@
  * Support get_charges( 'service' ) for domestic types.
 
 ######################################################
-##  Business::Ship::UPS TODO
+##  Business::Shipping::UPS TODO
 ######################################################
  
  * Tests that *I* should run:

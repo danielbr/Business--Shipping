@@ -3,22 +3,22 @@ use warnings;
 
 use Test::More 'no_plan';
 use Carp;
-use Business::Ship;
-use_ok( "Business::Ship::UPS::Package" );
+use Business::Shipping;
+use_ok( "Business::Shipping::UPS::Package" );
 
-my $standard_method = new Business::Ship( 'shipper' => 'UPS' );
+my $standard_method = new Business::Shipping( 'shipper' => 'UPS' );
 ok( defined $standard_method,	'UPS standard object construction' );
 
-my $other_method = new Business::Ship::UPS;
+my $other_method = new Business::Shipping::UPS;
 ok( defined $other_method,		'UPS alternate object construction' );
 
-my $package = new Business::Ship::UPS::Package;
+my $package = new Business::Shipping::UPS::Package;
 ok( defined $package,			'UPS package object construction' );
 
 sub test
 {
 	my ( %args ) = @_;
-	my $shipment = new Business::Ship( 'shipper' => 'UPS' );
+	my $shipment = new Business::Shipping( 'shipper' => 'UPS' );
 	$shipment->set(
 		'user_id'		=> $ENV{ UPS_USER_ID },
 		'password'		=> $ENV{ UPS_PASSWORD },

@@ -1,11 +1,16 @@
-Revision history for Business::Ship.
+Revision history for Business::Shipping.
+
+0.03
+	- Fixed POD for the Ship.pm file.
+	- Changed name to Business::Shipping.
+	- Misc updates.
 
 0.02  Sat May 31 18:04:00 2003
 	- Testing overhaul
 	- Lots of bug fixes (uncovered by testing, mostly for USPS)
 	- Added "make readme"
 	- Moving stuff around again.
-	- Launched http://www.kavod.com/Business-Ship
+	- Launched http://www.kavod.com/Business-Shipping
 	- API Changes:
 		+ None.
 
@@ -26,9 +31,9 @@ Revision history for Business::Ship.
 
 		
 0.00  Sun May 25 16:00:00 2003
-	- UPS fully ported to Business::Ship architecture
+	- UPS fully ported to Business::Shipping architecture
 	- Lots of other refactoring.
-	- Considering a Business::Ship::___::Internal for internal lookups.
+	- Considering a Business::Shipping::___::Internal for internal lookups.
   		+ If done, it would be based off of Mike's recent commits.
 
 		
@@ -37,17 +42,17 @@ Revision history for Business::Ship.
     - Re-organizing order of methods for easier browsing.
 
 	- Documentation
-    - Updates for USPS and Business::Ship API
+    - Updates for USPS and Business::Shipping API
     - Code and docs now in sync, except for UPS.
     - Sample shipping.asc entry for [xps-query]
 	
 	- Mapped all "package-level" methods/data accessors to
-      Business::Ship::default_package().
+      Business::Shipping::default_package().
  
 	- USPS:
     - The beginnings of self-validation.
     - submit() and _handle_response() now separate
-    - submit() moved to Business::Ship for UPS to share (later)
+    - submit() moved to Business::Shipping for UPS to share (later)
  
 	- UPS:
     - Getting ready for re-design to take advantage of new API. 

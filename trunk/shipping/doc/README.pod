@@ -1,6 +1,6 @@
 =head1 NAME
 
-Business::Ship - Shipping cost calculator for UPS and USPS
+Business::Shipping - Shipping cost calculator for UPS and USPS
 
 =head1 INSTALLATION
 
@@ -40,19 +40,19 @@ Business::Ship - Shipping cost calculator for UPS and USPS
 	   via catalog variables.  You can add these to your products/variables.txt
 	   file, like the following example, or you can add them using the Admin UI.
 
- * See Business::Ship POD documentation for API notes.
+ * See Business::Shipping POD documentation for API notes.
 
 =head1 EXAMPLES
 
 This module is used by the Interchange E-Commerce software 
 (http://www.icdevgroup.org).  For a reference implementation of Business::UPS,
 see the doc/xps-query.tag file, it implements a function that takes 
-shipping-related arguments, builds a Business::Ship object, then returns the 
+shipping-related arguments, builds a Business::Shipping object, then returns the 
 calculatd cost.
  
 =head1 WEBSITE
  
- http://www.kavod.com/Business-Ship
+ http://www.kavod.com/Business-Shipping
  
 The website will carry the most recent version, as well as instructions for
 accessing the anonymous CVS repository. 

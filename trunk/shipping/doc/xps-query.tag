@@ -1,5 +1,5 @@
 Message Loading [xps-query] usertag...
-Require Module Business::Ship
+Require Module Business::Shipping
 UserTag  xps-query  Order mode
 UserTag  xps-query  Addattr
 UserTag  xps-query  Documentation <<EOD
@@ -7,11 +7,11 @@ UserTag  xps-query  Documentation <<EOD
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: xps-query.tag,v 1.1 2003/06/01 07:31:05 db-ship Exp $
+# $Id: xps-query.tag,v 1.2 2003/06/04 20:18:57 db-ship Exp $
 
 =head1 NAME
 
-[xps-query] - Live rate lookup for UPS and USPS (using Business::Ship)
+[xps-query] - Live rate lookup for UPS and USPS (using Business::Shipping)
 
 =head1 AUTHOR 
 
@@ -40,8 +40,8 @@ UserTag  xps-query  Documentation <<EOD
 
 Here is a general outline of the installation in interchange.
 
- * Follow installation instructions for Business::Ship
-    - http://www.kavod.com/Business-Ship
+ * Follow installation instructions for Business::Shipping
+    - http://www.kavod.com/Business-Shipping
  
  * Copy the xps-query.tag file into one of these directories:
 	- interchange/usertags (IC 4.8.x)
@@ -97,7 +97,7 @@ USPS_AIRMAIL_POST: USPS International
 =cut
 EOD
 UserTag  xps-query  Routine <<EOR
-use Business::Ship;
+use Business::Shipping;
 sub {
  	my ( $mode, $opt ) = @_;
 	
@@ -114,7 +114,7 @@ sub {
 	delete $opt->{ 'reparse' };
 	delete $opt->{ 'mode' };
 	
-	# Business::Ship takes a hash anyway, we might as well deref it now.
+	# Business::Shipping takes a hash anyway, we might as well deref it now.
 	my %opt = %$opt;
 
 	my $to_country_default = $Values->{ $Variable->{ XPS_TO_COUNTRY_FIELD } or 'country' };
@@ -151,7 +151,7 @@ sub {
 		$opt{ $_ } ||= $defaults{ $_ } if $defaults{ $_ }; 
 	}
 
-	my $shipment = new Business::Ship( 'shipper' => $mode );
+	my $shipment = new Business::Shipping( 'shipper' => $mode );
 	
 	Log( "[xps-query]: $@ " ) and return undef if $@;
 	
@@ -161,7 +161,7 @@ sub {
 	}
 	my $opt_description = join( ', ', @opt_description );
 	
-	::logDebug( "calling Business::Ship::${mode}->submit( $opt_description )" );
+	::logDebug( "calling Business::Shipping::${mode}->submit( $opt_description )" );
 	
 	$shipment->submit( %opt ) or ( Log $shipment->error() and return undef );
 	

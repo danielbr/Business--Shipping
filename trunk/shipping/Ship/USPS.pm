@@ -2,15 +2,15 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: USPS.pm,v 1.2 2003/06/01 07:31:03 db-ship Exp $
+# $Id: USPS.pm,v 1.3 2003/06/04 20:18:55 db-ship Exp $
 
-package Business::Ship::USPS;
+package Business::Shipping::USPS;
 use strict;
 use warnings;
 
 =head1 NAME
 
-Business::Ship::USPS - A USPS module 
+Business::Shipping::USPS - A USPS module 
 
 Documentation forthcoming.
 
@@ -26,10 +26,10 @@ http://www.uspsprioritymail.com/et_regcert.html
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
-use Business::Ship;
-use Business::Ship::USPS::Package;
+use Business::Shipping;
+use Business::Shipping::USPS::Package;
 
 use LWP::UserAgent;
 use HTTP::Request;
@@ -38,7 +38,7 @@ use XML::Simple 2.05;
 use XML::DOM;
 use Data::Dumper;
 
-@ISA = qw( Business::Ship );
+@ISA = qw( Business::Shipping );
 
 sub new
 {
@@ -57,13 +57,13 @@ sub _metadata
 		'internal' => {
 			'ua'					=> LWP::UserAgent->new(),
 			'xs'					=> XML::Simple->new( ForceArray => 1, KeepRoot => 1 ),
-			'packages'				=> [ Business::Ship::USPS::Package->new() ],
+			'packages'				=> [ Business::Shipping::USPS::Package->new() ],
 			'package_subclass_name'	=> 'USPS::Package',
 			'intl'					=> undef,
 			'domestic'				=> undef,
 		},
 		'required' => {
-			# Everything is either in Business::Ship, or in Business::Ship::USPS::Package
+			# Everything is either in Business::Shipping, or in Business::Shipping::USPS::Package
 		},
 		'parent_defaults' => {
 			'test_url'		=> 'http://testing.shippingapis.com/ShippingAPItest.dll',
@@ -217,7 +217,7 @@ sub _gen_request
 	$self->trace( 'called' );
 	
 	my $request = $self->SUPER::_gen_request();
-	# This is how USPS slightly varies from Business::Ship
+	# This is how USPS slightly varies from Business::Shipping
 	my $new_content = 'API=' . ( $self->domestic() ? 'Rate' : 'IntlRate' ) . '&XML=' . $request->content();
 	$request->content( $new_content );
 	$request->header( 'content-length' => length( $request->content() ) );

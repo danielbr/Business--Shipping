@@ -2,18 +2,18 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: Package.pm,v 1.2 2003/06/01 07:31:03 db-ship Exp $
+# $Id: Package.pm,v 1.3 2003/06/04 20:18:56 db-ship Exp $
 
-package Business::Ship::USPS::Package;
+package Business::Shipping::USPS::Package;
 use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
-use Business::Ship::Package;
+use Business::Shipping::Package;
 use Data::Dumper;
-@ISA = qw( Business::Ship::Package );
+@ISA = qw( Business::Shipping::Package );
 	
 my %options_defaults = (
 	service		=> undef,
@@ -61,7 +61,7 @@ sub weight
 	$self->{'pounds'} = $self->_round_up( shift ) if @_;
 	
 	# Round up if United States... international can have less than 1 pound.
-	# TODO: Move intl() and domestic() functions into Business::Ship::USPS.  For Ship::USPS, alias
+	# TODO: Move intl() and domestic() functions into Business::Shipping::USPS.  For Ship::USPS, alias
 	# them to the default package.
 	if ( $self->to_country() and $self->to_country() =~ /(USA?)|(United States)/ ) {
 		$self->{ 'pounds' } = 1 if $self->{ 'pounds' } < 1;

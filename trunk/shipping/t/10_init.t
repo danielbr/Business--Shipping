@@ -1,7 +1,7 @@
 use Test::More 'no_plan';
 
 BEGIN { 
-	use_ok( 'Business::Ship' );
+	use_ok( 'Business::Shipping' );
 	use_ok( 'XML::DOM' );
 	use_ok( 'LWP::Simple' );
 	use_ok( 'XML::Simple' => '2.05' ); 

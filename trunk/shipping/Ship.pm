@@ -2,20 +2,20 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: Ship.pm,v 1.3 2003/06/01 17:23:47 db-ship Exp $
+# $Id: Ship.pm,v 1.4 2003/06/04 20:18:55 db-ship Exp $
 
-package Business::Ship;
+package Business::Shipping;
 use strict;
 use warnings;
 
 =head1 NAME
 
-Business::Ship - API for UPS and USPS
+Business::Shipping - API for UPS and USPS
 
 =head1 SYNOPSIS
 
- use Business::Ship;
- my $shipment = new Business::Ship( 
+ use Business::Shipping;
+ my $shipment = new Business::Shipping( 
 	'shipper' 		=> 'USPS'
 	'user_id'		=> '',
 	'password'		=> '',
@@ -29,7 +29,7 @@ Business::Ship - API for UPS and USPS
 
 =head1 ABSTRACT
 
-Business::Ship is an API for implementing shipping-related functionality.
+Business::Shipping is an API for implementing shipping-related functionality.
 Currently, the only implemented functionality is "shipping cost calculation".
 Currently, the only shipping carriers implemented are UPS and USPS.
 
@@ -60,7 +60,7 @@ Currently, the only shipping carriers implemented are UPS and USPS.
 
 =head1 ERROR/DEBUG HANDLING
 
-The 'event_handlers' argument takes a hashref telling Business::Ship what to do
+The 'event_handlers' argument takes a hashref telling Business::Shipping what to do
 for error, debug, trace, and the like.  The value can be one of four options:
 
  * 'STDERR'
@@ -94,7 +94,7 @@ overwritten by a new error.
 =cut
 
 use vars qw($VERSION);
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Data::Dumper;
 use Carp;
@@ -103,21 +103,21 @@ use HTTP::Request;
 
 # Pull in the known modules now to avoid runtime requires (in hopes of 
 # compatibility with Safe.pm sometime in the future. 
-use Business::Ship::UPS;
-use Business::Ship::USPS;
+use Business::Shipping::UPS;
+use Business::Shipping::USPS;
 
 =item $shipment->new( [%args] )
 
 The constructor can be used as:
- my $shipment = new Business::Ship::USPS;
+ my $shipment = new Business::Shipping::USPS;
  - or -
- my $shipment = new Business::Ship( 'shipper' => 'USPS' );
+ my $shipment = new Business::Shipping( 'shipper' => 'USPS' );
 
 This design was chosen so that the user could utilize child objects that aren't
 known until runtime, without doing an eval.  
  
 If called with a 'shipper' argument, then return a sub object (e.g.
-Business::Ship::USPS).
+Business::Shipping::USPS).
 
 If called without a 'shipper' argument, then return a Ship object (e.g. when a 
 sub-class is calling as SUPER->new() )
@@ -258,7 +258,7 @@ sub get_unique_keys
 {
 	my $self = shift;
 	
-	# None at the Business::Ship level.
+	# None at the Business::Shipping level.
 	my @unique_keys = ();
 	
 	return( @unique_keys );
@@ -336,16 +336,13 @@ sub _gen_request
 	return ( $request );
 }
 
-# This was pulled into Business::Ship because it's likely that both
+# This was pulled into Business::Shipping because it's likely that both
 # shippers will benefit from a similar cache structure.
 #
 # Caches responses for speed.  Not all API users will be able to extract all
 # of the pakage rates for each service at once, they will have to do it twice. 
 # This helps a lot.
 #
-# TODO:  A more efficient caching method would be to cache the end-result
-# (the amounts, or whatever), then look it up at submit() time based on the
-# same _unique_values. 
 sub _get_response
 {
 	my $self = shift;
@@ -404,7 +401,7 @@ sub add_package
 	my $self = shift;
 	$self->trace('called with' . $self->uneval( @_ ) );
 	
-	my $new = new Business::Ship( 'package' => $self->package_subclass_name() );
+	my $new = new Business::Shipping( 'package' => $self->package_subclass_name() );
 	$new->set( @_ );
 	
 	# If the passed package has an ID, then use that.

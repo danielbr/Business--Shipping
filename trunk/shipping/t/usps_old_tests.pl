@@ -2,19 +2,19 @@
 
 print "Testing USPS...\n\n";
 
-use Business::Ship::USPS;
-use Business::Ship::UPS;
+use Business::Shipping::USPS;
+use Business::Shipping::UPS;
 use Data::Dumper;
 
-my $shipment = new Business::Ship( 'shipper' => 'USPS' );
+my $shipment = new Business::Shipping( 'shipper' => 'USPS' );
 
-#my $shipment = new Business::Ship::USPS;
+#my $shipment = new Business::Shipping::USPS;
 
 
 ### Test
 # try calling enw with parameters
 
-my $shipment3 = new Business::Ship( 
+my $shipment3 = new Business::Shipping( 
 	'user_id' 		=> $ENV{USPS_USER_ID},
 	'password' 		=> $ENV{USPS_PASSWORD},
 	'tx_type' 		=> 'rate', 

@@ -3,12 +3,12 @@
 use strict;
 use warnings;
 
-use Business::Ship::UPS;
+use Business::Shipping::UPS;
 use Carp ();
 
 print "\nTesting UPSTools Module...\n\n";
 
-my $ups = new Business::Ship::UPS;
+my $ups = new Business::Shipping::UPS;
 
 # If you are not using any of the STDERR or Carp error methods,
 # You may use this calling structure to get at error messages:
@@ -66,16 +66,16 @@ print "rate = $rate\n\n";
 1;
 #!/usr/bin/perl
 
-use Business::Ship;
-use Business::Ship::UPS;
+use Business::Shipping;
+use Business::Shipping::UPS;
 
-#my $shipment = new Business::Ship( 'shipper' => 'UPS' );
+#my $shipment = new Business::Shipping( 'shipper' => 'UPS' );
 
 #print "$@ at $!" if $@;
 
-my $shipment = new Business::Ship::UPS;
+my $shipment = new Business::Shipping::UPS;
 
-#defined $shipment or die "Could not build Business::Ship::UPS object.";
+#defined $shipment or die "Could not build Business::Shipping::UPS object.";
 
 $shipment->set(
 	'event_handlers' => (

@@ -3,22 +3,22 @@ use warnings;
 
 use Test::More 'no_plan';
 use Carp;
-use Business::Ship;
-use_ok( "Business::Ship::USPS::Package" );
+use Business::Shipping;
+use_ok( "Business::Shipping::USPS::Package" );
 
-my $standard_method = new Business::Ship( 'shipper' => 'USPS' );
+my $standard_method = new Business::Shipping( 'shipper' => 'USPS' );
 ok( defined $standard_method,	'USPS standard object construction' );
 
-my $other_method = new Business::Ship::USPS;
+my $other_method = new Business::Shipping::USPS;
 ok( defined $other_method,		'USPS alternate object construction' );
 
-my $package = new Business::Ship::USPS::Package;
+my $package = new Business::Shipping::USPS::Package;
 ok( defined $package,			'USPS package object construction' );
 
 sub test
 {
 	my ( %args ) = @_;
-	my $shipment = new Business::Ship( 
+	my $shipment = new Business::Shipping( 
 		'shipper' => 'USPS',
 		'user_id'		=> $ENV{ USPS_USER_ID },
 		'password'		=> $ENV{ USPS_PASSWORD },

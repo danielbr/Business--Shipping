@@ -2,19 +2,15 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: UPS.pm,v 1.2 2003/06/01 07:31:03 db-ship Exp $
+# $Id: UPS.pm,v 1.3 2003/06/04 20:18:55 db-ship Exp $
 
-package Business::Ship::UPS;
+package Business::Shipping::UPS;
 use strict;
 use warnings;
 
 =head1 NAME
 
-Business::Ship::UPS - A UPS module
-
-=head1 SYNOPSIS
-
-See Business::Ship for documentation.
+Business::Shipping::UPS - see Business::Shipping.
 
 =head1 METHODS
 
@@ -25,17 +21,17 @@ The following methods are available:
 =cut
 
 use vars qw( @ISA $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
-use Business::Ship;
-use Business::Ship::UPS::Package;
+use Business::Shipping;
+use Business::Shipping::UPS::Package;
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
 use XML::Simple 2.05;
 use Carp;
 
-@ISA = qw( Business::Ship );
+@ISA = qw( Business::Shipping );
 
 =item B<new>
 
@@ -83,7 +79,7 @@ sub _metadata
 		'internal' => {
 			'ua'					=> LWP::UserAgent->new(),
 			'xs'					=> XML::Simple->new( ForceArray => 1, KeepRoot => 1 ),
-			'packages'				=> [ Business::Ship::UPS::Package->new() ],
+			'packages'				=> [ Business::Shipping::UPS::Package->new() ],
 			'package_subclass_name'	=> 'UPS::Package',
 		},
 		'required' => {
@@ -128,16 +124,18 @@ sub _metadata
 	return wantarray ? keys( %result ) : \%result;
 }
 
-# 01 Daily Pickup 
-# 03 Customer Counter 
-# 06 One Time Pickup 
-# 07 On Call Air 
-# 19 Letter Center 
-# 20 Air Service Center
-# 
-# This one is manually defined.use strict;
-use warnings;
-#
+=item pickup_type()
+
+pickup_type can be one of the following:
+
+ * 'Daily Pickup'
+ * 'Cusomter Counter'
+ * 'One Time Pickup'
+ * 'On Call Air'
+ * 'Letter Center'
+ * 'Air Service Center'
+
+=cut
 sub pickup_type
 {
 	my ( $self ) = @_;

@@ -3,13 +3,13 @@
 use strict;
 use warnings;
 
-use Business::Ship;
+use Business::Shipping;
 use Carp;
 
 sub test
 {
 	my ( %args ) = @_;
-	my $shipment = new Business::Ship( 
+	my $shipment = new Business::Shipping( 
 		'shipper' => 'USPS',
 		'user_id'		=> $ENV{ USPS_USER_ID },
 		'password'		=> $ENV{ USPS_PASSWORD },
