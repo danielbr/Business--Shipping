@@ -18,7 +18,7 @@ DEPENDENCIES
      Data::Dumper
      Class::MethodMaker
  
-USAGE
+GETTING STARTED
      * For USPS: Sign up online for free:
  
             - http://www.uspswebtools.com
@@ -34,17 +34,17 @@ USAGE
  
             - https://www.ups.com/servlet/registration?loc=en_US_EC
 
-            You will get a User Id, Password, and Access Key from UPS.
+            - You will get a User Id, Password, and Access Key from UPS.
  
+USAGE EXAMPLES
      * See Shipping.pm POD documentation for API and usage examples.
 
-EXAMPLES
-    This module is used by the Interchange E-Commerce software
-    (http://www.icdevgroup.org). For a reference implementation of
-    Business::Shipping, see the UserTag/business-shipping.tag file, it
-    implements a function that takes shipping-related arguments, builds a
-    Business::Shipping object, then returns the calculated cost.
-
+     * This module is used by the Interchange E-Commerce software 
+       (http://www.icdevgroup.org).  For a reference implementation of 
+       Business::Shipping, see the UserTag/business-shipping.tag file, it implements
+       a function that takes shipping-related arguments, builds a Business::Shipping
+       object, then returns the calculated cost.
+ 
 WEBSITE
      http://www.kavod.com/Business-Shipping
  

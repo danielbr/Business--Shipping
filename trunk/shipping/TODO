@@ -1,35 +1,48 @@
 ######################################################
 ##  General TODO
 ######################################################
-  
- * Bug Report:
-   - When the internet is down, we should report a more useful error message
-     than this:
-	 Business::Shipping::RateRequest::Online::USPS::_handle_response: ()
-     File does not exist:  at .../RateRequest/Online/USPS.pm line 202
 
- * FedEx module: Christopher L Wenham from Synesmedia has created an Interchange
-   usertag that uses FedEx::DirectConnect for various functions.
+ * [DOC] Include the terms of use for each provider.
  
- * Enable Cache for USPS.
+ * [BUG] When the internet is down, we should give a more useful error message
+   than the following:
+	 "Business::Shipping::RateRequest::Online::USPS::_handle_response: ()
+     File does not exist:  at .../RateRequest/Online/USPS.pm line 202"
  
- * Find a better way to correlate "Air mail" with all the various names
-   it is called by each country.
+ * [BUG] Only Cache the response if it was a success (very important).
+ 
+ * [BUG] Error on missing arguments isn't working very well ( user_id, password)
+ 
+ * [BUG] Why do I have to 'use' all the modules in order for it to work?
+ 
+ * [ENH] Country name translator strings to data outside your program.
+ 	# TODO: Move all of this, and any other data that is currently mixed with 
+	# code.
+	# A simple, file-based configuration system would be nice, like Interchange.
+	# Perhaps XML::Simple Configuration files?  Other?  Shipping::Config module
+	# will provide parser, importer.  Any internal modules that use 
+	# configuration will go through that module.  (it's an idea, anyway) 
+ 
+ * [ENH] Enhance the debugging/error handling features: allow user to pass in a 
+   callback ref conforming to some (customizable?) calling standard. 
 
- * Fix the multi-package API for UPS.  
-   # TODO: Move to a different XML generation scheme, since all the packages 
-   #       in a multi-package shipment will have the name "Package".
-   # TODO: multi-package support: loop over the packages
+ * [ENH] Is non-ssl communication with either provider possible?
  
- * Migrate the "retry on failure" code from business-shipping.tag to 
+ * [ENH] Migrate the "retry on failure" code from business-shipping.tag to 
    Business::Shipping proper.  Default to tries=2, but allow that to be
-   overridden.  (HTTP 500 errors.)
+   overridden.  ("Failure" means HTTP 500 errors.)
+
+ * [ENH] FedEx module: Christopher L Wenham from Synesmedia has created an 
+   Interchange usertag that uses FedEx::DirectConnect for various functions.  
+   Evaluate.
+  
+ * [ENH] Business::Shipping::OldUPS
+    - Doesn't require signup (no username/password, etc.)
+    - Utilize the new Business::UPS 2.0.
  
- * Only Cache the response if it was a success (very important)
+ * [ENH] Create Bundle::BusinessShipping
  
- * Error on missing arguments isn't working very well ( user_id, password)
- 
- * The Shipping module itself should be able to be queried for what shippers it
+ * [ENH] The Shipping module itself should be able to be queried for what shippers it
    handles. Each shipper should be able to be queried for what services it 
    provides... maybe code would look like this:
 
@@ -52,31 +65,11 @@
 	
 		}
 	}
- 
- * Country name translator strings to data outside your program.
- 	# TODO: Move all of this, and any other data that is currently mixed with 
-	# code.
-	# A simple, file-based configuration system would be nice, like Interchange.
-	# Perhaps XML::Simple Configuration files?  Other?  Shipping::Config module
-	# will provide parser, importer.  Any internal modules that use 
-	# configuration will go through that module.  (it's an idea, anyway) 
- 
- * Upgrade the debugging/error handling features: allow user to pass in a callback ref.
- 
- * Documentation
-   - Explain what else is out there (Business::UPS, FedEx, static table lookup)
-   - Include the terms of use for each module.
- 
- * Business::Shipping::FedEx module
- 	- Utilize the recently released Business::FedEx::DirectConnect module.
-
- * More flexible handling of SSL?
-	- Allow the use of Net::SSLeay as well as Crypt::SSLeay?
-
- * Business::Shipping::OldUPS?
-	- Utilize the new Business::Shipping::UPS?
 	
- * New feature ideas:
+ * [ENH] Additionall module flexibility
+	- Allow the use of Net::SSLeay as well as Crypt::SSLeay
+
+ * [ENH] New feature ideas:
  	- Address Verification
 	- Shipping status (package tracking)
 	- Service Availability
@@ -85,72 +78,51 @@
 	- Customs forms?
 	- Shipping time (how long till it gets there)?
 	- Delivery/Signature confirmation?
- 	
- * Use Params::Validate for parameter validation?
- 
- * List Prerequisites in a Bundle module
- 
- * So, it sounds like a "shipment" is another useful abstraction. It would be 
-   shipper-specific and so you probably would have a 
-   Business::Shippingping::<carrier>::Shipment package defined for each carrier. 
-   A shipment would contain one or more packages. It would have an origin or 
-   destination just as the packages it contains. In fact, you'd probably want 
-   to assert that the packages in a shipment all had the same origins and 
-   destinations. The shipment would have a schedule attached to it. You'd 
-   likely track the shipment (rather than tracking a package.) I suspect 
-   you would want to avoid instantiating a Shipment until after one is 
-   actually scheduled; you shouldn't need these classes to determine the 
-   shipping rates.
-   
- * Cache Enhancements:
-   - Cache the end-result (amounts, etc), then look it up at submit() time based
-     on the same _unique_values.  Would require that ignore_extra_info=1, so 
-	 that all the country information (customs, etc.) wouldn't be saved (kb on 
-	 disk).
-   - More efficient methods besides FileCache?
 
- * Why do I have to 'use' all the modules -- indicative of a bug?
-   
 ######################################################
-##  Business::Shipping::USPS TODO
+##  USPS TODO
 ######################################################
-
- * Not correctly realizing when there is an error (<Error><Number>...)
+ 
+ * [BUG] Find a better way to correlate "Air mail" with all the various names
+   it is called by each country.
+ 
+ * [BUG] Not correctly realizing when there is an error (<Error><Number>...)
    - Perhaps because we don't ( KeepRoot => 1, ) on the XMLin()?
 
- * Pull the test cases & responses out of the PDF docs and program them so 
-   that they are a test case (commonly in the /t directory in most CPAN  
-   modules) so that a user can plug their username and password in the 
-   script, or via the build process and test that their account is 
-   accepting data correctly.
-     
- * Support get_charges( 'service' ) for domestic types.
+ * [ENH] Enable Cache for USPS.
+ 
+ * [ENH] Support get_charges( 'service' ) for domestic types.
 
+ * [ENH] Use the International Country Listing
+	- http://pe.usps.gov/cpim/ftp/manuals/Imm/Immctry.pdf
+ 
 ######################################################
-##  Business::Shipping::UPS TODO
+##  UPS TODO
 ######################################################
  
- * Allow better names, like "One Day Air" instead of 1DA.
-   Better names for packaging too (instead of numbers).
- 
- * Tests:
-	- All types (ground, air, etc.) 
-	- World wide (several countries, states (Hawaii, Alaska), etc.)
+ * [BUG] Fix the multi-package API for UPS.  
+   # TODO: Move to a different XML generation scheme, since all the packages 
+   #       in a multi-package shipment will have the name "Package".
+   # TODO: multi-package support: loop over the packages
+   
+ * [BUG] Return error message if trying to ship to military americas:
+   - USP does not ship to APO or FPO addresses.
 
- * Test for thread-safety-ness.
-
- * Is non-ssl communication with either provider possible?	
-
- * Be able to handle "mal-formed XML doc" error return from UPS.  
+ * [BUG] Be able to handle "mal-formed XML doc" error return from UPS.  
  	- Right now, it still tries to parse as an XML doc.
+
+ * [ENH] Allow better names, like "One Day Air" instead of 1DA.
+   - Better names for packaging too (instead of numbers).
  
- * UPS support for sending multiple simultaneous requests
+ * [ENH] Test for thread-safety-ness.	
+ 
+ * [ENH] UPS support for sending multiple simultaneous requests
 	- (USPS had built-in support in the API for Intl)
  	- If they don't support it, try LWP::Parallel::UserAgent.
-
+	
 ######################################################
 ##  Interchange UserTag TODO
 ######################################################
 
- * Test for ability to use within Safe?
+ * [ENH] Test for ability to use within Safe?
 	([perl]$Tag->ups_query('', '', '');[/perl]) 

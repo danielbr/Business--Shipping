@@ -1,5 +1,10 @@
 Revision history for Business::Shipping.
 
+0.77
+	- Add UPS one-day air saver.
+	- Cleanup TODO list.
+	- Add COPYING file.
+
 0.76
 	- Fixed bug report:
  		calling Business::Shipping::USPS->submit( 

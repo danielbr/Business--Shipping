@@ -2,7 +2,7 @@ use 5.006000;
 use ExtUtils::MakeMaker;
 
 # Version for Business-Shipping as a whole.
-$VERSION = '0.76';
+$VERSION = '0.77';
 
 #
 # perl -MCPAN -e shell
