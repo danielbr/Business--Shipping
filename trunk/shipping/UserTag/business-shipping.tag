@@ -72,14 +72,15 @@ Here is a general outline for installing [business-shipping] in Interchange.
    Note that "BS" is used to denote fields that can be used for any 
    Business::Shipping shipper.  Note that the spaces below are one tab.
 
-BS_DEBUG	0	Shipping
-BS_GEN_INCIDENTS    0   Shipping
-BS_FROM_COUNTRY	US	Shipping
-BS_FROM_STATE	WA	Shipping
-BS_FROM_ZIP	98682	Shipping
-BS_TO_COUNTRY_FIELD	country	Shipping
-BS_TO_CITY_FIELD	city	Shipping
-BS_TO_ZIP_FIELD	zip	Shipping
+BSHIPPING_LOG_INVALID_REQUESTS
+BSHIPPING_DEBUG	0	Shipping
+BSHIPPING_GEN_INCIDENTS    0   Shipping
+BSHIPPING_FROM_COUNTRY	US	Shipping
+BSHIPPING_FROM_STATE	WA	Shipping
+BSHIPPING_FROM_ZIP	98682	Shipping
+BSHIPPING_TO_COUNTRY_FIELD	country	Shipping
+BSHIPPING_TO_CITY_FIELD	city	Shipping
+BSHIPPING_TO_ZIP_FIELD	zip	Shipping
 UPS_ACCESS_KEY	AB12CDEF345G6	Shipping 
 UPS_USER_ID	userid	Shipping
 UPS_PASSWORD	mypassword	Shipping
@@ -115,7 +116,7 @@ use Business::Shipping 1.54;
 sub {
     my ( $shipper, $opt ) = @_;
     
-    my $debug = delete $opt->{ debug } || $Variable->{ BS_DEBUG } || 0;
+    my $debug = delete $opt->{ debug } || $Variable->{ BSHIPPING_DEBUG } || 0;
     
     $shipper ||= delete $opt->{ shipper } || '';
     
@@ -140,7 +141,7 @@ sub {
     my %opt = %$opt;
     $opt = undef;
 
-    my $to_country_default = $Values->{ $Variable->{ BS_TO_COUNTRY_FIELD } || 'country' };
+    my $to_country_default = $Values->{ $Variable->{ BSHIPPING_TO_COUNTRY_FIELD } || 'country' };
     
     # STDOUT goes to the IC debug files (usually '/tmp/debug')
     # STDERR goes to the global error log (usually 'interchange/error.log').
@@ -150,12 +151,12 @@ sub {
     my $defaults = {
         'All' => {
             'to_country'        => $Values->{ 
-                $Variable->{ BS_TO_COUNTRY_FIELD } || 'country' 
+                $Variable->{ BSHIPPING_TO_COUNTRY_FIELD } || 'country' 
             },
-            'to_zip'            => $Values->{ $Variable->{ BS_TO_ZIP_FIELD } || 'zip' },
-            'to_city'           => $Values->{ $Variable->{ BS_TO_CITY_FIELD } || 'city' },
-            'from_country'      => $Variable->{ BS_FROM_COUNTRY },
-            'from_zip'          => $Variable->{ BS_FROM_ZIP },
+            'to_zip'            => $Values->{ $Variable->{ BSHIPPING_TO_ZIP_FIELD } || 'zip' },
+            'to_city'           => $Values->{ $Variable->{ BSHIPPING_TO_CITY_FIELD } || 'city' },
+            'from_country'      => $Variable->{ BSHIPPING_FROM_COUNTRY },
+            'from_zip'          => $Variable->{ BSHIPPING_FROM_ZIP },
             'cache'             => ( defined $opt{ cache } ? $opt{ cache } : 1 ), # Allow 0
         },
         'USPS_Online' => {
@@ -164,7 +165,7 @@ sub {
             'to_country' => $Tag->data( 
                 'country', 
                 'name', 
-                $Variable->{ BS_TO_COUNTRY_FIELD } || 'country'
+                $Variable->{ BSHIPPING_TO_COUNTRY_FIELD } || 'country'
             )
         },
         'UPS_Online' => {
@@ -173,7 +174,7 @@ sub {
             'password'          => $Variable->{ UPS_PASSWORD },
         },
         'UPS_Offline' => { 
-            'from_state'        => $Variable->{ BS_FROM_STATE },
+            'from_state'        => $Variable->{ BSHIPPING_FROM_STATE },
             'cache'             => 0,
         },
     };
@@ -218,7 +219,15 @@ sub {
 
     eval { $submit_results = $rate_request->go( %opt ); };
     if ( not $submit_results or $@ ) { 
-        Log( "[business-shipping] Error: " . $rate_request->user_error() . "$@" );
+        
+        if ( 
+             ( not $rate_request->invalid ) 
+             or
+             ( $rate_request->invalid and $Variable->{ BSHIPPING_LOG_INVALID_REQUESTS } )
+           )
+        {
+            Log( "[business-shipping] Error: " . $rate_request->user_error() . "$@" );
+        }
         
         # Prevent 500 error on some systems?
         $@ = '';
@@ -234,14 +243,14 @@ sub {
     $charges ||= $rate_request->total_charges();
 
     # This is a debugging / support tool.  It uses these variables: 
-    #   BS_GEN_INCIDENTS
+    #   BSHIPPING_GEN_INCIDENTS
     #   SYSTEMS_SUPPORT_EMAIL
     
     my $report_incident;
     if ( 
             ( ! $charges or $charges !~ /\d+/ )
         and
-            $Variable->{ 'BS_GEN_INCIDENTS' }
+            $Variable->{ 'BSHIPPING_GEN_INCIDENTS' }
        ) 
     {
         # Don't report invalid rate requests:No zip code, GNDRES to Canada, etc.

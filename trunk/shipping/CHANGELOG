@@ -59,6 +59,12 @@ Revision history for Business::Shipping
   UPS_Offline
 
     * Fuel Surcharge updates  
+    
+  Usertag
+  
+    * Reduced some of the error messages 
+    
+    * Changed variable names from "BS" to "BSHIPPING".
   
       
 1.56  Jan 03 2005
