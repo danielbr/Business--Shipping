@@ -2,7 +2,7 @@
 # All rights reserved. This program is free software; you can 
 # redistribute it and/or modify it under the same terms as Perl 
 # itself.
-# $Id: Ship.pm,v 1.8 2003/04/23 04:34:25 db-ship Exp $
+# $Id: Ship.pm,v 1.9 2003/04/23 09:46:10 db-ship Exp $
 package Business::Ship;
 use strict;
 use warnings;
@@ -30,12 +30,13 @@ else {
 
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.8 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.9 $ =~ /(\d+)\.(\d+)/);
 
 use Data::Dumper;
 use Carp;
 
-sub new {
+sub new 
+{
 	my( $class, $shipper, %args) = @_;
 	
 	Carp::croak( "unspecified shipper" ) unless $shipper;
@@ -44,7 +45,7 @@ sub new {
 	
 	unless ( defined( &$subclass ) ) {
 		eval "use $subclass";
-		Carp::croak( "unknown shipper $shipper ($@)" ) if $@;
+		Carp::croak( "Shipper $shipper is unknown or has errors: ($@)" ) if $@;
 	}
 	
 	my @required_vals = qw/
@@ -77,7 +78,6 @@ sub new {
 		'optional_vals' => \@optional_vals,
 	}, $subclass;
 	
-	
 	$self->build_subs( 'required_vals', 'optional_vals', @required_vals, @optional_vals );
 	
 	if($self->can("set_defaults")) {
@@ -95,7 +95,8 @@ sub new {
 	return $self;
 }
 
-sub validate {
+sub validate 
+{
 	my( $self, @fields ) = @_;
 	
 	foreach( $self->required_vals() ) {
@@ -133,12 +134,14 @@ sub set_defaults
 	return;
 }
 
-sub debug {
+sub debug 
+{
     my ( $self, $msg ) = @_;
     return $self->_log( 'debug', $msg );
 }
 
-sub error {
+sub error 
+{
     my ( $self, $msg ) = @_;
 	$msg .= "\n" unless ( $msg =~ /\n$/ );
 	$self->success( undef );
@@ -155,13 +158,6 @@ sub _log
 	$msg  = "$sub: $msg";
 	$msg .= "\n" unless ( $msg =~ /\n$/ );
 	
-	# TODO: Allow to be settable via member var.
-	#my %event_handlers = (
-	#	'debug' => 'STDOUT',
-	#	'error' => 'STDERR',
-	#);
-	#$self->{'event_handlers'} = \%event_handlers;
-	
 	foreach my $eh ( keys %{$self->{'event_handlers'}} ) {
 		my $eh_value = $self->{'event_handlers'}->{$eh};
 		if ( $type eq $eh and $eh_value ) {
@@ -176,7 +172,8 @@ sub _log
 }	
 
 
-sub build_subs {
+sub build_subs 
+{
     my $self = shift;
     foreach( @_ ) {
         eval "sub $_ { my \$self = shift; if(\@_) { \$self->{$_} = shift; } return \$self->{$_}; }";

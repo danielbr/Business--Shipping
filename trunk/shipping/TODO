@@ -5,6 +5,39 @@
  * Documentation
  
  * Support Multiple packages (also supported by USPS/UPS) 
+ 	# UPS can handle multiple packages per shipment
+	# USPS handles each package as a separate shipment 
+	# (i.e. can have different services)
+	# more concept code:
+		my $package1 = new Business::Ship::USPS::Package;
+		$package1->set(
+			id => '1',  #optional, will automatically assign id based on arrival. used for array index.
+			#weight,
+			#etc.
+		);
+		
+		my $package2 = $package1->clone();
+		$package4->service( 'Priority' );
+		
+		my $package3 = $package1->clone();
+		$package4->service( 'Express' );
+		
+		my $package4 = $package1->clone();
+		$package4->service( 'Global' );
+		
+		my $shipment = new Business::Ship( 'USPS' );
+		$shipment->add( $package1, $package2, $package3 );
+		$shipment->submit();
+		$shipment->package->[1]->charges();
+		$shipment->package->[1]->success();
+		$shipment->package->[1]->error_msg();
+		
+	#UPS:  For all shipments in US and Puerto Rico:
+	#  amounts at the "Package" level are accurate, will also provite a total charges
+	# International:
+	#  "shipment" level used for specifying packages
+	#  it does NOT have accruate total for that shipment,
+	#  use the total price of the entire shipment only.
  	- add_package() and get_package_total() functions?
 	- Some ideas...
 		$shipment->add_package(

@@ -21,7 +21,7 @@ http://www.uspsprioritymail.com/et_regcert.html
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.7 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.8 $ =~ /(\d+)\.(\d+)/);
 use Business::Ship;
 use LWP::UserAgent;
 use HTTP::Request;
@@ -77,7 +77,7 @@ sub _gen_request_xml
 	my $rateReqDoc = new XML::DOM::Document; 
 	my $rateReqEl = $rateReqDoc->createElement('RateRequest'); 
 	$rateReqEl->setAttribute('USERID', $self->user_id() ); 
-	$rateReqEl->setAttribute('PASSWORD', $self->password()); 
+	$rateReqEl->setAttribute('PASSWORD', $self->password() ); 
 	$rateReqDoc->appendChild($rateReqEl); 
 	my $packageEl = $rateReqDoc->createElement('Package'); 
 	$packageEl->setAttribute('ID', '0'); 
@@ -116,6 +116,8 @@ sub _gen_request_xml
 	$packageEl->appendChild($machineEl); 
 	
 	my $request_xml = $rateReqDoc->toString();
+	
+	$self->debug( "request xml = \n" .  $request_xml );
 	
 	return ( $request_xml );
 }
@@ -164,49 +166,44 @@ sub submit
 	
 	my $request = $self->_gen_request();
 	
-	$self->debug( "request = \n" . Dumper( $request ) );
-	
 	$self->response( $self->{'ua'}->request( $request ) );
 	
-	$self->debug( "response content = " . $self->response()->content );
-	unless( $self->response()->content() ) {
-		$self->error( 'Repsonse empty.  HTTP response code:' . $self->response()->code() );
-		return( undef );
-	}
+	$self->debug( "response content = " . $self->response()->content() );
 	
-	if ( $self->response()->content() =~ /HTTP Error/ ) {
-		$self->error( "HTTP Error.  Content = " . $self->response()->content() );
-		return( undef );
-	}
+	my $content;
 	
-	# I get "Out of Memory" errors unless I disable KeepRoot in XML::Simple::XMLin()
+	if ( $self->response()->is_success() ) { 
+		 $content = $self->response->content; 
+	}
+	else { 
+		$self->error( "HTTP Error.  Content = " . $content ); 
+		return( undef ); 
+	}	
+	
+	# I get "Out of Memory" errors unless I disable ForceArray in XML::Simple::XMLin()
 	my $response_tree = $self->{xs}->XMLin( $self->response()->content(), ForceArray => 0, KeepRoot => 0 );
-	my $status_code = $response_tree->{Response}->{ResponseStatusCode};
-	my $status_description = $response_tree->{Response}->{ResponseStatusDescription};
-	my $error = $response_tree->{Response}->{Error}->{ErrorDescription};
-	if ( $error and $error !~ /Success/ ) {
-		$self->error( "$status_description ($status_code): $error" );
-		return ( undef );
+	
+	# TODO: Handle multiple packages.
+	if ( $response_tree->{Package}->{Error} ) {
+		my $error_number 		= $response_tree->{Package}->{Error}->{Number};
+		my $error_source 		= $response_tree->{Package}->{Error}->{Source};
+		my $error_description	= $response_tree->{Package}->{Error}->{Description};
+		$self->error( "$error_source: $error_description ($error_number)" );
+		return( undef );
 	}
 	
-	$self->total_charges( $response_tree->{RatedShipment}->{TotalCharges}->{MonetaryValue} );	
-	
+	$self->total_charges( $response_tree->{Package}->{Postage} );	
 	return $self->success( 1 );
 }
-
 
 sub build_subs
 {
 	my $self = shift;
 	
 	my @usps_required_vals = qw/
-		usps_custom1
-		usps_custom2
 	/;
 	
 	my @usps_optional_vals = qw/
-		usps_custom3
-		usps_custom4
 		ua
 		xs
 		container

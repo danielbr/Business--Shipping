@@ -32,13 +32,11 @@ my %test_request_2 = (qw/
 	pounds		5
 	ounces		1
 	container	0-1096
-	size		REGULAR
-	machineable	False
+	size		Regular
+	machinable	False
 /);
 
-
 $shipment->set( %test_request_2 );
-
 	
 =pod
 $shipment->set(
@@ -56,13 +54,15 @@ $shipment->set(
 
 $shipment->submit();
 
-$shipment->success() or print "Error = " .  $shipment->error_msg();
+$shipment->success() or die "Error = " .  $shipment->error_msg();
 
+print "total_charges = " . $shipment->total_charges();
 #$shipment->set(
 #	'event_handlers' => ({ 'debug' => 'croak' })
 #);
 
 #print "shipment = " . Dumper( $shipment );
+
 
 print "\n";
 
