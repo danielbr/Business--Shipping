@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Template - Template for cost estimation
 # 
-# $Id: Template.pm,v 1.2 2004/06/24 03:09:25 danb Exp $
+# $Id: Template.pm,v 1.3 2004/06/25 20:42:28 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -71,7 +71,7 @@ See Shipping.pm POD for usage information.
     
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -115,7 +115,6 @@ use Class::MethodMaker 2.0
                                     'from_zip',
                                     'to_zip',
                                     'packages',
-                                    'default_package',
                                     'weight',
                                     'shipper',
                                     'domestic',
@@ -134,9 +133,6 @@ use Class::MethodMaker 2.0
                   'Has_a' 
                ],
     ];
-
-sub to_residential { return shift->shipment->to_residential( @_ ); }
-sub packaging { return shift->shipment->default_package->packaging( @_ ); }
 
 =back
 

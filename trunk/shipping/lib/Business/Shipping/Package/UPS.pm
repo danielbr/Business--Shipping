@@ -1,10 +1,3 @@
-# $Id: UPS.pm,v 1.9 2004/06/24 03:09:24 danb Exp $
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-# 
-
 package Business::Shipping::Package::UPS;
 
 =head1 NAME
@@ -13,7 +6,7 @@ Business::Shipping::Package::UPS
 
 =head1 VERSION
 
-$Revision: 1.9 $      $Date: 2004/06/24 03:09:24 $
+$Revision: 1.10 $      $Date: 2004/06/25 20:42:27 $
 
 =head1 METHODS
 
@@ -21,7 +14,7 @@ $Revision: 1.9 $      $Date: 2004/06/24 03:09:24 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -36,11 +29,14 @@ UPS-only attribute.
 use Class::MethodMaker 2.0
     [ 
       new    => [ qw/ -hash new / ],
-      scalar => 'packaging',
+      scalar => [ 'packaging' ],
       scalar => [ { -static => 1, -default => 'weight'    }, 'Required' ],
       scalar => [ { -static => 1, -default => 'packaging' }, 'Optional' ],
       scalar => [ { -static => 1, -default => 'packaging' }, 'Unique' ]      
     ];
+
+
+    
 1;
 
 __END__

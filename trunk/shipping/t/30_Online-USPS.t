@@ -170,14 +170,14 @@ SKIP: {
     
     # Somehow make sure that all the values in %charges are unique.
     my $found_duplicate;
-    foreach my $zip ( keys %charges ) {
+    foreach my $zip1 ( keys %charges ) {
         foreach my $zip2 ( keys %charges ) {
             
             # Skip this zip code, only testing the others.
-            next if $zip2 eq $zip;
+            next if $zip2 eq $zip1;
             
-            if ( $charges{ $zip } == $charges{ $zip2 } ) {
-                $found_duplicate = $zip;
+            if ( $charges{ $zip1 } == $charges{ $zip2 } ) {
+                $found_duplicate = $zip1;
             }
         }
     }

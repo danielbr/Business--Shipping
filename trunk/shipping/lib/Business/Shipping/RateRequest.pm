@@ -10,7 +10,7 @@ Business::Shipping::RateRequest - Abstract class for shipping cost estimation
 
 =head1 VERSION
 
-$Revision: 1.14 $      $Date: 2004/06/24 03:09:23 $
+$Revision: 1.15 $      $Date: 2004/06/25 20:42:26 $
 
 =head1 DESCRIPTION
 
@@ -24,7 +24,7 @@ Represents a request for shipping cost estimation.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.14 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.15 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -72,6 +72,7 @@ See _handle_response() for implementation details.
 =item * shipment()
 
 Stores a Business::Shipping::Shipment object.  Many methods are forwarded to it.
+At this time, each RateRequest only has one Shipment.
 
 =cut
 
@@ -82,8 +83,6 @@ use Class::MethodMaker 2.0
       scalar        => [ 'results' ],
       scalar        => [ '_total_charges' ],
       scalar        => [ 'price_components' ],
-      # Right now, each RateRequest has only one shipment.
-      # Eventually, maybe we'll use object_list with "shipments()->..." like packages.
       scalar => [ { -type    => 'Business::Shipping::Shipment',
                     -forward => [ 
                                     'service', 
@@ -95,7 +94,6 @@ use Class::MethodMaker 2.0
                                     'from_zip',
                                     'to_zip',
                                     'packages',
-                                    'default_package',
                                     'weight',
                                     'shipper',
                                     'domestic',
@@ -172,7 +170,7 @@ sub submit
         trace( 'cache disabled, not saving results.' );
     }
     
-    debug "returning " . $self->is_success;
+    debug "returning " . ( $self->is_success || 'undef' );
     return $self->is_success();
 }
 

@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment - Abstract class
 # 
-# $Id: Shipment.pm,v 1.12 2004/06/24 03:09:23 danb Exp $
+# $Id: Shipment.pm,v 1.13 2004/06/25 20:42:26 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # This program is free software; you may redistribute it and/or modify it under
@@ -9,7 +9,7 @@
 
 package Business::Shipping::Shipment;
 
-$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.13 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 =head1 NAME
 
@@ -17,7 +17,7 @@ Business::Shipping::Shipment - Abstract class
 
 =head1 VERSION
 
-$Revision: 1.12 $      $Date: 2004/06/24 03:09:23 $
+$Revision: 1.13 $      $Date: 2004/06/25 20:42:26 $
 
 =head1 DESCRIPTION
 
@@ -36,6 +36,7 @@ use warnings;
 use base ( 'Business::Shipping' );
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
+use Business::Shipping::Util;
 
 =item * service
 
@@ -63,12 +64,9 @@ use Class::MethodMaker 2.0
     [
       new    => [ { -hash => 1, -init => 'this_init' }, 'new' ],
       scalar => [ qw/ current_package_index service from_zip from_city  to_zip to_city /   
-                ], #to_country removed
-      #
-      # Let it be defined in non-abstract classes only?
-      #
+                ],
       array  => [ { -type => 'Business::Shipping::Package' }, 'packages' ],
-      scalar => [ { -static => 1, -default => 'default_package=>Business::Shipping::Package' }, 'Has_a' ],
+      scalar => [ { -static => 1, -default => 'packages=>Business::Shipping::Package' }, 'Has_a' ],
       scalar => [ { -static => 1, 
                     -default => 'from_country, to_country, to_zip, from_city, to_city' 
                   },
@@ -89,7 +87,31 @@ Forward the weight to the current package.
 
 =cut
 
-sub weight { return shift->current_package->weight( @_ ); }
+=item * default_package()
+
+Only used for forwarding methods in simple uses of the class.  For example:
+
+ $rate_request->init(
+     service   => '',
+     weight    => '',
+     packaging => '',
+ );
+
+Which is simpler than:
+
+ $rate_request->shipment->service( '' );
+ $rate_request->shipment->packages_index( 0 )->weight( '' );
+ $rate_request->shipment->packages_index( 0 )->packaging( '' );
+ 
+Note that it only works when there is one package only (no multiple packages).
+
+=cut
+
+sub package0 { $_[ 0 ]->packages_index( 0 ) }
+*default_package = *package0;
+*dflt_pkg        = *package0;
+
+sub weight { $_[ 0 ]->package0->weight( @_ ) }
 
 =item * total_weight
 
@@ -220,33 +242,6 @@ sub from_country_abbrev
     
     return $from_country_abbrev || $self->from_country;
 }
-
-=item * current_package()
-
-The Shipment object keeps an index of which package object is the current
-package (i.e. which package we are working on right now).  This just returns
-the corresponding package object, creating one if it doesn't exist.
-
-Not completely impemented yet.
-
-=cut
-
-sub current_package {
-    my ( $self ) = @_;
-    
-    my $current_package_index = $self->current_package_index || 0;
-    if ( not defined $self->packages_index( $current_package_index ) ) {
-        debug( 'Current package (index: $current_package_index) not defined yet, creating one...' );
-        $self->packages_push( eval "Business::Shipping::Package::" . $self->shipper . "->new" );
-    }
-    
-    return $self->packages_index( $current_package_index ); 
-}
-
-#
-# TODO: default_package(): remove?
-#
-sub default_package { $_[ 0 ]->packages_index( 0 ) }
 
 =item * domestic_or_ca()
 
@@ -382,10 +377,9 @@ Adds a new package to the shipment.
 
 =cut
 
-#
 # This is from 0.04.
 # Needs to be made compatible with the new version.
-#
+
 sub add_package
 {
     my ( $self, %options ) = @_;

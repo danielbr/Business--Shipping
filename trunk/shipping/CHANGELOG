@@ -44,6 +44,12 @@ Revision history for Business::Shipping
       password)
     - [Done] [Enh] Use podchecker during build process
     - [Fixed] Many POD nits fixed.
+    - [Done] [Enh] Auto-translate variables during installation
+      At the time of Makefile.PL, automatically transform some variables, such
+      as installation paths.  Currently setup for config/log4perl.conf and
+      lib/Business/Shipping/Config.pm.
+    - Support arrays in Has_a fields.
+
    
   Offline::UPS
     - Bug fixed: Zip+4 not handled correctly (should drop the four).

@@ -1,4 +1,4 @@
-# $Id: USPS.pm,v 1.12 2004/06/24 03:09:24 danb Exp $
+# $Id: USPS.pm,v 1.13 2004/06/25 20:42:27 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,7 +13,7 @@ Business::Shipping::Package::USPS
 
 =head1 VERSION
 
-$Revision: 1.12 $      $Date: 2004/06/24 03:09:24 $
+$Revision: 1.13 $      $Date: 2004/06/25 20:42:27 $
 
 =head1 METHODS
 
@@ -21,7 +21,7 @@ $Revision: 1.12 $      $Date: 2004/06/24 03:09:24 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.13 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -69,10 +69,9 @@ use Class::MethodMaker 2.0
                   }, 
                   'Optional' 
                 ], 
-      #
-      # Note that we use 'weight' as the unique value, which should convert 
-      # from pounds/ounces.
-      #
+      # Note that we use 'weight' as the unique value (specified in Parent), 
+      # which should convert automatically from pounds/ounces during uniqueness
+      # calculations.
       scalar => [ 
                   { 
                     -static => 1, 
@@ -104,7 +103,6 @@ sub Required
     
     return 'weight';
 }
-
 
 =item * weight
 

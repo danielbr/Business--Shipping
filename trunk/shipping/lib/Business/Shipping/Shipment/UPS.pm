@@ -1,4 +1,4 @@
-# $Id: UPS.pm,v 1.10 2004/06/24 03:09:25 danb Exp $
+# $Id: UPS.pm,v 1.11 2004/06/25 20:42:28 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,7 +13,7 @@ Business::Shipping::Shipment::UPS
 
 =head1 VERSION
 
-$Revision: 1.10 $      $Date: 2004/06/24 03:09:25 $
+$Revision: 1.11 $      $Date: 2004/06/25 20:42:28 $
 
 =head1 METHODS
 
@@ -21,7 +21,7 @@ $Revision: 1.10 $      $Date: 2004/06/24 03:09:25 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -38,7 +38,7 @@ use Class::MethodMaker 2.0
     [ 
       new    => [ { -hash => 1, -init => 'this_init' },  'new' ],
       scalar => [ { default => 1 }, 'to_residential' ],
-      scalar => [ 'from_state' ],
+      scalar => [ 'from_state', '_service' ],
       #
       # We need this offline boolean to know if from_state is required.
       #
@@ -46,13 +46,82 @@ use Class::MethodMaker 2.0
       scalar => [ { -static => 1, -default => 'to_residential' }, 'Optional' ],
       scalar => [ { -static => 1, -default => 'to_residential' }, 'Unique' ],
       array  => [ { -type => 'Business::Shipping::Package::UPS' }, 'packages' ],      
-      scalar => [ { -static => 1, -default => 'default_package=>Business::Shipping::Package::UPS' }, 'Has_a' ],
+      scalar => [ { -static => 1, -default => 'packages=>Business::Shipping::Package::UPS' }, 'Has_a' ],
     ];
 
 sub this_init
 {
     $_[ 0 ]->shipper(      'UPS' );
     return;
+}
+
+sub packaging { shift->package0->packaging( @_ ) }
+sub weight    { shift->package0->weight( @_ )    }
+sub service
+{
+    my ( $self, $service ) = @_;
+    
+    return $self->_service unless $service;
+    
+    # TODO: This is where the mode_map stuff goes.
+    $self->_service( $service );
+    
+    return $service;
+}
+
+sub massage_values 
+{
+    my ( $self ) = @_;
+
+
+    # Check each package for a package type and assign one if none given.
+    my %default_package_map = (
+        qw/
+        1DM    02
+        1DML   01
+        1DA    02
+        1DAL   01
+        1DP    02
+        2DM    02
+        2DA    02
+        2DML   01
+        2DAL   01
+        3DS    02
+        GNDCOM 02
+        GNDRES 02
+        XPR    02
+        UPSSTD 02
+        XDM    02
+        XPRL   01
+        XDML   01
+        XPD    02
+        /
+    );
+
+    foreach my $package ( $self->packages ) {
+        if ( not $package->packaging ) {
+            if ( $default_package_map{ $self->service() } ) {
+                $package->packaging( $default_package_map{ $self->service() } );
+            } else {
+                $package->packaging( '02' );
+            }
+        }
+    }
+    
+    # UPS requires weight is at least 0.1 pounds.
+    foreach my $package ( $self->packages ) {
+        $package->weight( 0.1 ) if ( not $package->weight() or $package->weight() < 0.1 );
+    }
+
+    # In the U.S., UPS only wants the 5-digit base ZIP code, not ZIP+4
+    $self->to_country( 'US' ) if not $self->to_country();
+    if ( $self->to_zip() ) { 
+        $self->to_zip() =~ /^(\d{5})/ and $self->to_zip( $1 );
+    }
+    
+    # UPS prefers 'GB' instead of 'UK'
+    $self->to_country( 'GB' ) if $self->to_country() eq 'UK';
+    
 }
 
 =item * Required()
@@ -105,7 +174,6 @@ sub from_ak_or_hi
 }
 
 1;
-
 
 __END__
 

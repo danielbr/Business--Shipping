@@ -1,7 +1,7 @@
 ################################################################################
 ##  General TODO
 ################################################################################
-
+   
 * [Enh] Remove default_package() and determine_shipper_from_self().
 
 * [Enh] Conform to coding style: private methods should be prefixed with an
@@ -61,14 +61,6 @@ Anyway, I think I need to investigate it some more.
 * [Enh] Split the data into its own package, and add it to the bundle.
    - Business::Shipping::Data
 
-* [Enh] Logging system (Log4perl) enhancements
-   - At the time of Makefile.PL, automatically transform the log4perl.conf file
-     with the correct absolute path to 'log'.  Same problem as config.ini and
-     the hard-coded path to /var/perl/Business-Shipping.
-     
-   - Find some way to have a "remove Business::Shipping" from the first part of 
-     the name.  Probably a Log::Log4perl::Filter.    
- 
 * [Enh] Use Log::Dispatch::Email for incident notifications?
 
 * [Enh] Make the error handling more customizable
@@ -207,6 +199,10 @@ Anyway, I think I need to investigate it some more.
      All of the abstract code is in neutral directories.
    - Optional: Move the neutral code to Shipping::All:: to signify the fact that
      all code is derived from them.
+
+* Log4Perl enhancement
+  - Remove "Business::Shipping" from the first part of logging output.
+  - Perhaps a Filter object?
 
 ################################################################################
 ##  Offline::USPS TODO

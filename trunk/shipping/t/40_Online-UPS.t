@@ -190,40 +190,37 @@ SKIP: {
     
     ###########################################################################
     ##  Cache Test
-    ##  Multiple sequential queries should give *different* results.
+    ##  Multiple sequential queries should give *different* results, even if 
+    ##  they only differ by 10 pounds.
     ###########################################################################
+    my %similar = (
+        'pickup_type'    => 'daily pickup',
+        'from_zip'       => '98682',
+        'from_country'   => 'US',
+        'to_country'     => 'US',    
+        'service'        => '1DA',
+        'to_residential' => '1',
+        'to_zip'         => '98270',
+        'packaging'      => '02',
+    );
     my $rr1 = test(
-        'cache'        => 1,
-        'pickup_type'         => 'daily pickup',
-        'from_zip'            => '98682',
-        'from_country'        => 'US',
-        'to_country'        => 'US',    
-        'service'            => '1DA',
-        'to_residential'    => '1',
-        'to_zip'            => '98270',
-        'weight'            => 2,
-        'packaging'         => '02',
+        %similar,
+        'cache'          => 1,
+        'weight'         => 2,
     );
     $rr1->submit() or die $rr1->user_error();
     my $total_charges_2_pounds = $rr1->total_charges();
     debug( "Cache test. 2 pounds = $total_charges_2_pounds" ); 
     
     my $rr2 = test(
-        'cache'                => 1,
-        'pickup_type'         => 'daily pickup',
-        'from_zip'            => '98682',
-        'from_country'        => 'US',
-        'to_country'        => 'US',    
-        'service'            => '1DA',
-        'to_residential'    => '1',
-        'to_zip'            => '98270',
-        'weight'            => 9,
-        'packaging'         => '02',
+        %similar,
+        'cache'          => 1,
+        'weight'         => 12,
     );
     $rr2->submit() or die $rr2->user_error();
-    my $total_charges_9_pounds = $rr2->total_charges();
-    debug( "Cache test. 9 pounds = $total_charges_9_pounds" );
-    ok( $total_charges_2_pounds != $total_charges_9_pounds, 'UPS domestic cache, sequential charges are different' );
+    my $total_charges_12_pounds = $rr2->total_charges();
+    debug( "Cache test. 12 pounds = $total_charges_12_pounds" );
+    ok( $total_charges_2_pounds != $total_charges_12_pounds, 'UPS domestic cache, sequential charges are different' );
     
     
     ###########################################################################

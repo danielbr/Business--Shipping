@@ -1,6 +1,6 @@
 # Business::Shipping::Config - Configuration functions
 # 
-# $Id: Config.pm,v 1.8 2004/06/24 03:09:23 danb Exp $
+# $Id: Config.pm,v 1.9 2004/06/25 20:42:26 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Config - Configuration functions
 
 =head1 VERSION
 
-$Revision: 1.8 $      $Date: 2004/06/24 03:09:23 $
+$Revision: 1.9 $      $Date: 2004/06/25 20:42:26 $
 
 =head1 DESCRIPTION
 
@@ -28,8 +28,10 @@ Config::IniFiles module.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT = qw/ cfg cfg_obj config_to_hash config_to_ary_of_hashes /;
+use constant DEFAULT_SUPPORT_FILES_DIR => '/var/perl/Business-Shipping';
+#use constant DEFAULT_SUPPORT_FILES_DIR => '~_~SUPPORT_FILES_DIR~_~';
 
 use strict;
 use warnings;
@@ -40,25 +42,22 @@ use Carp;
 my $support_files_dir;
 my $main_config_file;
 
-#
 # Try the current directory first.
-#
-if ( -f "config/config.ini" ) {
-    $support_files_dir = ".";
+
+if ( -f 'config/config.ini' ) {
+    $support_files_dir = '.';
 }
 
-#
 # Then try environment variables
-#
+
 $support_files_dir ||= $ENV{ BUSINESS_SHIPPING_SUPPORT_FILES };
 
-#
 # Then fall back on the default.
-#
-$support_files_dir ||= "/var/perl/Business-Shipping";
+
+$support_files_dir ||= DEFAULT_SUPPORT_FILES_DIR;
 
 $main_config_file = "$support_files_dir/config/config.ini";
-tie my %cfg, 'Config::IniFiles', (         -file => $main_config_file );
+tie my %cfg, 'Config::IniFiles', (      -file => $main_config_file );
 my $cfg_obj = Config::IniFiles->new(    -file => $main_config_file );
 
 sub cfg             { return \%cfg;                 }
@@ -137,20 +136,19 @@ sub config_to_ary_of_hashes
         
     my @ary;
     foreach my $line ( @$cfg ) {
-        #
+
         # Convert multiple tabs into one tab.
         # Remove the leading tab.
         # split on the tabs to get key=val pairs.
         # split on the '='.
-        #
+
         $line =~ s/\t+/\t/g;
         $line =~ s/^\t//;
         my @key_val_pairs = split( "\t", $line );
         next unless @key_val_pairs;
 
-        #
         # Each line becomes a hash.
-        #
+
         my $hash = {};
         foreach my $key_val_pair ( @key_val_pairs ) {
             my ( $key, $val ) = split( '=', $key_val_pair );

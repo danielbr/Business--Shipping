@@ -19,7 +19,7 @@ Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
 
 =head1 VERSION
 
-$Revision: 1.24 $      $Date: 2004/06/24 03:09:24 $
+$Revision: 1.25 $      $Date: 2004/06/25 20:42:27 $
 
 =head1 GLOSSARY
 
@@ -37,7 +37,7 @@ $Revision: 1.24 $      $Date: 2004/06/24 03:09:24 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.24 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.25 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -117,7 +117,6 @@ use Class::MethodMaker 2.0
                                     'from_zip',
                                     'to_zip',
                                     'packages',
-                                    'default_package',
                                     'weight',
                                     'shipper',
                                     'domestic',
@@ -556,11 +555,16 @@ sub _handle_response
 {
     my $self = $_[ 0 ];
     
+    my $out;
+    for ( qw/ weight / ) {
+        $out .= "$_ = " . $self->$_();
+    }
+    #error( $out );
+    
+    
     my $total_charges;
     $self->do_update();
     $self->calc_zone_data();
-    
-    
     
     # The fuel surcharge also applies to the following accessorial charges:
     #  * On-Call Pickup Charges
@@ -596,7 +600,8 @@ sub _handle_response
         
         my $fn = "calc_" . $price_component->{ component };
         
-        my $price = $self->$fn();
+        my $price;
+        if ( $self->can( $fn ) ) { $price = $self->$fn(); }
         if ( ! $price ) {
             if ( $price_component->{ fatal } ) {
                 return $self->is_success( 0 );
@@ -606,7 +611,6 @@ sub _handle_response
             }
         }
         debug3 "adding price $price to final_components";
-        
         
         push @$final_price_components, {
             price       => $price,
@@ -622,12 +626,11 @@ sub _handle_response
         $self->_total_charges 
     );
     
-    #
     # 'return' method:
     # 1. Save a "results" hash.
     #
     # TODO: multi-package support: loop over the packages
-    #
+
     my $packages = [
         { 
             #description
@@ -685,12 +688,11 @@ services, for example).
 
 =cut
 
-#
 # TODO: Instead of always applying this, only apply it if the zip is found
 # in xarea.
-#
+
 # TODO: Calculate the delivery area surcharge amount from the accessorials.csv
-#
+
 sub calc_delivery_area_surcharge
 {
     my ( $self ) = @_;

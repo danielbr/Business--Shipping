@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::UPS - Estimates shipping cost online
 # 
-# $Id: UPS.pm,v 1.18 2004/06/24 03:09:25 danb Exp $
+# $Id: UPS.pm,v 1.19 2004/06/25 20:42:28 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -84,7 +84,7 @@ UPS_ACCESS_KEY
     
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.18 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.19 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -119,24 +119,25 @@ use Class::MethodMaker 2.0
                     -forward => [ 
                                   'from_city',
                                   'to_city',
-                                    'service', 
-                                    'from_country',
-                                    'from_country_abbrev',
-                                    'to_country',
-                                    'to_country_abbrev',
-                                    'to_ak_or_hi',
-                                    'from_zip',
-                                    'to_zip',
-                                    'packages',
-                                    'default_package',
-                                    'weight',
-                                    'shipper',
-                                    'domestic',
-                                    'intl',
-                                    'domestic_or_ca',
-                                    'from_canada',
-                                    'to_canada',
-                                    'from_ak_or_hi',                                  
+                                  'service', 
+                                  'from_country',
+                                  'from_country_abbrev',
+                                  'to_country',
+                                  'to_country_abbrev',
+                                  'to_ak_or_hi',
+                                  'from_zip',
+                                  'to_zip',
+                                  'packages',
+                                  'weight',
+                                  'shipper',
+                                  'domestic',
+                                  'intl',
+                                  'domestic_or_ca',
+                                  'from_canada',
+                                  'to_canada',
+                                  'from_ak_or_hi',
+                                  'packaging',
+                                  'to_residential',
                                 ],
                    },
                    'shipment'
@@ -148,8 +149,8 @@ use Class::MethodMaker 2.0
                ],
     ];
 
-sub to_residential { return shift->shipment->to_residential( @_ ); }
-sub packaging { return shift->shipment->default_package->packaging( @_ ); }
+#sub to_residential { return shift->shipment->to_residential( @_ ); }
+#sub packaging { return shift->shipment->default_package->packaging( @_ ); }
 
 #
 # Ignore
@@ -195,42 +196,9 @@ sub _massage_values
     trace( 'called' );
     my ( $self ) = @_;
     
+    # The following is only for online usage.
+    # TODO: Move to UPS_Online/Shipment.pm
     # Translate service values.
-    # Is the passed mode alpha ('1DA') or numeric ('02')?
-    my $alpha = 1 unless ( $self->shipment->service =~ /\d\d/ );
-    
-    my %default_package_map = (
-        qw/
-        1DM    02
-        1DML    01
-        1DA    02
-        1DAL    01
-        1DP    02
-        2DM    02
-        2DA    02
-        2DML    01
-        2DAL    01
-        3DS    02
-        GNDCOM    02
-        GNDRES    02
-        XPR    02
-        UPSSTD    02
-        XDM    02
-        XPRL    01
-        XDML    01
-        XPD    02
-        /
-    );
-
-    # Automatically assign a package type if none given, for backwards compatibility.
-    if ( ! $self->shipment->default_package->packaging() ) {
-        if ( $alpha and $default_package_map{ $self->service() } ) {
-            $self->shipment->default_package->packaging( $default_package_map{ $self->shipment->service() } );
-        } else {
-            $self->shipment->default_package->packaging( '02' );
-        }
-    }
-    
     my %mode_map = (
         qw/
             1DM    14
@@ -254,43 +222,26 @@ sub _massage_values
         /
     );
     
-    # Map names to codes for backward compatibility.
-    $self->shipment->service( $mode_map{ $self->shipment->service } )        if $alpha;
-    
     # Default values for residential addresses.
-    unless ( $self->shipment->to_residential() ) {
-        $self->shipment->to_residential( 1 )        if $self->shipment->service() == $mode_map{ 'GNDRES' };
-        $self->shipment->to_residential( 0 )        if $self->shipment->service() == $mode_map{ 'GNDCOM' };
-    }
-    
-    # UPS requires weight is at least 0.1 pounds.
-    foreach my $package ( @{ $self->shipment->packages() } ) {
-        $package->weight( 0.1 )            if ( ! $package->weight() or $package->weight() < 0.1 );
-    }
-
-    # In the U.S., UPS only wants the 5-digit base ZIP code, not ZIP+4
-    $self->to_country( 'US' ) unless $self->to_country();
-    if ( $self->to_zip() ) { 
-        $self->to_zip() =~ /^(\d{5})/ and $self->to_zip( $1 );
-    }
-    
-    # UPS prefers 'GB' instead of 'UK'
-    $self->to_country( 'GB' ) if $self->to_country() eq 'UK';
-    
-    
-    #
-    # Try to get the username, password, and key from environment variables,
-    # if set.
-    #
-    for ( 'user_id', 'password', 'access_key' ) {
-        if ( ! $self->$_() ) {
-            my $env_key = "UPS_" . uc( $_ );
-            if ( $ENV{ $env_key } ) {
-                $self->$_( $ENV{ $env_key } );
-            }
+    if ( not $self->shipment->to_residential() ) {
+        if ( $self->shipment->service =~ /(03|GNDRES)/ ) {
+            $self->shipment->to_residential( 1 );
+        }
+        elsif ( $self->shipment->service eq 'GNDCOM' ) {
+            $self->shipment->to_residential( 0 );
         }
     }
+
+    my $service = $self->shipment->service;
     
+    # Is the passed mode alpha ('1DA') or numeric ('02')?
+    my $alpha = 1 unless ( $service =~ /\d\d/ );
+
+    $service = $mode_map{ $service } if $alpha;
+
+    $self->shipment->service( $service );
+    
+    $self->shipment->massage_values;
     return;
 }
 
@@ -345,7 +296,7 @@ sub _gen_request_xml
     );
     
     my @packages;
-    foreach my $package ( @{$self->packages()} ) {
+    foreach my $package ( $self->shipment->packages() ) {
         #
         # TODO: Move to a different XML generation scheme, since all the packages 
         # in a multi-package shipment will have the name "Package"

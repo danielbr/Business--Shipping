@@ -746,7 +746,6 @@ LICENSE
 Makefile.PL
 MANIFEST			This list of files
 META.yml
-pm_to_blib
 README
 t/10_init.t
 t/20_business_shipping.t

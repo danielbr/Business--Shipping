@@ -1,6 +1,6 @@
 # Business::Shipping::ClassInfo - Used by ClassAttribs
 # 
-# $Id: ClassInfo.pm,v 1.4 2004/06/24 03:09:23 danb Exp $
+# $Id: ClassInfo.pm,v 1.5 2004/06/25 20:42:26 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::ClassInfo - Used by ClassAttribs
 
 =head1 VERSION
 
-$Revision: 1.4 $      $Date: 2004/06/24 03:09:23 $
+$Revision: 1.5 $      $Date: 2004/06/25 20:42:26 $
 
 =head1 METHODS
 
@@ -23,7 +23,7 @@ $Revision: 1.4 $      $Date: 2004/06/24 03:09:23 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -174,7 +174,15 @@ sub recursive_find_Has_a
         #debug3( "working on $class that has object $classes_objects{$class}" );
         my $object = $classes_objects{ $class } 
             || $self->{ classes }->{ $class }->{ object };
-            
+        
+        # Array support.  For example, supports Class::MethodMaker "array" type.
+        
+        if ( defined $object and ref $object eq 'ARRAY' ) {
+            debug3( "Object is an array ref, using the first element of the "
+                  . "array as the object instead." );
+            $object = $object->[ 0 ];
+        }
+        
         if ( not defined $object ) {
             debug3( "$class: object not defined" );
             $object = $self->get_object( $class );
@@ -188,6 +196,7 @@ sub recursive_find_Has_a
         my @Has_a_classes;
         my %Has_a_classes_objects;
         my %parent_classes_objects;
+        
         if ( $object->can( 'Has_a' ) ) {
             
             #
@@ -313,10 +322,15 @@ sub find_group
     debug3( "classes = " . join( "\n", @classes ) );
     foreach my $class ( @classes ) {
         my $object = $self->{ classes }->{ $class }->{ object };
+        if ( defined $object and ref $object eq 'ARRAY' ) {
+            $object = $object->[ 0 ];
+        }
         if ( not defined $object ) {
             debug3( "$class did not have an object defined for it" );
             next;
         }
+        
+        
         if ( $object->can( $group ) ) {
             my $Group_in_string_format = $object->$group;
             

@@ -7,6 +7,12 @@ use Carp;
 use Business::Shipping;
 use constant CLOSE_ENOUGH_PERCENT   => 10;
 
+my %user = (
+        user_id    => $ENV{ UPS_USER_ID },
+        password   => $ENV{ UPS_PASSWORD },
+        access_key => $ENV{ UPS_ACCESS_KEY },
+);
+
 my %test;
 my $this_test_desc;
 sub test
@@ -28,10 +34,7 @@ sub test_online
     my $shipment = Business::Shipping->rate_request( 
         shipper    => 'Online::UPS',
         cache      => 0,
-        user_id    => $ENV{ UPS_USER_ID },
-        password   => $ENV{ UPS_PASSWORD },
-        access_key => $ENV{ UPS_ACCESS_KEY }, 
-        cache      => 0,
+        %user
     );
     
     $shipment->submit( %args ) or die $shipment->user_error();
@@ -482,7 +485,7 @@ my %r1 = (
 my $rr_off = Business::Shipping->rate_request( shipper => 'Offline::UPS', %r1 );
 $rr_off->submit or die $rr_off->user_error();
 
-my $rr_on = Business::Shipping->rate_request( shipper => 'Online::UPS', %r1 );
+my $rr_on = Business::Shipping->rate_request( shipper => 'Online::UPS', %r1, %user );
 $rr_on->submit or die $rr_on->user_error();
 
 ok( close_enough( $rr_off->total_charges(), $rr_on->total_charges() ),

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::USPS - Estimates shipping cost online
 # 
-# $Id: USPS.pm,v 1.15 2004/06/24 03:09:25 danb Exp $
+# $Id: USPS.pm,v 1.16 2004/06/25 20:42:28 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ See Business::Shipping.pm POD for usage information.
 
 =head1 VERSION
 
-$Revision: 1.15 $      $Date: 2004/06/24 03:09:25 $
+$Revision: 1.16 $      $Date: 2004/06/25 20:42:28 $
 
 =head1 SERVICE TYPES
 
@@ -49,7 +49,7 @@ $Revision: 1.15 $      $Date: 2004/06/24 03:09:25 $
 
 package Business::Shipping::RateRequest::Online::USPS;
 
-$VERSION = do { my @r=(q$Revision: 1.15 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.16 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -77,6 +77,13 @@ use Class::MethodMaker 2.0
                     -forward => [ 
                                   'from_city',
                                   'to_city',
+                                  'ounces',
+                                  'pounds',
+                                  'weight',
+                                  'container',
+                                  'size',
+                                  'machinable',
+                                  'mail_type',
                                 ],
                    },
                    'shipment'
@@ -92,13 +99,7 @@ use Class::MethodMaker 2.0
 
 sub this_init { $_[ 0 ]->shipper( 'USPS' ); }
 
-#
-# Map to default_package for convenience when calling.
-#
-foreach my $attribute ( 'ounces', 'pounds', 'weight', 'container', 'size', 'machinable', 'mail_type' ) {
-    #eval "sub $attribute { return &{ \$_[0]->shipment->default_package->$attribute; }; }";
-    eval "sub $attribute { return shift->shipment->default_package->$attribute( \@_ ); }";
-}
+# For compatibility.
 
 sub to_residential { return 0; }
 
@@ -198,11 +199,8 @@ sub _gen_request_xml
     # We only do this to provide a pretty, formatted XML doc for the debug. 
     my $request_xml_tree = XML::Simple::XMLin( $request_xml, KeepRoot => 1, ForceArray => 1 );
     
-    #
     # Large debug
-    #
     debug3( XML::Simple::XMLout( $request_xml_tree, KeepRoot => 1 ) );
-    #
     
     return ( $request_xml );
 }
@@ -221,11 +219,10 @@ sub _gen_request
     my $new_content = 'API=' . ( $self->domestic() ? 'Rate' : 'IntlRate' ) . '&XML=' . $request->content();
     $request->content( $new_content );
     $request->header( 'content-length' => length( $request->content() ) );
-    #
+
     # Large debug
-    #
-    #debug( 'HTTP Request: ' . $request->as_string() );
-    #
+    debug3( 'HTTP Request: ' . $request->as_string() );
+    
     return ( $request );
 }
 

@@ -1,4 +1,4 @@
-# $Id: USPS.pm,v 1.13 2004/06/24 03:09:26 danb Exp $
+# $Id: USPS.pm,v 1.14 2004/06/25 20:42:28 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,7 +13,7 @@ usiness::Shipping::Shipment::USPS
 
 =head1 VERSION
 
-$Revision: 1.13 $      $Date: 2004/06/24 03:09:26 $
+$Revision: 1.14 $      $Date: 2004/06/25 20:42:28 $
 
 =head1 DESCRIPTION
 
@@ -27,25 +27,24 @@ Move the country translator data into configuration.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.13 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.14 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use base ( 'Business::Shipping::Shipment' );
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
+use Business::Shipping::Util;
 use Business::Shipping::Package;
 use Class::MethodMaker 2.0 
     [ 
-      new   => [ { -hash => 1, -init => 'this_init' }, 'new' ],
-      array => [ { -type => 'Business::Shipping::Package::USPS' }, 'packages' ],
-      scalar => [ { -static => 1, -default => 'default_package=>Business::Shipping::Package::USPS' }, 'Has_a' ],
-      #
-      # We use a hand-written "Required()" method for this class (below), 
-      # because International USPS does not require service or from_zip, but
-      # domestic does.
-      #
-      # scalar => [ { -static => 1, -default => 'service, from_zip' }, 'Required' ],
+      new   =>  [ { -hash    => 1, -init => 'this_init' }, 'new' ],
+      array =>  [ { -type    => 'Business::Shipping::Package::USPS' }, 'packages' ],
+      scalar => [ { -static  => 1, 
+                    -default => 'packages=>Business::Shipping::Package::USPS' 
+                  }, 
+                  'Has_a' 
+                ],
 ];
 
 sub this_init
@@ -55,13 +54,23 @@ sub this_init
     return;
 }
 
+foreach my $attribute ( 'pounds', 'ounces', 'weight', 'container', 'size', 'machinable', 'mail_type' ) {
+    eval "sub $attribute { shift->package0->$attribute( \@_ ); }";
+}
+
+
+# We use a hand-written "Required()" method for this class (below), 
+# because International USPS does not require service or from_zip, but
+# domestic does.
+# The C:MM would have been:
+# scalar => [ { -static => 1, -default => 'service, from_zip' }, 'Required' ],
+
 sub Required
 {
     return 'service, from_zip' if $_[ 0 ]->domestic;
     return '';
 }
 
-sub ounces { &{ $_[ 0 ]->default_package->ounces }; }
 
 =item * from_country
 
