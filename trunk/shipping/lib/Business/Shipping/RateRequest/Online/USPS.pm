@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::USPS - Estimates shipping cost online
 # 
-# $Id: USPS.pm,v 1.12 2004/03/08 17:13:56 danb Exp $
+# $Id: USPS.pm,v 1.13 2004/03/31 19:11:07 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ See Business::Shipping.pm POD for usage information.
 
 =head1 VERSION
 
-$Revision: 1.12 $      $Date: 2004/03/08 17:13:56 $
+$Revision: 1.13 $      $Date: 2004/03/31 19:11:07 $
 
 =head1 SERVICE TYPES
 
@@ -49,12 +49,12 @@ $Revision: 1.12 $      $Date: 2004/03/08 17:13:56 $
 
 package Business::Shipping::RateRequest::Online::USPS;
 
-$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.13 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use base( 'Business::Shipping::RateRequest::Online' );
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 use Business::Shipping::Package::USPS;
 use Business::Shipping::Shipment::USPS;
 use XML::Simple 2.05;

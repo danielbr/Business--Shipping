@@ -1,6 +1,6 @@
 # Makefile.PL - Installation script for Business::Shipping
 # 
-# $Id: Makefile.PL,v 1.29 2004/03/08 17:13:54 danb Exp $
+# $Id: Makefile.PL,v 1.30 2004/03/31 19:11:03 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -45,6 +45,10 @@ WriteMakefile(
 		'Scalar::Util'			=> '1.10',
 		'XML::DOM' 				=> 0,
 		'XML::Simple'			=> '2.05',
+        #Module::Build #for Log::Dispatch::File
+        #Log::Log4perl (comes with File and Screen Appenders)
+        #Log::Dispatch
+        #Log::Dispatch::Email?
 	},
 );
 
@@ -76,11 +80,12 @@ docs :
 	
 support_files_install :
 	\@echo "Installing support files (database, configuration, etc.) to $my_globals{SUPPORT_FILES_DIR}"
-	\@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/data
+	\@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/log
+    \@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/data
 	\@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/config
 	\@\$(CP) --recursive --force data/*   $my_globals{SUPPORT_FILES_DIR}/data/
 	\@\$(CP) --recursive --force config/* $my_globals{SUPPORT_FILES_DIR}/config/
-};
+};  #/qq
 }
 
 

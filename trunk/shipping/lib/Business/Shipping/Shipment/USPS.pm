@@ -1,4 +1,4 @@
-# $Id: USPS.pm,v 1.10 2004/03/08 17:13:57 danb Exp $
+# $Id: USPS.pm,v 1.11 2004/03/31 19:11:08 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,7 +13,7 @@ usiness::Shipping::Shipment::USPS
 
 =head1 VERSION
 
-$Revision: 1.10 $      $Date: 2004/03/08 17:13:57 $
+$Revision: 1.11 $      $Date: 2004/03/31 19:11:08 $
 
 =head1 DESCRIPTION
 
@@ -27,12 +27,12 @@ Move the country translator data into configuration.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use base ( 'Business::Shipping::Shipment' );
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Package;
 use Class::MethodMaker 2.0 

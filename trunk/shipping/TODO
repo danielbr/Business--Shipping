@@ -2,6 +2,47 @@
 ##  General TODO
 ######################################################
 
+ * [ENH] Upgrade to Log4perl
+   - Too verbose.  For example, 
+     
+       error( 'Cannot access file ', $file );
+       
+       -vs-
+       
+       my $log = Log::Log4perl->get_logger("My::MegaPackage");
+       $log->error( 'Cannot access file ', $file );
+       
+       I realize that not everyone wants to use thir class heirarchy as the
+       logging category system, but I do.  And since I'm Lazy, I want my logging
+       system to detect what category I'm in automatically when I call error().
+       
+   - Only 5 Levels?
+   
+     I use debug1() debug2() and debug3().  They are quick to type.  If my 
+     categories are automatically defined, then I shouldn't try to use them 
+     for the level system, should I?
+     
+     OK, OK, I guess I could use 
+     "Business::Shipping::RateRequest::Online::UPS::DEBUG3 = on/off"
+     
+   - Use this in the constructor?
+     my $logger = Log::Log4perl::get_logger($class);
+     
+     other methods can get the class name with ref( $self )
+     
+   - get_logger() is equivalent to get_logger(__PACKAGE__).
+   
+   - Set $Log::Log4perl::caller_depth to 1, if I implement my own Logger class.
+   
+   - Find some way to have a "remove Business::Shipping" from the first part of 
+     the name.
+     
+   - Leave Business::Shipping::Debug around as a compatibility package for a 
+     while.
+       
+ 
+ * [ENH] Use Log::Dispatch::Email for incident notifications?
+ 
  * [DOC] Look into OODoc or Pod::Tree
 
  * [DOC] Include the terms of use for each provider.
@@ -175,15 +216,55 @@
 ##  Offline::UPS TODO
 ######################################################
 
+ * [BUG] UPS Ground: Was 7.02.  Should have been 8.11, or 8.64.
+   - See t/manual/offline_ups_bug2_al.pl
+
  * [ENH] Determine the upcoming fuel surcharge changes from UPS website, then 
    check to see if that date has passed.  If so, automatically update the fuel 
    surcharge.
 
- * [BUG] On March 1, 2004: update fuel surcharge to 6.50%.
- 
  * [BUG] Note:  Effective January 5, 2004, the Fuel Surcharge will be 
    discontinued for the following services:  UPS Ground Commercial, UPS Ground 
    Residential, UPS Ground Hundredweight Service, and UPS Standard to Canada.
+
+ * [BUG] Saudi Arabia  
+   Error:  No zone found for geo code (key) Saudi Arabia, type ExpeditedSM_EC.
+        from_country =>                 'US',
+        to_country =>           'SA',
+        event_handlers =>               'HASH(0x9b1596c)',
+        from_state =>           'WA',
+        service =>              'XPD',
+        from_zip =>             '98682',
+        weight =>               '0.5',
+        to_zip =>               '56232',
+        cache =>                '1',
+        shipper =>              'Offline::UPS',
+ 
+ * St. Lucia
+   Error:  No zone found for geo code (key) St. Lucia, type ExpeditedSM_EC.
+        from_country =>                 'US',
+        to_country =>           'LC',
+        event_handlers =>               'HASH(0x9beec34)',
+        from_state =>           'WA',
+        service =>              'XPD',
+        weight =>               '61',
+        from_zip =>             '98682',
+        to_zip =>               'none',
+        shipper =>              'Offline::UPS',
+        cache =>                '1',
+
+ * [BUG] Jordan: 
+   Error:  No zone found for geo code (key) Jordan, type ExpeditedSM_EC.
+        from_country =>                 'US',
+        to_country =>           'JO',
+        event_handlers =>               'HASH(0x9b3a498)',
+        from_state =>           'WA',
+        service =>              'XPD',
+        from_zip =>             '98682',
+        weight =>               '3',
+        to_zip =>               '13110',
+        cache =>                '1',
+        shipper =>              'Offline::UPS',
 
  * [BUG] Israel:
      No zone found for geo code (key) Israel, type ExpeditedSM_EC.
@@ -229,9 +310,37 @@
         weight =>       '2',
         to_zip =>       '2024',
 
+ * [BUG] France Metropolitan:
+		[business-shipping]: Offline::UPS error: No zone found for geo code (key) France,
+		Metropolitan, type ExpeditedSM_EC. .
+		Options were: {'cache' => "1",'from_state' => "Washington",'from_zip' => "98682",'weight' =>
+		"1.5",'to_zip' => "69100",'from_country' => "US",'shipper' => "Offline::UPS",'to_country' =>
+		"FX",'service' => "XPD",}
+
+ * [BUG] Canada via XPR/XPD doesn't work (and wont, until canada is implemented)
+		[business-shipping]: Offline::UPS error: No zone found for geo code (key) Canada, type
+		ExpeditedSM_EC. .
+		Options were: {'cache' => "1",'from_state' => "Washington",'from_zip' => "98682",'weight' =>
+		"1",'to_zip' => "h9h2v3",'from_country' => "US",'shipper' => "Offline::UPS",'to_country' =>
+		"CA",'service' => "XPD",}
+ * [BUG] 99663 = Seldovia, Alaska
+		my $rate_request = Business::Shipping->rate_request(
+                       shipper         => 'Online::UPS',
+                       from_canada     => 'CA',
+                       from_country    => 'CA',
+                       from_zip        => 'v6h3y8',
+                       to_country      => 'US',
+                       to_zip          => '99663',
+                       weight          =>  5.00,
+                       user_id         => 'userid',
+                       password        => 'pass',
+                       service         => 'XPD',
+                       access_key       => 'XXXXXX',
+               );
+
+
+				
  * [ENH] Confirm that the auto-update feature works well.
- 
- * [ENH] Remove zip files from the build (save space)
  
  * [ENH] Performance enhancement: instead of transforming the data with
    calc_zone_data() everytime, just re-write the data file.
@@ -246,43 +355,10 @@
  
  * [ENH] Allow user to specify "use default" for Makefile.PL (already done?)
  
- * [ENH] Provide example documentation for easily keeping up to date with the
-   CVS.  For example:
-     
-     cvs up
-	 perl Makefile.PL
-	 make
-	 make test
-	 make install
-	 
-	 -or-
-	 
-	 cd $PATH_TO_SHIP
-	 su $USER -c 'perl Makefile.PL'
-	 su $USER -c 'make'
-	 su $USER -c 'make test'
-	 make install
-	 
- * [ENH] For Canada, only the first shipping method works.
-
  * [ENH] Change from_state to a Shipment function, which will calculate and set 
    the is_from_west_coast() value, instead of doing from within 
    massage_values().
 
- * [BUG] France Metropolitan:
-		[business-shipping]: Offline::UPS error: No zone found for geo code (key) France,
-		Metropolitan, type ExpeditedSM_EC. .
-		Options were: {'cache' => "1",'from_state' => "Washington",'from_zip' => "98682",'weight' =>
-		"1.5",'to_zip' => "69100",'from_country' => "US",'shipper' => "Offline::UPS",'to_country' =>
-		"FX",'service' => "XPD",}
-
- * [BUG] Canada via XPR/XPD doesn't work (and wont, until canada is implemented)
-		[business-shipping]: Offline::UPS error: No zone found for geo code (key) Canada, type
-		ExpeditedSM_EC. .
-		Options were: {'cache' => "1",'from_state' => "Washington",'from_zip' => "98682",'weight' =>
-		"1",'to_zip' => "h9h2v3",'from_country' => "US",'shipper' => "Offline::UPS",'to_country' =>
-		"CA",'service' => "XPD",}
-				
  * [ENH] Have a simple example script in the doc directory.
 
  * [ENH] How to find the current fuel surcharge rate:

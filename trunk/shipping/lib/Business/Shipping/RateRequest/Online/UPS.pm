@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::UPS - Estimates shipping cost online
 # 
-# $Id: UPS.pm,v 1.15 2004/03/08 17:13:56 danb Exp $
+# $Id: UPS.pm,v 1.16 2004/03/31 19:11:07 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -71,13 +71,12 @@ See Shipping.pm POD for usage information.
     
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.15 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.16 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use base ( 'Business::Shipping::RateRequest::Online' );
-use Business::Shipping::RateRequest::Online;
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Package::UPS;
 use XML::Simple 2.05;

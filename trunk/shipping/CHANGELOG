@@ -8,6 +8,8 @@ Revision history for Business::Shipping.
     - Class::MethodMaker 2.0 now required.  CPAN installation instructions:
       perl -MCPAN -e 'install F/FL/FLUFFY/Class-MethodMaker-2.00.tar.gz'
       Updated because the new version has sugary syntax.
+    - Log::Log4perl now required (for debug/error handling).
+    - event_handlers() depreciated (use config/log4perl.conf instead).
         
   Tracking
     - Rusty Conover <rconover@infogears.com> contributed the following:
@@ -19,6 +21,7 @@ Revision history for Business::Shipping.
     - Changed to dual GPL/Artistic License.
     - Changed hosting from kavod.com to sf.net.
         - Code cleanup all over the place.
+    - Logging system added, wrapper for Log4perl.
     - Major documentation updates.
     - Change tabs to four spaces
     - Developed ClassAttribs and ClassInfo packages for extracting meta-data
@@ -31,9 +34,14 @@ Revision history for Business::Shipping.
       the auto-creation of a default package if one does not exist.
     - LWP::UserAgent and HTTP::Response objects now created on-the-fly.
     - Many other misc. changes.
+    
    
   Offline::UPS
     - Bug fixed: Zip+4 not handled correctly (should drop the four).
+    - Update fuel surcharge to 5.50%.
+    - Minor validity changes:
+      - Warning about UPS Standard being available to Canada only.
+      - Cyprus does not have XPD
     
   Online::USPS
     - Pounds, ounces, and weight handling refactored.
@@ -43,19 +51,19 @@ Revision history for Business::Shipping.
     - [Fixed] The "don't send if required field is missing" doesn't work in 
       the "send incident report code" feature -- it sends it even if to_zip is
       missing.
-        - Fixed with "Required arguments" changes.
+        - Fixed with "Required Options" changes.
    
 	  
 1.06  Feb 11 2004
 
-    General
+  General
     - Remove Bundle::Business::Shipping (now in its own distro, where it should 
       be).
   
 	  
 1.05  Feb 10 2004
   
-    General
+  General
     - Attempted fix for Bundle::Business::Shipping
     - Remove unneeded .zip files from data/
     - Minor documentation updates

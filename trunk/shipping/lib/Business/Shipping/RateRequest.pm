@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest - Abstract class for shipping cost estimation
 # 
-# $Id: RateRequest.pm,v 1.11 2004/03/08 17:13:55 danb Exp $
+# $Id: RateRequest.pm,v 1.12 2004/03/31 19:11:05 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::RateRequest - Abstract class for shipping cost estimation
 
 =head1 VERSION
 
-$Revision: 1.11 $      $Date: 2004/03/08 17:13:55 $
+$Revision: 1.12 $      $Date: 2004/03/31 19:11:05 $
 
 =head1 DESCRIPTION
 
@@ -29,13 +29,14 @@ Represents a request for shipping cost estimation.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use base ( 'Business::Shipping' );
 use Data::Dumper;
-use Business::Shipping::Debug;
+use Business::Shipping::Util;
+use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Cache::FileCache;
 
@@ -203,7 +204,7 @@ sub validate
     my ( $self ) = @_;
     trace '()';
     
-    my $invalid = $self->SUPER::validate;
+    my $return_val = $self->SUPER::validate;
     
     my @invalid_rate_requests_ups = $self->config_to_ary_of_hashes( 
         cfg()->{ invalid_rate_requests }->{ invalid_rate_requests_ups }
@@ -247,12 +248,12 @@ sub validate
         if ( $matches == keys %$invalid_rate_request ) {
             my $reason = ( $invalid_rate_request->{ reason } ? '  ' . $invalid_rate_request->{ reason } : '' ); 
             $self->invalid( 1 );
-            $self->error( "Rate request invalid.$reason" );
-            $invalid = 1;
+            $self->error( "Rate request invalid.$reason  See the configuration file for more information." );
+            $return_val = 0;
         }
     }
         
-    return $invalid;
+    return $return_val;
 }
 
 =item * get_unique_hash()

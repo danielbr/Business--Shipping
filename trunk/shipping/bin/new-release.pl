@@ -19,12 +19,15 @@ new-release - the Business::Shipping release script.
  #
  # Make sure all the files (documentation, etc.) are up to date.
  #
+ # Make sure that the manifest didn't get any extra stuff:
+ # rm MANIFEST; make manifest; cvs diff MANIFEST | more
+ #
  # UPDATE META.yml
  #
  # Then commit to CVS
  #
- perl Makefile.PL 
- make docs manifest && make && make test
+ perl Makefile.PL
+ make docs && make && make test
  cvs commit
  
  #

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online - Abstract class for shipping cost rating.
 # 
-# $Id: Online.pm,v 1.8 2004/03/08 17:13:56 danb Exp $
+# $Id: Online.pm,v 1.9 2004/03/31 19:11:06 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -9,12 +9,12 @@
 
 package Business::Shipping::RateRequest::Online;
 
-$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use base ( 'Business::Shipping::RateRequest' );
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 use XML::Simple;
 use LWP::UserAgent;
 use Cache::FileCache;
@@ -81,5 +81,20 @@ sub _get_response
     return $response;
 }
 
-
 1;
+
+__END__
+
+=back
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut

@@ -1,6 +1,6 @@
 # Business::Shipping - Interface for shippers (UPS, USPS)
 #
-# $Id: Shipping.pm,v 1.20 2004/03/08 17:13:55 danb Exp $
+# $Id: Shipping.pm,v 1.21 2004/03/31 19:11:05 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -129,52 +129,25 @@ Please note that the Multi-package API may change in upcoming releases.
 
 =head1 ERROR/DEBUG HANDLING
 
-The 'event_handlers' argument takes a hashref telling Business::Shipping what to do
-for error, debug, trace, and the like.  The value can be one of four options:
-
- * 'STDERR'
- * 'STDOUT'
- * 'carp'
- * 'croak'
-
-For example:
-
- $rate_request->event_handlers(
-     { 
-        'error' => 'STDERR',
-        'debug' => 'STDERR',
-        'trace' => undef,
-        'debug3' => undef,
-    }
- );
+Log4perl is used for logging error, debug, etc. messages.  See 
+config/log4perl.conf.
  
-The default is 'STDERR' for error handling, and nothing for debug/trace 
-handling.  The option 'debug3' adds additional debugging messages that are not 
-included in the normal 'debug'.  Note that you can still access error messages
-even without an 'error' handler, by accessing the return values of methods.  For 
-example:
-
- $rate_request->init( %values ) or print $rate_request->error();
-    
-However, if you don't save the error value before the next call, it could be
-overwritten by a new error.
-
 =head1 METHODS
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.20 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.21 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use Carp;
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 use Business::Shipping::ClassAttribs;
 use Scalar::Util 'blessed';
 use Class::MethodMaker 2.0
     [ 
       new    => [ qw/ -hash new  / ],
-      scalar => [ 'tx_type', 'error_msg', 'shipper' ],
+      scalar => [ 'tx_type', 'shipper', '_user_error_msg' ],
       scalar => [ { -static => 1, -default => 'tx_type' }, 'Optional' ]
     ];
 
@@ -182,7 +155,7 @@ sub init
 {
     my ( $self, %args ) = @_;
     
-    foreach my $arg ( %args ) {
+    foreach my $arg ( keys %args ) {
         if ( $self->can( $arg ) ) {
             $self->$arg( $args{ $arg } );
         }
@@ -191,23 +164,16 @@ sub init
     return;
 }
 
-sub error
+sub user_error
 {
     my ( $self, $msg ) = @_;
     
     if ( defined $msg ) {
-        $self->error_msg( $msg );
-        log_error( $msg );
+        $self->_user_error_msg( $msg );
+        error( $msg );
     }
     
-    return $self->error_msg();
-}
-
-sub event_handlers
-{
-    my ( $self, $event_handlers ) = @_;
-    %Business::Shipping::Debug::event_handlers = %$event_handlers if defined $event_handlers;
-    return \%Business::Shipping::Debug::event_handlers;
+    return $self->_user_error_msg;
 }
 
 sub validate
@@ -231,7 +197,7 @@ sub validate
     if ( @missing ) {
         $self->error( "Missing required argument(s): " . join ", ", @missing );
         $self->invalid( 1 );
-        return;
+        return 0;
     }
     else {
         return 1;
@@ -378,8 +344,8 @@ sub determine_shipper_from_self
     
     debug "class = $class";
     
-    return 'UPS' if $class =~ /UPS$/;
-    return 'USPS' if $class =~ /UPS$/;
+    return 'UPS'  if $class =~ /UPS$/;
+    return 'USPS' if $class =~ /USPS$/;
     
     return;
 }
@@ -387,8 +353,10 @@ sub determine_shipper_from_self
 #
 # Aliased for convenient access in each subclass.
 #
-sub config_to_hash            { return &Business::Shipping::Config::config_to_hash;             }
-sub config_to_ary_of_hashes    { return &Business::Shipping::Config::config_to_ary_of_hashes;    }
+sub config_to_hash          { return &Business::Shipping::Config::config_to_hash;          }
+sub config_to_ary_of_hashes { return &Business::Shipping::Config::config_to_ary_of_hashes; }
+
+sub event_handlers { warn 'Depreciated.  Event handlers are now configured via config/log4perl.conf.' }
 
 1;
 

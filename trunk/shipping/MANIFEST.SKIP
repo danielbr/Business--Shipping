@@ -1,8 +1,7 @@
 #
 # My stuff
 #
-todo
-doc/new-release
+^todo/
 \.gz$
 
 #
@@ -11,6 +10,12 @@ doc/new-release
 \bRCS\b
 \bCVS\b
 ,v$
+
+
+#
+#Log files
+#
+^log/.*\.log$
 
 #
 # Makemaker generated files and dirs.

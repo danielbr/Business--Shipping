@@ -1,4 +1,4 @@
-# $Id: USPS.pm,v 1.9 2004/03/08 17:13:55 danb Exp $
+# $Id: USPS.pm,v 1.10 2004/03/31 19:11:06 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,7 +13,7 @@ Business::Shipping::Package::USPS
 
 =head1 VERSION
 
-$Revision: 1.9 $      $Date: 2004/03/08 17:13:55 $
+$Revision: 1.10 $      $Date: 2004/03/31 19:11:06 $
 
 =head1 METHODS
 
@@ -21,13 +21,13 @@ $Revision: 1.9 $      $Date: 2004/03/08 17:13:55 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use vars qw( $VERSION );
 use base ( 'Business::Shipping::Package' );
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 
 =item * container
 

@@ -1,6 +1,6 @@
 # Business::Shipping::Tracking::USPS - Abstract class for tracking shipments
 # 
-# $Id: USPS.pm,v 1.3 2004/03/08 17:13:57 danb Exp $
+# $Id: USPS.pm,v 1.4 2004/03/31 19:11:08 danb Exp $
 # 
 # Copyright (c) 2004 InfoGears Inc.  All Rights Reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
@@ -59,12 +59,12 @@ Licensed under the GNU Public License (GPL).  See COPYING for more info.
 
 package Business::Shipping::Tracking::USPS;
 
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use base( 'Business::Shipping::Tracking' );
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 use XML::Simple 2.05;
 use XML::DOM;
 use LWP::UserAgent;

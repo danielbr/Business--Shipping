@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
 #
-# $Id: UPS.pm,v 1.20 2004/03/08 17:13:56 danb Exp $
+# $Id: UPS.pm,v 1.21 2004/03/31 19:11:06 danb Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003, 2004 Kavod Technologies, Dan Browning. 
@@ -24,7 +24,7 @@ Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
 
 =head1 VERSION
 
-$Revision: 1.20 $      $Date: 2004/03/08 17:13:56 $
+$Revision: 1.21 $      $Date: 2004/03/31 19:11:06 $
 
 =head1 SPECIAL INFO
 
@@ -45,16 +45,16 @@ EAS        Extended Area Surcharge (EAS)
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.20 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.21 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use base ( 'Business::Shipping::RateRequest::Offline' );
 use Business::Shipping::Shipment::UPS;
 use Business::Shipping::Package::UPS;
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 use Business::Shipping::Data;
-use Business::Shipping::Util( 'element_in_array' );
+use Business::Shipping::Util;
 use Business::Shipping::Config;
 use Data::Dumper;
 use POSIX;
@@ -525,8 +525,21 @@ sub validate
     
     return if ( ! $self->SUPER::validate );
     if ( $self->service and $self->service eq 'GNDRES' and $self->to_ak_or_hi ) {
-        $self->error( "Invalid Rate Request" );
+        $self->error( "Invalid Rate Request: Ground Residential to AK or HI." );
         $self->invalid( 1 );
+        return 0;
+    }
+    
+    if ( $self->service eq 'UPSSTD' and not $self->to_canada ) {
+        $self->error( "UPS Standard service is available to Canada only." );
+        $self->invalid( 1 );
+        return 0;
+    }
+    
+    if ( $self->to_canada and $self->to_zip =~ /\d\d\d\d\d/ ) {
+        $self->error( "Cannot use US-style zip codes when sending to Canada" );
+        $self->invalid( 1 );
+        return 0;
     }
     
     return 1;

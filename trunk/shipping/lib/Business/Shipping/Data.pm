@@ -1,6 +1,6 @@
 # Business::Shipping::Data - Database interface
 # 
-# $Id: Data.pm,v 1.4 2004/03/03 04:07:51 danb Exp $
+# $Id: Data.pm,v 1.5 2004/03/31 19:11:05 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Data - Database interface
 
 =head1 VERSION
 
-$Revision: 1.4 $      $Date: 2004/03/03 04:07:51 $
+$Revision: 1.5 $      $Date: 2004/03/31 19:11:05 $
 
 =head1 DESCRIPTION
 
@@ -27,14 +27,14 @@ Uses DBI for CSV file access.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT = qw( record );
 
 use strict;
 use warnings;
 use base ( 'Exporter' );
 use Data::Dumper;
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use DBI;
 

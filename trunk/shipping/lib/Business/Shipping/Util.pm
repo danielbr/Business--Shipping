@@ -1,6 +1,6 @@
 # Business::Shipping::Util - Miscellaneous functions
 # 
-# $Id: Util.pm,v 1.6 2004/03/08 17:13:55 danb Exp $
+# $Id: Util.pm,v 1.7 2004/03/31 19:11:05 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Util - Miscellaneous functions
 
 =head1 VERSION
 
-$Revision: 1.6 $      $Date: 2004/03/08 17:13:55 $
+$Revision: 1.7 $      $Date: 2004/03/31 19:11:05 $
 
 =head1 DESCRIPTION
 
@@ -27,14 +27,14 @@ Many file-related functions, some others.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-@EXPORT_OK = ( 'element_in_array' );
+$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+@EXPORT  = ( 'element_in_array', 'uneval' );
 
 use strict;
 use warnings;
 use base ( 'Exporter' );
 use Data::Dumper;
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 use Carp;
 use File::Find;
 use File::Copy;
@@ -286,6 +286,48 @@ sub unique
     }
     
     return @unique;
+}
+
+=item * uneval( ... )
+
+Takes any built-in object and returns a string of text representing the perl 
+representation of it.  
+
+It was copied from Interchange L<http://www.icdevgroup.org>, written by Mike 
+Heins  E<lt>F<mike@perusion.com>E<gt>.
+
+=cut
+sub uneval { 
+    my ( $self, $o ) = @_;        # recursive
+    my ( $r, $s, $i, $key, $value );
+
+    local($^W) = 0;
+    no warnings; #supress 'use of unitialized values'
+    
+    $r = ref $o;
+    if (!$r) {
+        $o =~ s/([\\"\$@])/\\$1/g;
+        $s = '"' . $o . '"';
+    } 
+    elsif ($r eq 'ARRAY') {
+        $s = "[";
+        foreach $i (0 .. $#$o) {
+            $s .= uneval($o->[$i]) . ",";
+        }
+        $s .= "]";
+    }
+    elsif ($r eq 'HASH') {
+        $s = "{";
+        while (($key, $value) = each %$o) {
+            $s .= "'$key' => " . uneval($value) . ",";
+        }
+        $s .= "}";
+    } 
+    else {
+        $s = "'something else'";
+    }
+
+    $s;
 }
 
 

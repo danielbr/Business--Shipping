@@ -1,6 +1,6 @@
 # Business::Shipping::Tracking - Abstract class
 # 
-# $Id: Tracking.pm,v 1.3 2004/03/03 04:07:51 danb Exp $
+# $Id: Tracking.pm,v 1.4 2004/03/31 19:11:05 danb Exp $
 # 
 # Copyright (c) 2004 Infogears Inc.  All rights reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights 
@@ -44,13 +44,13 @@ Business::Tracking is an API for tracking shipments
 =cut
 
 
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use base ( 'Business::Shipping' );
 use Data::Dumper;
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Cache::FileCache;
 

@@ -3,7 +3,7 @@
 #
 # Business::Shipping::RateRequest::Offline::USPS
 #
-# $Id: USPS.pm,v 1.6 2004/03/08 17:13:56 danb Exp $
+# $Id: USPS.pm,v 1.7 2004/03/31 19:11:06 danb Exp $
 #
 # Copyright (C) 2003 Interchange Development Group
 # Copyright (c) 2003, 2004 Kavod Technologies, Dan Browning. 
@@ -78,14 +78,14 @@ multiple 70-pound packages (plus one package with the remainder).
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use base ( 'Business::Shipping::RateRequest::Offline' );
 use Business::Shipping::Shipment::USPS;
 use Business::Shipping::Package::USPS;
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 use Business::Shipping::Data;
 use Business::Shipping::Util;
 use Business::Shipping::Config;

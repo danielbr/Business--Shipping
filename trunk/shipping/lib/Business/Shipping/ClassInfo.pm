@@ -1,6 +1,6 @@
 # Business::Shipping::ClassInfo - Used by ClassAttribs
 # 
-# $Id: ClassInfo.pm,v 1.1 2004/03/08 17:17:57 danb Exp $
+# $Id: ClassInfo.pm,v 1.2 2004/03/31 19:11:05 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::ClassInfo - Used by ClassAttribs
 
 =head1 VERSION
 
-$Revision: 1.1 $      $Date: 2004/03/08 17:17:57 $
+$Revision: 1.2 $      $Date: 2004/03/31 19:11:05 $
 
 =head1 METHODS
 
@@ -23,13 +23,13 @@ $Revision: 1.1 $      $Date: 2004/03/08 17:17:57 $
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
-use Scalar::Util ( 'reftype', 'blessed' );
+use Scalar::Util 'blessed';
 use Business::Shipping::Util;
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 
 use Class::MethodMaker 2.0 
     [ 
@@ -50,11 +50,13 @@ Returns $self->{ classes }, which is:
 
  $self->{ classes } = {
              'Business::Shipping' => { 
-                               object   => 'Business::Shipping=HASHREF(0x9999)',
-                               Required => [ 'blah', 'blah' ],
-                               Optional => [ 'blah', 'blah' ],
+                               object => 'Business::Shipping=HASHREF(0x9999)',
+                               name   => 'Business::Shipping'
                                },
  }
+
+Where possible, object is an actual object from the $self object (or one of its
+Has_a objects).
 
 =cut
 sub classes { return $_[ 0 ]->{ classes }; }
@@ -284,7 +286,11 @@ sub get_object
     };
     if ( $@ ) { 
         my ( undef, undef, undef, $caller ) = caller(1);
-        log_error( "\tError when calling $class->new: $@.  Caller was $caller\n" );
+        #
+        # Errors are expected, since we are testing the *entire* class heirarchy
+        # Lets just ignore the errors.
+        #
+        #log_error( "\tError when calling $class->new: $@.  Caller was $caller\n" );
         return;
     }
     

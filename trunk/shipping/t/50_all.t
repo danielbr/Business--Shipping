@@ -68,14 +68,15 @@ TODO: {
 
 }; #/end TODO
 
-# Test error message handling
 
+#
+# Test error message handling
+#
 my $shipping = Business::Shipping->new();
 $shipping->event_handlers( { error => undef } );
-$shipping->error( 'This is a test error message.' );
+$shipping->user_error( 'This is a test user_error message.' );
 
-ok( $shipping->error() eq 'This is a test error message.', 'Shipping::error()' );
-ok( $shipping->error_msg() eq 'This is a test error message.', 'Shipping::error_msg()' );
+ok( $shipping->user_error() eq 'This is a test user_error message.', 'Shipping::error()' );
 
 #Clean out the ups_shipment object
 $ups_shipment = Business::Shipping::Shipment::UPS->new(

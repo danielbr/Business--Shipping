@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline
 #
-# $Id: Offline.pm,v 1.8 2004/03/08 17:13:56 danb Exp $
+# $Id: Offline.pm,v 1.9 2004/03/31 19:11:06 danb Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. 
 #
@@ -18,7 +18,7 @@ disables the cache feature, and has a few miscellaneous function.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -26,7 +26,7 @@ use base ( 'Business::Shipping::RateRequest' );
 use Business::Shipping::RateRequest;
 use Business::Shipping::Shipment;
 use Business::Shipping::Package;
-use Business::Shipping::Debug;
+use Business::Shipping::Logging;
 use Class::MethodMaker 2.0 [ new => [ qw/ -hash new / ] ];
     
 # We don't have online things to request.
@@ -62,3 +62,19 @@ sub make_three
 }
 
 1;
+
+__END__
+
+=back
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut
