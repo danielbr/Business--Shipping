@@ -3,9 +3,12 @@
 use strict;
 use warnings;
 
-use Test::More 'no_plan';
+use Test::More;
 use Carp;
 use Business::Shipping;
+
+plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'USPS_Online' );
+plan 'no_plan';
 
 my $standard_method = new Business::Shipping->rate_request( shipper => 'Online::USPS' );
 ok( defined $standard_method,    'USPS standard object construction' );
@@ -50,7 +53,7 @@ sub simple_test
 
 # skip the rest of the test if we don't have username/password
 SKIP: {
-    skip( 'USPS: we need the username and password', 5 ) 
+    skip( '', 5 ) 
         unless ( $ENV{ USPS_USER_ID } and $ENV{ USPS_PASSWORD } );
     
     my $shipment;

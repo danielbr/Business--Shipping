@@ -1,10 +1,14 @@
-#!/usr/bin/perl
+#!perl
 use strict;
 use warnings;
 
-use Test::More 'no_plan';
+use Test::More;
 use Carp;
 use Business::Shipping;
+plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'UPS_Offline' );
+plan 'no_plan';
+$::UPS_Online = 1 if Business::Shipping::Config::calc_req_mod( 'UPS_Online' ); 
+$::UPS_Online = 0 unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
 use constant CLOSE_ENOUGH_PERCENT   => 10;
 
 my %user = (
@@ -74,8 +78,7 @@ ok( $shipment->total_charges(),        'UPS domestic single-package API total_ch
 print "offline 1DA light close: " . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
     $shipment_online = test_online( %one_da_light_us );
     ok( $shipment_online->total_charges(),        'UPS domestic single-package API total_charges > 0' );
@@ -96,9 +99,8 @@ print "Offline: GNDRES, heavy, far: " . $shipment->total_charges() . "\n";
 
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
-
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
+    
     $shipment_online = test_online( %ground_res_heavy_far_us );
     ok( $shipment_online->total_charges(),        'UPS domestic single-package API total_charges > 0' );
     print "Online: GNDRES, heavy, far: " . $shipment_online->total_charges() . "\n";
@@ -117,9 +119,8 @@ ok( $shipment->total_charges(),        'UPS domestic single-package API total_ch
 print "Offline: GNDRES, light, far: " . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
-
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
+    
     $shipment_online = test_online( %ground_res_light_far_us );
     ok( $shipment_online->total_charges(),        'UPS domestic single-package API total_charges > 0' );
     print "Online: GNDRES, light, far: " . $shipment_online->total_charges() . "\n";
@@ -138,9 +139,8 @@ ok( $shipment->total_charges(),        'UPS domestic single-package API total_ch
 print "Offline: GNDRES, light, close: " . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
-
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
+    
     $shipment_online = test_online( %ground_res_light_close_us );
     ok( $shipment_online->total_charges(),        'UPS domestic single-package API total_charges > 0' );
     print "Online: GNDRES, light, close: " . $shipment_online->total_charges() . "\n";
@@ -159,9 +159,8 @@ ok( $shipment->total_charges(),        'UPS domestic single-package API total_ch
 print "Offline: GNDRES, medium, close, residential: " . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
-
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
+    
     $shipment_online = test_online( %ground_res_medium_close_us );
     ok( $shipment_online->total_charges(),        'UPS domestic single-package API total_charges > 0' );
     print "Online: GNDRES, medium, close, residential: " . $shipment_online->total_charges() . "\n";
@@ -198,9 +197,8 @@ ok( $shipment->total_charges(),        'UPS offline intl to gb' );
 print "Offline: intl to gb " . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
-
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
+    
     $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),        'UPS intl to gb' );
     print "Online: intl to gb: " . $shipment_online->total_charges() . "\n";
@@ -220,8 +218,7 @@ ok( $shipment->total_charges(),        'UPS offline express to gb' );
 print "Offline: intl express to gb " . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
     $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),        'UPS intl to gb' );
@@ -242,8 +239,7 @@ ok( $shipment->total_charges(),        'UPS express plus intl to gb' );
 print "Offline: intl to gb " . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
     $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),        'UPS intl to gb' );
@@ -285,8 +281,8 @@ ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
+
 
     $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc );
@@ -328,8 +324,8 @@ ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
+
 
     $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );
@@ -349,8 +345,8 @@ ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
+
 
     $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );
@@ -370,8 +366,8 @@ ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
+
 
     $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );
@@ -397,8 +393,8 @@ ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
+
 
     $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );    
@@ -442,8 +438,7 @@ ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
     $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );    
@@ -469,8 +464,7 @@ ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
 SKIP: {
-    skip( $ups_online_msg, 1 ) 
-        unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
     $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );    
@@ -497,31 +491,28 @@ ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
 
-my %r1 = (
-    from_city      => 'Vancouver',
-    from_zip       => '98682',
+SKIP: {
+    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
+
+    my %r1 = (
+        from_city      => 'Vancouver',
+        from_zip       => '98682',
+        
+        to_city        => 'Enterprise',
+        to_zip         => '36330',
+        to_residential => 1,
+        
+        weight         => 2.75,
+        service        => 'GNDRES',
+    );
     
-    to_city        => 'Enterprise',
-    to_zip         => '36330',
-    to_residential => 1,
+    my $rr_off = Business::Shipping->rate_request( shipper => 'Offline::UPS', %r1 );
+    $rr_off->submit or die $rr_off->user_error();
     
-    weight         => 2.75,
-    service        => 'GNDRES',
-);
-
-my $rr_off = Business::Shipping->rate_request( shipper => 'Offline::UPS', %r1 );
-$rr_off->submit or die $rr_off->user_error();
-
-my $rr_on = Business::Shipping->rate_request( shipper => 'Online::UPS', %r1, %user );
-$rr_on->submit or die $rr_on->user_error();
-
-ok( close_enough( $rr_off->total_charges(), $rr_on->total_charges() ),
-    'UPS Offline and Online are close enough for GNDRES, light, far' 
-  );
-
-#TODO: {
-#      local $TODO = "Not yet implmented.";
-#
-#}; #/end TODO
-
-1;
+    my $rr_on = Business::Shipping->rate_request( shipper => 'Online::UPS', %r1, %user );
+    $rr_on->submit or die $rr_on->user_error();
+    
+    ok( close_enough( $rr_off->total_charges(), $rr_on->total_charges() ),
+        'UPS Offline and Online are close enough for GNDRES, light, far' 
+      );
+}

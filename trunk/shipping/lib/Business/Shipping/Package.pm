@@ -24,8 +24,6 @@ implementation.
 
 =head1 METHODS
 
-=over 4
-
 =cut
 
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
@@ -34,11 +32,11 @@ use strict;
 use warnings;
 use base ( 'Business::Shipping' );
 
-=item * $self->weight()
+=head2 $package->weight()
 
 Accessor for weight.
 
-=item * $self->id()
+=head2 $package->id()
 
 Package ID (for unique identification in a list of packages).
 
@@ -53,29 +51,9 @@ use Class::MethodMaker 2.0
       scalar => [ { -static => 1, -default => 'weight'      }, 'Unique'   ]
     ];
 
-#
-# TODO: How do charges() and set_price()/get_charges() interplay?
-# If one is not needed, get rid of it.
-# At least rename for consistency.
-#
-sub set_price
-{
-    my ( $self, $service, $price ) = @_;
-    $self->{'price'}->{$service} = $price;
-    return $self->{'price'}->{$service};    
-}
-
-sub get_charges
-{
-    my ( $self, $service ) = @_;    
-    return $self->{ 'price' }->{ $service };    
-}
-
 1;
 
 __END__
-
-=back
 
 =head1 AUTHOR
 

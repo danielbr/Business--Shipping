@@ -27,8 +27,6 @@ Shipments have a source, a destination, packages, and other attributes.
 
 =head1 METHODS
 
-=over 4
-
 =cut
 
 use strict;
@@ -38,29 +36,27 @@ use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Util;
 
-=item * service
+=head2 service
 
-=item * from_country
+=head2 from_country
 
-=item * from_zip
+=head2 from_zip
 
-=item * from_city
+=head2 from_city
 
-=item * to_country
+=head2 to_country
 
-=item * to_zip
+=head2 to_zip
 
-=item * to_city
+=head2 to_city
 
-=item * packages
-
-Has-A: Object list: Business::Shipping::Package.
+=head2 packages
 
 =cut
 
 use Class::MethodMaker 2.0
     [
-      new    => [ { -hash => 1, -init => 'this_init' }, 'new' ],
+      new    => [ { -hash => 1 }, 'new' ],
       scalar => [ qw/ current_package_index service from_zip from_city  to_zip to_city /   
                 ],
       array  => [ { -type => 'Business::Shipping::Package' }, 'packages' ],
@@ -77,15 +73,13 @@ use Class::MethodMaker 2.0
                 ]
     ];
 
-sub this_init { }
-
-=item * weight
+=head2 weight
 
 Forward the weight to the current package.
 
 =cut
 
-=item * default_package()
+=head2 default_package()
 
 Only used for forwarding methods in simple uses of the class.  For example:
 
@@ -103,6 +97,14 @@ Which is simpler than:
  
 Note that it only works when there is one package only (no multiple packages).
 
+=head2 package0
+
+Alias for default_package.
+
+=head2 dflt_pkg
+
+Alias for default_package.
+
 =cut
 
 sub package0 { $_[ 0 ]->packages_index( 0 ) }
@@ -111,7 +113,7 @@ sub package0 { $_[ 0 ]->packages_index( 0 ) }
 
 sub weight { $_[ 0 ]->package0->weight( @_ ) }
 
-=item * total_weight
+=head2 total_weight
 
 Returns the weight of all packages within the shipment.
 
@@ -128,7 +130,7 @@ sub total_weight
     return $total_weight;
 }
 
-=item * to_zip( $to_zip )
+=head2 to_zip( $to_zip )
 
 Throw away the "four" from zip+four.  
 
@@ -159,7 +161,7 @@ sub to_zip
 use warnings; # end 'redefine'
 
 
-=item * to_country()
+=head2 to_country()
 
 to_country must be overridden to transform from various forms (alternate
 spellings of the full name, abbreviatations, alternate abbreviations) into
@@ -187,7 +189,7 @@ sub to_country
     return $self->{ to_country };
 }
 
-=item * to_country_abbrev()
+=head2 to_country_abbrev()
 
 Returns the abbreviated form of 'to_country'.
 
@@ -207,7 +209,7 @@ sub to_country_abbrev
 }
 
 
-=item * from_country()
+=head2 from_country()
 
 
 =cut
@@ -226,7 +228,7 @@ sub from_country
 }
 
 
-=item * from_country_abbrev()
+=head2 from_country_abbrev()
 
 =cut
 
@@ -241,7 +243,7 @@ sub from_country_abbrev
     return $from_country_abbrev || $self->from_country;
 }
 
-=item * domestic_or_ca()
+=head2 domestic_or_ca()
 
 Returns 1 (true) if the to_country value for this shipment is domestic (United
 States) or Canada.
@@ -259,7 +261,7 @@ sub domestic_or_ca
     return 0;
 }
 
-=item * intl()
+=head2 intl()
 
 Uses to_country() value to determine if the order is International (non-US).
 
@@ -280,7 +282,7 @@ sub intl
     return 0;
 }
 
-=item * domestic()
+=head2 domestic()
 
 Returns the opposite of $self->intl
  
@@ -298,7 +300,7 @@ sub domestic
 }
 
 
-=item * to_canada()
+=head2 from_canada()
 
 UPS treats Canada differently.
 
@@ -317,7 +319,7 @@ sub from_canada
     return 0;
 }
 
-=item * to_canada()
+=head2 to_canada()
 
 UPS treats Canada differently.
 
@@ -336,7 +338,7 @@ sub to_canada
     return 0;
 }
 
-=item * from_ak_or_hi()
+=head2 to_ak_or_hi()
 
 Alaska and Hawaii are treated differently by many shippers.
 
@@ -369,7 +371,7 @@ sub to_ak_or_hi
 }
 
 
-=item * add_package( %args )
+=head2 add_package( %args )
 
 Adds a new package to the shipment.
 
@@ -409,12 +411,9 @@ sub add_package
     return 1;
 }
 
-
 1;
 
 __END__
-
-=back
 
 =head1 AUTHOR
 

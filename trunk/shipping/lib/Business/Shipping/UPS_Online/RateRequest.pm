@@ -77,8 +77,6 @@ UPS_ACCESS_KEY
 
 =head1 METHODS
 
-=over 4 
-    
 =cut
 
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
@@ -95,13 +93,13 @@ use XML::Simple 2.05;
 use Cache::FileCache;
 use LWP::UserAgent;
 
-=item * access_key
+=head2 access_key
 
-=item * test_server
+=head2 test_server
 
-=item * no_ssl
+=head2 no_ssl
 
-=item * to_city
+=head2 to_city
 
 =cut
 
@@ -148,15 +146,15 @@ use Class::MethodMaker 2.0
                ],
     ];
 
-#sub to_residential { return shift->shipment->to_residential( @_ ); }
-#sub packaging { return shift->shipment->default_package->packaging( @_ ); }
+=head2 from_state()
 
-#
-# Ignore
-#
+Ignored.  For compatibility with UPS_Offline only.
+
+=cut
+
 sub from_state {}
 
-=item * pickup_type
+=head2 pickup_type
 
 =cut
 
@@ -184,9 +182,7 @@ sub pickup_type
     return $self->{ 'pickup_type' };
 }
 
-sub package_subclass_name { return 'UPS::Package'; }
-
-=item * _massage_values
+=head2 _massage_values
 
 =cut
 
@@ -244,7 +240,7 @@ sub _massage_values
     return;
 }
 
-=item * _gen_request_xml
+=head2 _gen_request_xml
 
 Generate the XML document.
 
@@ -342,7 +338,7 @@ sub _gen_request_xml
     return ( $request_xml );
 }
 
-=item * get_total_charges()
+=head2 get_total_charges()
 
 Returns the total charges.
 
@@ -358,7 +354,7 @@ sub get_total_charges
     return 0;
 }
 
-=item * _handle_response
+=head2 _handle_response
 
 =cut
 
@@ -426,7 +422,8 @@ sub _handle_response
 }
 
 no warnings 'redefine';
-=item * to_country_abbrev()
+
+=head2 to_country_abbrev()
 
 We have to override the to_country_abbrev function becuase Online::UPS
 likes its own spellings of certain country abbreviations (GB, etc.).
@@ -454,8 +451,6 @@ use warnings; # end redefine
 1;
 
 __END__
-
-=back
 
 =head1 AUTHOR
 

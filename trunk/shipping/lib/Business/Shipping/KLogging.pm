@@ -2,16 +2,16 @@ package Business::Shipping::KLogging;
 
 =head1 NAME
 
-Business::Shipping::KLogging - Logging interface
+Business::Shipping::KLogging - Simplified wrapper for Log::Log4perl
 
 =head1 DESCRIPTION
 
 Wrapper for Log::Log4perl.  Must be initialized before use.  Recommend usage is
 via your own wrapper.  See Business::Shipping::Logging as an example wrapper.
 
-=head1 METHODS
+Provides simple "dubug()", "error()", and etc. routines.
 
-=over 4
+=head1 METHODS
 
 =cut
 
@@ -25,27 +25,27 @@ use Log::Log4perl;
 $Business::Shipping::KLogging::Current_Level = 'WARN';
 @Business::Shipping::KLogging::Levels = ( 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL' );
 
-=item * debug
+=head2 debug
 
-=item * debug1
+=head2 debug1
 
-=item * debug2
+=head2 debug2
 
-=item * debug3
+=head2 debug3
 
 For long debug messages (entire XML output, etc.).  Prepends "debug3" to the 
 category, allowing the user to filter out very verbose debug messages in 
 config/log4perl.conf.
 
-=item * trace
+=head2 trace
 
-=item * info
+=head2 info
 
-=item * warn
+=head2 warn
 
-=item * error
+=head2 error
 
-=item * fatal
+=head2 fatal
 
 =cut
 
@@ -79,6 +79,12 @@ BEGIN
     );
     my @subs = sort keys %subs;
     
+=head2 subs()
+
+Gives the name of all the subs that this module has.
+
+=cut
+
     sub subs
     {
         return ( @subs, 'uneval' );
@@ -117,7 +123,7 @@ BEGIN
     }
 }
 
-=item * init( %opt )
+=head2 init( %opt )
 
 Arguments:
 
@@ -172,7 +178,7 @@ sub init
     return;    
 }
 
-=item * _log
+=head2 _log
 
 Private function.
 
@@ -220,7 +226,7 @@ sub _log
     return $return; 
 }
 
-=item * uneval( ... )
+=head2 uneval( ... )
 
 Takes any built-in object and returns the perl representation of it as a string
 of text.  It was copied from Interchange L<http://www.icdevgroup.org>, written 
@@ -264,8 +270,6 @@ sub uneval {
 1;
 
 __END__
-
-=back
 
 =head1 AUTHOR
 

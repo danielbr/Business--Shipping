@@ -1,9 +1,3 @@
-# $Id$
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-
 package Business::Shipping::Shipment::UPS;
 
 =head1 NAME
@@ -12,11 +6,9 @@ Business::Shipping::Shipment::UPS
 
 =head1 VERSION
 
-$Rev$      $Date$
+$Rev$
 
 =head1 METHODS
-
-=over 4
 
 =cut
 
@@ -27,7 +19,7 @@ use warnings;
 use base( 'Business::Shipping::Shipment' );
 use Business::Shipping::Config;
 
-=item * to_residential
+=head2 to_residential()
 
 Defaults to true.
 
@@ -35,12 +27,12 @@ Defaults to true.
 
 use Class::MethodMaker 2.0
     [ 
-      new    => [ { -hash => 1, -init => 'this_init' },  'new' ],
+      new    => [ { -hash => 1 },  'new' ],
       scalar => [ { default => 1 }, 'to_residential' ],
       scalar => [ '_service' ],
-      #
+
       # We need this offline boolean to know if from_state is required.
-      #
+
       scalar => [ 'offline' ],
       scalar => [ { -static => 1, -default => 'to_residential' }, 'Optional' ],
       scalar => [ { -static => 1, -default => 'to_residential' }, 'Unique' ],
@@ -49,11 +41,13 @@ use Class::MethodMaker 2.0
       scalar => [ { -static => 1, -default => 'packages=>Business::Shipping::Package' }, 'Has_a' ],
     ];
 
-sub this_init
-{
-    $_[ 0 ]->shipper(      'UPS' );
-    return;
-}
+=head2 packaging()
+
+=head2 weight()
+
+=head2 service()
+
+=cut
 
 sub packaging { shift->package0->packaging( @_ ) }
 sub weight    { shift->package0->weight( @_ )    }
@@ -64,10 +58,18 @@ sub service
     return $self->_service unless $service;
     
     # TODO: This is where the mode_map stuff goes.
+    
     $self->_service( $service );
     
     return $service;
 }
+
+=head2 massage_values()
+
+Assign a package type (if none given) based on the service.  Set weight to 0.01
+minimum.  Remove "+4" from ZIP+4.  
+
+=cut
 
 sub massage_values 
 {
@@ -124,7 +126,7 @@ sub massage_values
     
 }
 
-=item * Required()
+=head2 Required()
 
 from_state only required for Offline international orders.
 
@@ -138,7 +140,7 @@ sub Required
 }
     
 
-=item * from_state_abbrev()
+=head2 from_state_abbrev()
 
 Returns the abbreviated form of 'from_state'.
 
@@ -155,7 +157,7 @@ sub from_state_abbrev
     return $state_abbrevs->{ $self->from_state } || $self->from_state;
 }
 
-=item * from_ak_or_hi()
+=head2 from_ak_or_hi()
 
 Alaska and Hawaii are treated differently by many shippers.
 
@@ -176,8 +178,6 @@ sub from_ak_or_hi
 1;
 
 __END__
-
-=back
 
 =head1 AUTHOR
 

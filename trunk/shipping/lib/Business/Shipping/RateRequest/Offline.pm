@@ -34,7 +34,12 @@ use Business::Shipping::Package;
 use Business::Shipping::Logging;
 use Class::MethodMaker 2.0 [ new => [ qw/ -hash new / ] ];
     
-# We don't have online things to request.
+=item * perform_action()
+
+For compatibility with parent class
+
+=cut
+
 sub perform_action {}
 
 =item * cache()

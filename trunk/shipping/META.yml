@@ -1,24 +1,13 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+--- #YAML:1.0
 name:         Business-Shipping
-version:      1.53
-version_from: lib/Business/Shipping.pm
+version:      1.54
+author:
+  - Dan Browning, db@kavod.com
+abstract: Rates and tracking for UPS and USPS
 installdirs:  site
 requires:
-    Bundle::DBD::CSV:              0
-    Business::Shipping::DataFiles: 0
-    Cache::FileCache:              0
-    Class::MethodMaker::Engine:    0
-    Clone:                         0
-    Config::IniFiles:              0
-    Crypt::SSLeay:                 0
-    Getopt::Mixed:                 0
-    Log::Log4perl:                 0
-    LWP::UserAgent:                0
-    Math::BaseCnv:                 0
-    Scalar::Util:                  1.10
-    XML::DOM:                      0
-    XML::Simple:                   2.05
-
+    Class::MethodMaker::Engine: 0
+    Log::Log4perl:              0
+    Scalar::Util                1.10
 distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.17
+generated_by: Module::Build version 0.25_03

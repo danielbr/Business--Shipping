@@ -66,6 +66,10 @@ use Scalar::Util 1.10;
 
 =item * is_from_west_coast
 
+=item * is_from_east_coast
+
+=item * to_residential
+
 =item * Zones
 
 Hash.  Format:
@@ -93,7 +97,7 @@ Hash.  Format:
 
 use Class::MethodMaker 2.0
     [ 
-      new    => [ { -init => 'this_init' }, 'new' ],
+      new    => [ { -init => '_this_init' }, 'new' ],
       scalar => [
                   'update',
                   'download',
@@ -141,9 +145,8 @@ use Class::MethodMaker 2.0
       scalar => [ { -static => 1 }, 'Zones' ],
     ];
 
-sub this_init
+sub _this_init
 {
-    #$_[ 0 ]->shipper( 'UPS' );
     $_[ 0 ]->Zones(   {}    );
     return;
 }
@@ -793,21 +796,21 @@ sub calc_cost
     for ( @{ $zdata }[ 1.. $#{ $zdata } ] ) {
         @data = split /\t/, $_;
         debug3( "data = " . join( ',', @data ) );
-        if ( $self->current_shipment->domestic_or_ca ) {
+        if ( $self->shipment->domestic_or_ca ) {
 
             my $low        = $data[0];
             my $high    = $data[1];
             my $goal    = $key;
             
-            if ( $self->current_shipment->to_canada ) {
+            if ( $self->shipment->to_canada ) {
                 #
                 # Canada uses a base-36 (0-10 + A-Z) zip number system.
                 # Use a base converter to convert the numbers to base-10
                 # just for the sake of comparison.
                 #
-                $low    = cnv( $low, 36, 10 );
-                $high    = cnv( $high, 36, 10 );
-                $goal    = cnv( $goal, 36, 10 );
+                $low  = cnv( $low, 36, 10 );
+                $high = cnv( $high, 36, 10 );
+                $goal = cnv( $goal, 36, 10 );
             }
             #debug( "checking if $goal is between $low and $high" );
             next unless $goal and $low and $high;

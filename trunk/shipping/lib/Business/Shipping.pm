@@ -14,11 +14,11 @@ Business::Shipping - Rates and tracking for UPS and USPS
 
 =head1 VERSION
 
-Version 1.53
+Version 1.54
 
 =cut
 
-$VERSION = '1.53';
+$VERSION = '1.54';
 
 =head1 SYNOPSIS
 
@@ -73,9 +73,9 @@ Business::Shipping currently supports three shippers:
 =head1 INSTALLATION
 
  perl -MCPAN -e 'install Bundle::Business::Shipping'
- 
+
 See the INSTALL file for more details.
- 
+
 =head1 REQUIRED MODULES
 
 Some of these modules are not required to use only one shipper.  See the INSTALL
@@ -95,12 +95,6 @@ file for more information.
  XML::DOM (any)
  XML::Simple (2.05)
 
-=head1 ERROR/DEBUG HANDLING
-
-Log4perl is used for logging error, debug, etc. messages.  See 
-config/log4perl.conf.  For simple manipulation of the current log level, use
-the Business::Shipping->log_level( $log_level ) class method (below).
-
 =head1 GETTING STARTED
 
 Be careful to read, understand, and comply with the terms of use for the 
@@ -108,7 +102,7 @@ provider that you will use.
 
 =head2 UPS_Offline: For United Parcel Service (UPS) offline rate requests
 
-No signup required.  Business::Shipping::DataFiles has all of rate tables.
+No signup required.  C<Business::Shipping::DataFiles> has all of rate tables.
 
 =head2 UPS_Online: For United Parcel Service (UPS) Online XML: Free signup
 
@@ -116,7 +110,7 @@ No signup required.  Business::Shipping::DataFiles has all of rate tables.
 
 =item * Read the legal terms and conditions: 
 L<http://www.ups.com/content/us/en/resources/service/terms/index.html>
-        
+
 =item * L<https://www.ups.com/servlet/registration>
 
 =item * After receiving a User Id and Password from UPS, login, then select
@@ -144,36 +138,11 @@ L<http://www.ups.com/content/us/en/resources/service/terms/index.html>
 
 =back
 
-=head1 Use of this software
+=head1 ERROR/DEBUG HANDLING
 
-It is appreciated when users mention their use of Business::Shipping to the 
-author and/or on their website or in their application.
-
-=over 4
-
-=item * Interchange e-commerce system ( L<http://www.icdevgroup.org> ).  See 
-    C<UserTag/business-shipping.tag>.
-
-=item * The paymentonline.com mod_perl/template 
-    toolkit system.
-
-=item * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman 
-    <andy@kahncentral.net>.
-    L<http://www.plainblack.com/wobjects?wid=1143&func=viewSubmission&sid=654>
-    L<http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz>
-
-=item * Mentioned in YAPC 2004 Presentation: "Writing web applications with perl ..."
-    L<http://www.beamartyr.net/YAPC-2004/text25.html>
-
-=item * Phatmotorsports.com
-
-=back
-
-=head1 WEBSITE
-
-The website carries the most recent version.
-
-L<http://www.kavod.com/Business-Shipping>
+Log4perl is used for logging error, debug, etc. messages.  See 
+config/log4perl.conf.  For simple manipulation of the current log level, use
+the Business::Shipping->log_level( $log_level ) class method (below).
 
 =head1 Preloading Modules
 
@@ -278,7 +247,7 @@ sub import
     }
 }
 
-=head2 $obj->init( %args )
+=head2 $obj->init()
 
 Generic attribute setter.
 
@@ -297,7 +266,7 @@ sub init
     return;
 }
 
-=head2 $obj->user_error( "Error message" )
+=head2 $obj->user_error()
 
 Log and store errors that should be visibile to the user.
 
@@ -456,17 +425,25 @@ sub rate_request
     return $rr;
 }
 
-=head2 Business::Shipping->log_level( $log_level )
+=head2 Business::Shipping->log_level()
 
 Sets the log level for all Business::Shipping objects.
 
-$log_level can be 'debug', 'info', 'warn', 'error', or 'fatal'.
+Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.
 
 =cut
 
 *log_level = *Business::Shipping::Logging::log_level;
 
-# COMPAT: event_handlers() is for backwards compatibility only.
+
+# COMPAT: event_handlers()
+
+=head2 $obj->event_handlers()
+
+For backwards compatibility only.
+
+=cut
+
 sub event_handlers
 {
     my ( $self, $event_handlers_hash ) = @_;
@@ -495,9 +472,9 @@ sub event_handlers
     return;
 }
 
-=head2 Business::Shipping->_new_subclass( "Subclass::Name", %opt )
+=head2 Business::Shipping->_new_subclass()
 
-Private Method.  
+Private Method.
 
 Generates an object of a given subclass dynamically.  Will dynamically 'use' 
 the corresponding module, unless runtime module loading has been disabled via 
@@ -547,12 +524,43 @@ Other CPAN modules that are simliar to Business::Shipping:
 
 =item * Business::Shipping::UPS_XML - Online cost estimation module that has 
 very few prerequisites.  Supports shipments that originate in USA and Canada.
- 
+
 =item * Business::UPS - Online cost estimation module that uses the UPS web form
 instead of the UPS Online Tools.  For shipments that originate in the USA only.
 
 =back
  
+=head1 Use of this software
+
+It is appreciated when users mention their use of Business::Shipping to the 
+author and/or on their website or in their application.
+
+=over 4
+
+=item * Interchange e-commerce system ( L<http://www.icdevgroup.org> ).  See 
+    C<UserTag/business-shipping.tag>.
+
+=item * The paymentonline.com mod_perl/template 
+    toolkit system.
+
+=item * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman 
+    <andy@kahncentral.net>.
+    L<http://www.plainblack.com/wobjects?wid=1143&func=viewSubmission&sid=654>
+    L<http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz>
+
+=item * Mentioned in YAPC 2004 Presentation: "Writing web applications with perl ..."
+    L<http://www.beamartyr.net/YAPC-2004/text25.html>
+
+=item * Phatmotorsports.com
+
+=back
+
+=head1 WEBSITE
+
+The website carries the most recent version.
+
+L<http://www.kavod.com/Business-Shipping>
+
 =head1 SUPPORT
 
 This module is supported by the author.  Please report any bugs or feature 
@@ -566,7 +574,7 @@ See the TODO file for a comprehensive list of known bugs.
 
 =head1 CREDITS
 
-See CREDITS file. 
+See the CREDITS file. 
 
 =head1 AUTHOR
 

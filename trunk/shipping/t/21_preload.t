@@ -1,12 +1,9 @@
-#!/usr/bin/perl
+#!perl
 
 use strict;
 use warnings;
-use Test::More 'no_plan';
 use Carp;
-#use_ok( 'Business::Shipping' );
+use Test::More 'no_plan';
 
-use Business::Shipping { preload => 'All' };
+use_ok( 'Business::Shipping' => { preload => 'All' } );
 
-
-ok( 1, 'No tests yet' );

@@ -47,7 +47,7 @@ Default 'Package'.
 
 use Class::MethodMaker 2.0
     [
-      new    => [ { -hash => 1, -init => 'this_init' }, 'new' ],
+      new    => [ { -hash => 1 }, 'new' ],
       scalar => [ { -default => 'None'    }, 'container'  ],
       scalar => [ { -default => 'Regular' }, 'size'       ],
       scalar => [ { -default => 'False'   }, 'machinable' ],
@@ -74,8 +74,6 @@ use Class::MethodMaker 2.0
                 ]
     ];
     
-sub this_init { $_[ 0 ]->shipper( 'USPS' ); }
-
 =item * Required()
 
 We use a hand-written "Required()" method for this class, because we require one

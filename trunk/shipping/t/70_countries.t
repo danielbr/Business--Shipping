@@ -1,19 +1,14 @@
 use strict;
 use warnings;
-use Test::More 'no_plan';
+use Test::More;
 use Carp;
 use Data::Dumper;
-use Business::Shipping::RateRequest;
-use Business::Shipping::RateRequest::Online;
-use Business::Shipping::RateRequest::Online::UPS;
-use Business::Shipping::Shipment;
-use Business::Shipping::Shipment::UPS;
-use Business::Shipping::Package;
-use Business::Shipping::Package::UPS;
+use Business::Shipping;
+plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'UPS_Online' );
+plan 'no_plan';
 
-my $ups_online_rate_request = Business::Shipping::RateRequest::Online::UPS->new();
-ok( defined $ups_online_rate_request, 'Business::Shipping::RateRequest::Online::UPS->new() worked' );
-
+my $ups_online_rate_request = Business::Shipping->rate_request( shipper => 'UPS_Online' );
+ok( defined $ups_online_rate_request, 'Business::Shipping->rate_request( shipper => \'UPS_Online\' ) worked' );
 
 my @countries = (
     'Afghanistan',

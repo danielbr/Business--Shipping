@@ -12,6 +12,20 @@ See Business::Shipping POD for usage information.
 
 =head1 METHODS
 
+=head2 pounds
+
+=head2 ounces
+
+=head2 weight
+
+=head2 container
+
+=head2 size
+
+=head2 machinable
+
+=head2 mail_type
+
 =cut
 
 package Business::Shipping::USPS_Online::Shipment;
@@ -27,7 +41,7 @@ use Business::Shipping::Util;
 use Business::Shipping::USPS_Online::Package;
 use Class::MethodMaker 2.0 
     [ 
-      new   =>  [ { -hash    => 1, -init => 'this_init' }, 'new' ],
+      new   =>  [ { -hash    => 1, -init => '_this_init' }, 'new' ],
       array =>  [ { -type    => 'Business::Shipping::USPS_Online::Package',
                     -default_ctor => 'new' }, 'packages' ],
       scalar => [ { -static  => 1, 
@@ -37,9 +51,8 @@ use Class::MethodMaker 2.0
                 ],
 ];
 
-sub this_init
+sub _this_init
 {
-    $_[ 0 ]->shipper(      'USPS' );
     $_[ 0 ]->from_country( 'US'   );
     return;
 }
@@ -49,11 +62,12 @@ foreach my $attribute ( 'pounds', 'ounces', 'weight', 'container', 'size', 'mach
 }
 
 
-# We use a hand-written "Required()" method for this class (below), 
-# because International USPS does not require service or from_zip, but
-# domestic does.
-# The C:MM would have been:
-# scalar => [ { -static => 1, -default => 'service, from_zip' }, 'Required' ],
+=head2 Required()
+
+International USPS does not require the service or from_zip parameters, but 
+domestic does. 
+
+=cut
 
 sub Required
 {

@@ -20,8 +20,6 @@ Represents a request for shipping cost estimation.
 
 =head1 METHODS
 
-=over 4
-
 =cut
 
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
@@ -35,22 +33,22 @@ use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Cache::FileCache;
 
-=item * is_success()
+=head2 $rate_request->is_success()
 
 Boolean.  1 = Rate Request was successful.
 
-=item * cache()
+=head2 $rate_request->cache()
 
 Boolean.  1 = Save results using Cache::FileCache, and reload them if an 
 identical request is made later.  See submit() for implementation details.
 
-=item * invalid()
+=head2 $rate_request->invalid()
 
 Boolean.  1 = Rate request was invalid, because user supplied invalid data. This
 can be useful in determining whether or not to log incident reports (see 
 UserTag/business-shipping.tag for an example implementation).
 
-=item * results()
+=head2 $rate_request->results()
 
 Hashref.  Stores the results of a rate request, for example:
 
@@ -69,7 +67,7 @@ Hashref.  Stores the results of a rate request, for example:
                 
 See _handle_response() for implementation details. 
 
-=item * shipment()
+=head2 $rate_request->shipment()
 
 Stores a Business::Shipping::Shipment object.  Many methods are forwarded to it.
 At this time, each RateRequest only has one Shipment.
@@ -115,7 +113,7 @@ use Class::MethodMaker 2.0
       scalar => [ { -static => 1, -default => 'shipper' }, 'Unique'   ]
     ];
 
-=item $shipment->go( %args )
+=head2 $rate_request->go()
 
 This method sets some values (optional), performs the request, then parses the
 results.
@@ -174,9 +172,18 @@ sub go
     return $self->is_success();
 }
 
+
+# COMPAT: submit()
+
+=head2 $rate_request->submit()
+
+For backwards compatibility.
+
+=cut
+
 *submit = *go;
 
-=item * validate()
+=head2 $rate_request->validate()
 
 Does some validation common to all RateRequest objects, but most of the 
 validation goes on in the subclass.
@@ -240,7 +247,7 @@ sub validate
     return $return_val;
 }
 
-=item * get_unique_hash()
+=head2 $rate_request->get_unique_hash()
 
 Calls unique() on all subclasses to determine a list of unique elements.
 
@@ -271,7 +278,7 @@ sub get_unique_hash
     return %unique;
 }
 
-=item * hash_to_sorted_values()
+=head2 $rate_request->hash_to_sorted_values()
 
 Sorts hash alphabetically, then returns just the values.  (So that the key will
 have the values sorted in the same order always).
@@ -289,7 +296,7 @@ sub hash_to_sorted_values
     return @sorted_values;
 }
 
-=item * gen_unique_key( )
+=head2 $rate_request->gen_unique_key( )
 
 Calls get_unique_hash(), sorts them with hash_to_sorted_values(), then returns 
 them in string format.
@@ -305,7 +312,7 @@ sub gen_unique_key
     return;
 }
 
-=item * total_charges()
+=head2 $rate_request->total_charges()
 
 Iterates the $self->results hash and sums the charges from each 
 package->charges.  Returns the total.
@@ -335,7 +342,7 @@ sub total_charges
     return Business::Shipping::Util::currency( { no_format => 1 }, $total );
 }
 
-=item * get_unique_keys()
+=head2 $rate_request->get_unique_keys()
 
 =cut
 
@@ -349,7 +356,7 @@ sub get_unique_keys
     return( @unique_keys );
 }
 
-=item * _gen_unique_values()
+=head2 $rate_request->_gen_unique_values()
 
 =cut
 
@@ -378,24 +385,7 @@ sub _gen_unique_values
     return( @new_unique_values );
 }
 
-
-#
-# Right now, we only support one shipment per rate request, but 
-# when that changes, this will be part of the API... or will it?
-# I don't think any function should have to know about the "current" 
-# shipment -- it should be a function at the Shipment::...() level.
-#
-sub current_shipment
-{
-    my ( $self ) = @_;
-    
-    return $self->shipment;
-}
-
-# COMPAT
-sub get_total_price { &total_charges; }
-
-=item * $self->calc_debug_string()
+=head2 $rate_request->calc_debug_string()
 
 Arrange the values of some important variables in a pretty format.
 Return a scalar string.
@@ -416,7 +406,7 @@ sub calc_debug_string
     return $vars_out;
 }
 
-=item * $self->display_price_components()
+=head2 $rate_request->display_price_components()
 
 Return formatted string of price component information
 
@@ -428,13 +418,22 @@ sub display_price_components
     return Data::Dumper::Dumper( $self->price_components ) if $self->price_components;
     return;
 }
-    
+
+# COMPAT: get_total_price()
+
+=head2 $rate_request->get_total_price()
+
+For backwards compatibility.
+
+=cut
+
+sub get_total_price { &total_charges; }
+
+
 
 1;
 
 __END__
-
-=back
 
 =head1 AUTHOR
 

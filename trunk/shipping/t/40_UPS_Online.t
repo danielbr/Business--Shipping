@@ -1,9 +1,11 @@
 use strict;
 use warnings;
 
-use Test::More 'no_plan';
+use Test::More;
 use Carp;
 use Business::Shipping;
+plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'UPS_Online' );
+plan 'no_plan';
 
 $::debug = 0;
 

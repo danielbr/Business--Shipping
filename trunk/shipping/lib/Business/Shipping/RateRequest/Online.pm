@@ -2,15 +2,13 @@ package Business::Shipping::RateRequest::Online;
 
 =head1 NAME
 
-Business::Shipping::RateRequest::Online - Abstract class for shipping cost rating.
+Business::Shipping::RateRequest::Online - Abstract rates class
 
 =head1 VERSION
 
-$Rev$      $Date$
+$Rev$
 
 =head1 METHODS
-
-=over 4
 
 =cut
 
@@ -25,14 +23,18 @@ use LWP::UserAgent;
 use Cache::FileCache;
 use Class::MethodMaker 2.0
     [
-      new    => [ { -hash => 1, -init => 'this_init' }, 'new' ],
+      new    => [ { -hash => 1 }, 'new' ],
       scalar => [ 'test_mode', 'user_id', 'password' ],
       scalar => [ { -static => 1, -default => 'user_id, password' }, 'Required' ],
       scalar => [ { -static => 1, -default => 'prod_url, test_url' }, 'Optional' ],
       scalar => [ 'response' ],
     ];
 
-sub this_init {}
+=head2 perform_action()
+
+Sends request to server.
+
+=cut
 
 sub perform_action
 {
@@ -125,8 +127,6 @@ sub _get_response
 1;
 
 __END__
-
-=back
 
 =head1 AUTHOR
 

@@ -2,7 +2,33 @@ Revision history for Business::Shipping
 =======================================
 
 
-1.53  SCM
+1.54  SCM
+
+
+  General
+    
+    * [Fixed] Business::Shipping requiring too many modules.  Switched to Basic.
+    
+    * [Enh] Major documentation updates and fixes
+      - Added Test::Pod tests as well as Test::Pod::Coverage
+      - Added POD for functions that lacked any.
+    
+    * [Enh] Major test updates
+    
+    * [Enh] Automatically detect which shippers can be supported based on the
+      installed required modules.
+      
+    * [Enh] Skip tests that are for shippers that do not have their required
+      modules installed.    
+    
+    * [Fixed] Business::Shipping tests will fail if someone only installed
+      Bundle::Business::Shipping::UPS_Offline, because the testing scripts
+      will not notice.
+      - New system checks to see if prerequisite modules were installed before
+        testing functionality that depends on them. 
+
+
+1.53  Sep 17 2004
 
 
   General

@@ -39,11 +39,11 @@ required modules for one shipper, you can select it individually:
 
 =over 4
 
-=item * Bundle::Business::Shipping::UPS_Online
+=item * C<Bundle::Business::Shipping::UPS_Online>
 
-=item * Bundle::Business::Shipping::UPS_Offline
+=item * C<Bundle::Business::Shipping::UPS_Offline>
 
-=item * Bundle::Business::Shipping::USPS_Online
+=item * C<Bundle::Business::Shipping::USPS_Online>
 
 =back
 
@@ -63,12 +63,12 @@ UPS_Offline only:
 
  perl -MCPAN -e 'force install DBD::CSV'
  perl -MCPAN -e 'install Bundle::Business::Shipping::UPS_Offline'
- 
+
 USPS_Online only:
 
  perl -MCPAN -e 'force install XML::DOM'
  perl -MCPAN -e 'install Bundle::Business::Shipping::USPS_Online'
- 
+
 =head1 MANUAL INSTALLATION
 
 Be sure to install all required modules before installing.  After unpacking the 

@@ -34,7 +34,13 @@ $VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 use strict;
 use warnings;
 use Business::Shipping;
-use Test::More 'no_plan';
+use Test::More;
+
+plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'UPS_Online' );
+plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'USPS_Online' );
+plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'UPS_Offline' );
+plan 'no_plan';
+
 
 # Setup Interchange Environment Simulation
 use Data::Dumper;
