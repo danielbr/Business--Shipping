@@ -1,6 +1,6 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.9 2003/12/22 03:49:04 db-ship Exp $
+# $Id: Shipping.pm,v 1.10 2004/01/03 03:11:19 db-ship Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Carp;
 use Business::Shipping::Debug;
@@ -46,14 +46,14 @@ sub event_handlers
 
 sub validate
 {
-	trace( '()' );
+	trace '()';
 	my ( $self ) = shift;
 	
 	my @required = $self->required();
 	my @optional = $self->optional();
 	
-	debug( "\n\trequired = " . join (', ', @required ) . "\n\t" 
-		. "optional = " . join (', ', @optional ) );
+	debug( "required = " . join (', ', @required ) ); 
+	debug3( "optional = " . join (', ', @optional ) );	
 	
 	my @missing;
 	foreach my $required_field ( @required ) {
@@ -70,7 +70,7 @@ sub validate
 		return undef;
 	}
 	else {
-		debug( "returning success" );
+		debug3( "returning success" );
 		return 1;
 	}
 }
@@ -148,6 +148,21 @@ __END__
 
 Business::Shipping - API for shipping-related tasks
 
+=head1 REQUIRED MODULES
+
+ Archive::Zip (any)
+ Bundle::DBD::CSV (any)
+ Cache::FileCache (any)
+ Class::MethodMaker (any)
+ Config::IniFiles (any)
+ Crypt::SSLeay (any)
+ Data::Dumper (any)
+ Devel::Required (0.02)
+ Error (any)
+ LWP::UserAgent (any)
+ XML::DOM (any)
+ XML::Simple (2.05)
+
 =head1 SYNOPSIS
 
 Example usage for a rating request:
@@ -186,39 +201,46 @@ Business::Shipping is an API for shipping-related tasks.
 
 =head2 rate_request()
 
-This method is used to request shipping rate information from online provides.
-Later querying offline databases may be supported as well.  A hash is accepted
-as input with the following key values:
+This method is used to request shipping rate information from online providers
+or offline tables.  A hash is accepted as input with the following key values:
 
 =over 4
 
 =item * shipper
 
 The name of the shipper to use. Must correspond to a module by the name of:
-C<Business::Shipping::RateRequest::SHIPPER>.
+C<Business::Shipping::RateRequest::SHIPPER>.  For example, "Offline::UPS".
 
 =item * user_id
 
 A user_id, if required by the provider. Online::USPS and Online::UPS require
-this.
+this, while Offline::UPS does not.
 
 =item * password
 
 A password,  if required by the provider. Online::USPS and Online::UPS require
-this.
+this, while Offline::UPS does not.
 
 =item * service
 
-A valid service name for the provider. See the corresponding module for a 
-complete list for each provider.
+A valid service name for the provider. See the corresponding module 
+documentation for a list of services compatible with the shipper.
 
 =item * from_zip
 
 The origin zipcode.
 
+=item * from_state
+
+The origin state.  Required for Offline::UPS.
+
 =item * to_zip
 
 The destination zipcode.
+
+=item * to_country
+
+The destination country.  Required for international shipments only.
 
 =item * weight
 
@@ -231,7 +253,7 @@ Defaults to 0.
 
 =back
 
-An object is returned if the query is successful, or 'undef' otherweise.
+An object is returned if the operation is successful, or 'undef' otherwise.
 
 =head1 MULTI-PACKAGE API
 
@@ -294,9 +316,10 @@ For example:
  );
  
 The default is 'STDERR' for error handling, and nothing for debug/trace 
-handling.  The option 'debug3' adds even more verbosity to the debug.  Note 
-that you can still access error messages even with no handler, by accessing
-the return values of methods.  For example:
+handling.  The option 'debug3' adds additional debugging messages that are not 
+included in the normal 'debug'.  Note that you can still access error messages
+even without an 'error' handler, by accessing the return values of methods.  For 
+example:
 
  $rate_request->init( %values ) or print $rate_request->error();
 	

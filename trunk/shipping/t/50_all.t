@@ -90,36 +90,8 @@ $ups_shipment->packages_push(
 	)
 );
 
-$ups_online_rate_request->init(
-	'shipper'		=> 'UPS',
-	'user_id'		=> $ENV{ 'UPS_USER_ID' },
-	'password'		=> $ENV{ 'UPS_PASSWORD' },
-	'access_key'	=> $ENV{ 'UPS_ACCESS_KEY' },
-);
-
-$ups_online_rate_request->shipment( $ups_shipment );
 
 print Dumper $ups_online_rate_request;
-
-SKIP: {
-	skip( $ups_online_msg, 1 ) 
-		unless ( $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY } );
-
-	ok( $ups_online_rate_request->total_charges() > 0, 'ups online rate_request > 0 ' );
-	$ups_online_rate_request->submit() or die $ups_online_rate_request->error();
-	print "\$" . $ups_online_rate_request->total_charges() . "\n";
-}
-
- 
-#$ups_online_rate_request->service( 'GNDRES' );
-#print $ups_online_rate_request->service();
-#print $ups_online_rate_request->shipment->service();
-
-
-
-
-
-
 
 
 =pod

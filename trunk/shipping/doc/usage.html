@@ -13,6 +13,7 @@
 <ul>
 
 	<li><a href="#name">NAME</a></li>
+	<li><a href="#required_modules">REQUIRED MODULES</a></li>
 	<li><a href="#synopsis">SYNOPSIS</a></li>
 	<li><a href="#abstract">ABSTRACT</a></li>
 	<ul>
@@ -42,6 +43,23 @@
 </p>
 <h1><a name="name">NAME</a></h1>
 <p>Business::Shipping - API for shipping-related tasks</p>
+<p>
+</p>
+<hr />
+<h1><a name="required_modules">REQUIRED MODULES</a></h1>
+<pre>
+ Archive::Zip (any)
+ Bundle::DBD::CSV (any)
+ Cache::FileCache (any)
+ Class::MethodMaker (any)
+ Config::IniFiles (any)
+ Crypt::SSLeay (any)
+ Data::Dumper (any)
+ Devel::Required (0.02)
+ Error (any)
+ LWP::UserAgent (any)
+ XML::DOM (any)
+ XML::Simple (2.05)</pre>
 <p>
 </p>
 <hr />
@@ -87,37 +105,44 @@
 <p>
 </p>
 <h2><a name="rate_request()"><code>rate_request()</code></a></h2>
-<p>This method is used to request shipping rate information from online provides.
-Later querying offline databases may be supported as well.  A hash is accepted
-as input with the following key values:</p>
+<p>This method is used to request shipping rate information from online providers
+or offline tables.  A hash is accepted as input with the following key values:</p>
 <ul>
 <li><strong><a name="item_shipper">shipper</a></strong><br />
 </li>
 The name of the shipper to use. Must correspond to a module by the name of:
-<code>Business::Shipping::RateRequest::SHIPPER</code>.
+<code>Business::Shipping::RateRequest::SHIPPER</code>.  For example, ``Offline::UPS''.
 <p></p>
 <li><strong><a name="item_user_id">user_id</a></strong><br />
 </li>
 A user_id, if required by the provider. Online::USPS and Online::UPS require
-this.
+this, while Offline::UPS does not.
 <p></p>
 <li><strong><a name="item_password">password</a></strong><br />
 </li>
 A password,  if required by the provider. Online::USPS and Online::UPS require
-this.
+this, while Offline::UPS does not.
 <p></p>
 <li><strong><a name="item_service">service</a></strong><br />
 </li>
-A valid service name for the provider. See the corresponding module for a 
-complete list for each provider.
+A valid service name for the provider. See the corresponding module 
+documentation for a list of services compatible with the shipper.
 <p></p>
 <li><strong><a name="item_from_zip">from_zip</a></strong><br />
 </li>
 The origin zipcode.
 <p></p>
+<li><strong><a name="item_from_state">from_state</a></strong><br />
+</li>
+The origin state.  Required for Offline::UPS.
+<p></p>
 <li><strong><a name="item_to_zip">to_zip</a></strong><br />
 </li>
 The destination zipcode.
+<p></p>
+<li><strong><a name="item_to_country">to_country</a></strong><br />
+</li>
+The destination country.  Required for international shipments only.
 <p></p>
 <li><strong><a name="item_weight">weight</a></strong><br />
 </li>
@@ -128,7 +153,7 @@ Weight of the shipment, in pounds, as a decimal number.
 If true, connects to a test server instead of a live server, if possible. 
 Defaults to 0.
 <p></p></ul>
-<p>An object is returned if the query is successful, or 'undef' otherweise.</p>
+<p>An object is returned if the operation is successful, or 'undef' otherwise.</p>
 <p>
 </p>
 <hr />
@@ -206,9 +231,10 @@ for error, debug, trace, and the like.  The value can be one of four options:
  );
  
 The default is 'STDERR' for error handling, and nothing for debug/trace 
-handling.  The option 'debug3' adds even more verbosity to the debug.  Note 
-that you can still access error messages even with no handler, by accessing
-the return values of methods.  For example:
+handling.  The option 'debug3' adds additional debugging messages that are not 
+included in the normal 'debug'.  Note that you can still access error messages
+even without an 'error' handler, by accessing the return values of methods.  For 
+example:
 
 </pre>
 <pre>

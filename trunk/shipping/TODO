@@ -2,7 +2,6 @@
 ##  General TODO
 ######################################################
  
- 
  * [ENH] Need to check for support_files() config param, and exit if files
    are missing.
  
@@ -19,10 +18,6 @@
  * [BUG] Only Cache the response if it was a success (very important).
  
  * [BUG] Error on missing arguments isn't working very well ( user_id, password)
- 
- * [BUG] Why do I have to 'use' all the modules in order for it to work?
- 
- * [ENH] Change all scripts from #! /usr/bin/perl to $! perl
  
  * [ENH] Country name translator strings to data outside your program.
  	# TODO: Move all of this, and any other data that is currently mixed with 
@@ -113,12 +108,28 @@
 ##  UPS OFFLINE TODO
 ######################################################
 
- * [ENH] Look at the zone file comments to determine which zone file to use.
-   (i.e. 970.csv has "970-01 to 972-99" -- means it actually does 970.csv too).
+ * [ENH] Add test for the support files directory.  (Just warn, because they 
+         may be running the test as a non-priveledged user).
  
- * [ENH] Utilize GDBM, if available, to speed up lookups.
+ * [ENH] Re-write the calc_zone_data() and calc_cost() routines.
 
- * [BUG] Can't seem to find zone file for 97214, what gives?
+ * [ENH] New table design?
+
+		zone table:
+		
+ 			zone_from_exactly	zone_from_lt	zone_from_gt	zip_to_exactly	zip_to_lt	zip_to_gt	service
+		
+		weight table:
+		
+			weight	zone	amt
+
+ * [ENH] Add tests for Alaska, Hawaii, Canada, and International.
+         Add tests for 1DAP.
+
+ * [ENH] Look at the zone file comments to determine which zone file to use.
+   (i.e. 970.csv has "970-01 to 972-99" -- means it actually does 972.csv too).
+ 
+ * [ENH] Utilize GDBM or SQL, if available, to speed up lookups.
 
  * [ENH] How to find the current fuel surcharge rate:
    - http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html	

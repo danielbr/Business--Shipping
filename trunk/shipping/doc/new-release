@@ -12,32 +12,29 @@ new-release - the Business::Shipping release script.
 
 =head1 RELEASE STEPS
 
- # Remove the old tars
- rm -f Business-Shipping-*.tar.gz
- 
- # Update the CHANGELOG
- # cvs diff | more
- 
- # Update the documentation
- make docs manifest && make && make test 
- 
- # Commit to CVS
+ # 
+ # Manual: Update the CHANGELOG
  #
- # TODO: would be nice if I could automatically pull the right
- #       stuff from the changelog, but that would more work than
- #       it's worth. 
+ 
  #
+ # Make sure all the files (documentation, etc.) are up to date.
+ # Then commit to CVS
+ #
+ perl Makefile.PL 
+ make docs manifest && make && make test
  cvs commit
  
- # Upload to server.
+ #
+ # Delete old file, make new file, and upload to server.
+ # Upload the new version to CPAN, for PAUSE
+ # Update to the next verision in Makefile.PL (if you haven't already)
+ # 
+ rm Business-Shipping-*.tar.gz
  make tardist
  doc/new-release Business-Shipping-*.tar.gz
-
- # Update to the next verision in Makefile.PL (if you haven't already)
+ cpan-upload -user `cat ~/.apps/.PAUSE-user` -password `cat ~/.apps/.PAUSE-password` -mailto 'db@kavod.com' -non_interactive Business-Shipping-*.tar.gz
  export NEW=1.01
  perl -pi -e "s/\$VERSION = \'.\...\'/\$VERSION = \'${NEW}\'/g" Makefile.PL
- 
- # Notify CPAN of the new version.
  
 =cut 
 

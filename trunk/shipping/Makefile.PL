@@ -1,8 +1,16 @@
 use 5.006000;
 use ExtUtils::MakeMaker;
 
+#
+# auto-update documentation if needed
+#
+$::DEVEL_REQUIRED_MAKEFILE_VARIABLE = 	'ABSTRACT_FROM';
+@::DEVEL_REQUIRED_DEFAULT_POD_FILES = 	( 'doc/README.pod' );
+@::DEVEL_REQUIRED_DEFAULT_TEXT_FILES =	( '' );
+eval "use Devel::Required";
+
 # Version for Business-Shipping as a whole.
-$VERSION = '1.00';
+$VERSION = '1.01';
 
 #
 # Defaults
@@ -11,8 +19,6 @@ my %my_globals = (
 	SUPPORT_FILES_DIR	=> '/var/perl/Business-Shipping'
 );
 
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
 WriteMakefile(
     NAME			=> 'Business::Shipping',
     VERSION_FROM	=> 'Makefile.PL',
@@ -20,31 +26,20 @@ WriteMakefile(
     AUTHOR		    => 'Dan Browning <db@kavod.com>',
 	CONFIGURE		=> \&extra_WriteMakefile_options,
     PREREQ_PM		=>	{
-		'Data::Dumper'			=> 0,
-		'Digest::SHA1'			=> 0,
-		'LWP::UserAgent'		=> 0,
-		'Crypt::SSLeay'			=> 0,
 		'XML::Simple'			=> '2.05',
 		'XML::DOM' 				=> 0,
+		'Data::Dumper'			=> 0,
+		'LWP::UserAgent'		=> 0,
+		'Crypt::SSLeay'			=> 0,
 		'Error'					=> 0,
 		'Cache::FileCache'		=> 0,
 		'Class::MethodMaker'	=> 0,
 		'Config::IniFiles'		=> 0,
-		#
-		# For Offline usage
-		#
 		'Bundle::DBD::CSV'		=> 0,
-		'POSIX'					=> 0,
-		'Fcntl'					=> 0,
-		'DBI'					=> 0,
-		'DBD::CSV'				=> 0,
-		'File::Find'			=> 0,
-		'File::Copy'			=> 0,
 		'Archive::Zip'			=> 0,
+		'Devel::Required'		=> '0.02',
 	},
 );
-
-
 
 #
 # Override the standard "install" target, so that it calls "support_files_install"

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::UPS - Abstract class for shipping cost rating.
 # 
-# $Id: UPS.pm,v 1.10 2003/12/22 03:49:06 db-ship Exp $
+# $Id: UPS.pm,v 1.11 2004/01/03 03:11:20 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -74,7 +74,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.11 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use base ( 'Business::Shipping::RateRequest::Online' );
 
@@ -117,6 +117,11 @@ sub init
 	$self->hash_init( %values );
 	return;
 }
+
+#
+# Ignore
+#
+sub from_state {}
 
 sub pickup_type
 {
@@ -230,6 +235,22 @@ sub _massage_values
 	
 	# UPS prefers 'GB' instead of 'UK'
 	$self->to_country( 'GB' ) if $self->to_country() eq 'UK';
+	
+	
+	#
+	# Try to get the username, password, and key from environment variables,
+	# if set.
+	#
+	for ( 'user_id', 'password', 'access_key' ) {
+		if ( ! $self->$_() ) {
+			my $env_key = "UPS_" . uc( $_ );
+			if ( $ENV{ $env_key } ) {
+				$self->$_( $ENV{ $env_key } );
+			}
+		}
+	}
+	
+	
 	
 	return;
 }
@@ -346,7 +367,7 @@ sub get_total_charges
 
 sub _handle_response
 {
-	trace( '()' );
+	trace '()';
 	my ( $self ) = @_;
 	
 	my $response_tree = XML::Simple::XMLin( 

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online - Abstract class for shipping cost rating.
 # 
-# $Id: Online.pm,v 1.4 2003/08/20 12:58:48 db-ship Exp $
+# $Id: Online.pm,v 1.5 2004/01/03 03:11:20 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 use base ( 'Business::Shipping::RateRequest' );
 
 use Business::Shipping::Debug;
@@ -59,7 +59,7 @@ sub perform_action
 
 sub _gen_url
 {
-	trace( '()' );
+	trace '()';
 	my ( $self ) = shift;
 	
 	return( $self->test_mode() ? $self->test_url() : $self->prod_url() );
@@ -67,7 +67,7 @@ sub _gen_url
 
 sub _gen_request
 {
-	trace( '()' );
+	trace '()';
 	my ( $self ) = shift;
 	
 	my $request_xml = $self->_gen_request_xml();
@@ -82,7 +82,7 @@ sub _gen_request
 
 sub _get_response
 {
-	trace( '()' );
+	trace '()';
 	return $_[0]->user_agent->request( $_[1] );
 }
 

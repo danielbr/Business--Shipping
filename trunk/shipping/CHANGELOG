@@ -1,5 +1,15 @@
 Revision history for Business::Shipping.
 
+1.01  Jan 02 2004
+	- Offline UPS support for International Express, ExpressPlus, and Expedited.
+	- Offline UPS support for Hawaii and Alaska.
+	- Tests for International and Hawaii/Alaska.
+	- Utilize Devel::Required to automatically generate required modules list.
+	- Patch Devel::Required so it can be customized.
+	- Documentation Updates.
+	- Some data format changes (east coast/west coast data update, add 'letter'
+	  to 1da chart, rename several of the files).
+
 1.00  Dec 21 2003
 	- Major updates: many new features prompt the jump into 1.0 land. 
 	- New Offline::UPS module: provides table-based rate requests, which are

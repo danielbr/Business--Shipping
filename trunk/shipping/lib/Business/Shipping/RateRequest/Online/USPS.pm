@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::USPS - Abstract class for shipping cost rating.
 # 
-# $Id: USPS.pm,v 1.7 2003/12/22 03:49:06 db-ship Exp $
+# $Id: USPS.pm,v 1.8 2004/01/03 03:11:20 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -45,7 +45,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 use base( 'Business::Shipping::RateRequest::Online' );
 
 use Business::Shipping::Debug;
@@ -94,7 +94,7 @@ foreach my $attribute ( 'ounces', 'pounds', 'container', 'size', 'machinable', '
 # Generate the XML document.
 sub _gen_request_xml
 {
-	trace( '()' );
+	trace '()';
 	my $self = shift;
 	
 	# Note: The XML::Simple hash-tree-based generation method wont work with USPS,

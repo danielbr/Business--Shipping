@@ -1,6 +1,20 @@
 NAME
     Business::Shipping - API for shipping-related tasks
 
+REQUIRED MODULES
+     Archive::Zip (any)
+     Bundle::DBD::CSV (any)
+     Cache::FileCache (any)
+     Class::MethodMaker (any)
+     Config::IniFiles (any)
+     Crypt::SSLeay (any)
+     Data::Dumper (any)
+     Devel::Required (0.02)
+     Error (any)
+     LWP::UserAgent (any)
+     XML::DOM (any)
+     XML::Simple (2.05)
+
 SYNOPSIS
     Example usage for a rating request:
 
@@ -34,30 +48,37 @@ ABSTRACT
 CLASS METHODS
   rate_request()
     This method is used to request shipping rate information from online
-    provides. Later querying offline databases may be supported as well. A
-    hash is accepted as input with the following key values:
+    providers or offline tables. A hash is accepted as input with the
+    following key values:
 
     * shipper
         The name of the shipper to use. Must correspond to a module by the
-        name of: "Business::Shipping::RateRequest::SHIPPER".
+        name of: "Business::Shipping::RateRequest::SHIPPER". For example,
+        "Offline::UPS".
 
     * user_id
         A user_id, if required by the provider. Online::USPS and Online::UPS
-        require this.
+        require this, while Offline::UPS does not.
 
     * password
         A password, if required by the provider. Online::USPS and
-        Online::UPS require this.
+        Online::UPS require this, while Offline::UPS does not.
 
     * service
         A valid service name for the provider. See the corresponding module
-        for a complete list for each provider.
+        documentation for a list of services compatible with the shipper.
 
     * from_zip
         The origin zipcode.
 
+    * from_state
+        The origin state. Required for Offline::UPS.
+
     * to_zip
         The destination zipcode.
+
+    * to_country
+        The destination country. Required for international shipments only.
 
     * weight
         Weight of the shipment, in pounds, as a decimal number.
@@ -66,7 +87,8 @@ CLASS METHODS
         If true, connects to a test server instead of a live server, if
         possible. Defaults to 0.
 
-    An object is returned if the query is successful, or 'undef' otherweise.
+    An object is returned if the operation is successful, or 'undef'
+    otherwise.
 
 MULTI-PACKAGE API
   Online::UPS Example
@@ -127,9 +149,10 @@ ERROR/DEBUG HANDLING
      );
  
     The default is 'STDERR' for error handling, and nothing for debug/trace
-    handling. The option 'debug3' adds even more verbosity to the debug.
-    Note that you can still access error messages even with no handler, by
-    accessing the return values of methods. For example:
+    handling. The option 'debug3' adds additional debugging messages that
+    are not included in the normal 'debug'. Note that you can still access
+    error messages even without an 'error' handler, by accessing the return
+    values of methods. For example:
 
      $rate_request->init( %values ) or print $rate_request->error();
         
