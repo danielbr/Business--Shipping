@@ -16,7 +16,7 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (any)
+ Class::MethodMaker (< 2.0)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)

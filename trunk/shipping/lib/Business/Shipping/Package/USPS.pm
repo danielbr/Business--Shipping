@@ -1,21 +1,55 @@
-# Business::Shipping::Package::USPS
+# $Id: USPS.pm,v 1.7 2004/03/03 03:36:31 danb Exp $
 # 
-# $Id: USPS.pm,v 1.6 2004/01/21 22:39:53 db-ship Exp $
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# 
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
 # 
 
 package Business::Shipping::Package::USPS;
 
-$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+=head1 NAME
+
+Business::Shipping::Package::USPS
+
+=head1 VERSION
+
+$Revision: 1.7 $      $Date: 2004/03/03 03:36:31 $
+
+=head1 METHODS
+
+=over 4
+
+=cut
+
+$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use vars qw( $VERSION );
 use base ( 'Business::Shipping::Package' );
 use Business::Shipping::Debug;
+
+=item * container
+
+Default 'None'. 
+
+=item * size
+
+Default 'Regular'.
+
+=item * machinable
+
+Default 'False'.
+
+=item * mail_type
+
+Default 'Package'.
+
+=item * pounds
+
+=item * ounces
+
+=cut
 use Business::Shipping::CustomMethodMaker
 	new_with_init => 'new',
 	new_hash_init => 'hash_init',
@@ -42,6 +76,12 @@ sub init
 	return;
 }
 
+=item * weight
+
+Overrides the standard weight definition so that it can correctly set pounds &
+ounces.
+
+=cut
 sub weight
 {
 	trace '()';
@@ -66,6 +106,11 @@ sub weight
 	return $out_weight;
 }
 
+=item * weight_to_imperial
+
+Converts fractional pounds to pounds + ounces.
+
+=cut
 sub weight_to_imperial
 {
 	my ( $self, $in_weight ) = @_;
@@ -85,6 +130,11 @@ sub weight_to_imperial
 	return ( $pounds, $ounces );
 }
 
+=item * weight_to_imperial
+
+Converts pounds + ounces to fractional weight.
+
+=cut
 sub imperial_to_weight
 {
 	my ( $self, $pounds, $ounces ) = @_;
@@ -94,12 +144,32 @@ sub imperial_to_weight
 	return ( $pounds + $fractional_pounds );
 }
 
+=item * _round_up
+
+=cut
 sub _round_up
 {
 	my ( $self, $f ) = @_;
-	return undef unless defined $f; 
+    
+	return undef unless defined $f;
+    
 	return sprintf( "%1.0f", $f );
 }
 
-
 1;
+
+__END__
+
+=back
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut

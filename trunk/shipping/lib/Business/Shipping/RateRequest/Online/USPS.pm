@@ -1,17 +1,21 @@
-# Business::Shipping::RateRequest::Online::USPS - Abstract class for shipping cost rating.
+# Business::Shipping::RateRequest::Online::USPS - Estimates shipping cost online
 # 
-# $Id: USPS.pm,v 1.9 2004/01/21 22:39:53 db-ship Exp $
+# $Id: USPS.pm,v 1.10 2004/03/03 03:36:32 danb Exp $
 # 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# 
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
 # 
 
 =head1 NAME
 
-Business::Shipping::USPS - A USPS module 
+Business::Shipping::RateRequest::Online::USPS - Estimates shipping cost online 
 
-See Shipping.pm POD for usage information.
+See Business::Shipping.pm POD for usage information.
+
+=head1 VERSION
+
+$Revision: 1.10 $      $Date: 2004/03/03 03:36:32 $
 
 =head1 SERVICE TYPES
 
@@ -37,11 +41,15 @@ See Shipping.pm POD for usage information.
 	'Economy (Surface) Letter Post',
 	'Economy (Surface) Parcel Post',
 
+=head1 METHODS
+
+=over 4
+
 =cut
 
 package Business::Shipping::RateRequest::Online::USPS;
 
-$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -54,6 +62,10 @@ use XML::DOM;
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
+
+=item * domestic
+
+=cut
 use Business::Shipping::CustomMethodMaker
 	new_with_init => 'new',
 	new_hash_init => 'hash_init',
@@ -81,12 +93,11 @@ foreach my $attribute ( 'ounces', 'pounds', 'container', 'size', 'machinable', '
 	eval "sub $attribute { return shift->default_package->$attribute( \@_ ); }"
 }
 
-#sub ounces { return shift->default_package( @_ ); }
-#sub pounds { return shift->default_package( @_ ); }
-#sub container { return shift->default_package->container( @_ ); }
+=item * _gen_request_xml
 
-# _gen_request_xml()
-# Generate the XML document.
+Generate the XML document.
+
+=cut
 sub _gen_request_xml
 {
 	trace '()';
@@ -186,6 +197,9 @@ sub _gen_request_xml
 	return ( $request_xml );
 }
 
+=item * _gen_request
+
+=cut
 sub _gen_request
 {
 	my ( $self ) = shift;
@@ -204,6 +218,9 @@ sub _gen_request
 	return ( $request );
 }
 
+=item * _massage_values
+
+=cut
 sub _massage_values
 {
 	my $self = shift;
@@ -220,6 +237,9 @@ sub _massage_values
 	return;
 }
 
+=item * _handle_response
+
+=cut
 sub _handle_response
 {
 	trace '()';
@@ -319,13 +339,15 @@ sub _handle_response
 	return $self->is_success( 1 );
 }
 
+=item * _domestic_or_intl
 
-# Decide if we are domestic or international for this run...
+Decide if we are domestic or international for this run.
+
+=cut
 sub _domestic_or_intl
 {
-	trace '()';
-	
 	my $self = shift;
+    trace '()';
 	
 	if ( $self->shipment->to_country() and $self->shipment->to_country() !~ /(US)|(United States)/) {
 		$self->clear_domestic();
@@ -339,3 +361,18 @@ sub _domestic_or_intl
 
 1;
 
+__END__
+
+=back
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut

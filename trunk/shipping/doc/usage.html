@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Business::Shipping - API for shipping-related tasks</title>
+<title>Business::Shipping - Interface for shippers</title>
 <link rev="made" href="mailto:db@kavod1.kavod.com" />
 </head>
 
@@ -14,11 +14,11 @@
 
 	<li><a href="#name">NAME</a></li>
 	<li><a href="#synopsis">SYNOPSIS</a></li>
-	<li><a href="#abstract">ABSTRACT</a></li>
 	<ul>
 
-		<li><a href="#shipping_tasks_implemented_at_this_time">Shipping Tasks Implemented at this time</a></li>
-		<li><a href="#shipping_vendors_implemented_at_this_time">Shipping Vendors Implemented at this time</a></li>
+		<li><a href="#rate_request_example">Rate request example</a></li>
+		<li><a href="#shipping_tasks_implemented_at_this_time">Shipping tasks implemented at this time</a></li>
+		<li><a href="#shipping_tasks_planned_for_future_addition">Shipping tasks planned for future addition</a></li>
 	</ul>
 
 	<li><a href="#required_modules">REQUIRED MODULES</a></li>
@@ -29,7 +29,7 @@
 	</ul>
 
 	<li><a href="#error_debug_handling">ERROR/DEBUG HANDLING</a></li>
-	<li><a href="#class_methods">CLASS METHODS</a></li>
+	<li><a href="#methods">METHODS</a></li>
 	<ul>
 
 		<li><a href="#rate_request__"><code>rate_request()</code></a></li>
@@ -44,45 +44,56 @@
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
-<p>Business::Shipping - API for shipping-related tasks</p>
+<p>Business::Shipping - Interface for shippers (UPS, USPS)</p>
 <p>
 </p>
 <hr />
 <h1><a name="synopsis">SYNOPSIS</a></h1>
-<p>Example rate request:</p>
-<pre>
-        use Business::Shipping;
-        
-        my $rate_request = Business::Shipping-&gt;rate_request(
-                shipper         =&gt; 'Offline::UPS',
-                service         =&gt; 'GNDRES',
-                from_zip        =&gt; '98682',
-                to_zip          =&gt; '98270',
-                weight          =&gt;  5.00,
-        );      
-        
-        $rate_request-&gt;submit() or die $rate_request-&gt;error();
-        
-        print $rate_request-&gt;total_charges();</pre>
 <p>
 </p>
-<hr />
-<h1><a name="abstract">ABSTRACT</a></h1>
-<p>Business::Shipping is an API for shipping-related tasks.</p>
+<h2><a name="rate_request_example">Rate request example</a></h2>
+<pre>
+    use Business::Shipping;
+    
+    my $rate_request = Business::Shipping-&gt;rate_request(
+        shipper   =&gt; 'Offline::UPS',
+        service   =&gt; 'GNDRES',
+        from_zip  =&gt; '98682',
+        to_zip    =&gt; '98270',
+        weight    =&gt;  5.00,
+    );    
+    
+    $rate_request-&gt;submit() or die $rate_request-&gt;error();
+    
+    print $rate_request-&gt;total_charges();</pre>
 <p>
 </p>
-<h2><a name="shipping_tasks_implemented_at_this_time">Shipping Tasks Implemented at this time</a></h2>
-<pre>
- * Shipping cost calculation
- * Tracking, availability, and other services are planned for future addition.</pre>
+<h2><a name="shipping_tasks_implemented_at_this_time">Shipping tasks implemented at this time</a></h2>
+<ul>
+<li><strong><a name="item_ups_shipment_cost_calculation_using_ups_online_web">UPS shipment cost calculation using UPS Online WebTools.</a></strong><br />
+</li>
+<li><strong><a name="item_ups_shipment_cost_calculation_using_offline_tables">UPS shipment cost calculation using offline tables.</a></strong><br />
+</li>
+<li><strong><a name="item_usps_shipment_cost_calculation_using_usps_online_w">USPS shipment cost calculation using USPS Online WebTools.</a></strong><br />
+</li>
+<li><strong><a name="item_ups_shipment_tracking_2e">UPS shipment tracking.</a></strong><br />
+</li>
+<li><strong><a name="item_usps_shipment_tracking_2e">USPS shipment tracking.</a></strong><br />
+</li>
+</ul>
 <p>
 </p>
-<h2><a name="shipping_vendors_implemented_at_this_time">Shipping Vendors Implemented at this time</a></h2>
-<pre>
- * Online UPS (using the Internet and UPS servers)
- * Offline UPS (using tables stored locally)
- * Online USPS</pre>
-<p>Offline FedEX and USPS are planned for support in the future.</p>
+<h2><a name="shipping_tasks_planned_for_future_addition">Shipping tasks planned for future addition</a></h2>
+<ul>
+<li><strong><a name="item_usps_zip_code_lookup">USPS zip code lookup</a></strong><br />
+</li>
+<li><strong><a name="item_usps_address_verification">USPS address verification</a></strong><br />
+</li>
+<li><strong><a name="item_usps_shipment_cost_estimation_via_offline_tables">USPS shipment cost estimation via offline tables</a></strong><br />
+</li>
+<li><strong><a name="item_fedex_shipment_cost_estimation">FedEX shipment cost estimation</a></strong><br />
+</li>
+</ul>
 <p>
 </p>
 <hr />
@@ -92,6 +103,7 @@
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
  Class::MethodMaker (any)
+ Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
  Data::Dumper (any)
@@ -107,11 +119,13 @@
 </p>
 <hr />
 <h1><a name="installation">INSTALLATION</a></h1>
-<p><code>perl -MCPAN -e 'install Bundle::Business::Shipping'</code>
+<p><code>perl -MCPAN -e 'install Bundle::Business::Shipping'</code></p>
+<p>See the INSTALL file for more information.
 </p>
 <pre>
 
 =head1 MULTI-PACKAGE API</pre>
+<p>Please note that the Multi-package API may change in upcoming releases.</p>
 <p>
 </p>
 <h2><a name="online__ups_example">Online::UPS Example</a></h2>
@@ -122,22 +136,22 @@
  my $shipment = Business::Shipping::Shipment::UPS-&gt;new();
  
  $shipment-&gt;init(
-        from_zip        =&gt; '98682',
-        to_zip          =&gt; '98270',
-        service         =&gt; 'GNDRES',
-        #
-        # user_id, etc. needed here.
-        #
+    from_zip  =&gt; '98682',
+    to_zip    =&gt; '98270',
+    service   =&gt; 'GNDRES',
+    #
+    # user_id, etc. needed here.
+    #
  );</pre>
 <pre>
  $shipment-&gt;add_package(
-        id              =&gt; '0',
-        weight          =&gt; 5,
+    id        =&gt; '0',
+    weight        =&gt; 5,
  );</pre>
 <pre>
  $shipment-&gt;add_package(
-        id              =&gt; '1',
-        weight          =&gt; 3,
+    id        =&gt; '1',
+    weight        =&gt; 3,
  );
  
  my $rate_request = Business::Shipping::rate_request( shipper =&gt; 'Online::UPS' );
@@ -164,12 +178,12 @@ for error, debug, trace, and the like.  The value can be one of four options:</p
 <p>For example:</p>
 <pre>
  $rate_request-&gt;event_handlers(
-        { 
-                'error' =&gt; 'STDERR',
-                'debug' =&gt; 'STDERR',
-                'trace' =&gt; undef,
-                'debug3' =&gt; undef,
-        }
+     { 
+        'error' =&gt; 'STDERR',
+        'debug' =&gt; 'STDERR',
+        'trace' =&gt; undef,
+        'debug3' =&gt; undef,
+    }
  );
  
 The default is 'STDERR' for error handling, and nothing for debug/trace 
@@ -179,13 +193,13 @@ even without an 'error' handler, by accessing the return values of methods.  For
 example:</pre>
 <pre>
  $rate_request-&gt;init( %values ) or print $rate_request-&gt;error();
-        
+    
 However, if you don't save the error value before the next call, it could be
 overwritten by a new error.</pre>
 <p>
 </p>
 <hr />
-<h1><a name="class_methods">CLASS METHODS</a></h1>
+<h1><a name="methods">METHODS</a></h1>
 <p>
 </p>
 <h2><a name="rate_request__"><code>rate_request()</code></a></h2>
@@ -236,17 +250,16 @@ Weight of the shipment, in pounds, as a decimal number.
 </p>
 <hr />
 <h1><a name="author">AUTHOR</a></h1>
-<pre>
- Dan Browning         &lt;db@kavod.com&gt;
- Kavod Technologies   <a href="http://www.kavod.com">http://www.kavod.com</a>
+<p>Dan Browning &lt;<em><a href="mailto:db@kavod.com">db@kavod.com</a></em>&gt;, Kavod Technologies, <a href="http://www.kavod.com">http://www.kavod.com</a>.
 
-</pre>
+</p>
 <p>
 </p>
 <hr />
 <h1><a name="copyright_and_licence">COPYRIGHT AND LICENCE</a></h1>
-<p>Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+<p>Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.  See LICENSE for more info.
 
 </p>
 

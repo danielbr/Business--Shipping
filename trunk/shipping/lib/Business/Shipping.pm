@@ -1,61 +1,72 @@
-# Business::Shipping - Shipping related API's
+# Business::Shipping - Interface for shippers (UPS, USPS)
 #
-# $Id: Shipping.pm,v 1.18 2004/02/15 19:41:18 db-ship Exp $
+# $Id: Shipping.pm,v 1.19 2004/03/03 03:36:31 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
 #
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
-# 
 
 package Business::Shipping;
 
 =head1 NAME
 
-Business::Shipping - API for shipping-related tasks
+Business::Shipping - Interface for shippers (UPS, USPS)
 
 =head1 SYNOPSIS
 
-Example rate request:
+=head2 Rate request example
 
-	use Business::Shipping;
-	
-	my $rate_request = Business::Shipping->rate_request(
-		shipper 	=> 'Offline::UPS',
-		service 	=> 'GNDRES',
-		from_zip	=> '98682',
-		to_zip		=> '98270',
-		weight		=>  5.00,
-	);	
-	
-	$rate_request->submit() or die $rate_request->error();
-	
-	print $rate_request->total_charges();
-
-=head1 ABSTRACT
-
-Business::Shipping is an API for shipping-related tasks.
+    use Business::Shipping;
+    
+    my $rate_request = Business::Shipping->rate_request(
+        shipper   => 'Offline::UPS',
+        service   => 'GNDRES',
+        from_zip  => '98682',
+        to_zip    => '98270',
+        weight    =>  5.00,
+    );    
+    
+    $rate_request->submit() or die $rate_request->error();
+    
+    print $rate_request->total_charges();
 
 =head2 Shipping tasks implemented at this time
 
- * UPS shipment cost calculation using UPS Online WebTools
- * UPS shipment cost calculation using offline tables 
- * USPS shipment cost calculation using USPS Online WebTools
- * UPS shipment tracking
- * USPS shipment tracking 
+=over
+
+=item * UPS shipment cost calculation using UPS Online WebTools.
+
+=item * UPS shipment cost calculation using offline tables.
+
+=item * USPS shipment cost calculation using USPS Online WebTools.
+
+=item * UPS shipment tracking.
+
+=item * USPS shipment tracking.
+
+=back
 
 =head2 Shipping tasks planned for future addition
 
- * USPS zip code lookup
- * USPS address verification
- * USPS shipment cost estimation via offline tables 
- * FedEX shipment cost estimation
+=over
+
+=item * USPS zip code lookup
+
+=item * USPS address verification
+
+=item * USPS shipment cost estimation via offline tables 
+
+=item * FedEX shipment cost estimation
+
+=back 
 
 =head1 REQUIRED MODULES
 
  Archive::Zip (any)
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
- Class::MethodMaker (any)
+ Class::MethodMaker (< 2.0)
  Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
@@ -71,11 +82,13 @@ Business::Shipping is an API for shipping-related tasks.
 
 =head1 INSTALLATION
 
-See the INSTALL file for more information.
-
 C<perl -MCPAN -e 'install Bundle::Business::Shipping'>
+
+See the INSTALL file for more information.
  
 =head1 MULTI-PACKAGE API
+
+Please note that the Multi-package API may change in upcoming releases.
 
 =head2 Online::UPS Example
 
@@ -85,22 +98,22 @@ C<perl -MCPAN -e 'install Bundle::Business::Shipping'>
  my $shipment = Business::Shipping::Shipment::UPS->new();
  
  $shipment->init(
-	from_zip	=> '98682',
-	to_zip		=> '98270',
-	service		=> 'GNDRES',
-	#
-	# user_id, etc. needed here.
-	#
+    from_zip  => '98682',
+    to_zip    => '98270',
+    service   => 'GNDRES',
+    #
+    # user_id, etc. needed here.
+    #
  );
 
  $shipment->add_package(
-	id		=> '0',
-	weight		=> 5,
+    id        => '0',
+    weight        => 5,
  );
 
  $shipment->add_package(
-	id		=> '1',
-	weight		=> 3,
+    id        => '1',
+    weight        => 3,
  );
  
  my $rate_request = Business::Shipping::rate_request( shipper => 'Online::UPS' );
@@ -127,12 +140,12 @@ for error, debug, trace, and the like.  The value can be one of four options:
 For example:
 
  $rate_request->event_handlers(
- 	{ 
-		'error' => 'STDERR',
-		'debug' => 'STDERR',
-		'trace' => undef,
-		'debug3' => undef,
-	}
+     { 
+        'error' => 'STDERR',
+        'debug' => 'STDERR',
+        'trace' => undef,
+        'debug3' => undef,
+    }
  );
  
 The default is 'STDERR' for error handling, and nothing for debug/trace 
@@ -142,72 +155,70 @@ even without an 'error' handler, by accessing the return values of methods.  For
 example:
 
  $rate_request->init( %values ) or print $rate_request->error();
-	
+    
 However, if you don't save the error value before the next call, it could be
 overwritten by a new error.
 
-=head1 CLASS METHODS
+=head1 METHODS
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.18 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.19 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use Carp;
 use Business::Shipping::Debug;
 use Business::Shipping::CustomMethodMaker
-	new_hash_init => 'new',
-	grouped_fields => [
-		optional => [ 'tx_type' ]
-	],
-	get_set => [ 'error_msg' ];
-
+    new_hash_init  => 'new',
+    grouped_fields => [ optional => [ 'tx_type' ] ],
+    get_set        => [ 'error_msg' ];
+    
 sub error
 {
-	my ( $self, $msg ) = @_;
-	
-	if ( defined $msg ) {
-		$self->error_msg( $msg );
-		Business::Shipping::Debug::log_error( $msg );
-	}
-	
-	return $self->error_msg();
+    my ( $self, $msg ) = @_;
+    
+    if ( defined $msg ) {
+        $self->error_msg( $msg );
+        Business::Shipping::Debug::log_error( $msg );
+    }
+    
+    return $self->error_msg();
 }
 
 sub event_handlers
 {
-	my ( $self, $event_handlers ) = @_;
-	%Business::Shipping::Debug::event_handlers = %$event_handlers if defined $event_handlers;
-	return \%Business::Shipping::Debug::event_handlers;
+    my ( $self, $event_handlers ) = @_;
+    %Business::Shipping::Debug::event_handlers = %$event_handlers if defined $event_handlers;
+    return \%Business::Shipping::Debug::event_handlers;
 }
 
 sub validate
 {
-	trace '()';
-	my ( $self ) = shift;
-	
-	my @required = $self->required();
-	my @optional = $self->optional();
-	
-	debug( "required = " . join (', ', @required ) ); 
-	debug3( "optional = " . join (', ', @optional ) );	
-	
-	my @missing;
-	foreach my $required_field ( @required ) {
-		if ( ! $self->$required_field() ) {
-			push @missing, $required_field;
-		}
-	}
-	
-	if ( @missing ) {
-		$self->error( "Missing required argument " . join ", ", @missing );
-		$self->invalid( 1 );
-		return;
-	}
-	else {
-		return 1;
-	}
+    trace '()';
+    my ( $self ) = shift;
+    
+    my @required = $self->required();
+    my @optional = $self->optional();
+    
+    debug( "required = " . join (', ', @required ) ); 
+    debug3( "optional = " . join (', ', @optional ) );    
+    
+    my @missing;
+    foreach my $required_field ( @required ) {
+        if ( ! $self->$required_field() ) {
+            push @missing, $required_field;
+        }
+    }
+    
+    if ( @missing ) {
+        $self->error( "Missing required argument " . join ", ", @missing );
+        $self->invalid( 1 );
+        return;
+    }
+    else {
+        return 1;
+    }
 }
 
 =head2 rate_request()
@@ -262,81 +273,86 @@ Weight of the shipment, in pounds, as a decimal number.
 =cut
 sub rate_request
 {
-	my $class = shift;
-	my ( %opt ) = @_;
-	not $opt{ shipper } and Carp::croak( "shipper required" ) and return undef;
+    my $class = shift;
+    my ( %opt ) = @_;
+    not $opt{ shipper } and Carp::croak( "shipper required" ) and return undef;
 
-	#
-	# This was made to support the specification of 'Offline::UPS'
-	#
-	my $full_shipper;
-	if ( $opt{ shipper } =~ /::/ ) {
-		$full_shipper = $opt{ shipper };
-		my @shipper_components = split( '::', $opt{ shipper } );	
-		$opt{ shipper } = pop @shipper_components;
-		
-	}
-	else {
-		$full_shipper = "Online::" . $opt{ shipper };
-	}
-		
-	my $package				= Business::Shipping->new_subclass( 'Package::' 			. $opt{ 'shipper' } );
-	my $shipment 			= Business::Shipping->new_subclass( 'Shipment::' 			. $opt{ 'shipper' } );
-	
-	my $subclass = 'RateRequest::' . $full_shipper;
-	my $new_rate_request;
-	eval {
-		$new_rate_request = Business::Shipping->new_subclass( $subclass );
-	};
-	die $@ if $@;
-	
-	$shipment->packages_push( $package );
-	$new_rate_request->shipment( $shipment );
-	
-	# init(), in turn, automatically delegates certain options to Shipment and Package.
-	$new_rate_request->init( %opt ); 
-	
-	return ( $new_rate_request );
+    #
+    # Supports the specification of 'Offline::UPS' -- but if just 'UPS' is sent
+    # then it assumes 'Online::UPS'.
+    #
+    my $full_shipper;
+    if ( $opt{ shipper } =~ /::/ ) {
+        $full_shipper = $opt{ shipper };
+        my @shipper_components = split( '::', $opt{ shipper } );    
+        $opt{ shipper } = pop @shipper_components;
+    }
+    else {
+        $full_shipper = "Online::" . $opt{ shipper };
+    }
+        
+    my $package                = Business::Shipping->new_subclass( 'Package::'             . $opt{ 'shipper' } );
+    my $shipment             = Business::Shipping->new_subclass( 'Shipment::'             . $opt{ 'shipper' } );
+    
+    my $subclass = 'RateRequest::' . $full_shipper;
+    my $new_rate_request;
+    eval {
+        $new_rate_request = Business::Shipping->new_subclass( $subclass );
+    };
+    die $@ if $@;
+    
+    $shipment->packages_push( $package );
+    $new_rate_request->shipment( $shipment );
+    
+    # init(), in turn, automatically delegates certain options to Shipment and Package.
+    $new_rate_request->init( %opt ); 
+    
+    return ( $new_rate_request );
 }
 
 sub new_subclass
 {
-	my $class = shift;
-	my $subclass = shift;
-	my $new_class = $class . '::' . $subclass;
-	
-	my ( %opt ) = @_;
-	
-	if ( not defined &$new_class ) {
-		#
-		# Clear previous errors
-		#
-		$@ = '';
-		
-		eval "require $new_class";
-		Carp::croak( "Error when trying to require $new_class: \n\t$@" ) if $@;
-		
-		eval "import $new_class";
-		Carp::croak( "Error when trying to import $new_class: $@" ) if $@;
-	}
-	
-	my $new_sub_object = eval "$new_class->new()";
-	return $new_sub_object;	
+    my $class = shift;
+    my $subclass = shift;
+    my $new_class = $class . '::' . $subclass;
+    
+    my ( %opt ) = @_;
+    
+    if ( not defined &$new_class ) {
+        #
+        # Clear previous errors
+        #
+        $@ = '';
+        
+        eval "require $new_class";
+        Carp::croak( "Error when trying to require $new_class: \n\t$@" ) if $@;
+        
+        eval "import $new_class";
+        Carp::croak( "Error when trying to import $new_class: $@" ) if $@;
+    }
+    
+    my $new_sub_object = eval "$new_class->new()";
+    return $new_sub_object;    
 }
 
-sub config_to_hash			{ return &Business::Shipping::Config::config_to_hash; 			}
-sub config_to_ary_of_hashes	{ return &Business::Shipping::Config::config_to_ary_of_hashes;	}
+#
+# Aliased for convenient access in each subclass.
+#
+sub config_to_hash            { return &Business::Shipping::Config::config_to_hash;             }
+sub config_to_ary_of_hashes    { return &Business::Shipping::Config::config_to_ary_of_hashes;    }
+
+1;
+
+__END__
 
 =head1 AUTHOR
 
- Dan Browning         <db@kavod.com>
- Kavod Technologies   http://www.kavod.com
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.  See LICENSE for more info.
 
 =cut
-
-1;

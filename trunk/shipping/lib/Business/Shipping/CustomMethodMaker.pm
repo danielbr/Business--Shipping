@@ -1,9 +1,6 @@
-#####################################################################
-##  CustomMethodMaker
-#####################################################################
 package Business::Shipping::CustomMethodMaker;
 
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;

@@ -442,6 +442,25 @@ SKIP: {
 	ok( $shipment_online->total_charges(),	"UPS Online: " . $this_test_desc . $shipment_online->total_charges() );	
 }
 
+########################################################################
+##  Make sure that it handles zip+4 zip codes correctly (by throwing
+##  away the +4.
+########################################################################
+%test = (
+        from_country =>                 'US',
+        to_country =>           'US',
+        from_state =>           'WA',
+        service =>              '2DA',
+        to_residential =>               '1',
+        from_zip =>             '98682',
+        weight =>               '4.25',
+        to_zip =>               '96720-1749',
+);
+$this_test_desc = "Zip+4: ";
+
+$shipment = test( %test );
+ok( $shipment->total_charges(),	 "UPS Offline: " . $this_test_desc );
+print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
 
 

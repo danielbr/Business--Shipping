@@ -1,71 +1,85 @@
 Revision history for Business::Shipping.
 
-1.07  CVS
-  
-  Compatibility
-    Clone module now required (for Tracking).
 
-  General
-    Rusty Conover <rconover@infogears.com> contributed the following modules:
-      Tracking
-      Tracking::USPS
-      Tracking::UPS
+1.50  CVS
+  
+    Compatibility
+      - Clone module now required (for Tracking).
+
+    Tracking
+      - Rusty Conover <rconover@infogears.com> contributed the following:
+          Tracking
+          Tracking::USPS
+          Tracking::UPS
+        
+    General
+      - Changed to dual GPL/Artistic License.
+      - Changed hosting from kavod.com to sf.net.
+	  - Code cleanup all over the place.
+      - Major documentation updates.
+      - Require that Class::MethodMaker be less than 2.0 (2.0 does not have
+        all of the features of 1.x yet).
+    
+    Offline::UPS
+      - Bug fixed: Zip+4 not handled correctly (should drop the four).
    
+	  
 1.06  Feb 11 2004
 
-	General
-	
-    	- Remove Bundle::Business::Shipping (now in its own distro, where it should
-		  be).
+    General
+    - Remove Bundle::Business::Shipping (now in its own distro, where it should 
+      be).
+  
 	  
 1.05  Feb 10 2004
-
-	General
+  
+    General
+    - Attempted fix for Bundle::Business::Shipping
+    - Remove unneeded .zip files from data/
+    - Minor documentation updates
+   
 	
-    	- Fix Bundle::Business::Shipping
-		- Remove unneeded .zip files from data/
-		- Minor documentation updates
-		
 1.04  Feb 07 2004
-	- Compatibility
-		+ Scalar::Util 1.10 is now required (to pretty up the code a little).
-		+ Getopt::Mixed now required for some scripts.
-	
-	- General
-		+ Created a Bundle::Business::Shipping module, uploaded to CPAN, and add
-		  to CVS.
-		+ New configuration parameter for this style:
-		  service=XDM    to_country=Brazil
-		  service=XDM    to_country=Canada       reason=Not available.
-		+ Scripts moved from doc/ to bin/
-		+ Some scripts re-named.
-		+ Rename some of the tests.
-		+ Devel::Required patch no longer necessary.  Recent version implement
-		  the desired functionality.
-		+ Class::MethodMaker patch no longer necessary.  Subclassing is 
-		  sufficient.
-		+ Remove zip files from distribution, they take up too much space.
-		+ Move some configuration methods from Shipping to Shipping::Config.
+    - Compatibility
+        + Scalar::Util 1.10 is now required (to pretty up the code a little).
+        + Getopt::Mixed now required for some scripts.
+    
+    - General
+        + Created a Bundle::Business::Shipping module, uploaded to CPAN, and add
+          to CVS (removed in 1.06).
+        + New configuration parameter for this style:
+          service=XDM    to_country=Brazil
+          service=XDM    to_country=Canada       reason=Not available.
+        + Scripts moved from doc/ to bin/
+        + Some scripts re-named.
+        + Rename some of the tests.
+        + Devel::Required patch no longer necessary.  Recent version implement
+          the desired functionality.
+        + Class::MethodMaker patch no longer necessary.  Subclassing is 
+          sufficient.
+        + Remove zip files from distribution, they take up too much space.
+        + Move some configuration methods from Shipping to Shipping::Config.
 
-	- Offline::UPS
-		+ Major fix to the low/high number/name scheme.  For international, it 
-		  is now handled via split/rejoin, because the regex was choking on some
-		  of the country names.  This was causing many zip code combinations
-		  (that had lost their "high" in the last update), as well as some 
-		  countries, to fail.
-		+ Another fix for number range scheme.
-		+ Sense validity for several combinations of service and country/zip.
-		  (Ground Residential to Hawaii is now "invalid").
-		+ New test for the Netherlands.
-		+ Update to February fuel surcharge (5%)
-		+ New invalid request: Anything but express to israel.
-		+ New tests for Israel.
+    - Offline::UPS
+        + Major fix to the low/high number/name scheme.  For international, it 
+          is now handled via split/rejoin, because the regex was choking on some
+          of the country names.  This was causing many zip code combinations
+          (that had lost their "high" in the last update), as well as some 
+          countries, to fail.
+        + Another fix for number range scheme.
+        + Sense validity for several combinations of service and country/zip.
+          (Ground Residential to Hawaii is now "invalid").
+        + New test for the Netherlands.
+        + Update to February fuel surcharge (5%)
+        + New invalid request: Anything but express to israel.
+        + New tests for Israel.
 
-	- UserTag
-		+ Add feature for not reporting "invalid" requests to the incident
-		  generator.
-		+ Pretty up the incident e-mail a little.
+    - UserTag
+        + Add feature for not reporting "invalid" requests to the incident
+          generator.
+        + Pretty up the incident e-mail a little.
 
+		
 1.03  Jan 30 2004    
     - Compatibility:
         - Math::BaseCnv now required (for Offline::UPS to Canada, to convert 
@@ -93,12 +107,12 @@ Revision history for Business::Shipping.
         - Minor fixes: Express Plus.
         - Offline::UPS now supports all services to Canada, which completes all of 
           the Offline::UPS countries.
-		- New error message for XDM to Canada.
-		- Removed regexp that was causing an extra field to be put in the data.
-	      (This fixed a lot of XDM shipments that weren't working before.)
-		- Fixed: Some country/service type records were not returning errors 
-		  (e.g. Malaysia+XDM).
-		- Fixed: CA (Canada) was matching AfriCA.
+        - New error message for XDM to Canada.
+        - Removed regexp that was causing an extra field to be put in the data.
+          (This fixed a lot of XDM shipments that weren't working before.)
+        - Fixed: Some country/service type records were not returning errors 
+          (e.g. Malaysia+XDM).
+        - Fixed: CA (Canada) was matching AfriCA.
 
     - Tests:
       - Additional UPS Online/Offline tests: Canada, Mexico.
@@ -113,8 +127,9 @@ Revision history for Business::Shipping.
         - Reporting updates.
         - Add the [incident] usertag for reporting errors.
         - Minor UserTag compatibility updates (from_state)
-		- Add a mechanism for ignoring simple errors.
+        - Add a mechanism for ignoring simple errors.
 
+		
 1.02  Jan 06 2004
     - Update all data tables from UPS (Jan 05 2004)
     - Update fuel surcharge
@@ -122,6 +137,7 @@ Revision history for Business::Shipping.
     - Rename the update functions.
     - Sample "auto update" script that will update the data files.
 
+	
 1.01  Jan 02 2004
     - Offline UPS support for International Express, ExpressPlus, and Expedited.
     - Offline UPS support for Hawaii and Alaska.
@@ -132,6 +148,7 @@ Revision history for Business::Shipping.
     - Some data format changes (east coast/west coast data update, add 'letter'
       to 1da chart, rename several of the files).
 
+	  
 1.00  Dec 21 2003
     - Major updates: many new features prompt the jump into 1.0 land. 
     - New Offline::UPS module: provides table-based rate requests, which are
@@ -153,6 +170,7 @@ Revision history for Business::Shipping.
       - Gracefully handles more 500 errors from the servers.
       - Performs Business-Shipping tasks within an eval.
 
+	  
 0.78  Nov 12 2003
     - Cleanup old CustomMethodMaker tests
     - Cleanup POD
@@ -160,11 +178,13 @@ Revision history for Business::Shipping.
     - Moved credits to its own file.
     - Text and HTML versions of documentation now in doc/
 
+	
 0.77  Nov 11 2003
     - Add UPS one-day air saver.
     - Cleanup TODO list.
     - Add COPYING file.
 
+	
 0.76  Oct 13 2003
     - Fixed bug report:
          calling Business::Shipping::USPS->submit( 
@@ -184,6 +204,7 @@ Revision history for Business::Shipping.
     - Online::UPS thinned.
     - Additional test for UPS Letter post to Canda.
 
+	
 0.75  Aug 25 2003
     - Additional USPS tests (Letter service, Canada service)
     - Additional UPS tests (Canada)

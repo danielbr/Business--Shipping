@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline
 #
-# $Id: Offline.pm,v 1.5 2004/02/03 14:49:33 db-ship Exp $
+# $Id: Offline.pm,v 1.6 2004/03/03 03:36:31 danb Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. 
 #
@@ -18,7 +18,7 @@ disables the cache feature, and has a few miscellaneous function.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -52,6 +52,7 @@ Shorten to three digits.  If the input doesn't have leading zeros, add them.
 sub make_three 
 {
 	my ( $self, $zip ) = @_;
+	return unless $zip;
 	trace( '( ' . ( $zip ? $zip : 'undef' ) . ' )' );
 	
 	$zip = substr( $zip, 0, 3 );

@@ -1,28 +1,60 @@
 # Business::Shipping::Package - Abstract class
 # 
-# $Id: Package.pm,v 1.4 2004/01/21 22:39:52 db-ship Exp $
+# $Id: Package.pm,v 1.5 2004/03/03 03:36:31 danb Exp $
 # 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# 
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
 # 
 
 package Business::Shipping::Package;
 
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+=head1 NAME
+
+Business::Shipping::Package - Abstract class
+
+=head1 VERSION
+
+$Revision: 1.5 $      $Date: 2004/03/03 03:36:31 $
+
+=head1 DESCRIPTION
+
+Represents package-level information (e.g. weight).  Subclasses provide real 
+implementation.
+
+=head1 METHODS
+
+=over 4
+
+=cut
+
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
-use base ( 'Business::Shipping' );
 
+=item * $self->weight()
+
+Accessor for weight.
+
+=item * $self->id()
+
+Package ID (for unique identification in a list of packages).
+
+=cut
 use Business::Shipping::CustomMethodMaker
 	new_hash_init => 'new',
 	grouped_fields_inherit => [
 		required => [ 'weight' ],
 		optional => [ 'id', 'charges' ],
-		unique => [ 'weight' ],
+		unique   => [ 'weight' ],
 	];
 
+#
+# TODO: How do charges() and set_price()/get_charges() interplay?
+# If one is not needed, get rid of it.
+# At least rename for consistency.
+#
 sub set_price
 {
 	my ( $self, $service, $price ) = @_;
@@ -36,19 +68,43 @@ sub get_charges
 	return $self->{ 'price' }->{ $service };	
 }
 
+=item * $self->is_empty()
+
+Determines whether the object has been filled with any user-supplied data, or
+if it is still in the "newly created" state.  Useful for checking to see if
+a package has been used yet (if not used yet, it can be used -- if it has been
+used, then a new one must be created).  It is used that way in RateRequest.
+
+Returns 1 if true, 0 if false.
+
+=cut
 sub is_empty
 {
-	my $self = shift;
+	my ( $self ) = @_;
 	
-#	for ( keys %options_defaults ) {
-#		if (	$self->$_() 
-#				and $options_defaults{ $_ }
-#				and $self->$_() ne $options_defaults{ $_ } ) {
-#			return 0;
-#		}
-#	}		
-	
-	return 1;
+    for ( $self->required ) {
+        if ( $self->$_() ) {
+            return 0;
+        }
+    }
+    
+    return 1;
 }
 
 1;
+
+__END__
+
+=back
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut

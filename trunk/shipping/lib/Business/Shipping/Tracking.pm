@@ -1,11 +1,12 @@
 # Business::Shipping::Tracking - Abstract class
 # 
-# $Id: Tracking.pm,v 1.1 2004/02/15 19:41:19 db-ship Exp $
+# $Id: Tracking.pm,v 1.2 2004/03/03 03:36:31 danb Exp $
 # 
 # Copyright (c) 2004 Infogears Inc.  All rights reserved.
-# Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# 
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+# Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights 
+# reserved. 
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
 # 
 
 package Business::Shipping::Tracking;
@@ -16,7 +17,7 @@ Business::Shipping::Tracking - API for tracking packages
 
 =head1 SYNOPSIS
 
-Example tracking request for USPS:
+=head2 Example tracking request for USPS:
 
 use Business::Shipping::Tracking::USPS;
 
@@ -43,7 +44,7 @@ Business::Tracking is an API for tracking shipments
 =cut
 
 
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;

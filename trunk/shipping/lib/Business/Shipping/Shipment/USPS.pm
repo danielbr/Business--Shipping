@@ -1,18 +1,23 @@
-# Business::Shipping::Shipment::USPS
+# $Id: USPS.pm,v 1.8 2004/03/03 03:36:32 danb Exp $
 # 
-# $Id: USPS.pm,v 1.7 2004/01/21 22:39:54 db-ship Exp $
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# 
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
 # 
 
 package Business::Shipping::Shipment::USPS;
 
+=head1 NAME
+
+usiness::Shipping::Shipment::USPS
+
+=head1 VERSION
+
+$Revision: 1.8 $      $Date: 2004/03/03 03:36:32 $
+
 =head1 DESCRIPTION
 
-Shipping::Shipment::USPS is not very unique, just a few modifications to to_zip
-and to_country.
+See Business::Shipping POD for usage information.
 
 =head1 TODO
 
@@ -22,7 +27,7 @@ Move the country translator data into configuration.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.8 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -47,28 +52,12 @@ sub init
 	return;
 }
 
-sub from_country { return 'US'; }
+=item * from_country
 
-=item * to_zip( $to_zip )
-
-Overrides Shipping::Shipment::to_zip() to throw away the "four" from zip+four.
+Always returns 'US'.
 
 =cut
-sub to_zip
-{
-	my $self = shift;
-	
-	if ( $_[ 0 ] ) {
-		my $to_zip = shift;
-		
-		# Need to throw away the "plus four" of zip+four.
-		$to_zip =~ /{\d,5}/ if $to_zip;
-		
-		$self->{ 'to_zip' } = $to_zip;
-	}
-	
-	return $self->{ 'to_zip' };
-}
+sub from_country { return 'US'; }
 
 =item * to_country( $to_country ) 
 
@@ -100,3 +89,19 @@ sub to_country
 }
 
 1;
+
+__END__
+
+=back
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut

@@ -1,14 +1,16 @@
-# Business::Shipping::RateRequest::Offline::UPS
+# Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
 #
-# $Id: UPS.pm,v 1.17 2004/02/08 00:42:24 db-ship Exp $
+# $Id: UPS.pm,v 1.18 2004/03/03 03:36:32 danb Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
-# Copyright (c) 2003,2004 Kavod Technologies, Dan Browning. 
+# Copyright (c) 2003, 2004 Kavod Technologies, Dan Browning. 
 #
 # All rights reserved. 
 # 
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
-# 
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
+#
 # Portions based on the corresponding work in the Interchange project, which 
 # was written by Mike Heins <mike@perusion.com>.  See http://www.icdevgroup.org
 # for more info.
@@ -16,7 +18,34 @@
 
 package Business::Shipping::RateRequest::Offline::UPS;
 
-$VERSION = do { my @r=(q$Revision: 1.17 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+=head1 NAME
+
+Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
+
+=head1 VERSION
+
+$Revision: 1.18 $      $Date: 2004/03/03 03:36:32 $
+
+=head1 SPECIAL INFO
+
+Countries that do not have Express Plus:
+
+CA  Canada (it is possible to calculate the rate, but you have to call UPS to 
+           find out if it is available).
+
+See config.ini file for more.
+
+=head1 GLOSSARY
+
+EAS		Extended Area Surcharge (EAS)
+
+=head1 METHODS
+
+=over 4
+
+=cut
+
+$VERSION = do { my @r=(q$Revision: 1.18 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -34,6 +63,41 @@ use File::Find;
 use File::Copy;
 use Math::BaseCnv;
 use Scalar::Util 1.10;
+
+=item * update
+
+=item * download
+
+=item * unzip
+
+=item * convert
+
+=item * is_from_west_coast
+
+=item * zones
+
+Hash.  Format:
+
+	$self->Zones() = (
+		'Canada' => {
+			'zone_data' => [
+				'low	high	service1	service2',
+				'004	005		208			209',
+				'006	010		208			209',
+				'Canada	Canada	504			504',
+			]
+		}
+	)
+
+=item * zone_file
+
+=item * zone_name
+
+  - For International, it's the name of the country (e.g. 'Canada')
+  - For Domestic, it is the first three of a zip (e.g. '986')
+  - For Canada, it is...?
+
+=cut
 use Business::Shipping::CustomMethodMaker
 	new_with_init => 'new',
 	new_hash_init => 'hash_init',
@@ -55,10 +119,9 @@ use Business::Shipping::CustomMethodMaker
 		],		
 	],
 	#
-	# Class Attributes
+	# Class Static Attributes
 	#
-	hash => [ '-static', 'Zones' ],
-	;
+	hash => [ '-static', 'Zones' ];
 
 use constant INSTANCE_DEFAULTS => ();
 sub init
@@ -69,35 +132,12 @@ sub init
 	return;
 }
 
-
-=head1 NAME
-
-Offline::UPS - Calculates UPS rates from tables.
-
-=head1 SPECIAL INFO
-
-Countries that do not have Express Plus:
-
-CA  Canada (it is possible to calculate the rate, but you have to call UPS to 
-           find out if it is available).
-NO  Norway
-
-=head1 METHODS
-
-=over 4
-
-=item * zone_name()
-
-  - For International, it's the name of the country (e.g. 'Canada')
-  - For Domestic, it is the first three of a zip (e.g. '986')
-  - For Canada, it is...?
-  
-=cut
-
-
 sub to_residential { return shift->shipment->to_residential( @_ ); }
 sub is_from_east_coast { return not shift->is_from_west_coast(); }
 
+=item * convert_ups_rate_file
+
+=cut
 sub convert_ups_rate_file
 {
 	trace "( $_[0] )";
@@ -178,6 +218,9 @@ sub convert_ups_rate_file
 	return;
 }
 
+=item * do_download
+
+=cut
 sub do_download
 {
 	my ( $self ) = @_;
@@ -199,6 +242,9 @@ sub do_download
 	}
 }
 
+=item * do_unzip
+
+=cut
 sub do_unzip
 {
 	for ( 
@@ -311,6 +357,9 @@ sub do_convert_data
 	
 }
 
+=item * convert_zone_file
+
+=cut
 sub convert_zone_file
 {
 	my ( $self, $file ) = @_;
@@ -369,6 +418,9 @@ sub convert_zone_file
 	return;
 }
 
+=item * rename_tables_that_start_with_numbers
+
+=cut
 sub rename_tables_that_start_with_numbers
 {
 	my $path = shift;
@@ -388,6 +440,9 @@ sub rename_tables_that_start_with_numbers
 	return $new_file;
 }
 
+=item * rename_tables_that_have_a_dash
+
+=cut
 sub rename_tables_that_have_a_dash
 {
 	my $path = shift;
@@ -408,6 +463,9 @@ sub rename_tables_that_have_a_dash
 	return $new_file;
 }
 
+=item * auto_update
+
+=cut
 sub auto_update
 {
 	my ( $self ) = @_;
@@ -415,6 +473,9 @@ sub auto_update
 	$self->do_update();
 }
 
+=item * do_update
+
+=cut
 sub do_update
 {
 	my ( $self ) = @_;
@@ -432,6 +493,9 @@ sub do_update
 	return;
 }	
 
+=item * validate
+
+=cut
 sub validate
 {
 	my ( $self ) = @_;
@@ -446,6 +510,9 @@ sub validate
 	return 1;
 }
 
+=item * _handle_response
+
+=cut
 sub _handle_response
 {
 	my $self = $_[ 0 ];
@@ -482,6 +549,9 @@ sub _handle_response
 	return $self->is_success( 1 );
 }
 
+=item * calc_express_plus_adder
+
+=cut
 sub calc_express_plus_adder
 {
 
@@ -496,6 +566,9 @@ sub calc_express_plus_adder
 	return 0.00;
 }
 
+=item * calc_residential_surcharge
+
+=cut
 #
 # TODO: Lookup the zip code in the xzones.csv chart, if found, add the $1.17
 #
@@ -516,6 +589,9 @@ sub calc_residential_surcharge
 	}
 }
 
+=item * calc_fuel_surcharge
+
+=cut
 sub calc_fuel_surcharge
 {
 	my ( $self, $total_charges ) = @_;
@@ -528,6 +604,9 @@ sub calc_fuel_surcharge
 	return $fuel_surcharge;
 }
 
+=item * service_code_to_ups_name
+
+=cut
 sub service_code_to_ups_name
 {
 	my ( $self, $service ) = @_;
@@ -548,6 +627,9 @@ sub service_code_to_ups_name
 	}
 }
 
+=item * ups_name_to_table
+
+=cut
 sub ups_name_to_table
 {
 	my ( $self, $ups_name ) = @_;
@@ -869,7 +951,7 @@ sub calc_cost
 	debug( "point = $point, looking in zone data..." );
 	for ( @{ $zdata }[ 1.. $#{ $zdata } ] ) {
 		@data = split /\t/, $_;
-		debug( "data = " . join( ',', @data ) );
+		debug3( "data = " . join( ',', @data ) );
 		if ( $self->current_shipment->domestic_or_ca ) {
 
 			my $low		= $data[0];
@@ -995,6 +1077,7 @@ sub calc_zone_info
 	if ( $self->domestic ) {
 		debug( "domestic" );
 		$zone = $self->make_three( $self->from_zip );
+		
 		$zone_file = "/data/$zone.csv";
 	}
 	elsif ( $self->to_canada ) {
@@ -1123,8 +1206,3 @@ sub _massage_values
 1;
 __END__
 
-=head1 GLOSSARY
-
-EAS		Extended Area Surcharge (EAS)
-
-=cut

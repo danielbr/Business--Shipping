@@ -4,6 +4,7 @@ REQUIRED MODULES
      Bundle::DBD::CSV (any)
      Cache::FileCache (any)
      Class::MethodMaker (any)
+     Clone (any)
      Config::IniFiles (any)
      Crypt::SSLeay (any)
      Data::Dumper (any)

@@ -1,13 +1,19 @@
+# Makefile.PL - Installation script for Business::Shipping
+# 
+# $Id: Makefile.PL,v 1.28 2004/03/03 03:36:30 danb Exp $
+#
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
+#
+
 use 5.006000;
 use ExtUtils::MakeMaker;
 
 #
-# auto-update documentation if needed
+# Auto-update REQUIRED MODULES documentation if needed
 #
 eval "use Devel::Required text => [ '' ], pod => [qw(lib/Business/Shipping.pm), qw(doc/README.pod), qw(doc/INSTALL.pod), qw(UserTag/business-shipping.tag)]";
-
-# Version for Business-Shipping as a whole.
-$VERSION = '1.07';
 
 #
 # Defaults
@@ -18,15 +24,15 @@ my %my_globals = (
 
 WriteMakefile(
     NAME			=> 'Business::Shipping',
-    VERSION_FROM	=> 'Makefile.PL',
-    ABSTRACT_FROM	=> 'lib/Business/Shipping.pm',
+    VERSION			=> '1.07',
+    ABSTRACT		=> 'Business::Shipping - Interface for shippers (UPS, USPS)',
     AUTHOR		    => 'Dan Browning <db@kavod.com>',
 	CONFIGURE		=> \&extra_WriteMakefile_options,
     PREREQ_PM		=>	{
 		'Archive::Zip'			=> 0,
 		'Bundle::DBD::CSV'		=> 0,
 		'Cache::FileCache'		=> 0,
-		'Class::MethodMaker'	=> 0,
+		'Class::MethodMaker'	=> '< 2.0',
 		'Clone'					=> 0,
 		'Config::IniFiles'		=> 0,
 		'Crypt::SSLeay'			=> 0,

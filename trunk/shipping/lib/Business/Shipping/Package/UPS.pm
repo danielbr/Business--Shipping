@@ -1,19 +1,37 @@
-# Business::Shipping::Package::UPS
+# $Id: UPS.pm,v 1.6 2004/03/03 03:36:31 danb Exp $
 # 
-# $Id: UPS.pm,v 1.5 2004/01/21 22:39:53 db-ship Exp $
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# 
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
 # 
 
 package Business::Shipping::Package::UPS;
 
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+=head1 NAME
+
+Business::Shipping::Package::UPS
+
+=head1 VERSION
+
+$Revision: 1.6 $      $Date: 2004/03/03 03:36:31 $
+
+=head1 METHODS
+
+=over 4
+
+=cut
+
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
 use base ( 'Business::Shipping::Package' );
+
+=item * packaging
+
+UPS-only attribute.
+
+=cut
 use Business::Shipping::CustomMethodMaker
 	new_hash_init => 'new',
 	grouped_fields_inherit => [
@@ -22,3 +40,19 @@ use Business::Shipping::CustomMethodMaker
 	];
 
 1;
+
+__END__
+
+=back
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut

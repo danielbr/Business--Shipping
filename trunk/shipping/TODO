@@ -2,22 +2,53 @@
 ##  General TODO
 ######################################################
 
+ * [ENH] Coding style: tabs are four spaces.
+ 
+ * [ENH] Coding style: non-public methods are prefixed with "_". 
+ 
+ * [BUG] Why does Business::Shipping::Debug include Business::Shipping?
+
+ * [BUG] The "don't send if required field is missing" does work in the 
+   "send incident report code" feature -- it sends it even if to_zip is missing.
+
+ * [DOC] Add some notices to all subclasses: 
+   - This class is for internal implementation only. It is not a public API.
+   
+ * [DOC] Look into OODoc or Pod::Tree
+
+ * [DOC] Add minimal documentation to each module, with most of the 
+   documentation in the main module.
+
+ * [DOC] Include the terms of use for each provider.
+ 
  * [DOC] Any UPS shipment originating in Canada must use UPS Standard or UPS
    Worldwide method.
-   
+ 
+ * [ENH] Make some kind of allowance for alternate units (kilograms, etc.).
+
+ * [ENH] Potential re-name:
+   - Keep everything the same, except the "lowest level":
+     Shipping::RateRequest::Online::UPS --> Shipping::UPS::RateRequest
+	 Shipping::Shipment::UPS --> Shipping::UPS::Shipment
+	 Shipping::RateRequest::Online::USPS --> Shipping::USPS::RateRequest
+   - Benefits:
+     All of the vendor-related code is in one directory (UPS/, FedEx/, etc.).
+     All of the neutral code is in neutral directories.
+   - Optional: Move the neutral code to Shipping::All:: to signify the fact that
+     all code is derived from them.
+	 
+ * [ENH] Look into Params::Validate and/or Class::Contract
+ 
+ * [ENH] Add Test::Inline tests
+ 
  * [ENH] Multi-package API broken:
    Can't locate object method "add_package" via package
    "Business::Shipping::Shipment::UPS" at test1.pl line 13.
-
- * [ENH] Business-Shipping-announce mailing list.  (Sourceforge?)
 
  * [ENH] Re-license under dual GPL/Artistic
 
  * [ENH] Merge Rusty's USPS and UPS Tracking module.
  
- * [BUG] Bundle::Business::Shipping doesn't work
-   - It probably should be Business/Shipping.pm instead of just Shipping.pm.
-
  * [BUG] Error on missing arguments isn't working very well (user_id, password)
 
  * [ENH] Make the error handling more customizable
@@ -45,11 +76,6 @@
  * [ENH] Allow the user to set the timeout for http requests.  Sometimes 30
    seconds is too long.
 
- * [DOC] Add minimal documentation to each module, with most of the 
-   documentation in the main module.
-
- * [DOC] Include the terms of use for each provider.
- 
  * [BUG] When the internet is down, we should give a more useful error message
    than the following:
 	 "Business::Shipping::RateRequest::Online::USPS::_handle_response: ()
@@ -129,7 +155,12 @@
  
  * [ENH] Build a more advanced configuration system, with more config-file
    flexibility.
-   
+ 
+ * [ENH] [UNDER CONSIDERATION] Upgrade to Class::MethodMaker 2.00?
+   - It does not support several features, like 'grouped_fields'.
+   - It does not support grouped_fields_inherit
+   - It is prettier.
+
 ######################################################
 ##  Online::USPS TODO
 ######################################################
@@ -150,6 +181,28 @@
 ######################################################
 ##  Offline::UPS TODO
 ######################################################
+ 
+ * [ENH] Determine the upcoming fuel surcharge changes from UPS website, then 
+   check to see if that date has passed.  If so, automatically update the fuel 
+   surcharge.
+
+ * [BUG] On March 1, 2004: update fuel surcharge to 6.50%.
+ 
+ * [BUG] Note:  Effective January 5, 2004, the Fuel Surcharge will be 
+   discontinued for the following services:  UPS Ground Commercial, UPS Ground 
+   Residential, UPS Ground Hundredweight Service, and UPS Standard to Canada.
+
+ * [BUG] Error:  No zone found for geo code (key) 802, type Express.
+        from_country =>                 'US',
+        to_country =>           'CA',
+        from_state =>           'OR',
+        service =>              'XPR',
+        to_residential =>               '1',
+        from_zip =>             '97214',
+        weight =>               '1',
+        to_zip =>               '80210',
+        cache =>                '1',
+        shipper =>              'Offline::UPS',
 
  * [BUG] Error:  No zone found for geo code (key) Cyprus, type ExpeditedSM_EC.
    Important variables:
@@ -297,3 +350,5 @@
  * [ENH] FedEx module: Christopher L Wenham from Synesmedia has created an 
    Interchange usertag that uses FedEx::DirectConnect for various functions.  
    Evaluate.
+   
+

@@ -1,17 +1,17 @@
-# Business::Shipping::RateRequest::Online::UPS - Abstract class for shipping cost rating.
+# Business::Shipping::RateRequest::Online::UPS - Estimates shipping cost online
 # 
-# $Id: UPS.pm,v 1.12 2004/01/21 22:39:53 db-ship Exp $
+# $Id: UPS.pm,v 1.13 2004/03/03 03:36:32 danb Exp $
 # 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# 
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
 # 
 
 package Business::Shipping::RateRequest::Online::UPS;
 
 =head1 NAME
 
-Business::Shipping::RateRequest::Online::UPS
+Business::Shipping::RateRequest::Online::UPS - Estimates shipping cost online
 
 See Shipping.pm POD for usage information.
 
@@ -64,10 +64,14 @@ See Shipping.pm POD for usage information.
 	event_handlers
 	from_city
 	to_city
+
+=head1 METHODS
+
+=over 4 
 	
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.12 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.13 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -79,6 +83,16 @@ use Business::Shipping::Package::UPS;
 use XML::Simple 2.05;
 use Cache::FileCache;
 use LWP::UserAgent;
+
+=item * access_key
+
+=item * test_server
+
+=item * no_ssl
+
+=item * to_city
+
+=cut
 use Business::Shipping::CustomMethodMaker
 	new_with_init => 'new',
 	new_hash_init => 'hash_init',
@@ -116,6 +130,9 @@ sub init
 #
 sub from_state {}
 
+=item * pickup_type
+
+=cut
 sub pickup_type
 {
 	my ( $self ) = @_;
@@ -142,6 +159,9 @@ sub pickup_type
 
 sub package_subclass_name { return 'UPS::Package'; }
 
+=item * _massage_values
+
+=cut
 sub _massage_values
 {
 	trace( 'called' );
@@ -246,8 +266,11 @@ sub _massage_values
 	return;
 }
 
-# _gen_request_xml()
-# Generate the XML document.
+=item * _gen_request_xml
+
+Generate the XML document.
+
+=cut
 sub _gen_request_xml
 {
 	debug( 'called' );
@@ -345,6 +368,9 @@ sub _gen_request_xml
 Returns the total charges.
 
 =cut
+#
+# TODO: redundant?
+#
 sub get_total_charges
 {
 	my ( $self ) = shift;
@@ -352,6 +378,9 @@ sub get_total_charges
 	return 0;
 }
 
+=item * _handle_response
+
+=cut
 sub _handle_response
 {
 	trace '()';
@@ -415,11 +444,13 @@ sub _handle_response
 	return $self->is_success( 1 );
 }
 
-no warnings;
+no warnings 'redefine';
 =item * to_country_abbrev()
 
 We have to override the to_country_abbrev function becuase Online::UPS
 likes its own spellings of certain country abbreviations (GB, etc.).
+
+Redefines attribute.
 
 =cut
 sub to_country_abbrev
@@ -436,9 +467,22 @@ sub to_country_abbrev
 	my $to_country_abbrev = $countries->{ $self->to_country } || $self->SUPER::to_country_abbrev();
 	return $to_country_abbrev;
 }
-
-use warnings;
+use warnings; # end redefine
 
 1;
 
 __END__
+
+=back
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut

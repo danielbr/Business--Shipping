@@ -1,42 +1,41 @@
 NAME
-    Business::Shipping - API for shipping-related tasks
+    Business::Shipping - Interface for shippers (UPS, USPS)
 
 SYNOPSIS
-    Example rate request:
+  Rate request example
+        use Business::Shipping;
+    
+        my $rate_request = Business::Shipping->rate_request(
+            shipper   => 'Offline::UPS',
+            service   => 'GNDRES',
+            from_zip  => '98682',
+            to_zip    => '98270',
+            weight    =>  5.00,
+        );    
+    
+        $rate_request->submit() or die $rate_request->error();
+    
+        print $rate_request->total_charges();
 
-            use Business::Shipping;
-        
-            my $rate_request = Business::Shipping->rate_request(
-                    shipper         => 'Offline::UPS',
-                    service         => 'GNDRES',
-                    from_zip        => '98682',
-                    to_zip          => '98270',
-                    weight          =>  5.00,
-            );      
-        
-            $rate_request->submit() or die $rate_request->error();
-        
-            print $rate_request->total_charges();
+  Shipping tasks implemented at this time
+    * UPS shipment cost calculation using UPS Online WebTools.
+    * UPS shipment cost calculation using offline tables.
+    * USPS shipment cost calculation using USPS Online WebTools.
+    * UPS shipment tracking.
+    * USPS shipment tracking.
 
-ABSTRACT
-    Business::Shipping is an API for shipping-related tasks.
-
-  Shipping Tasks Implemented at this time
-     * Shipping cost calculation
-     * Tracking, availability, and other services are planned for future addition.
-
-  Shipping Vendors Implemented at this time
-     * Online UPS (using the Internet and UPS servers)
-     * Offline UPS (using tables stored locally)
-     * Online USPS
-
-    Offline FedEX and USPS are planned for support in the future.
+  Shipping tasks planned for future addition
+    * USPS zip code lookup
+    * USPS address verification
+    * USPS shipment cost estimation via offline tables
+    * FedEX shipment cost estimation
 
 REQUIRED MODULES
      Archive::Zip (any)
      Bundle::DBD::CSV (any)
      Cache::FileCache (any)
      Class::MethodMaker (any)
+     Clone (any)
      Config::IniFiles (any)
      Crypt::SSLeay (any)
      Data::Dumper (any)
@@ -52,7 +51,11 @@ REQUIRED MODULES
 INSTALLATION
     "perl -MCPAN -e 'install Bundle::Business::Shipping'"
 
+    See the INSTALL file for more information.
+
 MULTI-PACKAGE API
+    Please note that the Multi-package API may change in upcoming releases.
+
   Online::UPS Example
      use Business::Shipping;
      use Business::Shipping::Shipment::UPS;
@@ -60,22 +63,22 @@ MULTI-PACKAGE API
      my $shipment = Business::Shipping::Shipment::UPS->new();
  
      $shipment->init(
-            from_zip        => '98682',
-            to_zip          => '98270',
-            service         => 'GNDRES',
-            #
-            # user_id, etc. needed here.
-            #
+        from_zip  => '98682',
+        to_zip    => '98270',
+        service   => 'GNDRES',
+        #
+        # user_id, etc. needed here.
+        #
      );
 
      $shipment->add_package(
-            id              => '0',
-            weight          => 5,
+        id        => '0',
+        weight        => 5,
      );
 
      $shipment->add_package(
-            id              => '1',
-            weight          => 3,
+        id        => '1',
+        weight        => 3,
      );
  
      my $rate_request = Business::Shipping::rate_request( shipper => 'Online::UPS' );
@@ -102,12 +105,12 @@ ERROR/DEBUG HANDLING
     For example:
 
      $rate_request->event_handlers(
-            { 
-                    'error' => 'STDERR',
-                    'debug' => 'STDERR',
-                    'trace' => undef,
-                    'debug3' => undef,
-            }
+         { 
+            'error' => 'STDERR',
+            'debug' => 'STDERR',
+            'trace' => undef,
+            'debug3' => undef,
+        }
      );
  
     The default is 'STDERR' for error handling, and nothing for debug/trace
@@ -117,11 +120,11 @@ ERROR/DEBUG HANDLING
     values of methods. For example:
 
      $rate_request->init( %values ) or print $rate_request->error();
-        
+    
     However, if you don't save the error value before the next call, it
     could be overwritten by a new error.
 
-CLASS METHODS
+METHODS
   rate_request()
     This method is used to request shipping rate information from online
     providers or offline tables. A hash is accepted as input with the
@@ -160,11 +163,11 @@ CLASS METHODS
         Weight of the shipment, in pounds, as a decimal number.
 
 AUTHOR
-     Dan Browning         <db@kavod.com>
-     Kavod Technologies   http://www.kavod.com
+    Dan Browning <db@kavod.com>, Kavod Technologies, <http://www.kavod.com>.
 
 COPYRIGHT AND LICENCE
     Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights
-    reserved. Licensed under the GNU Public Licnese (GPL). See COPYING for
-    more info.
+    reserved. This program is free software; you can redistribute it and/or
+    modify it under the same terms as Perl itself. See LICENSE for more
+    info.
 

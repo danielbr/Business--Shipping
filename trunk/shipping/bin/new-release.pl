@@ -18,6 +18,9 @@ new-release - the Business::Shipping release script.
  
  #
  # Make sure all the files (documentation, etc.) are up to date.
+ #
+ # UPDATE META.yml
+ #
  # Then commit to CVS
  #
  perl Makefile.PL 
@@ -34,7 +37,10 @@ new-release - the Business::Shipping release script.
  make tardist
  bin/new-release.pl Business-Shipping-*.tar.gz
  cpan-upload -user `cat ~/.apps/.PAUSE-user` -password `cat ~/.apps/.PAUSE-password` -mailto 'db@kavod.com' -non_interactive Business-Shipping-*.tar.gz
- perl -pi -e "s/\$VERSION = \'.\...\'/\$VERSION = \'${VERSION_AFTER_THIS_UPLOAD}\'/g" Makefile.PL
+ #
+ # This version updater doesn't work now that I've changed the Makefile.PL.
+ # perl -pi -e "s/\$VERSION = \'.\...\'/\$VERSION = \'${VERSION_AFTER_THIS_UPLOAD}\'/g" Makefile.PL
+ #
  
 =cut 
 

@@ -3,25 +3,24 @@
 #
 # Business::Shipping::RateRequest::Offline::USPS
 #
-# $Id: USPS.pm,v 1.3 2004/01/21 22:39:53 db-ship Exp $
+# $Id: USPS.pm,v 1.4 2004/03/03 03:36:32 danb Exp $
 #
 # Copyright (C) 2003 Interchange Development Group
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. 
+# Copyright (c) 2003, 2004 Kavod Technologies, Dan Browning. 
 #
 # All rights reserved. 
 # 
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+# Licensed under the GNU Public Licnese (GPL).  See LICENSE for more info.
 # 
-# Based on the corresponding work in the Interchange project, which was
-# written by Mike Heins <mike@perusion.com>.
-# See http://www.icdevgroup.org for more info.
+# Based on the corresponding work in the Interchange project, which was written 
+# by Mike Heins <mike@perusion.com>. See http://www.icdevgroup.org for more info.
 #
 
 package Business::Shipping::RateRequest::Offline::USPS;
 
 =head1 NAME
 
-Offline::USPS -- Calculates US Postal service rates (intl only)
+Business::Shipping::RateRequest::Offline::USPS -- Calculates US Postal service rates (intl only)
 
 =head1 SYNOPSIS
 
@@ -79,7 +78,7 @@ multiple 70-pound packages (plus one package with the remainder).
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
@@ -217,7 +216,7 @@ sub calculate {
 						'Country code %s has no zone for type %s.',
 						$country,
 						$type,
-					);
+					   );
 	}
 
 	$zone = "zone$zone" unless $zone =~ /^zone/ or $opt->{verbatim_zone};

@@ -1,49 +1,67 @@
-# Business::Shipping::Data
+# Business::Shipping::Data - Database interface
 # 
-# $Id: Data.pm,v 1.2 2004/01/21 22:39:52 db-ship Exp $
+# $Id: Data.pm,v 1.3 2004/03/03 03:36:31 danb Exp $
 # 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# 
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
+# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
 # 
 
 package Business::Shipping::Data;
 
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+=head1 NAME
+
+Business::Shipping::Data - Database interface
+
+=head1 VERSION
+
+$Revision: 1.3 $      $Date: 2004/03/03 03:36:31 $
+
+=head1 DESCRIPTION
+
+Uses DBI for CSV file access.
+
+=head1 METHODS
+
+=over 4
+
+=cut
+
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT = qw( record );
 
 use strict;
 use warnings;
-use base ( 'Exporter', 'Business::Shipping' );
+use base ( 'Exporter' );
 use Data::Dumper;
 use Business::Shipping::Debug;
 use Business::Shipping::Config;
 use DBI;
 
+=item * record( $table, $field, $key, $opt )
+
+Performs a single-record lookup.  Analagous to Interchange tag_data() function.
+
+=cut
 sub record
 {
-	trace( 'called' );
 	my ( $table, $field, $key, $opt ) = @_;
-	
-	# 
-	# TODO: Database work
-	# 
+	trace( 'called' );
 	
 	my $key_column = $opt->{ foreign } || get_primary_key( $table );
 	return unless $key_column;
 	debug3( "key_column = $key_column" );
 	
 	#
-	# Apparently, I have to do '*' instead of the field name.  Go figure.
+	# Apparently, with DBD::CSV, '*' is required instead of the field name.
 	#
 	my $query = "SELECT * FROM $table WHERE $key_column = \'$key\'";
 	debug( $query );
 	my $sth = sth( $query )
 		or die "Could not get sth: $@";
-		
 	my $hashref = $sth->fetchrow_hashref();
-	
 	debug3( "hashref = " . Dumper( $hashref ) );
+	
 	return $hashref->{ $field };
 }	
 
@@ -124,30 +142,20 @@ sub get_primary_key
 	return $sth->{ NAME }->[ 0 ];
 }
 
-=pod
-sub bind_hash {
-	my ($table, @fields) = shift;
-	
-	my $dbh = dbh( $table );
-	my $sql = 'SELECT ' . join(', ', @fields) . " FROM $table";
-	my $sth = $dbh->prepare($sql);
-	$sth->execute();
-	
-	my %results;
-	@results{@fields} = ();
-	$sth->bind_columns(map { \$results{$_} } @fields);
-	return (\%results, sub { $sth->fetch() });
-	
-	#
-	# TODO: Use this calling code: it's very good.
-	#
-	#my ($res, $fetch) = bind_hash('users', qw( name email ));
-	#while ($fetch->()) {
-	#	print "$res->{name} >$res->{email}>\n";
-	#}
-}
-=cut
-
-
 1;
+
 __END__
+
+=back
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut

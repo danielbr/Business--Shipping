@@ -1,20 +1,48 @@
-# Business::Shipping::Debug - Debugging Functions
+# Business::Shipping::Debug - Debugging functions
 # 
-# $Id: Debug.pm,v 1.5 2004/01/21 22:39:52 db-ship Exp $
+# $Id: Debug.pm,v 1.6 2004/03/03 03:36:31 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# 
-# Licensed under the GNU Public Licnese (GPL).  See COPYING for more info.
-# 
+# This program is free software; you may redistribute it and/or modify it under
+# the same terms as Perl itself. See LICENSE for more info.
+#
 
 package Business::Shipping::Debug;
 
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+=head1 NAME
+
+Business::Shipping::Debug - Debugging functions
+
+=head1 VERSION
+
+$Revision: 1.6 $      $Date: 2004/03/03 03:36:31 $
+
+=head1 SYNOPSIS
+
+ use Business::Shipping::Debug;
+ 
+ trace "called with parameters: $x, $y, and $z";
+ debug "value of x = $x";
+ log_error "encountered invalid data: $x";
+ debug3 "here is a big list of all the potential data values: $big_list";
+
+=head1 DESCRIPTION
+
+Exports several functions useful for logging debug messages, trace information, 
+or error messages. 
+
+=head1 METHODS
+
+=over 4
+
+=cut
+
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT = qw( uneval debug debug3 trace log_error );
 
 use strict;
 use warnings;
-use base ( 'Exporter', 'Business::Shipping' );
+use base ( 'Exporter' );
 
 %Business::Shipping::Debug::event_handlers = ();
 $Business::Shipping::Debug::event_handlers{ 'debug' } 	= undef;
@@ -22,8 +50,15 @@ $Business::Shipping::Debug::event_handlers{ 'debug3' }	= undef;
 $Business::Shipping::Debug::event_handlers{ 'trace' } 	= undef;
 $Business::Shipping::Debug::event_handlers{ 'error' } 	= 'STDERR';
 
-# uneval() was shamelessly copied from Interchange.
-# Written by Mike Heins <mike@perusion.com>
+=item * uneval( ... )
+
+Takes any built-in object and returns a string of text representing the perl 
+representation of it.  
+
+It was copied from Interchange L<http://www.icdevgroup.org>, written by Mike 
+Heins  E<lt>F<mike@perusion.com>E<gt>.
+
+=cut
 sub uneval { 
     my ( $self, $o ) = @_;		# recursive
     my ( $r, $s, $i, $key, $value );
@@ -57,6 +92,15 @@ sub uneval {
     $s;
 }
 
+=item * log_error( $msg )
+
+=item * debug( $msg )
+
+=item * debug3( $msg )
+
+=item * trace( $msg )
+
+=cut
 sub log_error	{
 	my $msg = shift;
 	# Remove three or more consecutive whitespaces.
@@ -68,6 +112,12 @@ sub debug		{ return _log( 'debug', shift ); }
 sub debug3		{ return _log( 'debug3', shift ); }
 sub trace		{ return _log( 'trace', shift ); }
 
+=item * _log( $err_msg )
+
+This is where all the work happens.  Determines the caller, cleans up the 
+message, then prints it where it should go.
+
+=cut
 sub _log
 {
     my ( $type, $msg ) = @_;
@@ -104,3 +154,19 @@ sub _log
 }
 
 1;
+
+__END__
+
+=back
+
+=head1 AUTHOR
+
+Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+This program is free software; you may redistribute it and/or modify it under
+the same terms as Perl itself. See LICENSE for more info.
+
+=cut
