@@ -1,11 +1,14 @@
 Revision history for Business::Shipping.
 
 1.03  Not yet released
+	- Bug fixes for International Shipping
+	- Add automatic translations for several values (state to abbreviation, 
+	  abbreviated country to the full name of the country, etc.) -- uses config.
 	- Minor UserTag compatibility updates (from_state)
 	- UserTag bug fixes.
 	- Minor documentation updates.
 	- Auto-update function added.
-	- Additional Canadian test.
+	- Additional UPS Online/Offline tests: Canada, Mexico.
 
 1.02  Jan 06 2004
 	- Update all data tables from UPS (Jan 05 2004)

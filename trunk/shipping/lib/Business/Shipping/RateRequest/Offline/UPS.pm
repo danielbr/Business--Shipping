@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS
 #
-# $Id: UPS.pm,v 1.5 2004/01/10 21:27:26 db-ship Exp $
+# $Id: UPS.pm,v 1.6 2004/01/11 20:06:18 db-ship Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. 
@@ -26,7 +26,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 use base ( 'Business::Shipping::RateRequest::Offline' );
 
 use Business::Shipping::Shipment::UPS;
@@ -648,7 +648,7 @@ sub calc_cost
 	my @hi_special_zipcodes_126_226 = split( ',', cfg()->{ups_information}->{hi_special_zipcodes_126_226} );
 	my @ak_special_zipcodes_124_224 = split( ',', cfg()->{ups_information}->{ak_special_zipcodes_124_224} );
 	my @ak_special_zipcodes_126_226 = split( ',', cfg()->{ups_information}->{ak_special_zipcodes_126_226} );
-	debug ( "hawaii special zip codes = " . join( ",\t", @hi_special_zipcodes_124_224 ) );
+	debug3( "hawaii special zip codes = " . join( ",\t", @hi_special_zipcodes_124_224 ) );
 	debug( "my zip is = " . $self->to_zip );
 
 	if ( 
@@ -816,23 +816,43 @@ sub intl
 	return 0;
 }
 
-#
-# Need to translate all abbreviations to the full name.
-#
-sub _country_name_mapping
+=item * _gp_translator(
+
+General Purpose Translator.  Massages keyed values (like state and country
+abbreviations).
+
+	$val	The value to be translated, if possible
+	$hash	The hash populated with values to be translated
+	
+=cut
+sub _gp_translator
 {
-	my $self = shift;
+	my ( $self, $val, $hash ) = @_; 
+	return unless $val and $hash;
+	return $hash->{ $val } || $val;
+}
+
+=item * _build_hash_from_ary(
+
+Builds a hash from an array of lines containing key / value pairs.
+
+	$ary	Key/value pairs
+	$del	Delimiter for the above array (tab is default)
+
+=cut
+sub _build_hash_from_ary
+{
+	my ( $self, $ary, $delimiter ) = @_;
+	return unless $ary;
+	$delimiter ||= "\t";
 	
-	return unless $self->to_country();
-	
-	my $to_country = $self->to_country();
-	
-	if ( $to_country =~ /GB/ ) {
-		$to_country = 'United Kingdom';
+	my $hash = {};
+	foreach my $line ( @$ary ) {
+		my ( $key, $val ) = split( $delimiter, $line );
+		$hash->{ $key } = $val;
 	}
 	
-	$self->to_country( $to_country );
-	return;
+	return $hash;	
 }
 
 sub _massage_values
@@ -840,8 +860,18 @@ sub _massage_values
 	trace '()';
 	my $self = shift;
 	
+	my $simple_translations = cfg()->{ ups_information }->{ simple_translations };
+	for ( @$simple_translations ) {
+		my ( $value_to_translate, $translation_config_param ) = split( "\t", $_ );
+		last unless $value_to_translate and $translation_config_param;
+		debug( "Going to translate $value_to_translate ( " . ( $self->$value_to_translate() || 'undef' ) . " ) using $translation_config_param" );
+		my $aryref = cfg()->{ ups_information }->{ $translation_config_param };
+		my $hash = $self->_build_hash_from_ary( $aryref, "\t" );
+		my $new_value = $self->_gp_translator( $self->$value_to_translate(), $hash );
+		debug( "Setting $value_to_translate to new value: " . ( $new_value || 'undef' ) );
+		$self->$value_to_translate( $new_value );
+	}
 	
-	$self->_country_name_mapping();
 	
 	# TODO: do table lookup to find if it is residential or not.
 	if ( $self->service() =~ /GNDRES/i ) {
@@ -891,8 +921,6 @@ sub _massage_values
 	
 	if ( $self->intl() and $self->from_state() ) {
 		
-		$self->from_state( $self->state_to_abbrv( $self->from_state() ) );
-		
 		my $west_coast_states_aryref = cfg()->{ ups_information }->{ west_coast_states };
 		my $east_coast_states_aryref = cfg()->{ ups_information }->{ east_coast_states };
 		
@@ -907,25 +935,6 @@ sub _massage_values
 			}
 		}
 	}
-}
-
-sub state_to_abbrv
-{
-	my ( $self, $state ) = @_;
-	
-	if ( length( $state ) > 2 ) {
-		# get hash of state names -> abbreviations from the configuration.
-		my $state_abbreviations_aryref = cfg()->{ ups_information }->{ state_abbreviations };
-		
-		my %states;
-		for ( @$state_abbreviations_aryref ) {
-			my @abbrv_and_state = split( "\t", $_ );
-			$states{ $abbrv_and_state[ 0 ] } = $abbrv_and_state[ 1 ];
-		}
-		$state = $states{ $state } || $state;
-	}
-	
-	return $state;
 }
 
 1;

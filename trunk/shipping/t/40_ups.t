@@ -25,7 +25,7 @@ sub test
 		'access_key'	=> $ENV{ UPS_ACCESS_KEY }, 
 		'cache'	=> 0,
 		event_handlers => {
-			#trace => 'STDERR' 
+			#trace => 'STDERR', 
 		}
 	);
 	$shipment->submit( %args ) or die $shipment->error();
