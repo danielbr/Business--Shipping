@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.12 2004/01/21 23:08:00 db-ship Exp $
+# $Id: business-shipping.tag,v 1.13 2004/01/21 23:18:29 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -71,7 +71,7 @@ Here is a general outline for installing [business-shipping] in Interchange.
    Note that "XPS" is used to denote fields that can be used for UPS or USPS.
 
 XPS_FROM_COUNTRY	US	Shipping
-XPS_FROM_STATE	Washington	Shipping
+XPS_FROM_STATE	WA	Shipping
 XPS_FROM_ZIP	98682	Shipping
 XPS_TO_COUNTRY_FIELD	country	Shipping
 XPS_TO_ZIP_FIELD	zip	Shipping
@@ -178,14 +178,18 @@ sub {
 	#
 	foreach my $shipper_key ( sort keys %$defaults ) {
 		if ( $shipper_key eq $shipper or $shipper_key eq 'all' ) {
+			#::logDebug( "shipper_key $shipper_key matched shipper $shipper, or was \'all\'.  Looking into defualts..." ) if $debug;
+			
 			my $shipper_defaults = $defaults->{ $shipper_key };
 			
 			for ( keys %$shipper_defaults ) {
+				#::logDebug( "shipper default: $_ => " . $shipper_defaults->{ $_ } ) if $debug;
 				my $value = $shipper_defaults->{ $_ };
 				$opt{ $_ } ||= $value if ( $_ and defined $value );
 			}
 		}
 	}
+	::logDebug( "After processing all defaults, the options are now: " . uneval( $opt ) ) if $debug;
 	
 	my $rate_request;
 	eval {
