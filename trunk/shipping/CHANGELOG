@@ -1,19 +1,31 @@
 Revision history for Business::Shipping.
 
 1.07  CVS
+  
+  Compatibility
+    Clone module now required (for Tracking).
 
+  General
+    Rusty Conover <rconover@infogears.com> contributed the following modules:
+      Tracking
+      Tracking::USPS
+      Tracking::UPS
+   
 1.06  Feb 11 2004
 
-    - Remove Bundle::Business::Shipping (now in its own distro, where it should
-      be).
+	General
+	
+    	- Remove Bundle::Business::Shipping (now in its own distro, where it should
+		  be).
 	  
 1.05  Feb 10 2004
 
-General
-    - Fix Bundle::Business::Shipping
-    - Remove unneeded .zip files from data/
-	- Minor documentation updates
-
+	General
+	
+    	- Fix Bundle::Business::Shipping
+		- Remove unneeded .zip files from data/
+		- Minor documentation updates
+		
 1.04  Feb 07 2004
 	- Compatibility
 		+ Scalar::Util 1.10 is now required (to pretty up the code a little).

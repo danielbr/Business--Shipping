@@ -7,7 +7,7 @@ use ExtUtils::MakeMaker;
 eval "use Devel::Required text => [ '' ], pod => [qw(lib/Business/Shipping.pm), qw(doc/README.pod), qw(doc/INSTALL.pod), qw(UserTag/business-shipping.tag)]";
 
 # Version for Business-Shipping as a whole.
-$VERSION = '1.06';
+$VERSION = '1.07';
 
 #
 # Defaults
@@ -27,6 +27,7 @@ WriteMakefile(
 		'Bundle::DBD::CSV'		=> 0,
 		'Cache::FileCache'		=> 0,
 		'Class::MethodMaker'	=> 0,
+		'Clone'					=> 0,
 		'Config::IniFiles'		=> 0,
 		'Crypt::SSLeay'			=> 0,
 		'Data::Dumper'			=> 0,

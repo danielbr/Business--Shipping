@@ -1,6 +1,6 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.17 2004/02/11 00:30:53 db-ship Exp $
+# $Id: Shipping.pm,v 1.18 2004/02/15 19:41:18 db-ship Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 #
@@ -35,18 +35,20 @@ Example rate request:
 
 Business::Shipping is an API for shipping-related tasks.
 
-=head2 Shipping Tasks Implemented at this time
+=head2 Shipping tasks implemented at this time
 
- * Shipping cost calculation
- * Tracking, availability, and other services are planned for future addition.
+ * UPS shipment cost calculation using UPS Online WebTools
+ * UPS shipment cost calculation using offline tables 
+ * USPS shipment cost calculation using USPS Online WebTools
+ * UPS shipment tracking
+ * USPS shipment tracking 
 
-=head2 Shipping Vendors Implemented at this time
+=head2 Shipping tasks planned for future addition
 
- * Online UPS (using the Internet and UPS servers)
- * Offline UPS (using tables stored locally)
- * Online USPS
-
-Offline FedEX and USPS are planned for support in the future.
+ * USPS zip code lookup
+ * USPS address verification
+ * USPS shipment cost estimation via offline tables 
+ * FedEX shipment cost estimation
 
 =head1 REQUIRED MODULES
 
@@ -54,6 +56,7 @@ Offline FedEX and USPS are planned for support in the future.
  Bundle::DBD::CSV (any)
  Cache::FileCache (any)
  Class::MethodMaker (any)
+ Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
  Data::Dumper (any)
@@ -67,6 +70,8 @@ Offline FedEX and USPS are planned for support in the future.
  XML::Simple (2.05)
 
 =head1 INSTALLATION
+
+See the INSTALL file for more information.
 
 C<perl -MCPAN -e 'install Bundle::Business::Shipping'>
  
@@ -145,7 +150,7 @@ overwritten by a new error.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.17 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.18 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;

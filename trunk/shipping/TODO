@@ -2,10 +2,21 @@
 ##  General TODO
 ######################################################
 
+ * [DOC] Any UPS shipment originating in Canada must use UPS Standard or UPS
+   Worldwide method.
+   
+ * [ENH] Multi-package API broken:
+   Can't locate object method "add_package" via package
+   "Business::Shipping::Shipment::UPS" at test1.pl line 13.
+
+ * [ENH] Business-Shipping-announce mailing list.  (Sourceforge?)
+
+ * [ENH] Re-license under dual GPL/Artistic
+
+ * [ENH] Merge Rusty's USPS and UPS Tracking module.
+ 
  * [BUG] Bundle::Business::Shipping doesn't work
    - It probably should be Business/Shipping.pm instead of just Shipping.pm.
-
- * [ENH] Confirm that the auto-update feature works well.
 
  * [BUG] Error on missing arguments isn't working very well (user_id, password)
 
@@ -59,27 +70,24 @@
     - Doesn't require signup (no username/password, etc.)
     - Utilize the new Business::UPS 2.0.
  
- * [ENH] The Shipping module itself should be able to be queried for what 
-   shippers it handles. Each shipper should be able to be queried for what 
-   services it provides... maybe code would look like this:
-
-	use Business::Shipping; 
+ * [ENH] New, optional interface:
+ 
+	use Business::Shipping;
 	
-	# Query the module for installed shipper specific modules.
-	my @shippers = Business::Shipping::available_shippers(); 
+	my $rate_request = Business::Shipping->rate_request(
+		shipper 	=> 'all',
+		to_zip 		=> '',
+		from_zip	=> '',
+	);
 	
-	my %shipping_option; 
-	for my $shipper (@shippers) { 
+	my $results = $rate_request->submit() or die $rate_requet->error();
 	
-		# Services would be Ground, 2nd day air, things like that.
-		my @services = $shipper->services();
-	 
-		for my $service (@services) { 
-	
-			# The $package would have been previously generated.
-			$shipping_option{$shipper->name}->{$service} =
-				$shipper->rate($service, $package); 
-	
+	foreach my $shipper ( $@results ) {
+		print "Shipper Name: $shipper->{name}\n";
+		
+		foreach my $service ( $shipper->{ 'services' } ) {
+			print "  Service: $service->{name}\n";
+			print "  Price:   $service->{total_charges}\n";
 		}
 	}
 	
@@ -113,8 +121,8 @@
    
  * [DOC] Need to create a list of common errors that will be encountered.
  
- * [ENH] Is there a way to overload the '=' operator to make some code prettier?
-   We could do "$self->weight = 5" instead of "$self->set_weight( 5 )".
+ * [ENH] Change the many occurrences of $self->weight( 5 ) to 
+   $self->set_weight( 5 ) (and their like) for readability.
  
  * [ENH] Setup a proper "announce", "cvs", and "users" mailing list where users
    can sign up for updates and get information.   
@@ -151,6 +159,8 @@
         weight =>       '2',
         to_zip =>       '2024',
 
+ * [ENH] Confirm that the auto-update feature works well.
+ 
  * [ENH] Remove zip files from the build (save space)
  
  * [ENH] Performance enhancement: instead of transforming the data with
