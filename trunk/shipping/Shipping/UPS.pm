@@ -2,7 +2,7 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: UPS.pm,v 1.1 2003/06/04 21:41:08 db-ship Exp $
+# $Id: UPS.pm,v 1.2 2003/06/24 22:59:57 db-ship Exp $
 
 package Business::Shipping::UPS;
 use strict;
@@ -21,7 +21,7 @@ The following methods are available:
 =cut
 
 use vars qw( @ISA $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping;
 use Business::Shipping::UPS::Package;
@@ -60,6 +60,27 @@ Optional Arguments:
 	
 	from_city
 	to_city
+
+Services:
+
+1DM		
+1DML	
+1DA		One Day Air
+1DAL	
+2DM	
+2DA		Two Day Air
+2DML	
+2DAL	
+3DS		Three Day Select	
+GNDCOM	Ground Commercial
+GNDRES	Ground Residential
+XPR		UPS Worldwide Express
+XDM		
+UPSSTD	
+XPRL	
+XDML	
+XPD		
+
 
 =cut
 
@@ -109,7 +130,7 @@ sub _metadata
 			weight					=> undef,
 			packaging				=> undef,
 		},
-		'unique_values' => {
+		'unique_keys' => {
 			pickup_type				=> undef,
 			from_country			=> undef,
 			from_zip				=> undef,
@@ -167,7 +188,14 @@ sub _gen_unique_values
 	my ( $self ) = @_;
 	
 	my @unique_values = $self->SUPER::_gen_unique_values();
-	push @unique_values, $self->_metadata( 'unique_values' );
+	
+	my @unique_keys = $self->_metadata( 'unique_keys' );
+	
+	foreach my $key ( @unique_keys ) {
+		push @unique_values, $self->$key();
+	}
+
+	$self->debug( 'returning the following unique values: ' . join( ',', @unique_values ) );
 	
 	return @unique_values;
 }

@@ -44,11 +44,12 @@ sub test
 	# Several International tests on the "Test" server.
 	#
 	$shipment = test(
-		'test_mode'		=>	1,
-		'pounds'		=>	'0',
-		'ounces'		=>	1,
-		'mail_type'		=>	'Postcards or Aerogrammes',
-		'to_country'	=>	'Algeria',
+		'test_mode'		=> 0,
+		'service' 		=> 'Airmail Parcel Post',
+		'weight'		=> 1,
+		'ounces'		=> 0,
+		'mail_type'		=> 'Package',
+		'to_country'	=> 'Great Britain',
 	);
 	print $shipment->total_charges();
 

@@ -128,4 +128,39 @@ SKIP: {
 	$shipment->submit() or die $shipment->error();
 	ok( $shipment->total_charges(),	'UPS intl multi-package API total_charges > 0' );
 	
+	
+	# Cache Test
+	# - Multiple sequential queries should give *different* results.
+	$shipment = test(
+		'cache_enabled'		=> 1,
+		'pickup_type'	 	=> 'daily pickup',
+		'from_zip'			=> '98682',
+		'from_country'		=> 'US',
+		'to_country'		=> 'US',	
+		'service'			=> '1DA',
+		'to_residential'	=> '1',
+		'to_zip'			=> '98270',
+		'weight'			=> '1.0',
+		'packaging' 		=> '02',
+	);
+	$shipment->submit() or die $shipment->error();
+	my $total_charges_1_pound = $shipment->total_charges();
+	
+	$shipment = test(
+		'cache_enabled'		=> 1,
+		'pickup_type'	 	=> 'daily pickup',
+		'from_zip'			=> '98682',
+		'from_country'		=> 'US',
+		'to_country'		=> 'US',	
+		'service'			=> '1DA',
+		'to_residential'	=> '1',
+		'to_zip'			=> '98270',
+		'weight'			=> '5',
+		'packaging' 		=> '02',
+	);
+	$shipment->submit() or die $shipment->error();
+	my $total_charges_5_pounds = $shipment->total_charges();
+	
+	ok( $total_charges_1_pound != $total_charges_5_pounds, 'UPS intl cache, sequential charges are different' );
+	
 }

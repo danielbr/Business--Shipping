@@ -2,14 +2,14 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: Package.pm,v 1.1 2003/06/04 21:41:08 db-ship Exp $
+# $Id: Package.pm,v 1.2 2003/06/24 22:59:57 db-ship Exp $
 
 package Business::Shipping::Package;
 use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping;
 use Data::Dumper;
@@ -31,34 +31,6 @@ sub new
 	$self->set( %args );
 	
 	return $self;
-}
-
-sub to_country
-{
-	my $self = shift;	
-	if ( @_ ) {
-		my $new_to_country = shift;
-		$new_to_country = $self->_country_name_translator( $new_to_country );
-		$self->{'to_country'} = $new_to_country;
-	} 
-	return $self->{'to_country'};
-}
-
-# Translate common usages (Great Britain) into the USPS proper name
-# (Great Britain and Northern Ireland).
-sub _country_name_translator
-{
-	my ( $self, $country ) = @_;
-	my %country_translator = (
-		'Great Britain' => 'Great Britain and Northern Ireland',
-		'United Kingdom' => 'Great Britain and Northern Ireland',
-	);
-	if ( $country and $country_translator{ $country } ) {
-		return $country_translator{ $country };
-	}
-	else {
-		return $country;
-	}
 }
 
 sub set_price

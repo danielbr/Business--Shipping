@@ -2,7 +2,7 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: Shipping.pm,v 1.2 2003/06/05 05:24:11 db-ship Exp $
+# $Id: Shipping.pm,v 1.3 2003/06/24 22:59:57 db-ship Exp $
 
 package Business::Shipping;
 use strict;
@@ -94,7 +94,7 @@ overwritten by a new error.
 =cut
 
 use vars qw($VERSION);
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Data::Dumper;
 use Carp;
@@ -255,6 +255,7 @@ sub default_package {
 	#	# $self->error( 'default_package() was called, and it didn't have any value to return!' );
 	#}
 }
+
 sub get_package { return shift->packages()->[ @_ ]; }
 
 sub validate

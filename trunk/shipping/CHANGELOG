@@ -6,6 +6,10 @@ Revision history for Business::Shipping.
 	- Additional debugging information.
 	- Reducing indirect notation.
 	- Experiencing some problems with xps-query.
+	- Gracefully handle ZIP+4 (by ignoring the +4)
+	- Lots of test updates
+	- Handle a few more countries correctly ("France,Metropolitan")
+	- Add some 'retry' support to the xps-query usertag
 
 0.03
 	- Changed name to Business::Shipping.

@@ -23,6 +23,7 @@ sub test
 		'user_id'		=> $ENV{ USPS_USER_ID },
 		'password'		=> $ENV{ USPS_PASSWORD },
 		'cache_enabled'	=> 0,
+		#'event_handlers' => ({ 'debug' => 'STDOUT', }),
 	);
 	$shipment->submit( %args ) or die $shipment->error();
 	return $shipment;
@@ -30,7 +31,7 @@ sub test
 
 # skip the rest of the test if we don't have username/password
 SKIP: {
-	skip( 'USPS: we need the username and password', 2 ) 
+	skip( 'USPS: we need the username and password', 5 ) 
 		unless ( $ENV{ USPS_USER_ID } and $ENV{ USPS_PASSWORD } );
 	
 	my $shipment;
@@ -39,7 +40,11 @@ SKIP: {
 		'service'	=> 'EXPRESS',
 		'from_zip'	=> '20770',
 		'to_zip'	=> '20852',
-		'weight'	=> 10,
+		'pounds'	=> 10,
+		'ounces'	=> 0,
+		'container'	=> 'None',
+		'size'		=> 'REGULAR',
+		'machinable'	=> '',
 	);
 	ok( $shipment->total_charges(), 	'USPS domestic test total_charges > 0' );
 	
@@ -94,14 +99,36 @@ SKIP: {
 		'mail_type'		=> 'Package',
 		'to_country'	=> 'Great Britain',
 		
-	); 
+	);
 	ok( $shipment->total_charges(),		'USPS intl production total_charges > 0' );
 	
+	# Cache Test
+	# - Multiple sequential queries should give *different* results.
+	$shipment = test(
+		'cache_enabled'	=> 1,
+		'test_mode'		=> 0,
+		'service' 		=> 'Airmail Parcel Post',
+		'weight'		=> 1,
+		'ounces'		=> 0,
+		'mail_type'		=> 'Package',
+		'to_country'	=> 'Great Britain',
+	);
 	
+	my $total_charges_1_pound = $shipment->total_charges();
 	
+	$shipment = test(
+		'cache_enabled'	=> 1,
+		'test_mode'		=> 0,
+		'service' 		=> 'Airmail Parcel Post',
+		'weight'		=> 5,
+		'ounces'		=> 0,
+		'mail_type'		=> 'Package',
+		'to_country'	=> 'Great Britain',
+	);
 	
+	my $total_charges_5_pounds = $shipment->total_charges();
 	
-	
-	
+	ok( $total_charges_1_pound != $total_charges_5_pounds,	'USPS intl cache saves results separately' ); 
+
 
 } # /skip

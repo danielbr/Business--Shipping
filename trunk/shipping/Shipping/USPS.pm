@@ -2,7 +2,7 @@
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: USPS.pm,v 1.2 2003/06/05 05:24:12 db-ship Exp $
+# $Id: USPS.pm,v 1.3 2003/06/24 22:59:57 db-ship Exp $
 
 package Business::Shipping::USPS;
 use strict;
@@ -26,7 +26,7 @@ http://www.uspsprioritymail.com/et_regcert.html
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping;
 use Business::Shipping::USPS::Package;
@@ -45,7 +45,12 @@ sub new
 	my($class, %args) = @_;	
 	my $self = $class->SUPER::new();
 	bless( $self, $class );
-	return $self->initialize( %args );
+
+	my $new_self = $self->initialize( %args );
+	
+	$new_self->debug( 'After self->initialize(), $self->packages() = ' . Dumper( $self->packages() ) ); 
+	
+	return $new_self;
 }
 
 
@@ -166,7 +171,7 @@ sub _gen_request_xml
 			$zipOrigEl->appendChild($zipOrigText); 
 			$packageEl->appendChild($zipOrigEl); 
 			
-			my $zipDestEl = $rateReqDoc->createElement('ZipDestination'); 
+			my $zipDestEl = $rateReqDoc->createElement('ZipDestination');
 			my $zipDestText = $rateReqDoc->createTextNode( $package->to_zip()); 
 			$zipDestEl->appendChild($zipDestText); 
 			$packageEl->appendChild($zipDestEl); 

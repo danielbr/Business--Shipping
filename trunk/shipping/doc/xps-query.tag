@@ -1,4 +1,4 @@
-Message Loading [xps-query] usertag...
+Message Loading [xps-query] usertag from Business::Shipping module...
 Require Module Business::Shipping
 UserTag  xps-query  Order mode
 UserTag  xps-query  Addattr
@@ -7,7 +7,7 @@ UserTag  xps-query  Documentation <<EOD
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: xps-query.tag,v 1.4 2003/06/20 22:48:40 db-ship Exp $
+# $Id: xps-query.tag,v 1.5 2003/06/24 22:59:58 db-ship Exp $
 
 =head1 NAME
 
@@ -115,6 +115,9 @@ sub {
 	delete $opt->{ 'mode' };
 	delete $opt->{ 'hide' };
 	
+	my $try_limit = delete $opt->{ 'try_limit' };
+	$try_limit ||= 2;
+	
 	# Business::Shipping takes a hash anyway, we might as well deref it now.
 	my %opt = %$opt;
 
@@ -133,10 +136,12 @@ sub {
 		# For interchange, STDOUT will cause it to go to the IC debug.
 		'event_handlers'	=> ({ 
 			#'debug' => undef, 
+			'debug' => 'STDOUT',
+			
 			#'error' => 'STDERR', 
-			#'trace' => undef,
-			'debug' => 'STDOUT', 
-			'error' => 'STDOUT', 
+			'error' => 'STDOUT',
+			
+			#'trace' => undef,		 
 			'trace' => 'STDOUT', 
 		}),
 		#'tx_type'			=> 'rate',
@@ -169,14 +174,41 @@ sub {
 
 	my $shipment = Business::Shipping->new( 'shipper' => $mode );
 	 
-	unless ( defined $shipment ) {
+	if ( ! defined $shipment ) {
 		Log( "[xps-query] failure when calling Business::Shipping->new(): $@ " ) if $@;
 		return undef;
 	}
 	
 	#::logDebug( "calling Business::Shipping::${mode}->submit( " . uneval( \%opt ) . " )" );
 	
-	$shipment->submit( %opt ) or ( Log $shipment->error() and return undef );
+	$shipment->set( %opt );
+	
+	my $tries = 0;
+	my $success;
+	for ( my $tries = 1; $tries <= $try_limit; $tries++ ) {
+		if ( $shipment->submit() ) {
+			# Success, no more retries
+			$success = 1;
+			last;
+		}
+		else {
+			Log( "Try $tries: " . $shipment->error() );
+			
+			for (	
+					'HTTP Error. Status line: 500 read timeout',
+					'HTTP Error. Status line: 500 Bizarre copy of ARRAY',
+					'HTTP Error. Status line: 500 Connect failed:',
+					'HTTP Error. Status line: 500 Can\'t connect to production.shippingapis.com:80',
+				) {
+				
+				if ( $shipment->error() =~ /$_/ ) {
+					Log( 'Error was on USPS server, trying again...' );
+				}
+			}
+		}
+	}
+	return undef unless $success;
+	
 	my $charges = $shipment->get_charges( $opt{ 'service' } );
 	
 	# get_charges() *should* be implemented for all use cases, in the future.
@@ -195,7 +227,7 @@ sub {
 			
 			# Not everyone has [incident], avoid errors.
 			eval {
-				$Tag->incident("[xps-query]: $mode error: $error.  Options were: $variables");
+				$Tag->incident("[xps-query]: $mode error: $error. \n Options were: $variables");
 			};
 			
 			# Catch exception

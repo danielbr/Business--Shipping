@@ -2,6 +2,13 @@
 ##  General TODO
 ######################################################
  
+ * Bug Reports:
+   - Some of the intermittent errors:
+     "[xps-query]: USPS error: HTTP Error. Status line: 500 read timeoutContent:"
+ 
+ * When Cache is enabled, and you run [xps-query] consecutively, UPS doesn't seem 
+   to notice the different service types (i.e. 'service' isn't on the 'unique' list)
+ 
  * Only Cache the response if it was a success (very important)
  
  * Re-do the self meta-data, I think it's buggy.
@@ -87,7 +94,6 @@
    - More efficient methods besides FileCache?
 
 
- 
 ######################################################
 ##  Interchange usertags TODO
 ######################################################
@@ -113,6 +119,8 @@
    from the PDF's on how to structure the requests and parse the responses.
    
  * Support get_charges( 'service' ) for domestic types.
+
+ * Test Estonia and Nigeria
 
 ######################################################
 ##  Business::Shipping::UPS TODO
