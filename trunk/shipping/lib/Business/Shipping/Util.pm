@@ -1,6 +1,6 @@
 # Business::Shipping::Util - Miscellaneous functions
 # 
-# $Id: Util.pm,v 1.9 2004/06/24 03:09:24 danb Exp $
+# $Id: Util.pm,v 1.10 2004/06/25 22:20:07 danb Exp $
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -15,7 +15,7 @@ Business::Shipping::Util - Miscellaneous functions
 
 =head1 VERSION
 
-$Revision: 1.9 $      $Date: 2004/06/24 03:09:24 $
+$Revision: 1.10 $      $Date: 2004/06/25 22:20:07 $
 
 =head1 DESCRIPTION
 
@@ -27,7 +27,7 @@ Many file-related functions, some others.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.9 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.10 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @EXPORT  = ( 'element_in_array' );
 
 use strict;
@@ -38,7 +38,6 @@ use Business::Shipping::Logging;
 use Carp;
 use File::Find;
 use File::Copy;
-use Archive::Zip qw(:ERROR_CODES);
 use Fcntl ':flock';
 
 =item * download_to_file( $url, $file )
@@ -92,11 +91,16 @@ sub currency
 #
 # Extracts all files from the given zip
 #
+
+=pod
+
 sub _unzip_file
 {
     my ( $zipName, $destination_directory ) = @_;
     $destination_directory ||= './';
     
+    use Archive::Zip qw(:ERROR_CODES);
+
     my $zip = Archive::Zip->new();
     my $status = $zip->read( $zipName );
     if ( $status != AZ_OK )  {
@@ -110,6 +114,8 @@ sub _unzip_file
     
     return;
 }
+
+=cut
 
 =item * filename_only( $path )
 

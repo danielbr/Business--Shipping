@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.32 2004/06/25 20:42:25 danb Exp $
+# $Id: business-shipping.tag,v 1.33 2004/06/25 22:20:05 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -21,7 +21,7 @@ UserTag  business-shipping  Documentation <<EOD
 
 =head1 VERSION
 
-[business-shipping] usertag:    $Revision: 1.32 $
+[business-shipping] usertag:    $Revision: 1.33 $
 Requires Business::Shipping:     Revision: 1.04+
 
 =head1 AUTHOR 
@@ -40,7 +40,23 @@ Requires Business::Shipping:     Revision: 1.04+
     weight='5.00'
 ]
     
-=head1 REQUIRED MODULES Archive::Zip (any) Bundle::DBD::CSV (any) Cache::FileCache (any) Class::MethodMaker::Engine (any) Clone (any) Config::IniFiles (any) Crypt::SSLeay (any) Data::Dumper (any) Devel::Required (0.03) Error (any) Getopt::Mixed (any) Log::Log4perl (any) LWP::UserAgent (any) Math::BaseCnv (any) Scalar::Util (1.10) Test::More (any) XML::DOM (any) XML::Simple (2.05)=head1 INSTALLATION
+=head1 REQUIRED MODULES
+
+Bundle::DBD::CSV (any)
+Cache::FileCache (any)
+Class::MethodMaker::Engine (any)
+Clone (any)
+Config::IniFiles (any)
+Crypt::SSLeay (any)
+Getopt::Mixed (any)
+Log::Log4perl (any)
+LWP::UserAgent (any)
+Math::BaseCnv (any)
+Scalar::Util (1.10)
+XML::DOM (any)
+XML::Simple (2.05)
+
+=head1 INSTALLATION
 
 Here is a general outline for installing [business-shipping] in Interchange.
 

@@ -1,6 +1,6 @@
 # Business::Shipping - Interface for shippers (UPS, USPS)
 #
-# $Id: Shipping.pm,v 1.25 2004/06/25 20:42:26 danb Exp $
+# $Id: Shipping.pm,v 1.26 2004/06/25 22:20:06 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -62,21 +62,17 @@ Business::Shipping - Interface for shippers (UPS, USPS)
 
 =head1 REQUIRED MODULES
 
-Archive::Zip (any)
 Bundle::DBD::CSV (any)
 Cache::FileCache (any)
 Class::MethodMaker::Engine (any)
 Clone (any)
 Config::IniFiles (any)
 Crypt::SSLeay (any)
-Data::Dumper (any)
-Error (any)
 Getopt::Mixed (any)
 Log::Log4perl (any)
 LWP::UserAgent (any)
 Math::BaseCnv (any)
-Scalar::Util (1.10) 
-Test::More (any)
+Scalar::Util (1.10)
 XML::DOM (any)
 XML::Simple (2.05)
 

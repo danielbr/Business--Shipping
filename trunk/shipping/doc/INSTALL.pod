@@ -1,17 +1,38 @@
 =head1 INSTALLATION
 
-How to install Business::Shipping:
+How to install Business::Shipping.
 
-=head1 REQUIRED MODULES Archive::Zip (any) Bundle::DBD::CSV (any) Cache::FileCache (any) Class::MethodMaker::Engine (any) Clone (any) Config::IniFiles (any) Crypt::SSLeay (any) Data::Dumper (any) Devel::Required (0.03) Error (any) Getopt::Mixed (any) Log::Log4perl (any) LWP::UserAgent (any) Math::BaseCnv (any) Scalar::Util (1.10) Test::More (any) XML::DOM (any) XML::Simple (2.05)=head2 Module Installation via CPAN
+=head1 REQUIRED MODULES
+
+Bundle::DBD::CSV (any)
+Cache::FileCache (any)
+Class::MethodMaker::Engine (any)
+Clone (any)
+Config::IniFiles (any)
+Crypt::SSLeay (any)
+Getopt::Mixed (any)
+Log::Log4perl (any)
+LWP::UserAgent (any)
+Math::BaseCnv (any)
+Scalar::Util (1.10)
+XML::DOM (any)
+XML::Simple (2.05)
+
+=head2 CPAN INSTALLATION
 
  C<perl -MCPAN -e 'force install XML::Parser XML::Parser::PerlSAX XML::DOM'>
  C<perl -MCPAN -e 'install Bundle::Business::Shipping'>
 
-As of February 10, 2004, two CPAN modules in Bundle::Business::Shipping do not
-pass their own tests.  Therefore, we recommend forcing their installation first.
-The manual insatllation of Class-MethodMaker 2.0 is required, since 1.12 is 
-always selected if you only input "Class::MethodMaker".
+As of June 25, 2004, some CPAN modules in Bundle::Business::Shipping do not
+pass their own tests:
 
+XML::Parser
+XML::Parser::PerlSAX
+XML::DOM
+
+Therefore, we recommend forcing their installation first.  The manual 
+insatllation of Class-MethodMaker 2.0 is required, since 1.12 is always selected
+if you only input "Class::MethodMaker".
 
 =head1 MANUAL INSTALLATION
 

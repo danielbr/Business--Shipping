@@ -1,7 +1,9 @@
 ################################################################################
 ##  General TODO
 ################################################################################
-   
+
+* [Bug] Test Perl 5.6.2
+  
 * [Enh] Remove default_package() and determine_shipper_from_self().
 
 * [Enh] Conform to coding style: private methods should be prefixed with an

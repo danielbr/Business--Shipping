@@ -1,6 +1,6 @@
 # Makefile.PL - Installation script for Business::Shipping
 # 
-# $Id: Makefile.PL,v 1.34 2004/06/25 20:42:25 danb Exp $
+# $Id: Makefile.PL,v 1.35 2004/06/25 22:20:04 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -13,8 +13,6 @@ use English;
 
 # Auto-update REQUIRED MODULES documentation if needed
 #eval "use Devel::Required text => [ '' ], pod => [qw(lib/Business/Shipping.pm), qw(doc/README.pod), qw(doc/INSTALL.pod), qw(UserTag/business-shipping.tag)]";
-eval "use Devel::Required text => [ 'REQUIRED MODULES' ], pod => [qw(test.pod)]";
-
 #
 # Defaults
 #
@@ -35,13 +33,11 @@ WriteMakefile(
 		'Clone'					     => 0,
 		'Config::IniFiles'		     => 0,
 		'Crypt::SSLeay'			     => 0,
-		'Error'				      	 => 0,
 		'Getopt::Mixed'		      	 => 0,
 		'Log::Log4perl'              => 0,
         'LWP::UserAgent'		     => 0,
 		'Math::BaseCnv'			     => 0,
 		'Scalar::Util'			     => '1.10',
-        'Test::More'                 => 0,
 		'XML::DOM' 				     => 0,
 		'XML::Simple'			     => '2.05',
 	},
