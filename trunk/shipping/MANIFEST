@@ -12,7 +12,6 @@ doc/MethodMaker-grouped-fields.patch
 doc/README.html
 doc/README.pod
 doc/USPS-Country-List.html
-doc/grouped-fields.patch
 doc/usage.html
 doc/usage.txt
 lib/Business/Shipping.pm
