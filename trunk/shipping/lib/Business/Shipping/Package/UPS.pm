@@ -6,7 +6,7 @@ Business::Shipping::Package::UPS
 
 =head1 VERSION
 
-$Rev$
+$Revision$
 
 
 $Date$
