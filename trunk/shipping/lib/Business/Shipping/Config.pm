@@ -63,6 +63,10 @@ if ( ! -f $main_config_file ) {
     die "Could not open main configuration file: $main_config_file: $!";
 }
 
+# See Online.pm
+
+$Business::Shipping::Config::Try_Limit = 2;
+
 tie my %cfg, 'Config::IniFiles', (      -file => $main_config_file );
 my $cfg_obj = Config::IniFiles->new(    -file => $main_config_file );
 

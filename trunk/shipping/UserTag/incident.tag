@@ -8,7 +8,7 @@ UserTag incident Routine     <<EOR
 # the same terms as Perl itself. See LICENSE for more info.
 =head1 NAME
 
-[incident] - Incident Alert UserTag
+[incident] - Interchange usertag for incident alerts
 
 =head1 SYNOPSIS
 

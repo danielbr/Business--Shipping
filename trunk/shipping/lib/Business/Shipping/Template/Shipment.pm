@@ -1,15 +1,6 @@
-# $Id$
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-# 
-
-package Business::Shipping::Shipment::Template;
-
 =head1 NAME
 
-Business::Shipping::Shipment::Template
+Business::Shipping::Template::Shipment
 
 =head1 VERSION
 
@@ -21,6 +12,8 @@ $Rev$      $Date$
 
 =cut
 
+package Business::Shipping::Template::Shipment;
+
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
 use strict;
@@ -30,16 +23,10 @@ use Business::Shipping::Config;
 
 use Class::MethodMaker 2.0
     [ 
-      new    => [ { -hash => 1, -init => 'this_init' },  'new' ],
-      array  => [ { -type => 'Business::Shipping::Package::Template' }, 'packages' ],      
-      scalar => [ { -static => 1, -default => 'packages=>Business::Shipping::Package::Template' }, 'Has_a' ],
+      new    => [ { -hash => 1 },  'new' ],
+      array  => [ { -type => 'Business::Shipping::Template::Package' }, 'packages' ],      
+      scalar => [ { -static => 1, -default => 'packages=>Business::Shipping::Template::Package' }, 'Has_a' ],
     ];
-
-sub this_init
-{
-    $_[ 0 ]->shipper(      'Template' );
-    return;
-}
 
 1;
 

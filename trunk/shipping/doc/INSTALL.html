@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>INSTALLATION</title>
+<title>INSTALL - How to install Business::Shipping</title>
 <link rev="made" href="mailto:root@localhost" />
 </head>
 
@@ -12,7 +12,8 @@
 
 <ul>
 
-	<li><a href="#installation">INSTALLATION</a></li>
+	<li><a href="#name">NAME</a></li>
+	<li><a href="#note">NOTE</a></li>
 	<li><a href="#required_modules">REQUIRED MODULES</a></li>
 	<ul>
 
@@ -26,8 +27,14 @@
 <hr />
 <p>
 </p>
-<h1><a name="installation">INSTALLATION</a></h1>
-<p>How to install Business::Shipping.</p>
+<h1><a name="name">NAME</a></h1>
+<p>INSTALL - How to install Business::Shipping</p>
+<p>
+</p>
+<hr />
+<h1><a name="note">NOTE</a></h1>
+<p>Be sure to read the ``GETTING STARTED'' section of the README if you plan to use
+any online services (e.g. shipment tracking).</p>
 <p>
 </p>
 <hr />
@@ -49,25 +56,29 @@ XML::Simple (2.05)</p>
 </p>
 <h2><a name="cpan_installation">CPAN INSTALLATION</a></h2>
 <pre>
- C&lt;perl -MCPAN -e 'force install XML::Parser XML::Parser::PerlSAX XML::DOM'&gt;
- C&lt;perl -MCPAN -e 'install Bundle::Business::Shipping'&gt;</pre>
-<p>As of June 25, 2004, some CPAN modules in Bundle::Business::Shipping do not
-pass their own tests:</p>
-<p>XML::Parser
-XML::Parser::PerlSAX
-XML::DOM</p>
-<p>Therefore, we recommend forcing their installation first.  The manual 
-insatllation of Class-MethodMaker 2.0 is required, since 1.12 is always selected
-if you only input ``Class::MethodMaker''.</p>
+ perl -MCPAN -e 'force install DBD::CSV XML::DOM'
+ perl -MCPAN -e 'install Bundle::Business::Shipping'</pre>
+<p>As of Sept 16, 2004, the following CPAN modules in Bundle::Business::Shipping do
+not pass their own tests on the author's system:</p>
+<ul>
+<li><strong><a name="item_dbd_3a_3acsv_3a_failed_1_2f14_test_scripts_2c_92_2">DBD::CSV: Failed 1/14 test scripts, 92.86% okay.</a></strong><br />
+</li>
+<li><strong><a name="item_xml_3a_3adom_3a_failed_5_2f21_test_scripts_2c_76_2">XML::DOM: Failed 5/21 test scripts, 76.19% okay.</a></strong><br />
+</li>
+</ul>
+<p>Even so, they seem to work fine after installation, but CPAN will not install 
+them unless the ``force'' command prefix is used.</p>
+<p>Also, we have listed Class::MethodMaker::Engine as a required module because it
+forces CPAN to retreive version 2.x of Class::MethodMaker.</p>
 <p>
 </p>
 <hr />
 <h1><a name="manual_installation">MANUAL INSTALLATION</a></h1>
-<p>This will install the Business::Shipping module (if you haven't already 
-installed it via CPAN).</p>
+<p>Be sure to install all required modules before installing.</p>
+<p>After unpacking the tarball, execute this command:</p>
 <pre>
  perl Makefile.PL &amp;&amp; make &amp;&amp; make test &amp;&amp; make install</pre>
-<p>Or, expressed on separate lines:</p>
+<p>Or, expressed as separate commands:</p>
 <pre>
  perl Makefile.PL
  make

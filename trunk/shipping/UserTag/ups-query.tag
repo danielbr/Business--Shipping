@@ -13,13 +13,8 @@ UserTag  ups-query  Routine <<EOR
 
 =head1 NAME
 
-[ups-query] usertag (compatiblity layer over [business-shipping]).
+[ups-query] - Interchange usertag for compatiblity (a layer over [business-shipping]).
 
-=head1 AUTHOR 
-
-    Dan Browning <db@kavod.com>
-    http://www.kavodtechnologies.com
-    
 =cut
 
 sub 

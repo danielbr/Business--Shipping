@@ -15,7 +15,7 @@ package Business::Shipping::UPS_Offline::RateRequest;
 
 =head1 NAME
 
-Business::Shipping::UPS_Offline::RateRequest - Calculates shipping cost offline
+Business::Shipping::UPS_Offline::RateRequest - Offline Cost Estimation
 
 =head1 VERSION
 
@@ -202,7 +202,6 @@ sub _handle_response
     
     
     my $total_charges;
-    $self->do_update();
     $self->calc_zone_data();
     
     # The fuel surcharge also applies to the following accessorial charges:

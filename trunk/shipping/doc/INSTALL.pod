@@ -1,47 +1,59 @@
-=head1 INSTALLATION
+=head1 NAME
 
-How to install Business::Shipping.
+INSTALL - How to install Business::Shipping
+
+=head1 NOTE
+
+Be sure to read the "GETTING STARTED" section of the README if you plan to use
+any online services (e.g. shipment tracking).
 
 =head1 REQUIRED MODULES
 
-Bundle::DBD::CSV (any)
-Cache::FileCache (any)
-Class::MethodMaker::Engine (any)
-Clone (any)
-Config::IniFiles (any)
-Crypt::SSLeay (any)
-Getopt::Mixed (any)
-Log::Log4perl (any)
-LWP::UserAgent (any)
-Math::BaseCnv (any)
-Scalar::Util (1.10)
-XML::DOM (any)
-XML::Simple (2.05)
+ Bundle::DBD::CSV (any)
+ Business::Shipping::DataFiles (any)
+ Cache::FileCache (any)
+ Class::MethodMaker::Engine (any)
+ Clone (any)
+ Config::IniFiles (any)
+ Crypt::SSLeay (any)
+ Getopt::Mixed (any)
+ Log::Log4perl (any)
+ LWP::UserAgent (any)
+ Math::BaseCnv (any)
+ Scalar::Util (1.10)
+ XML::DOM (any)
+ XML::Simple (2.05)
 
 =head2 CPAN INSTALLATION
 
- C<perl -MCPAN -e 'force install XML::Parser XML::Parser::PerlSAX XML::DOM'>
- C<perl -MCPAN -e 'install Bundle::Business::Shipping'>
+ perl -MCPAN -e 'force install DBD::CSV XML::DOM'
+ perl -MCPAN -e 'install Bundle::Business::Shipping'
 
-As of June 25, 2004, some CPAN modules in Bundle::Business::Shipping do not
-pass their own tests:
+As of Sept 16, 2004, the following CPAN modules in Bundle::Business::Shipping do
+not pass their own tests on the author's system:
 
-XML::Parser
-XML::Parser::PerlSAX
-XML::DOM
+=over 4
 
-Therefore, we recommend forcing their installation first.  The manual 
-insatllation of Class-MethodMaker 2.0 is required, since 1.12 is always selected
-if you only input "Class::MethodMaker".
+=item * DBD::CSV: Failed 1/14 test scripts, 92.86% okay.
+
+=item * XML::DOM: Failed 5/21 test scripts, 76.19% okay. 
+
+=back
+
+Even so, they seem to work fine after installation, but CPAN will not install 
+them unless the "force" command prefix is used.  
+
+Also, we have listed Class::MethodMaker::Engine as a required module because it
+forces CPAN to retreive version 2.x of Class::MethodMaker. 
 
 =head1 MANUAL INSTALLATION
 
-This will install the Business::Shipping module (if you haven't already 
-installed it via CPAN).
+Be sure to install all required modules before installing.  After unpacking the 
+tarball, execute this command:
 
  perl Makefile.PL && make && make test && make install
 
-Or, expressed on separate lines:
+Or, expressed as separate commands:
 
  perl Makefile.PL
  make

@@ -1,32 +1,43 @@
 ################################################################################
 ##  General TODO
 ################################################################################
-    
-    * [Enh] Change my $VERSION into our $VERSION.
-    
+
     * [Enh] Test on Sourceforge Compile Farm systems.
       - Also test using older perl versions (e.g. 5.6.x).
+ 
+    * [Enh] Provide multiple bundles (in the same distribution)
+      - Bundle::Business::Shipping - Everything
+      - Bundle::Business::Shipping::UPS_Offline - Minimal
+      - Bundle::Business::Shipping::etc. - Minimal
+	
+    * [Enh] Auto-generate a todo-list addendum from the "# TODO:" comments 
+      strewn throughout the source code.
 
     * [Enh] Build a replacement for ClassInfo and ClassAttribs that will be more 
       simple, efficient, and portable.  Should work for static or dynamic 
       generation of Required, Optional, Unique, and other metadata.
   
-    * [Enh] Business::Shipping::UPS_XML
-      - Add to documentation as an alternative to Business::Shipping
-      - Maybe utilize the Parser code?
-
     * [Enh] Profile the application
-      - How long does it take just to load the prerequisites?  Maybe some can be
-        replaced.
-      - What are the longest operations?
+      - How long does it take to load the required modules?
+      - What are the slowest parts of the system?
       - Memory usage:
-        + 6.5 MB at the time of "use Business::Shipping::UPS_Offline::RateRequest"
-        + 1.5 MB at the time of submit() for an UPS_Offline::RateRequest. 
+        +6.5 MB at the time of "use Business::Shipping::UPS_Offline::RateRequest"
+        +1.5 MB at the time of submit() for an UPS_Offline::RateRequest. 
     
-    * [Enh] Allow usage of LWP through a proxy
-      - Suggested by mpolo on Perlmonks.
-	
-* [Enh] Unit tests for each class.
+    * [Enh] Unit tests for each class.
+      - Preferably stored in the .pm with the class.
+      
+    * Make the configuration file optional for *_Online shipping classes.
+      - But still have new, additional configuration parameters, e.g.:
+        + How long to wait for a response
+        + How long between retries
+	+ How many retries
+      - Have a configuration object ($Business::Shipping::Cfg) that starts out
+        with default values (stored in Config.pm), but can be overridden by 
+	installing the Config::Ini module, and then using config/*.ini files. 
+	However, if the Config::Ini module is not installed, then everything 
+	will still work via the defaults.  (Offline modules have too much 
+	configuration data to work without a configuration module).
   
 * [Enh] Conform to coding style: private methods should be prefixed with an
    underscore. 
@@ -48,13 +59,9 @@
 
 * [Enh] Is non-ssl communication with either online provider possible?
  
-* [Enh] Migrate the "retry on failure" code from business-shipping.tag to 
-   Business::Shipping proper.  Default to tries=2, but allow that to be
-   overridden.  ("Failure" means HTTP 500 errors.)
-
-* [Enh] Business::Shipping::OldUPS
+* [Enh] Business::Shipping::UPS_Legacy
     - Doesn't require signup (no username/password, etc.)
-    - Utilize the new Business::UPS 2.0.
+    - Interface for Business::UPS 2.0.
  
 * [Enh] New feature ideas:
  	- Address Verification
@@ -163,7 +170,15 @@
 
    * [Enh] Use the International Country Listing
      - http://pe.usps.gov/cpim/ftp/manuals/Imm/Immctry.pdf
- 
+     
+   * [Enh] USPS_Online::Shipment: Move the country translator data into config. 
+
+   * [Known Bug] USPS_Online and no internet connection.
+     - You will get the following error if there is no connection to the net 
+       when using USPS_Online:
+       + Business::Shipping::USPS_Online::RateRequest::_handle_response: ()
+         File does not exist:  at .../USPS_Online/RateRequest.pm ...
+
 ################################################################################
 ##  UPS_Offline TODO
 ################################################################################
@@ -267,50 +282,59 @@
 ##  UPS_Online TODO
 ################################################################################
  
- * [Bug] Return error message if trying to ship to military americas:
-   - USP does not ship to APO or FPO addresses.
+    * [Bug] Return error message if trying to ship to military americas:
+      - USP does not ship to APO or FPO addresses.
    
- * [Bug] Be able to handle "mal-formed XML doc" error return from UPS.  
-   - Right now, it still tries to parse as an XML doc.
+    * [Bug] Be able to handle "mal-formed XML doc" error return from UPS.  
+      - Right now, it still tries to parse as an XML doc.
 
- * [Enh] Allow user-friendly names, like "One Day Air" instead of 1DA.
-   - Names for packaging instead of numbers.
+    * [Enh] Allow user-friendly names, like "One Day Air" instead of 1DA.
+      - Names for packaging instead of numbers.
  
- * [Enh] UPS support for sending multiple simultaneous requests
-   - (USPS had built-in support in the API for Intl)
-   - If they don't support it, try LWP::Parallel::UserAgent.
+    * [Enh] UPS support for sending multiple simultaneous requests
+      - (USPS had built-in support in the API for Intl)
+      - If they don't support it, try LWP::Parallel::UserAgent.
  
- * [Enh] Implement a multi-package API for UPS.  
-   Move to a different XML generation scheme, since all the packages 
-   in a multi-package shipment currently have the name "Package".
- 	
+    * [Enh] Implement a multi-package API for UPS.   
+      Move to a different XML generation scheme, since all the packages 
+      in a multi-package shipment currently have the name "Package".
+   
+    * [Enh] Business::Shipping::UPS_XML
+      - Add to documentation as an alternative to Business::Shipping
+      - Maybe utilize the Parser code?
+
+    * [Enh] Ed LaFrance UPS usertag
+      - Maybe utilize Ed's Parser code?
+	
 ################################################################################
 ##  Interchange UserTag TODO
 ################################################################################
 
-* [Enh] Test for ability to use within Safe?
+    * [Enh] Test for ability to use within Safe?
    
 ################################################################################
 ##  Online::FedEx 
 ################################################################################
 
-* http://www.fedex.com/us/solutions/wis/index.html/
+    * http://www.fedex.com/us/solutions/wis/index.html/
 
-* [Enh] FedEx module: Christopher L Wenham from Synesmedia has created an 
-  Interchange usertag that uses FedEx::DirectConnect for various functions.
+    * [Enh] FedEx module: Christopher L Wenham from Synesmedia has created an 
+      Interchange usertag that uses FedEx::DirectConnect for various functions.
 
-* [Enh] Francois Belanger, francois@sitepak.com has also created a FedEx module
-  (see FedEx.pm).
+    * [Enh] Francois Belanger, francois@sitepak.com has also created a FedEx 
+      module (see FedEx.pm).
 
-* See FedEx::DirectConnect
-  Business::FedEx (Win32 Only)
+    * See FedEx::DirectConnect
+      Business::FedEx (Win32 Only)
   
 ################################################################################
 ##  Online::DHL 
 ################################################################################
 
+    * API available, but no one has expressed interest.
+    
 ################################################################################
 ##  Tracking
 ################################################################################
 
-* Tests
+    * Tests

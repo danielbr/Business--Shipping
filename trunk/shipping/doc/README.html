@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Business::Shipping - Shipping cost calculator for UPS and USPS</title>
+<title>Business::Shipping - Rates and tracking for UPS and USPS</title>
 <link rev="made" href="mailto:root@localhost" />
 </head>
 
@@ -13,21 +13,49 @@
 <ul>
 
 	<li><a href="#name">NAME</a></li>
+	<li><a href="#version">VERSION</a></li>
+	<li><a href="#synopsis">SYNOPSIS</a></li>
+	<ul>
+
+		<li><a href="#rate_request_example">Rate request example</a></li>
+	</ul>
+
+	<li><a href="#features">FEATURES</a></li>
+	<ul>
+
+		<li><a href="#united_parcel_service__ups_">United Parcel Service (UPS)</a></li>
+		<li><a href="#united_states_postal_service__usps_">United States Postal Service (USPS)</a></li>
+	</ul>
+
 	<li><a href="#installation">INSTALLATION</a></li>
-	<li><a href="#required_modules">REQUIRED MODULES</a></li>
+	<li><a href="#error_debug_handling">ERROR/DEBUG HANDLING</a></li>
 	<li><a href="#getting_started">GETTING STARTED</a></li>
 	<ul>
 
-		<li><a href="#for_united_states_postal_service__usps___free_signup">For United States Postal Service (USPS): Free signup</a></li>
-		<li><a href="#for_united_postal_service__ups___free_signup">For United Postal Service (UPS): Free signup</a></li>
+		<li><a href="#ups_offline__for_united_postal_service__ups__offline_rate_requests">UPS_Offline: For United Postal Service (UPS) offline rate requests</a></li>
+		<li><a href="#ups_online__for_united_postal_service__ups__online_xml__free_signup">UPS_Online: For United Postal Service (UPS) Online XML: Free signup</a></li>
+		<li><a href="#usps_online__for_united_states_postal_service__usps___free_signup">USPS_Online: For United States Postal Service (USPS): Free signup</a></li>
 	</ul>
 
 	<li><a href="#uses_of_this_software">Uses of this software</a></li>
 	<li><a href="#website">WEBSITE</a></li>
-	<li><a href="#bugs">BUGS</a></li>
+	<li><a href="#preloading_modules">Preloading Modules</a></li>
+	<li><a href="#methods">METHODS</a></li>
+	<ul>
+
+		<li><a href="#_obj_init___args__">$obj-&gt;init( %args )</a></li>
+		<li><a href="#_obj_user_error__error_message__">$obj-&gt;user_error( ``Error message'' )</a></li>
+		<li><a href="#_obj_validate__">$obj-&gt;<code>validate()</code></a></li>
+		<li><a href="#_obj_rate_request__">$obj-&gt;<code>rate_request()</code></a></li>
+		<li><a href="#business__shipping_log_level___log_level__">Business::Shipping-&gt;log_level( $log_level )</a></li>
+		<li><a href="#business__shipping__new_subclass__subclass__name___opt__">Business::Shipping-&gt;_new_subclass( ``Subclass::Name'', %opt )</a></li>
+	</ul>
+
+	<li><a href="#see_also">SEE ALSO</a></li>
+	<li><a href="#known_bugs">KNOWN BUGS</a></li>
+	<li><a href="#credits">CREDITS</a></li>
 	<li><a href="#author">AUTHOR</a></li>
 	<li><a href="#copyright_and_licence">COPYRIGHT AND LICENCE</a></li>
-	<li><a href="#credits">CREDITS</a></li>
 </ul>
 <!-- INDEX END -->
 
@@ -35,34 +63,89 @@
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
-<p>Business::Shipping - Shipping cost calculator for UPS and USPS</p>
+<p>Business::Shipping - Rates and tracking for UPS and USPS</p>
+<p>
+</p>
+<hr />
+<h1><a name="version">VERSION</a></h1>
+<p>Version 1.53</p>
+<p>
+</p>
+<hr />
+<h1><a name="synopsis">SYNOPSIS</a></h1>
+<p>
+</p>
+<h2><a name="rate_request_example">Rate request example</a></h2>
+<pre>
+    use Business::Shipping;
+    
+    my $rate_request = Business::Shipping-&gt;rate_request(
+        shipper   =&gt; 'Offline::UPS',
+        service   =&gt; 'GNDRES',
+        from_zip  =&gt; '98682',
+        to_zip    =&gt; '98270',
+        weight    =&gt;  5.00,
+    );    
+    
+    $rate_request-&gt;submit() or die $rate_request-&gt;user_error();
+    
+    print $rate_request-&gt;total_charges();</pre>
+<p>
+</p>
+<hr />
+<h1><a name="features">FEATURES</a></h1>
+<p>
+</p>
+<h2><a name="united_parcel_service__ups_">United Parcel Service (UPS)</a></h2>
+<ul>
+<li><strong><a name="item_shipment_rate_estimation_using_ups_online_webtools">Shipment rate estimation using UPS Online WebTools.</a></strong><br />
+</li>
+<li><strong><a name="item_shipment_rate_estimation_using_offline_tables_2e">Shipment rate estimation using offline tables.</a></strong><br />
+</li>
+<li><strong><a name="item_shipment_tracking_2e">Shipment tracking.</a></strong><br />
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="united_states_postal_service__usps_">United States Postal Service (USPS)</a></h2>
+<ul>
+<li><strong><a name="item_shipment_rate_estimation_using_usps_online_webtool">Shipment rate estimation using USPS Online WebTools.</a></strong><br />
+</li>
+<li><strong>Shipment tracking.</strong><br />
+</li>
+</ul>
 <p>
 </p>
 <hr />
 <h1><a name="installation">INSTALLATION</a></h1>
-<p>See INSTALL file for more details.</p>
 <pre>
- perl Makefile.PL
- make
- make test
- make install</pre>
+ perl -MCPAN -e 'install Bundle::Business::Shipping'
+ 
+See the INSTALL file for more details.
+ 
+=head1 REQUIRED MODULES</pre>
+<pre>
+ Bundle::DBD::CSV (any)
+ Business::Shipping::DataFiles (any)
+ Cache::FileCache (any)
+ Class::MethodMaker::Engine (any)
+ Clone (any)
+ Config::IniFiles (any)
+ Crypt::SSLeay (any)
+ Getopt::Mixed (any)
+ Log::Log4perl (any)
+ LWP::UserAgent (any)
+ Math::BaseCnv (any)
+ Scalar::Util (1.10)
+ XML::DOM (any)
+ XML::Simple (2.05)</pre>
 <p>
 </p>
 <hr />
-<h1><a name="required_modules">REQUIRED MODULES</a></h1>
-<p>Bundle::DBD::CSV (any)
-Cache::FileCache (any)
-Class::MethodMaker::Engine (any)
-Clone (any)
-Config::IniFiles (any)
-Crypt::SSLeay (any)
-Getopt::Mixed (any)
-Log::Log4perl (any)
-LWP::UserAgent (any)
-Math::BaseCnv (any)
-Scalar::Util (1.10)
-XML::DOM (any)
-XML::Simple (2.05)</p>
+<h1><a name="error_debug_handling">ERROR/DEBUG HANDLING</a></h1>
+<p>Log4perl is used for logging error, debug, etc. messages.  See 
+config/log4perl.conf.  For simple manipulation of the current log level, use
+the Business::Shipping-&gt;log_level( $log_level ) class method (below).</p>
 <p>
 </p>
 <hr />
@@ -71,7 +154,26 @@ XML::Simple (2.05)</p>
 provider that you will use.</p>
 <p>
 </p>
-<h2><a name="for_united_states_postal_service__usps___free_signup">For United States Postal Service (USPS): Free signup</a></h2>
+<h2><a name="ups_offline__for_united_postal_service__ups__offline_rate_requests">UPS_Offline: For United Postal Service (UPS) offline rate requests</a></h2>
+<p>No signup required.  Business::Shipping::DataFiles has all of rate tables.</p>
+<p>
+</p>
+<h2><a name="ups_online__for_united_postal_service__ups__online_xml__free_signup">UPS_Online: For United Postal Service (UPS) Online XML: Free signup</a></h2>
+<ul>
+<li><strong><a name="item_https_3a_2f_2fwww_2eups_2ecom_2fservlet_2fregistra"><a href="https://www.ups.com/servlet/registration?loc=en_US_EC">https://www.ups.com/servlet/registration?loc=en_US_EC</a></a></strong><br />
+</li>
+<li><strong><a name="item__28more_info_at_http_3a_2f_2fwww_2eec_2eups_2ecom_">(More info at <a href="http://www.ec.ups.com)">http://www.ec.ups.com)</a></a></strong><br />
+</li>
+<li><strong><a name="item_once_you_get_a_user_id_and_password_from_ups_2c_yo">Once you get a User Id and Password from UPS, you will need to login and
+        select ``Get Access Key'', then ``Get XML Access Key''.</a></strong><br />
+</li>
+<li><strong><a name="item_legal_terms_and_conditions_3a_l_3chttp_3a_2f_2fwww">Legal Terms and Conditions: 
+        <a href="http://www.ups.com/content/us/en/resources/service/terms/index.html">http://www.ups.com/content/us/en/resources/service/terms/index.html</a></a></strong><br />
+</li>
+</ul>
+<p>
+</p>
+<h2><a name="usps_online__for_united_states_postal_service__usps___free_signup">USPS_Online: For United States Postal Service (USPS): Free signup</a></h2>
 <ul>
 <li><strong><a name="item_http_3a_2f_2fwww_2euspswebtools_2ecom_2fregistrati"><a href="http://www.uspswebtools.com/registration/">http://www.uspswebtools.com/registration/</a></a></strong><br />
 </li>
@@ -88,32 +190,15 @@ provider that you will use.</p>
 </ul>
 <p>
 </p>
-<h2><a name="for_united_postal_service__ups___free_signup">For United Postal Service (UPS): Free signup</a></h2>
-<ul>
-<li><strong><a name="item_https_3a_2f_2fwww_2eups_2ecom_2fservlet_2fregistra"><a href="https://www.ups.com/servlet/registration?loc=en_US_EC">https://www.ups.com/servlet/registration?loc=en_US_EC</a></a></strong><br />
-</li>
-<li><strong><a name="item__28more_info_at_http_3a_2f_2fwww_2eec_2eups_2ecom_">(More info at <a href="http://www.ec.ups.com)">http://www.ec.ups.com)</a></a></strong><br />
-</li>
-<li><strong><a name="item_once_you_get_a_user_id_and_password_from_ups_2c_yo">Once you get a User Id and Password from UPS, you will need to login and
-        select ``Get Access Key'', then ``Get XML Access Key''.</a></strong><br />
-</li>
-<li><strong><a name="item_legal_terms_and_conditions_3a_l_3chttp_3a_2f_2fwww">Legal Terms and Conditions: 
-        <a href="http://www.ups.com/content/us/en/resources/service/terms/index.html">http://www.ups.com/content/us/en/resources/service/terms/index.html</a></a></strong><br />
-</li>
-</ul>
-<p>
-</p>
 <hr />
 <h1><a name="uses_of_this_software">Uses of this software</a></h1>
 <p>It is appreciated when users mention their use of Business::Shipping to the 
 author and/or on their website or in their application.</p>
 <ul>
-<li><strong><a name="item__28see_shipping_2epm_pod_documentation_for_api_and">(See Shipping.pm POD documentation for API and usage examples.)</a></strong><br />
+<li><strong><a name="item_system">Interchange e-commerce system ( <a href="http://www.icdevgroup.org">http://www.icdevgroup.org</a> ).  See 
+    <code>UserTag/business-shipping.tag</code>.</a></strong><br />
 </li>
-<li><strong><a name="item_system">Business::Shipping can be used with the Interchange e-commerce system 
-   ( <a href="http://www.icdevgroup.org">http://www.icdevgroup.org</a> ).  See <code>UserTag/business-shipping.tag</code>.</a></strong><br />
-</li>
-<li><strong><a name="item_business_3a_3ashipping_is_used_in_the_paymentonlin">Business::Shipping is used in the paymentonline.com mod_perl/template 
+<li><strong><a name="item_the_paymentonline_2ecom_mod_perl_2ftemplate_toolki">The paymentonline.com mod_perl/template 
     toolkit system.</a></strong><br />
 </li>
 <li><strong><a name="item_the__22shopping_cart_22_wobject_for_the_webgui_pro">The ``Shopping Cart'' Wobject for the WebGUI project, by Andy Grundman 
@@ -124,8 +209,7 @@ author and/or on their website or in their application.</p>
 <li><strong><a name="item_mentioned_in_yapc_2004_presentation_3a__22writing_">Mentioned in YAPC 2004 Presentation: ``Writing web applications with perl ...''
     <a href="http://www.beamartyr.net/YAPC-2004/text25.html">http://www.beamartyr.net/YAPC-2004/text25.html</a></a></strong><br />
 </li>
-<li><strong><a name="item_phatmotorsports_2ecom_uses_business_3a_3ashipping_">Phatmotorsports.com uses Business::Shipping for shipping cost 
-    calculation.</a></strong><br />
+<li><strong><a name="item_phatmotorsports_2ecom">Phatmotorsports.com</a></strong><br />
 </li>
 </ul>
 <p>
@@ -140,34 +224,181 @@ accessing the anonymous CVS repository.</p>
 <p>
 </p>
 <hr />
-<h1><a name="bugs">BUGS</a></h1>
-<p>See the TODO file for a comprehensive list.</p>
+<h1><a name="preloading_modules">Preloading Modules</a></h1>
+<p>To preload all modules, call Business::Shipping with this syntax:</p>
+<pre>
+ use Business::Shipping { preload =&gt; 'All' };</pre>
+<p>To preload the modules for just one certain shipper:</p>
+<pre>
+ use Business::Shipping { preload =&gt; 'USPS_Online' };
+ 
+Without preloading, some modules will be loaded at runtime.  Normally, runtime
+loading is the best mode of operation.  However, there are some circumstances 
+when preloading is advantagous.  For example:</pre>
 <ul>
-<li><strong><a name="item_usps_and_no_internet_connection_2e">USPS and no internet connection.</a></strong><br />
+<li><strong><a name="item_for_mod_perl_2c_to_load_the_modules_only_once_at_s">For mod_perl, to load the modules only once at startup instead of at 
+ startup and then additional modules later on.  (Thanks to Chris Ochs 
+ &lt;<a href="mailto:chris@paymentonline.com">chris@paymentonline.com</a>&gt; for contributing to this information).</a></strong><br />
+</li>
+<li><strong><a name="item_modules">For compatibilty with some security modules (e.g. Safe).  Note that we 
+ have not tested Safe, but this would be a prerequisite for someone to do so.</a></strong><br />
+</li>
+<li><strong><a name="item_to_move_the_delay_that_would_normally_occur_with_t">To move the delay that would normally occur with the first request into 
+ startup time.  That way, it takes longer to start up, but the first user
+ will not notice any delay.</a></strong><br />
+</li>
+</ul>
+<p>
+</p>
+<hr />
+<h1><a name="methods">METHODS</a></h1>
+<p>
+</p>
+<h2><a name="_obj_init___args__">$obj-&gt;init( %args )</a></h2>
+<p>Generic attribute setter.</p>
+<p>
+</p>
+<h2><a name="_obj_user_error__error_message__">$obj-&gt;user_error( ``Error message'' )</a></h2>
+<p>Log and store errors that should be visibile to the user.</p>
+<p>
+</p>
+<h2><a name="_obj_validate__">$obj-&gt;<code>validate()</code></a></h2>
+<p>Confirms that the object is valid.  Checks that required attributes are set.</p>
+<p>
+</p>
+<h2><a name="_obj_rate_request__">$obj-&gt;<code>rate_request()</code></a></h2>
+<p>This method is used to request shipping rate information from online providers
+or offline tables.  A hash is accepted as input.  The acceptable values are 
+determined by the shipper class, but the following are common to all:</p>
+<ul>
+<li><strong><a name="item_shipper">shipper</a></strong><br />
+</li>
+The name of the shipper to use. Must correspond to a module by the name of:
+<code>Business::Shipping::SHIPPER</code>.  For example, <code>UPS_Online</code>.
+<p></p>
+<li><strong><a name="item_service">service</a></strong><br />
+</li>
+A valid service name for the provider. See the corresponding module 
+documentation for a list of services compatible with the shipper.
+<p></p>
+<li><strong><a name="item_from_zip">from_zip</a></strong><br />
+</li>
+The origin zipcode.
+<p></p>
+<li><strong><a name="item_from_state">from_state</a></strong><br />
+</li>
+The origin state in two-letter code format or full-name format.  Required for Offline::UPS.
+<p></p>
+<li><strong><a name="item_to_zip">to_zip</a></strong><br />
+</li>
+The destination zipcode.
+<p></p>
+<li><strong><a name="item_to_country">to_country</a></strong><br />
+</li>
+The destination country.  Required for international shipments only.
+<p></p>
+<li><strong><a name="item_weight">weight</a></strong><br />
+</li>
+Weight of the shipment, in pounds, as a decimal number.
+<p></p></ul>
+<p>There are some additional common values:</p>
+<ul>
+<li><strong><a name="item_user_id">user_id</a></strong><br />
+</li>
+A user_id, if required by the provider. Online::USPS and Online::UPS require
+this, while Offline::UPS does not.
+<p></p>
+<li><strong><a name="item_password">password</a></strong><br />
+</li>
+A password,  if required by the provider. Online::USPS and Online::UPS require
+this, while Offline::UPS does not.
+<p></p></ul>
+<p>
+</p>
+<h2><a name="business__shipping_log_level___log_level__">Business::Shipping-&gt;log_level( $log_level )</a></h2>
+<p>Sets the log level for all Business::Shipping objects.</p>
+<p>$log_level can be 'debug', 'info', 'warn', 'error', or 'fatal'.</p>
+<p>
+</p>
+<h2><a name="business__shipping__new_subclass__subclass__name___opt__">Business::Shipping-&gt;_new_subclass( ``Subclass::Name'', %opt )</a></h2>
+<p>Private Method.</p>
+<p>Generates an object of a given subclass dynamically.  Will dynamically 'use' 
+the corresponding module, unless runtime module loading has been disabled via 
+the 'preload' option.</p>
+<p>
+</p>
+<hr />
+<h1><a name="see_also">SEE ALSO</a></h1>
+<p>Important modules that are related to Business::Shipping:
+
+</p>
+<ul>
+<li><strong><a name="item_business_3a_3ashipping_3a_3adatafiles__2d_required">Business::Shipping::DataFiles - Required for offline cost estimation</a></strong><br />
+</li>
+<li><strong><a name="item_datafiles">Business::Shipping::DataTools - Tools that generating DataFiles 
+        (optional)</a></strong><br />
+</li>
+</ul>
+<p>Other CPAN modules that are simliar to Business::Shipping:
+
+</p>
+<ul>
+<li><strong><a name="item_business_3a_3ashipping_3a_3aups_xml__2d_online_cos">Business::Shipping::UPS_XML - Online cost estimation module that has 
+  very few prerequisites.
+ 
+=item * Business::UPS - Online cost estimation module that uses the UPS web form
+  instead of the UPS Online Tools.</a></strong><br />
+</li>
+</ul>
+<p>This module is supported by the author.  Please report any bugs or feature 
+requests to <code>bug-business-shipping@rt.cpan.org</code>, or through the web interface 
+at <a href="http://rt.cpan.org">http://rt.cpan.org</a>.  The author will be notified, and then you'll 
+automatically be notified of progress on your bug as the author makes changes.
+
+</p>
+<p>
+</p>
+<hr />
+<h1><a name="known_bugs">KNOWN BUGS</a></h1>
+<p>See the TODO file for a comprehensive list of known bugs.
+
+</p>
+<ul>
+<li><strong><a name="item_usps_online_and_no_internet_connection_2e">USPS_Online and no internet connection.</a></strong><br />
 </li>
 You will get the following error when there is no connection to the internet 
-when using Online::USPS:
+when using USPS_Online:
+
+
 <pre>
  Business::Shipping::USPS_Online::RateRequest::_handle_response: ()
- File does not exist:  at .../USPS_Online/RateRequest.pm ...</pre>
+ File does not exist:  at .../USPS_Online/RateRequest.pm ...
+
+</pre>
 <p></p></ul>
 <p>
 </p>
 <hr />
+<h1><a name="credits">CREDITS</a></h1>
+<p>See CREDITS file. 
+
+</p>
+<p>
+</p>
+<hr />
 <h1><a name="author">AUTHOR</a></h1>
-<p>Dan Browning &lt;<em><a href="mailto:db@kavod.com">db@kavod.com</a></em>&gt;, Kavod Technologies, <a href="http://www.kavod.com">http://www.kavod.com</a>.</p>
+<p>Dan Browning &lt;<em><a href="mailto:db@kavod.com">db@kavod.com</a></em>&gt;, Kavod Technologies, <a href="http://www.kavod.com">http://www.kavod.com</a>.
+
+</p>
 <p>
 </p>
 <hr />
 <h1><a name="copyright_and_licence">COPYRIGHT AND LICENCE</a></h1>
 <p>Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-This program is free software; you may redistribute it and/or modify it under
-the same terms as Perl itself. See LICENSE for more info.</p>
-<p>
+This program is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.  See LICENSE for more info.
+
 </p>
-<hr />
-<h1><a name="credits">CREDITS</a></h1>
-<p>See CREDITS file.</p>
 
 </body>
 

@@ -6,7 +6,9 @@ Revision history for Business::Shipping
 
 
   General
+  
     * [Fixed] [Doc] Reference to logdie in Shipping.pm.
+    
     * [Done] [Enh] Allow preloading of modules
       - New optional syntax: 
         use Business::Shipping { preload => 'All' };
@@ -14,6 +16,7 @@ Revision history for Business::Shipping
       - Without preloading, some modules will be loaded at runtime.  Normally, 
         runtime loading is the best mode of operation.  However, there are some
 	circumstances when preloading is advantagous (see docs).
+	
     * [Enh] Split the data into its own distribution, and add it to the bundle.
       - Business::Shipping::DataFiles - Offline cost estimation tables
       - Benefits: 
@@ -26,12 +29,31 @@ Revision history for Business::Shipping
 	  first because it needs data in order to test.  Solution:  Check for
 	  pre-installed Business::Shipping and use that as the default, but ask
 	  anyway (for both).
+	  
     * [Enh] Add Business::Shipping::DataTools 
       - Converts shipper files into a format usable by Business::Shipping.
       - Most methods were removed from UPS_Offline::RateRequest where they were
         languishing.
-   
+    
+    * [Enh] [Aesthetic] Prefix some private methods with "_".
+    
+    * [Enh] [Aesthetic] Code cleanups.
+
+    * [Done] [Enh] Allow usage of LWP through a proxy
+      - Suggested by Mark <MpoloN7@netscape.net>.
+      - Uses environment variables to set the proxy settings. E.g.:
+        http_proxy=http://proxy.my.place/
+        no_proxy="localhost,my.domain"
+        export http_proxy no_proxy
+  
+  All Online Modules
+  
+      * [Done] [Enh] Migrate the "retry on failure" code from the interchange 
+      usertag [business-shipping] to Business::Shipping proper.  Default to 
+      tries = 2.
+    
   Tracking
+  
     * [Enh] More progress on upgrade of tracking modules to C:MM 2.0. 
 
 
@@ -39,6 +61,7 @@ Revision history for Business::Shipping
   
   
   General
+  
     * [Enh] Allow users to change the runtime logging level.
       New Business::Shipping->log_level() method can override the log4perl.conf
       logging level.
@@ -51,6 +74,7 @@ Revision history for Business::Shipping
     * [Fixed] ClassInfo/ClassAttribs does not trap all exceptions.
       
   USPS_Online
+  
     * [Fixed] Missing module bugs
       - List of errors:
         "Can't locate Business/Shipping/Package/USPS.pm in @INC"
@@ -63,6 +87,7 @@ Revision history for Business::Shipping
 
 
   Compatibility
+  
     * Module names have been restructured.  When using 
       Business::Shipping->rate_request(), use the new values for 'shipper':
       shipper => 'UPS_Online',
@@ -70,7 +95,9 @@ Revision history for Business::Shipping
       shipper => 'UPS_Offline',
       
   General
+  
     * [Enh] Die if path to support files is missing files.
+    
     * [Enh] Restructure all of the modules
       - Keep everything the same, except the "lowest level":
           "RateRequest::Online::UPS"   => "UPS_Online::RateRequest"
@@ -83,9 +110,11 @@ Revision history for Business::Shipping
       - Note: This will totally break the ClassInfo/ClassAttribs system, because 
         that system just uses the names, instead of actually checking the 
         inheritance trees.
+	
     * [Enh] Update the ClassInfo/ClassAttribs system to handle the restructured
       module system.  Should use ISA instead of breaking down the name 
       components.  
+      
     * [Fixed] [Bug] For Micah Gersten <micah@davka.com>, Business.pm was 
       'require'd.
 

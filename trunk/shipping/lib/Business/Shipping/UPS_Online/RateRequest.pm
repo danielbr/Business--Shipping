@@ -383,7 +383,7 @@ sub _handle_response
         my $combined_error_msg = "$status_description ($status_code): $error @ $err_location"; 
         $combined_error_msg =~ s/\s{3,}/ /g;
         $self->user_error( $combined_error_msg );
-        return ( undef );
+        return;
     }
     
     my $total_charges = $response_tree->{RatedShipment}->{TotalCharges}->{MonetaryValue};

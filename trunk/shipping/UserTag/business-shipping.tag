@@ -15,7 +15,7 @@ UserTag  business-shipping  Addattr
 UserTag  business-shipping  Documentation <<EOD
 =head1 NAME
 
-[business-shipping] - Interchange Usertag for Business::Shipping
+[business-shipping] - Interchange usertag for Business::Shipping
 
 =head1 VERSION
 
@@ -106,7 +106,7 @@ the same terms as Perl itself. See LICENSE for more info.
 =cut
 EOD
 UserTag  business-shipping  Routine <<EOR
-use Business::Shipping;
+use Business::Shipping 1.04;
 
 sub {
     my ( $shipper, $opt ) = @_;
@@ -201,55 +201,14 @@ sub {
     
     ::logDebug( "calling Business::Shipping::RateRequest::${shipper}->submit( " . uneval( \%opt ) . " )" ) if $debug;
     $rate_request->init( %opt );
-    my $tries = 0;
     my $success;
 
-    # Retry the connection if you get one of these errors.  
-    # They usually indicate a problem on the shipper's server.
-
-    my @retry_errors = (
-        'HTTP Error',
-        'HTTP Error. Status line: 500',
-        'HTTP Error. Status line: 500 Server Error',        
-        'HTTP Error. Status line: 500 read timeout',
-        'HTTP Error. Status line: 500 Bizarre copy of ARRAY',
-        'HTTP Error. Status line: 500 Connect failed:',
-        'HTTP Error. Status line: 500 Can\'t connect to production.shippingapis.com:80',
-    );
-    
-    for ( my $tries = 1; $tries <= $try_limit; $tries++ ) {
-        my $submit_results;
-        eval {
-            $submit_results = $rate_request->submit();
-        };
-        if ( $submit_results and ! $@ ) {
-
-            # Success, no more retries
-
-            $success = 1;
-            last;
-        }
-        else {
-            Log( "Try $tries: error: " . $rate_request->error() . "$@" );
-            my $error_on_server;
-            for ( @retry_errors ) {
-                if ( $rate_request->error() =~ /$_/ ) {
-                    $error_on_server = 1;
-                    
-                }
-            }
-            
-            if ( $error_on_server ) {
-                Log( 'Error was on server, trying again...' );
-            }
-            else {
-                Log( 'Error was not on the server, giving up...' );
-                last;
-            }
-        }
+    eval { $submit_results = $rate_request->submit(); };
+    if ( not $submit_results or $@ ) { 
+        Log( "Error: " . $rate_request->error() . "$@" );
+        return;
     }
-    return unless $success;
-    
+        
     my $charges;
     
     # get_charges() should be implemented for all shippers in the future.
@@ -264,26 +223,17 @@ sub {
     my $report_incident;
     if ( 
             ( ! $charges or $charges !~ /\d+/ )
-        and     $Variable->{ 'XPS_GEN_INCIDENTS' }
-        ) 
+        and
+            $Variable->{ 'XPS_GEN_INCIDENTS' }
+       ) 
     {
-        $report_incident = 1;
-        my @do_not_report_errors = (
-            'Offline::UPS cannot estimate Express Plus to Canada, because not all zip codes are supported.',
-        );
-        if ( $rate_request->error() ) {
-            foreach ( @do_not_report_errors ) {
-                if ( $rate_request->error =~ /$_/ ) {
-                    $report_incident = 0;
-                }
-            }
-            if ( $rate_request->invalid ) {
-                #
-                # Don't report invalid rate requests (like XDM to Brazil... Brazil only has XPD/XPR).
-                # Or if they didn't input a zip code, etc. 
-                #
-                $report_incident = 0;
-            }
+        # Don't report invalid rate requests:No zip code, GNDRES to Canada, etc.
+       
+        if ( $rate_request->invalid ) {
+            $report_incident = 0;
+        }
+        else {
+             $report_incident = 1;
         }
     }
     
