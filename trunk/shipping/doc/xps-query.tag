@@ -7,7 +7,7 @@ UserTag  xps-query  Documentation <<EOD
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: xps-query.tag,v 1.3 2003/06/05 05:24:12 db-ship Exp $
+# $Id: xps-query.tag,v 1.4 2003/06/20 22:48:40 db-ship Exp $
 
 =head1 NAME
 
@@ -102,7 +102,7 @@ use Business::Shipping;
 sub {
  	my ( $mode, $opt ) = @_;
 	
-	::logDebug( "[xps-query " . uneval( $opt ) );
+	#::logDebug( "[xps-query " . uneval( $opt ) );
 	 
 	unless ( $mode and $opt->{weight} and $opt->{ 'service' }) {
 		Log ( "mode, weight, and service required" );
@@ -149,8 +149,16 @@ sub {
 		'from_zip'			=> $Variable->{ XPS_FROM_ZIP },
 	);
 	
-	# This must be done manually, because of the non-true (0) value.
-	$opt{ 'cache_enabled' } ||= 0;
+	# I'm not sure if the cache feature is safe enough to enable yet, but...
+	$opt{ 'cache_enabled' } = 1 unless defined( $opt{ 'cache_enabled' } );
+	
+	# USPS extras.
+	
+	if ( $mode eq 'USPS' ) {
+		if ( $opt{ 'weight' } < 1.0 ) {
+			$opt{ 'weight' } = 1;
+		}
+	}
 	
 	# UPS extras.
 	$defaults{ 'access_key' } = $Variable->{ "${mode}_ACCESS_KEY" } if ( $Variable->{ "${mode}_ACCESS_KEY" } );
@@ -166,13 +174,36 @@ sub {
 		return undef;
 	}
 	
-	::logDebug( "calling Business::Shipping::${mode}->submit( " . uneval( \%opt ) . " )" );
+	#::logDebug( "calling Business::Shipping::${mode}->submit( " . uneval( \%opt ) . " )" );
 	
 	$shipment->submit( %opt ) or ( Log $shipment->error() and return undef );
 	my $charges = $shipment->get_charges( $opt{ 'service' } );
+	
+	# get_charges() *should* be implemented for all use cases, in the future.
+	# For now, we just fall back on total_charges()
 	$charges ||= $shipment->total_charges();
 	
-	::logDebug( "[xps-query] returning" . uneval( $charges ) );
+	if ( ! $charges ) {
+		#$Values->{ 'shipping_ok' } = '';
+		
+		# This is a debugging / support tool.  Set the XPS_GEN_INCIDENTS and
+		# SYSTEMS_SUPPORT_EMAIL variables to enable.
+		if ( $Variable->{ 'XPS_GEN_INCIDENTS' } ) {
+			
+			my $variables = uneval( \%opt ); 
+			my $error = $shipment->error();
+			
+			# Not everyone has [incident], avoid errors.
+			eval {
+				$Tag->incident("[xps-query]: $mode error: $error.  Options were: $variables");
+			};
+			
+			# Catch exception
+			my $eval_error = $@;
+		}
+	}
+	
+	#::logDebug( "[xps-query] returning" . uneval( $charges ) );
 	
 	return $charges;
 }
