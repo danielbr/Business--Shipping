@@ -11,7 +11,7 @@ UserTag  business-shipping  Documentation 	<<EOD
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: business-shipping.tag,v 1.4 2003/08/25 21:48:43 db-ship Exp $
+# $Id: business-shipping.tag,v 1.5 2003/10/13 18:25:14 db-ship Exp $
 
 =head1 NAME
 
@@ -118,7 +118,9 @@ use Business::Shipping::RateRequest::Online::USPS;
 sub {
  	my ( $shipper, $opt ) = @_;
 	
-	#::logDebug( "[business-shipping " . uneval( $opt ) );
+	my $debug = 1;
+	
+	::logDebug( "[business-shipping " . uneval( $opt ) ) if $debug;
 	 
 	unless ( $shipper and $opt->{weight} and $opt->{ 'service' }) {
 		Log ( "mode, weight, and service required" );
@@ -147,19 +149,29 @@ sub {
 		}
 	}
 
-	my %defaults = (
-		
-		# For interchange, STDOUT will cause it to go to the IC debug.
-		'event_handlers'	=> ({ 
+	#
+	# For interchange, STDOUT will cause it to go to the IC debug.
+	#
+	my %event_handlers;
+	if ( $debug ) {
+		%event_handlers = ({
 			'debug' => 'STDOUT',
-			
 			'debug3' => 'STDOUT',
-			
+			'trace' => 'STDOUT',
 			'error' => 'STDERR', 
-
-			'trace' => 'STDOUT', 
-		}),
+		});
+	}
+	else {
+		%event_handlers = ({
+			'debug' => undef,
+			'debug3' => undef,
+			'trace' => undef, 
+			'error' => 'STDERR', 
+		});
+	}
 		
+	my %defaults = (
+		%event_handlers, 
 		'user_id'			=> $Variable->{ "${shipper}_USER_ID" },
 		'password'			=> $Variable->{ "${shipper}_PASSWORD" },
 		'to_country'		=> $to_country_default,
@@ -186,7 +198,7 @@ sub {
 		return undef;
 	}
 	
-	#::logDebug( "calling Business::Shipping::${shipper}->submit( " . uneval( \%opt ) . " )" );
+	::logDebug( "calling Business::Shipping::${shipper}->submit( " . uneval( \%opt ) . " )" ) if $debug;
 	
 	$rate_request->init( %opt );
 	
@@ -243,7 +255,7 @@ sub {
 		}
 	}
 	
-	::logDebug( "[business-shipping] returning " . uneval( $charges ) );
+	::logDebug( "[business-shipping] returning " . uneval( $charges ) ) if $debug;
 	
 	return $charges;
 }

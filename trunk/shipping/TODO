@@ -1,8 +1,15 @@
 ######################################################
 ##  General TODO
 ######################################################
- 
- * Move 500 error handlers from business-shipping.tag into RateRequest::Online.
+  
+ * Bug Report:
+   - When the internet is down, we should report a more useful error message
+     than this:
+	 Business::Shipping::RateRequest::Online::USPS::_handle_response: ()
+     File does not exist:  at .../RateRequest/Online/USPS.pm line 202
+
+ * FedEx module: Christopher L Wenham from Synesmedia has created an Interchange
+   usertag that uses FedEx::DirectConnect for various functions.
  
  * Enable Cache for USPS.
  
@@ -16,7 +23,7 @@
  
  * Migrate the "retry on failure" code from business-shipping.tag to 
    Business::Shipping proper.  Default to tries=2, but allow that to be
-   overridden.
+   overridden.  (HTTP 500 errors.)
  
  * Only Cache the response if it was a success (very important)
  
@@ -47,11 +54,12 @@
 	}
  
  * Country name translator strings to data outside your program.
- 	# TODO: Move all of this, and any other data that is currently mixed with code.
+ 	# TODO: Move all of this, and any other data that is currently mixed with 
+	# code.
 	# A simple, file-based configuration system would be nice, like Interchange.
 	# Perhaps XML::Simple Configuration files?  Other?  Shipping::Config module
-	# will provide parser, importer.  Any internal modules that use configuration
-	# will go through that module.  (it's an idea, anyway) 
+	# will provide parser, importer.  Any internal modules that use 
+	# configuration will go through that module.  (it's an idea, anyway) 
  
  * Upgrade the debugging/error handling features: allow user to pass in a callback ref.
  
@@ -94,12 +102,15 @@
    actually scheduled; you shouldn't need these classes to determine the 
    shipping rates.
    
- * A more effecient cacheing method:
-   - Cache the end-result (amounts, etc), then look it up at submit() time based on the
-     same _unique_values.  Would require that ignore_extra_info=1, so that all the country
-     information (customs, etc.) wouldn't be saved (kb on disk).
+ * Cache Enhancements:
+   - Cache the end-result (amounts, etc), then look it up at submit() time based
+     on the same _unique_values.  Would require that ignore_extra_info=1, so 
+	 that all the country information (customs, etc.) wouldn't be saved (kb on 
+	 disk).
    - More efficient methods besides FileCache?
 
+ * Why do I have to 'use' all the modules -- indicative of a bug?
+   
 ######################################################
 ##  Business::Shipping::USPS TODO
 ######################################################
@@ -112,11 +123,7 @@
    modules) so that a user can plug their username and password in the 
    script, or via the build process and test that their account is 
    accepting data correctly.
-   
- * Identify the different USPS interfaces (Standard Mail (what we're 
-   working on), Priority Mail, International, ?Others? and pull the specs
-   from the PDF's on how to structure the requests and parse the responses.
-   
+     
  * Support get_charges( 'service' ) for domestic types.
 
 ######################################################
@@ -127,10 +134,8 @@
    Better names for packaging too (instead of numbers).
  
  * Tests:
-
 	- All types (ground, air, etc.) 
 	- World wide (several countries, states (Hawaii, Alaska), etc.)
-	- Confirm that price returned > 0, and no error.  (If error, fail test and dispaly error).
 
  * Test for thread-safety-ness.
 
@@ -144,7 +149,7 @@
  	- If they don't support it, try LWP::Parallel::UserAgent.
 
 ######################################################
-##  Interchange usertags TODO
+##  Interchange UserTag TODO
 ######################################################
 
  * Test for ability to use within Safe?

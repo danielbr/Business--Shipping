@@ -44,8 +44,8 @@ print "Usage: $PROGRAM_NAME Business-Shipping-n.nn.tar.gz\n" and exit
 $file =~ m/^(Business-Shipping-\d\.\d\d)\.tar\.gz$/;
 my $version = $1;
 
-#print "version = $version\n";
-#print "file=$file\n";
+print "version = $version\n";
+print "file=$file\n";
 
 myexec( "scp $file kavod\@kavod\.com:html/" );
 
@@ -71,7 +71,9 @@ ln -s $version Business-Shipping-latest
 cd CVS-Business-Shipping
 cvs up
 
-# Need to update the version number in index.html
+# Update version number
+cd ..
+echo '$version' > .version
 
 EOF
 };

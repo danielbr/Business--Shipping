@@ -1,6 +1,6 @@
 # Business::Shipping - Shipping related API's
 #
-# $Id: Shipping.pm,v 1.5 2003/08/20 12:58:47 db-ship Exp $
+# $Id: Shipping.pm,v 1.6 2003/10/13 18:25:14 db-ship Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Carp;
 use Business::Shipping::Debug;
@@ -75,40 +75,6 @@ sub validate
 	}
 }
 	
-sub get_unique_keys
-{
-	my $self = shift;
-	
-	# None at the Business::Shipping level.
-	my @unique_keys = ();
-	
-	return( @unique_keys );
-}
-
-sub _gen_unique_values
-{
-	my ( $self ) = @_;
-		
-	# Now I need to get unique values for all packages.
-	
-	my @unique_values;
-	foreach my $package ( @{$self->packages()} ) {
-		push @unique_values, $package->get_unique_values();
-	}
-	
-	# We prefer 0 in the key to represent 'undef'
-	# clean it all up...
-	my @new_unique_values;
-	foreach my $value ( @unique_values ) {
-		if ( not defined $value ) {
-			$value = 0;
-		}
-		push @new_unique_values, $value;
-	}
-
-	return( @new_unique_values );
-}
-
 sub rate_request
 {
 	my $class = shift;

@@ -23,17 +23,24 @@ Business::Shipping - Shipping cost calculator for UPS and USPS
  
 =head1 USAGE
 
- * See Shipping.pm POD documentation for API and usage examples.
- 
  * For USPS: Sign up online for free:
  
- 	- http://www.uspsonlinetools.com
+ 	- http://www.uspswebtools.com
+	
+	- The online signup will result in a testing-only account (only a small
+	  sample of queries will work).  To activate the "production" use of your
+	  USPS account, you must follow the USPS documentation.  Currently, that
+	  means contacting the Internet Customer Care Center by e-mail or phone:
+	    icustomercare@usps.com
+		1-800-344-7779
     
  * For UPS: Sign up online for free:
  
 	- https://www.ups.com/servlet/registration?loc=en_US_EC
 
-	You will get a User Id, Password, and Access Key from UPS. 
+	You will get a User Id, Password, and Access Key from UPS.
+ 
+ * See Shipping.pm POD documentation for API and usage examples.
 
 =head1 EXAMPLES
 
@@ -41,7 +48,7 @@ This module is used by the Interchange E-Commerce software
 (http://www.icdevgroup.org).  For a reference implementation of Business::Shipping,
 see the UserTag/business-shipping.tag file, it implements a function that takes 
 shipping-related arguments, builds a Business::Shipping object, then returns the 
-calculatd cost.
+calculated cost.
  
 =head1 WEBSITE
  

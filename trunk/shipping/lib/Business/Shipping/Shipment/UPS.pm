@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment::UPS
 # 
-# $Id: UPS.pm,v 1.2 2003/07/10 07:38:22 db-ship Exp $
+# $Id: UPS.pm,v 1.3 2003/10/13 18:25:15 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -14,7 +14,7 @@ use warnings;
 
 use vars qw( @ISA $VERSION );
 @ISA = ( 'Business::Shipping::Shipment' );
-$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.3 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping::Debug;
 use Business::Shipping::Package;
@@ -25,6 +25,7 @@ use Business::Shipping::CustomMethodMaker
     grouped_fields_inherit => [
 		optional => [ 'to_residential' ],
 		unique => [ 'to_residential' ],
+		required => [ 'from_zip' ],
 	];
 
 use constant INSTANCE_DEFAULTS => (

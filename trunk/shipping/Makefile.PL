@@ -2,7 +2,13 @@ use 5.006000;
 use ExtUtils::MakeMaker;
 
 # Version for Business-Shipping as a whole.
-$VERSION = '0.75';
+$VERSION = '0.76';
+
+#
+# perl -MCPAN -e shell
+#
+#   install Data::Dumper Digest::SHA1 LWP::UserAgent Crypt::SSLeay XML::Simple XML::DOM Error Cache::FileCache Class::MethodMaker
+#
 
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.

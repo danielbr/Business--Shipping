@@ -1,5 +1,25 @@
 Revision history for Business::Shipping.
 
+0.76
+	- Fixed bug report:
+ 		calling Business::Shipping::USPS->submit( 
+		{
+		 'from_zip' => "98682",'cache' => "1",
+		 'to_country' => "Canada",'service' => "Airmail Letter Post",
+		 'to_zip' => "N2H6S9",'from_country' => "US",
+		 'weight' => "0.25",
+		 'shipper' => "USPS",
+		}
+		)
+		Vend::Interpolate:debug: [business-shipping] returning "15.25"
+	
+	- Cause: USPS changed "Airmail Letter Post" to "Airmail Letter-post".
+	- Usertag cleanup.
+	- More documentation.
+	- Business::Shipping thinned.
+	- Online::UPS thinned.
+	- Additional test for UPS Letter post to Canda.
+
 0.75
 	- Additional USPS tests (Letter service, Canada service)
 	- Additional UPS tests (Canada)

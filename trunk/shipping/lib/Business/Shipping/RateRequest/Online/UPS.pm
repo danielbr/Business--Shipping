@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::UPS - Abstract class for shipping cost rating.
 # 
-# $Id: UPS.pm,v 1.6 2003/08/20 12:58:48 db-ship Exp $
+# $Id: UPS.pm,v 1.7 2003/10/13 18:25:14 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.6 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.7 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 #@ISA = ( 'Business::Shipping::RateRequest::Online' );
 use base ( 'Business::Shipping::RateRequest::Online' );
 
@@ -41,15 +41,6 @@ use Business::Shipping::CustomMethodMaker
 		# nothing unique here, either.
 	];
 
-#sub required
-#{
-#	my $self = shift;
-#	debug( 'self->SUPER::required() = ' . join( ', ', $self->SUPER::required() ) . '. That is all.\n' );
-#	
-#	my @required = ( $self->SUPER::required(), 'access_key' );
-#	return @required;
-#}
-#
 sub to_residential { return shift->shipment->to_residential( @_ ); }
 sub packaging { return shift->shipment->default_package->packaging( @_ ); }
 
@@ -92,23 +83,6 @@ sub pickup_type
 
 sub package_subclass_name { return 'UPS::Package'; }
 
-sub _gen_unique_values
-{
-	trace( 'called' );
-	my ( $self ) = @_;
-	
-	my @unique_values = $self->SUPER::_gen_unique_values();
-	
-	my @unique_keys = $self->_metadata( 'unique_keys' );
-	
-	foreach my $key ( @unique_keys ) {
-		push @unique_values, $self->$key();
-	}
-
-	debug( 'returning the following unique values: ' . join( ',', @unique_values ) );
-	
-	return @unique_values;
-}
 sub _massage_values
 {
 	trace( 'called' );
@@ -187,7 +161,9 @@ sub _massage_values
 
 	# In the U.S., UPS only wants the 5-digit base ZIP code, not ZIP+4
 	$self->to_country( 'US' ) unless $self->to_country();
-	$self->to_country() eq 'US' and $self->to_zip() =~ /^(\d{5})/ and $self->to_zip( $1 );
+	if ( $self->to_zip() ) { 
+		$self->to_zip() =~ /^(\d{5})/ and $self->to_zip( $1 );
+	}
 	
 	# UPS prefers 'GB' instead of 'UK'
 	$self->to_country( 'GB' ) if $self->to_country() eq 'UK';

@@ -235,7 +235,7 @@ SKIP: {
 	
 	# Test the letter service.
 	$shipment = test(
-		service 		=> 'Airmail Letter Post',
+		service 		=> 'Airmail Letter-post',
 		
 		from_zip		=> '98682',
 		user_id 		=> $ENV{ USPS_USER_ID },		
@@ -248,6 +248,27 @@ SKIP: {
 	my $airmail_letter_post_to_AU = $shipment->total_charges();
 	#print "\ttotal charges = $airmail_letter_post_to_AU\n";
 	ok( $airmail_letter_post_to_AU < $airmail_parcel_post_to_AU, 'USPS Letter is cheaper than Parcel' );
+	
+	
+	
+	#
+	# Letter to Canada:
+	#
+	$shipment = test(
+		service 		=> 'Airmail Letter-post',
+
+		from_zip		=> '98682',
+		user_id 		=> $ENV{ USPS_USER_ID },		
+		password 		=> $ENV{ USPS_PASSWORD },
+		
+		'to_zip' => "N2H6S9",
+		to_country => 'Canada',
+		'weight' => "0.25",
+	);
+	my $airmail_letter_post_to_CA = $shipment->total_charges();
+	#print "\ttotal charges = $airmail_letter_post_to_CA\n";
+	ok( $airmail_letter_post_to_CA < 7.50, 'USPS Letter to Canada is under $7.50' );
+	
 	
 	#######################################################################
 	##  Canada Services

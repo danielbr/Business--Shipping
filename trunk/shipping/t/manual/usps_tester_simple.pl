@@ -46,16 +46,15 @@ print "\n\n\nTesting International USPS...\n\n";
 $rate_request = Business::Shipping->rate_request(
 		shipper 		=> 'USPS', 
 		event_handlers => { 'trace' => 'STDERR', debug => 'STDERR', debug3 => 'STDERR' },
-		service 		=> 'Airmail Parcel Post',
-		
-		from_zip		=> '98682',
 		user_id 		=> $ENV{ USPS_USER_ID },		
 		password 		=> $ENV{ USPS_PASSWORD },
 		
-		to_country		=> 'Canada',
-		to_zip			=> 'N2H6S9',
-		weight			=> 5.49,
+		service 		=> 'Airmail Letter-post',
 
+		from_zip		=> '98682',
+		'to_zip' => "N2H6S9",
+		to_country => 'Canada',
+		'weight' => "0.25",
 );
 
 not defined $rate_request and die $@;
