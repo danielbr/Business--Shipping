@@ -11,7 +11,7 @@ UserTag  business-shipping  Documentation 	<<EOD
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: business-shipping.tag,v 1.1 2003/07/07 21:37:56 db-ship Exp $
+# $Id: business-shipping.tag,v 1.2 2003/07/10 07:38:18 db-ship Exp $
 
 =head1 NAME
 
@@ -172,6 +172,7 @@ sub {
 	
 	# I'm not sure if the cache feature is safe enough to enable yet, but...
 	#$opt{ 'cache_enabled' } = 1 unless defined( $opt{ 'cache_enabled' } );
+	$opt{ 'cache' } = 1 unless defined( $opt{ 'cache' } );
 	
 	# USPS extras.
 	

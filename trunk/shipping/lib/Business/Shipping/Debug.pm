@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest - Abstract class for shipping cost rating.
 # 
-# $Id: Debug.pm,v 1.1 2003/07/07 21:37:59 db-ship Exp $
+# $Id: Debug.pm,v 1.2 2003/07/10 07:38:19 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -14,7 +14,7 @@ use warnings;
 
 use vars qw( @ISA $VERSION @EXPORT );
 @ISA = ( 'Business::Shipping' );
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 require Exporter;
 @ISA = qw(Exporter);
@@ -98,7 +98,7 @@ sub _log
 	
 	foreach my $eh ( @event_handlers ) {
 		my $eh_value = $event_handlers{ $eh };
-		if ( $type eq $eh and $eh_value ) {
+		if ( $type eq $eh and $eh_value and $ENV{ 'BUSINESS_SHIPPING_ENABLE_' . uc($eh) } ) {
 			print STDERR $msg if $eh_value eq "STDERR";
 			print STDOUT $msg if $eh_value eq "STDOUT";
 			Carp::carp   $msg if $eh_value eq "carp";

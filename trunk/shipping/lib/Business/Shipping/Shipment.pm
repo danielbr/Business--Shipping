@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment - Abstract class for shipments
 # 
-# $Id: Shipment.pm,v 1.1 2003/07/07 21:37:59 db-ship Exp $
+# $Id: Shipment.pm,v 1.2 2003/07/10 07:38:19 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -14,12 +14,12 @@ use warnings;
 
 use vars qw( @ISA $VERSION );
 @ISA = ( 'Business::Shipping' );
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping::Debug( 'debug' );
-use Class::MethodMaker
+use Business::Shipping::CustomMethodMaker
 	new_hash_init => 'new',
-	grouped_fields => [
+	grouped_fields_inherit => [
 		'required' => [
 			'service',
 			'from_zip',
@@ -31,6 +31,15 @@ use Class::MethodMaker
 			'to_zip',
 			'from_city',
 			'to_city',						
+		],
+		'unique' => [
+			'service',
+			'from_zip',
+			'from_country',
+			'to_country',
+			'to_zip',
+			'from_city',
+			'to_city',
 		],
 	],
 	object_list => [ 

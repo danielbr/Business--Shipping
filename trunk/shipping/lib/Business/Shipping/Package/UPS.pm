@@ -1,6 +1,6 @@
 # Business::Shipping::Package::UPS
 # 
-# $Id: UPS.pm,v 1.1 2003/07/07 21:37:59 db-ship Exp $
+# $Id: UPS.pm,v 1.2 2003/07/10 07:38:20 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -14,13 +14,14 @@ use warnings;
 
 use vars qw( @ISA $VERSION );
 @ISA = ( 'Business::Shipping::Package' );
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping::Debug;
-use Class::MethodMaker
+use Business::Shipping::CustomMethodMaker
 	new_hash_init => 'new',
-	grouped_fields => [
+	grouped_fields_inherit => [
 		optional => [ 'packaging' ],
+		unique => [ 'packaging' ],
 	];
 
 #sub packaging

@@ -1,6 +1,6 @@
 # Business::Shipping::Shipment::USPS
 # 
-# $Id: USPS.pm,v 1.1 2003/07/07 21:38:03 db-ship Exp $
+# $Id: USPS.pm,v 1.2 2003/07/10 07:38:22 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -14,14 +14,14 @@ use warnings;
 
 use vars qw( @ISA $VERSION );
 @ISA = ( 'Business::Shipping::Shipment' );
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping::Debug;
 use Business::Shipping::Package;
 
 
 # Nothing is unique about USPS, when it comes to Shipment.
-use Class::MethodMaker
+use Business::Shipping::CustomMethodMaker
 	new_with_init => 'new',
 	new_hash_init => 'hash_init';
 	#

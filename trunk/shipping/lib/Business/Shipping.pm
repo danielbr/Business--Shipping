@@ -1,6 +1,6 @@
 # Name:: - Description
 #
-# $Id: Shipping.pm,v 1.1 2003/07/07 21:37:58 db-ship Exp $
+# $Id: Shipping.pm,v 1.2 2003/07/10 07:38:19 db-ship Exp $
 #
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -13,33 +13,16 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Carp;
 use Business::Shipping::Debug;
 use Business::Shipping::CustomMethodMaker
 	new_hash_init => 'new',
-	#grouped_fields => [
-	#	optional => [ 'tx_type', 'event_handlers' ],
-	#],
-	grouped_fields_inherit => [
-		required => [ 'tx_type' ],
-		optional => [ 'event_handlers' ]
+	grouped_fields => [
+		optional => [ 'event_handlers', 'tx_type' ]
 	],
 	get_set => [ 'error_msg' ];
-
-
-sub required2{ ( 'tx_type', 'event_handlers' ) };
-	
-sub find_required { trace( '()' ); shift->required(); }
-
-sub get_new_package
-{
-	my ( $self, $package_class ) = @_;
-	
-	# try to get Business::Shipping::Package::$package_class
-	# else, return Business::Shipping::Package
-}
 
 sub error
 {
@@ -60,7 +43,7 @@ sub validate
 	
 	#debug( "self = $self" );
 	#my @required = $self->required();
-	my @required = $self->find_required();
+	my @required = $self->required();
 	my @optional = $self->optional();
 	
 	debug( "\n\trequired = " . join (', ', @required ) . "\n\t" 

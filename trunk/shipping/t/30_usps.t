@@ -1,28 +1,39 @@
+#!/usr/bin/perl
+
 use strict;
 use warnings;
 
 use Test::More 'no_plan';
 use Carp;
 use Business::Shipping;
-use_ok( "Business::Shipping::USPS::Package" );
+use Business::Shipping::Shipment;
+use Business::Shipping::Shipment::UPS;
+use Business::Shipping::Shipment::USPS;
+use Business::Shipping::Package;
+use Business::Shipping::Package::UPS;
+use Business::Shipping::Package::USPS;
+use Business::Shipping::RateRequest;
+use Business::Shipping::RateRequest::Online;
+use Business::Shipping::RateRequest::Online::UPS;
+use Business::Shipping::RateRequest::Online::USPS;
 
-my $standard_method = new Business::Shipping( 'shipper' => 'USPS' );
+my $standard_method = new Business::Shipping->rate_request( 'shipper' => 'USPS' );
 ok( defined $standard_method,	'USPS standard object construction' );
 
-my $other_method = new Business::Shipping::USPS;
+my $other_method = new Business::Shipping::RateRequest::Online::USPS;
 ok( defined $other_method,		'USPS alternate object construction' );
 
-my $package = new Business::Shipping::USPS::Package;
+my $package = new Business::Shipping::Package::USPS;
 ok( defined $package,			'USPS package object construction' );
 
 sub test
 {
 	my ( %args ) = @_;
-	my $shipment = new Business::Shipping( 
+	my $shipment = Business::Shipping->rate_request( 
 		'shipper' => 'USPS',
 		'user_id'		=> $ENV{ USPS_USER_ID },
 		'password'		=> $ENV{ USPS_PASSWORD },
-		'cache_enabled'	=> 0,
+		'cache'	=> 0,
 		#'event_handlers' => ({ 'debug' => 'STDOUT', }),
 	);
 	$shipment->submit( %args ) or die $shipment->error();
@@ -105,7 +116,7 @@ SKIP: {
 	# Cache Test
 	# - Multiple sequential queries should give *different* results.
 	$shipment = test(
-		'cache_enabled'	=> 1,
+		'cache'	=> 1,
 		'test_mode'		=> 0,
 		'service' 		=> 'Airmail Parcel Post',
 		'weight'		=> 1,
@@ -117,7 +128,7 @@ SKIP: {
 	my $total_charges_1_pound = $shipment->total_charges();
 	
 	$shipment = test(
-		'cache_enabled'	=> 1,
+		'cache'	=> 1,
 		'test_mode'		=> 0,
 		'service' 		=> 'Airmail Parcel Post',
 		'weight'		=> 5,
@@ -139,7 +150,7 @@ SKIP: {
 	my %charges;
 	foreach my $zip ( @several_very_different_zip_codes ) {
 		$shipment = test(
-			'cache_enabled'	=> 1,
+			'cache'	=> 1,
 			'test_mode'		=> 0,
 			'service' 		=> 'Priority',
 			'weight'		=> 5,
@@ -164,13 +175,6 @@ SKIP: {
 	}
 	
 	ok( ! $found_duplicate, 'USPS different zip codes give different prices' );
-	
-		
-		
-		
-		
-	
-	
 	
 
 } # /skip

@@ -21,7 +21,7 @@ WriteMakefile(
 							'Class::MethodMaker'	=> 0,
 						},
     ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM => 'Shipping.pm', # retrieve abstract from module
+      (ABSTRACT_FROM => 'lib/Business/Shipping.pm', # retrieve abstract from module
        AUTHOR     => 'Dan Browning <db@kavod.com>') : ()),
 );
 

@@ -2,6 +2,8 @@
 ##  General TODO
 ######################################################
  
+ * Debugging is handling by configuration files.
+ 
  * Bug Reports:
    - Some of the intermittent errors:
      "[xps-query]: USPS error: HTTP Error. Status line: 500 read timeoutContent:"

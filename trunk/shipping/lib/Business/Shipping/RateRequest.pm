@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest - Abstract class for shipping cost rating.
 # 
-# $Id: RateRequest.pm,v 1.1 2003/07/07 21:37:59 db-ship Exp $
+# $Id: RateRequest.pm,v 1.2 2003/07/10 07:38:19 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -12,9 +12,10 @@ package Business::Shipping::RateRequest;
 use strict;
 use warnings;
 
-use vars qw( @ISA $VERSION );
-@ISA = ( 'Business::Shipping' );
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+use vars ( '$VERSION' );
+#@ISA = ( 'Business::Shipping' );
+use base ( 'Business::Shipping' );
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use Business::Shipping::Debug;
 use Cache::FileCache;
@@ -23,11 +24,12 @@ use Business::Shipping::CustomMethodMaker
 	boolean => [ 'is_success', 'cache' ],
 	hash => [ 'results' ],
 	grouped_fields_inherit => [
-		required => [ 'rate_request_required' ],
-		optional => [ 'rate_request_optional' ]
+		required => [ 'shipper' ],
+		unique => [ 'shipper' ]
 	],
 	object => [
 		# Right now, each RateRequest has only one shipment.
+		# Eventually, maybe we'll use object_list with "shipments()->..." like packages.
 		'Business::Shipping::Shipment' => {
 			'slot' => 'shipment',
 			'comp_mthds' => [ 
@@ -44,37 +46,106 @@ use Business::Shipping::CustomMethodMaker
 		}
 	];
 
-sub required2{ ( 'shipper', 'service', shift->SUPER::required2() ) };
-
-sub find_required { trace( '()' ); 	return ( $_[0]->required(), $_[0]->SUPER::find_required() ); }
-
-# Look for the parent's required, then add your own.	
-#sub find_required
-#{
-#	trace( '()' );
-#	my $self = shift;
-#	
-#	my @required;
-#
-#	if ( $self->can( 'SUPER' ) ) {
-#		if ( $self->SUPER::can( 'find_required' ) ) {
-#			@required = $self->SUPER::find_required();
-#		}
-#		else {
-#			debug( 'can\'t execute SUPER::find_required' );
-#		}
-#	}
-#	else {
-#		debug( 'can\'t execute SUPER' );
-#	}
-#	
-#	return ( @required, $self->required() );
-#}
-#
 #sub get_package { return shift->packages()->[ @_ ]; }
+
+=item $shipment->submit( [%args] )
+
+This method sets some values (optional), generates the request, then parses the
+results.
+
+=cut
+sub submit
+{
+	my ( $self, %args ) = @_;
+	trace( "( " . uneval( %args ) . " )" );
+	$self->init( %args ) if %args;
+	$self->_massage_values();
+	$self->validate() or return ( undef );
+	
+	my $cache = Cache::FileCache->new() if $self->cache();
+	
+	if ( $self->cache() ) {
+		trace( 'cache enabled' );	
+
+		my $key = $self->gen_unique_key();
+		debug "cache key = $key\n";
+		
+		my $results = $cache->get( $key );
+		if ( $results ) {
+			trace( "found cached response, using that." );
+			$self->results( $results );
+			return 1;
+		}
+		else {
+			trace( 'Cannot find cached results, running request manually, then add to cache.' );
+		}
+	}
+	else {
+		trace( 'cache disabled' );
+	}
+	
+	$self->perform_action();
+	
+	my $results = $self->results();
+	
+	use Data::Dumper;
+	debug 'results = ' . Dumper( $results );
+	
+	# Only cache if there weren't any errors.
+	if ( $self->_handle_response() and $self->cache() ) {	
+		trace( 'cache enabled, saving results.' );
+		#TODO: Allow setting of cache properties (time limit, enable/disable, etc.)
+		my $key = $self->gen_unique_key();
+		my $cache = Cache::FileCache->new();
+		$cache->set( $key, $results, "2 days" );
+	}
+	else {
+		trace( 'cache disabled, not saving results.' );
+	}
+	
+	return $self->is_success();
+}
+
+sub get_unique_hash
+{
+	my $self = shift;
+	
+	my %unique;
+	
+	$unique{ $_ } = $self->$_() for $self->unique();
+	$unique{ $_ } = $self->shipment->$_() for $self->shipment->unique();
+	
+	foreach my $package ( $self->shipment->packages() ) {
+		foreach my $package_unique_key ( $package->unique() ) {
+			$unique{ 'p1_' . $package_unique_key } = $package->$package_unique_key();
+		}
+	}
+	return %unique;
+}
+
+sub gen_unique_key
+{
+	my $self = shift;
+	my %unique = $self->get_unique_hash();
+	my @sorted_values = $self->hash_to_sorted_values( %unique ); 
+	return join( '|', @sorted_values );
+	return;
+}
+
+sub hash_to_sorted_values
+{
+	my $self = shift;
+	my ( %hash ) = @_;
+	my @sorted_values;
+	foreach my $key ( sort keys %hash ) {
+		push @sorted_values, ( $hash{ $key } || '' );
+	}
+	return @sorted_values;
+}
 
 sub total_charges
 {
+	trace '()';
 	my $self = shift;
 	my $total;
 	
@@ -85,26 +156,16 @@ sub total_charges
 	#
 	my $shippers = $self->results();
 	foreach my $shipper ( keys %$shippers ) {
-		debug "\tshipper = $shipper\n";
+		debug "\tshipper: $shipper\n";
 		
-		my $services = $self->results( $shipper );		
-		foreach my $service ( keys %$services ) {
-			debug "\t\tservice = $service\n";
-			
-			$total += $services->{ $service }->{ 'price' };
-			# Optional: Get other aspects, or loop over them all.
-			debug "\t\t\tprice = " . $services->{ $service }->{ 'price' } . "\n";
+		my $packages = $self->results( $shipper );		
+		foreach my $package ( @$packages ) {
+			debug3 "\t" . uneval( $package );
+			debug "\t\tcharges = " . $package->{ 'charges' } . "\n";
+			$total += $package->{ 'charges' };
 		}
 	}
-	
-	#
-	# COMPLETE RESET
-	#
-	$total = 0;
-	foreach my $package ( $self->shipment->packages() ) {
-		$total += $package->charges() if defined $package->charges();
-	}
-	
+		
 	return $total;
 }
 
@@ -120,6 +181,7 @@ sub get_unique_keys
 
 sub _gen_unique_values
 {
+	trace '()';
 	my ( $self ) = @_;
 		
 	# Now I need to get unique values for all packages.

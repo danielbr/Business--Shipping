@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::USPS - Abstract class for shipping cost rating.
 # 
-# $Id: USPS.pm,v 1.1 2003/07/07 21:38:02 db-ship Exp $
+# $Id: USPS.pm,v 1.2 2003/07/10 07:38:21 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -13,7 +13,7 @@ use strict;
 use warnings;
 
 use vars qw( @ISA $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @ISA = ( 'Business::Shipping::RateRequest::Online' );
 
 
@@ -26,18 +26,11 @@ use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
 
-use Class::MethodMaker
+use Business::Shipping::CustomMethodMaker
 	new_with_init => 'new',
 	new_hash_init => 'hash_init',
 	boolean => [ 'domestic' ];
-	#grouped_fields => [
-	#	required => [
-	#		'',
-	#	],
-	#	internal => [ 'intl' ],
-	#];
-
-
+	
 use constant INSTANCE_DEFAULTS => (
 	'prod_url'		=> 'http://production.shippingapis.com/ShippingAPI.dll',
 	'test_url'		=> 'http://testing.shippingapis.com/ShippingAPItest.dll',
@@ -47,35 +40,22 @@ use constant INSTANCE_DEFAULTS => (
 sub init
 {
 	#trace '( ' . uneval( @_ ) . ' )';
-	my $self   = shift;
-	my %values = ( INSTANCE_DEFAULTS, @_ );
+	my $self   		= shift;
+	my %values 		= ( INSTANCE_DEFAULTS, @_ );
 	$self->hash_init( %values );
 	return;
 }
 
-#sub domestic
-#{
-#	
-#	my $self = shift;
-#	if ( defined $_[ 0 ] and $_[ 0 ] ) {
-#		$self->{ 'domestic' } = 1;
-#		$self->{ 'intl' } = 0;
-#	}
-#	return $self->{ 'domestic' };
-#}
 #
-#sub intl
-#{
-#	
-#	my $self = shift;
-#	if ( defined $_[ 0 ] and $_[ 0 ] ) {
-#		$self->{ 'intl' } = 0;
-#		$self->{ 'domestic' } = 1;
-#	}
-#	return $self->{ 'intl' };
-#}
+# Map to default_package
+#
+foreach my $attribute ( 'ounces', 'pounds', 'container', 'size', 'machinable', 'mail_type' ) {
+	eval "sub $attribute { return shift->default_package->$attribute( \@_ ); }"
+}
 
-
+#sub ounces { return shift->default_package( @_ ); }
+#sub pounds { return shift->default_package( @_ ); }
+#sub container { return shift->default_package->container( @_ ); }
 
 
 
@@ -263,35 +243,35 @@ sub _handle_response
 		# Domestic *doesn't* tell you the price of all services for that package
 		#
 		
-		#$self->total_charges( $response_tree->{Package}->{Postage} );
-		#$self->default_package()->set_price( $self->service(), $response_tree->{Package}->{Postage} );
-		#debug( 'postage is ' .  $response_tree->{Package}->{Postage} );
-		#use Data::Dumper;
-		#debug( Dumper( $response_tree ) );
-		debug( 'Setting charges to ' . $response_tree->{Package}->{Postage} );
-		$self->default_package()->charges( $response_tree->{Package}->{Postage} );
+		my $charges = $response_tree->{Package}->{Postage};
+		if ( ! $charges ) { $self->error( 'charges are 0, error out' ); return $self->clear_is_success(); }
+		debug( 'Setting charges to ' . $charges );
+		my $packages = [ { 'charges' => $charges, }, ];
+		my $results = { $self->shipment->shipper() => $packages };
+		$self->results( $results );
+		
 	}
 	else {
 		#
 		# International *does* tell you the price of all services for each package
 		#
 		
-		#$self->total_charges( $response_tree->{Package}->{Service}->[0]->{Postage} );
 		foreach my $service ( @{ $response_tree->{Package}->{Service} } ) {
 			debug( "Postage for $service->{SvcDescription} service = " . $service->{Postage} );
 			
 			# TODO: store the prices using $self->package_id( $id )->set_charges( $service->{Postage} )
-			#$self->default_package->set_price( $service->{SvcDescription}, $service->{Postage} );
 			
-			if ( $service->{SvcDescription} =~ $self->service() ) {
-				$self->default_package->charges( $service->{ 'Postage' } );
+			if ( $service->{SvcDescription} and $service->{SvcDescription} =~ $self->service() ) {
+				my $charges = $service->{ 'Postage' };
+				if ( ! $charges ) { $self->error( 'charges are 0, error out' ); return $self->clear_is_success(); }
 				debug( 'Setting charges to ' . $service->{Postage} );
+				my $packages = [ { 'charges' => $charges, }, ];
+				my $results = { $self->shipment->shipper() => $packages };
+				$self->results( $results );
 			}
 		}
 	}
-	
 	trace 'returning success';
-	
 	return $self->is_success( 1 );
 }
 

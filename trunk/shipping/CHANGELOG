@@ -1,9 +1,12 @@
 Revision history for Business::Shipping.
 
-0.70  Jul 02
+0.70  Jul 07 2003
 	- Complete rewrite of the entire system
-	- Now more modular and object oriented.
+	- Now more modular, object oriented, smaller, and simpler.
 	- License changed to GPL
+	- New cache system (faster, more reliable)
+	- Enhancements to Class::Methodmaker
+	
 
 0.04  Jun 24 2003
 	- Interchange usertag bugfixes

@@ -15,7 +15,6 @@ DEPENDENCIES
      Digest::SHA1
      Error
      Cache::FileCache
-     Class::MethodMaker
      Data::Dumper
  
 USAGE
@@ -38,8 +37,8 @@ USAGE
 EXAMPLES
     This module is used by the Interchange E-Commerce software
     (http://www.icdevgroup.org). For a reference implementation of
-    Business::Shipping, see the doc/xps-query.tag file, it implements a
-    function that takes shipping-related arguments, builds a
+    Business::Shipping, see the UserTag/business-shipping.tag file, it
+    implements a function that takes shipping-related arguments, builds a
     Business::Shipping object, then returns the calculatd cost.
 
 WEBSITE

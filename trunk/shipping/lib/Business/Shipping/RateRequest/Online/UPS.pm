@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online::UPS - Abstract class for shipping cost rating.
 # 
-# $Id: UPS.pm,v 1.1 2003/07/07 21:38:02 db-ship Exp $
+# $Id: UPS.pm,v 1.2 2003/07/10 07:38:21 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -12,18 +12,20 @@ package Business::Shipping::RateRequest::Online::UPS;
 use strict;
 use warnings;
 
-use vars qw( @ISA $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
-@ISA = ( 'Business::Shipping::RateRequest::Online' );
+use vars qw( $VERSION );
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+#@ISA = ( 'Business::Shipping::RateRequest::Online' );
+use base ( 'Business::Shipping::RateRequest::Online' );
 
 
 use Business::Shipping::RateRequest::Online;
 use Business::Shipping::Debug;
 use Business::Shipping::Package::UPS;
 use XML::Simple 2.05;
+use Cache::FileCache;
 use LWP::UserAgent;
 
-use Class::MethodMaker
+use Business::Shipping::CustomMethodMaker
 	new_with_init => 'new',
 	new_hash_init => 'hash_init',
 	#
@@ -33,22 +35,22 @@ use Class::MethodMaker
 	#	shipment => [ 'to_residential' ],
 	#},
 	#
-	grouped_fields => [
-		required => [
-			'access_key',
-			#'pickup_type', # Custom method
-			
-		],
-		optional => [ qw/
-			test_server
-			no_ssl
-			/
-		],
+	grouped_fields_inherit => [
+		required => [ 'access_key' ],
+		optional => [ 'test_server', 'no_ssl' ]
+		# nothing unique here, either.
 	];
 
-sub find_required { trace( '()' ); 	return ( $_[0]->required(), $_[0]->SUPER::find_required() ); }
+#sub required
+#{
+#	my $self = shift;
+#	debug( 'self->SUPER::required() = ' . join( ', ', $self->SUPER::required() ) . '. That is all.\n' );
+#	
+#	my @required = ( $self->SUPER::required(), 'access_key' );
+#	return @required;
+#}
+#
 sub to_residential { return shift->shipment->to_residential( @_ ); }
-	
 
 use constant INSTANCE_DEFAULTS => (
 	prod_url => 'https://www.ups.com/ups.app/xml/Rate', 
@@ -113,10 +115,6 @@ sub _massage_values
 	my ( $self ) = @_;
 	
 	# Translate service values.
-	
-	use Data::Dumper;
-	print Dumper( $self );
-	
 	# Is the passed mode alpha ('1DA') or numeric ('02')?
 	my $alpha = 1 unless ( $self->shipment->service =~ /\d\d/ );
 	
@@ -326,6 +324,11 @@ sub _handle_response
 		return ( undef );
 	}
 	
+	my $total_charges = $response_tree->{RatedShipment}->{TotalCharges}->{MonetaryValue};
+	if ( ! $total_charges ) {
+		return $self->clear_is_success();
+	}
+	
 	# This should never happen.
 	for ( 'shipper', 'service' ) {
 		if ( ! $self->shipment->$_() ) {
@@ -333,40 +336,31 @@ sub _handle_response
 		}
 	}
 	
-	
 	#
-	# Two 'return' methods:
+	# 'return' method:
 	# 1. Save a "results" hash.
-	# 2. Save the results information in each object.  (Making RateRequest also qualify
-	#    as the "RateReply"
 	#
-	# For now, lets just do them both.  :-) 
+	# TODO: loop over the packages
 	#
-	# TODO: Select one method.
-	#
-
-=pod
-	$self->results(
+	my $packages = [
 		{ 
-			$self->shipment->shipper() => 
-			{
-				$self->shipment->service() => 
-				{
-					#'description' => 'UPS Ground Residential',
-					#'tax'
-					#'shipping_fee_only'
-					#'total' (alias for 'price' and 'charges')
-					#'legal_info'
-					'price' => $response_tree->{RatedShipment}->{TotalCharges}->{MonetaryValue},
-				}		
-			}
-		}
-	);
-=cut
-
-	$self->shipment->default_package->charges( $response_tree->{RatedShipment}->{TotalCharges}->{MonetaryValue} );
+			#description
+			#package_id
+			'charges' => $total_charges, 
+		},
+		#{
+		#	#another package
+		#	# 'charges' => ...
+		#}
+	];
 	
-	return ( 1 );
+	my $results = {
+		$self->shipment->shipper() => $packages
+	};
+	debug3 'results = ' . uneval(  $results );
+	$self->results( $results );
+	
+	return $self->is_success( 1 );
 }
 
 

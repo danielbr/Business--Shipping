@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Online - Abstract class for shipping cost rating.
 # 
-# $Id: Online.pm,v 1.1 2003/07/07 21:38:01 db-ship Exp $
+# $Id: Online.pm,v 1.2 2003/07/10 07:38:21 db-ship Exp $
 # 
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -13,18 +13,21 @@ use strict;
 use warnings;
 
 use vars qw( @ISA $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.1 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.2 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 @ISA = ( 'Business::Shipping::RateRequest' );
 
 use Business::Shipping::Debug;
 use XML::Simple;
 use LWP::UserAgent;
-use Class::MethodMaker
+use Cache::FileCache;
+use Business::Shipping::CustomMethodMaker
 	new_hash_init => 'new',
 	boolean => [ 'test_mode' ],
-	grouped_fields => [
-		required => [ 'user_id', 'password' ], 
+	get_set => [ 'user_id', 'password' ],
+	grouped_fields_inherit => [
+		required => [ 'user_id', 'password' ],
 		optional => [ 'prod_url', 'test_url' ],
+		#unique => [ ] # nothing unique here.
 	],
 	object => [
 		'LWP::UserAgent' => {
@@ -37,21 +40,11 @@ use Class::MethodMaker
 		}
 	];
 
-sub find_required { trace( '()' ); 	return ( $_[0]->required(), $_[0]->SUPER::find_required() ); }
 
-=item $shipment->submit( [%args] )
 
-This method sets some values (optional), generates the request, then parses the
-results.
-
-=cut
-sub submit
+sub perform_action
 {
-	my ( $self, %args ) = @_;
-	trace( "( " . uneval( %args ) . " )" );
-	$self->set( %args ) if %args;
-	$self->_massage_values();
-	$self->validate() or return ( undef );
+	my $self = shift;	
 	my $request = $self->_gen_request();
 	trace( 'Please wait while we get a response from the server...' );
 	$self->response( $self->_get_response( $request ) );
@@ -62,12 +55,14 @@ sub submit
 	#debug( "response content = " . $self->response()->content() );
 	#
 	
-	unless ( $self->response()->is_success() ) { 
+	if ( ! $self->response()->is_success() ) { 
 		error( "HTTP Error. Status line: " . $self->response->status_line .
 		"Content: " . $self->response->content() );
 		return( undef ); 
 	}
-	return $self->_handle_response();
+	# handle_response needs to set cache:
+	# $self->shipment->packages->[0]->charges( $total_charges );
+	
 }
 
 sub _gen_url
@@ -112,8 +107,12 @@ sub _get_response
 	my $self = shift;
 	my $request = shift;
 	
+	# TODO: Finish cache.
+	debug( 'cache disabled for now' );
+	#$self->cache( 0 );
 	
-	if ( $self->cache() ) {
+	#if ( $self->cache() and 0 ) {
+	if ( 0 ) {
 		my @unique_values = $self->_gen_unique_values();
 		my $key = join( "|", @unique_values );
 		my $response = $self->cache()->get( $key );
