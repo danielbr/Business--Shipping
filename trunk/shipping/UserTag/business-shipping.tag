@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# $Id: business-shipping.tag,v 1.29 2004/05/07 05:29:37 danb Exp $
+# $Id: business-shipping.tag,v 1.30 2004/05/12 05:13:12 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 #
@@ -10,18 +10,18 @@ ifndef USERTAG_BUSINESS_SHIPPING
 Variable USERTAG_BUSINESS_SHIPPING     1
 Message -i Loading [business-shipping] usertag...
 Require Module Business::Shipping
-UserTag  business-shipping  Order                    shipper
-UserTag  business-shipping  AttrAlias         mode    shipper
-UserTag  business-shipping  AttrAlias         carrier    shipper
+UserTag  business-shipping  Order         shipper
+UserTag  business-shipping  AttrAlias     mode    shipper
+UserTag  business-shipping  AttrAlias     carrier shipper
 UserTag  business-shipping  Addattr
-UserTag  business-shipping  Documentation     <<EOD
+UserTag  business-shipping  Documentation <<EOD
 =head1 NAME
 
 [business-shipping] - Interchange Usertag for Business::Shipping
 
 =head1 VERSION
 
-[business-shipping] usertag:    $Revision: 1.29 $
+[business-shipping] usertag:    $Revision: 1.30 $
 Requires Business::Shipping:     Revision: 1.04+
 
 =head1 AUTHOR 
@@ -122,32 +122,27 @@ sub {
         return;
     }
     
-    #
     # TODO: If the user didn't specify the "Online::" or "Offline::" 
     # prefix of the shipper variable, change it to "Online::" automatically?
-    #
-    
-    #
+
     # We pass the options mostly unmodifed to the underlying library, so here we
     # take out anything Interchange-specific that isn't necessary with a hash
     # slice.
-    #
+
     delete @{ $opt }{ 'reparse', 'mode', 'hide' };
     
-    #
+
     # Business::Shipping takes a hash.
-    #
+
     my %opt = %$opt;
     $opt = undef;
 
     my $to_country_default = $Values->{ $Variable->{ XPS_TO_COUNTRY_FIELD } || 'country' };
     
-    #
     # STDOUT goes to the IC debug files (usually '/tmp/debug')
     # STDERR goes to the global error log (usually 'interchange/error.log').
     #
     # Defaults: Cache enabled.  Log errors only.
-    #    
     
     my $defaults = {
         'all' => {
@@ -155,14 +150,9 @@ sub {
                 $Variable->{ XPS_TO_COUNTRY_FIELD } || 'country' 
             },
             'to_zip'            => $Values->{ $Variable->{ XPS_TO_ZIP_FIELD } || 'zip' },
+            'to_city'           => $Values->{ $Variable->{ XPS_TO_CITY_FIELD } || 'city' },
             'from_country'      => $Variable->{ XPS_FROM_COUNTRY },
             'from_zip'          => $Variable->{ XPS_FROM_ZIP },
-            'event_handlers'    => {
-                    'error' => 'STDERR',
-                    'debug' => ( $debug ? 'STDOUT' : undef ),
-                    'trace' => undef,
-                    'debug3' => undef,
-            },
             'cache'             => ( defined $opt{ cache } ? $opt{ cache } : 1 ),
         },
         'Online::USPS' => {
@@ -185,11 +175,11 @@ sub {
         },
     };
     
-    #
+
     # Apply all of the above defaults.  Sorting the hash keys causes 'all' to
     # be applied first, which allows each shipper to override the default.
     # For example, Online::USPS overrides the to_country method.
-    #
+
     foreach my $shipper_key ( sort keys %$defaults ) {
         if ( $shipper_key eq $shipper or $shipper_key eq 'all' ) {
             #::logDebug( "shipper_key $shipper_key matched shipper $shipper, or was \'all\'.  Looking into defualts..." ) if $debug;
@@ -219,10 +209,10 @@ sub {
     $rate_request->init( %opt );
     my $tries = 0;
     my $success;
-    #
+
     # Retry the connection if you get one of these errors.  
     # They usually indicate a problem on the shipper's server.
-    #
+
     my @retry_errors = (
         'HTTP Error',
         'HTTP Error. Status line: 500',
@@ -268,17 +258,14 @@ sub {
     
     my $charges;
     
-    #
     # get_charges() should be implemented for all shippers in the future.
     # For now, we just fall back on total_charges()
-    #
+
     $charges ||= $rate_request->total_charges();
 
-    #
     # This is a debugging / support tool.  It uses these variables: 
     #   XPS_GEN_INCIDENTS
     #   SYSTEMS_SUPPORT_EMAIL
-    #
     
     my $report_incident;
     if ( 
@@ -310,7 +297,7 @@ sub {
         my $vars_out = $rate_request->calc_debug_string;
         
         $vars_out .= "Important variables:\n";
-        foreach ( 'shipper', 'service', 'to_country', 'weight', 'to_zip' ) {
+        foreach ( 'shipper', 'service', 'to_country', 'weight', 'to_zip', 'to_city' ) {
             $vars_out .= "\t$_ => \t\'$opt{$_}\',\n";
         }
             
@@ -324,12 +311,12 @@ sub {
             $vars_out .= "\t$_ => \t\t\'" . $rate_request->$_() . "\',\n";
         }
         
-        my $error = $rate_request->user_error();
-        #$error = $error ? "Error: $error." : 'errors: none.';
+        $vars_out .= "\nBusiness::Shipping Version:\t" . $Business::Shipping::VERSION . "\n";
         
-        #
+        my $error = $rate_request->user_error();
+        
         # Ignore errors if [incident] is missing or misbehaves.
-        #
+
         eval {
             $Tag->incident(
                 {

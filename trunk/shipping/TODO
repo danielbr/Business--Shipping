@@ -1,7 +1,12 @@
 ################################################################################
 ##  General TODO
 ################################################################################
- 
+
+ * Is Test::Harness a dependancy?  http://www.plainblack.com/wobjects?func=viewSubmission&wid=1143&sid=654&forumOp=viewThread&forumPostId=108636#108636
+
+ * [BUG] Installation does not work?  Does $MKPATH and $CP in makefile still 
+   work?
+
  * [BUG] 'make test' generates these warnings (because of "use diagnostics"):
     t/45_Offline-UPS..........Argument "Letter" isn't numeric in numeric eq (==)
     at /usr/lib/perl5/site_perl/5.8.3/SQL/Statement.pm line 1120, <GEN3> chunk 
@@ -234,120 +239,14 @@ Anyway, I think I need to investigate it some more.
 
  * Delivery Area Surcharge: check xarea table instead of always applying.
    
+ * [BUG] Serbia: see t/manual/offline_ups_intl_other.pl
+
  * [ENH] Determine the upcoming fuel surcharge changes from UPS website, then 
    check to see if that date has passed.  If so, automatically update the fuel 
    surcharge.
 
- * [BUG] United Arab Emirates XPD:
-   No zone found for geo code (key) United Arab Emirates, type ExpeditedSM_EC.
-        from_country =>                 'US',
-        to_country =>           'AE',
-        event_handlers =>               'HASH(0x9bfbd60)',
-        from_state =>           'WA',
-        service =>              'XPD',
-        from_zip =>             '98682',
-        weight =>               '7',
-        to_zip =>               '17295',
-        cache =>                '1',
-        shipper =>              'Offline::UPS',
-
- * [BUG] Saudi Arabia  
-   Error:  No zone found for geo code (key) Saudi Arabia, type ExpeditedSM_EC.
-        from_country =>                 'US',
-        to_country =>           'SA',
-        event_handlers =>               'HASH(0x9b1596c)',
-        from_state =>           'WA',
-        service =>              'XPD',
-        from_zip =>             '98682',
-        weight =>               '0.5',
-        to_zip =>               '56232',
-        cache =>                '1',
-        shipper =>              'Offline::UPS',
- 
- * St. Lucia
-   Error:  No zone found for geo code (key) St. Lucia, type ExpeditedSM_EC.
-        from_country =>                 'US',
-        to_country =>           'LC',
-        event_handlers =>               'HASH(0x9beec34)',
-        from_state =>           'WA',
-        service =>              'XPD',
-        weight =>               '61',
-        from_zip =>             '98682',
-        to_zip =>               'none',
-        shipper =>              'Offline::UPS',
-        cache =>                '1',
-
- * [BUG] Jordan: 
-   Error:  No zone found for geo code (key) Jordan, type ExpeditedSM_EC.
-        from_country =>                 'US',
-        to_country =>           'JO',
-        event_handlers =>               'HASH(0x9b3a498)',
-        from_state =>           'WA',
-        service =>              'XPD',
-        from_zip =>             '98682',
-        weight =>               '3',
-        to_zip =>               '13110',
-        cache =>                '1',
-        shipper =>              'Offline::UPS',
-
- * [BUG] Israel:
-     No zone found for geo code (key) Israel, type ExpeditedSM_EC.
-        from_country =>                 'US',
-        to_country =>           'IL',
-        event_handlers =>               'HASH(0x9aae31c)',
-        from_state =>           'WA',
-        service =>              'XPD',
-        from_zip =>             '98682',
-        weight =>               '5.5',
-        to_zip =>               '79505',
-        cache =>                '1',
-        shipper =>              'Offline::UPS',
-
- * [BUG] Serbia:
-        from_country =>         'US',
-        to_country =>           'XS',
-        from_state =>           'WA',
-        service =>              'XDM',
-        from_zip =>             '98682',
-        weight =>               '2',
-        to_zip =>               '564',
-        cache =>                '1',
-        shipper =>              'Offline::UPS',
-
- * [BUG] Error:  No zone found for geo code (key) 802, type Express.
-        from_country =>         'US',
-        to_country =>           'CA',
-        from_state =>           'OR',
-        service =>              'XPR',
-        to_residential =>       '1',
-        from_zip =>             '97214',
-        weight =>               '1',
-        to_zip =>               '80210',
-        cache =>                '1',
-        shipper =>              'Offline::UPS',
-
- * [BUG] Error:  No zone found for geo code (key) Cyprus, type ExpeditedSM_EC.
-   Important variables:
-        shipper =>      'Offline::UPS',
-        service =>      'XPD',
-        to_country =>   'CY',
-        weight =>       '2',
-        to_zip =>       '2024',
-
- * [BUG] France Metropolitan:
-		[business-shipping]: Offline::UPS error: No zone found for geo code (key) France,
-		Metropolitan, type ExpeditedSM_EC. .
-		Options were: {'cache' => "1",'from_state' => "Washington",'from_zip' => "98682",'weight' =>
-		"1.5",'to_zip' => "69100",'from_country' => "US",'shipper' => "Offline::UPS",'to_country' =>
-		"FX",'service' => "XPD",}
-
- * [BUG] Canada via XPR/XPD doesn't work (and wont, until canada is implemented)
-		[business-shipping]: Offline::UPS error: No zone found for geo code (key) Canada, type
-		ExpeditedSM_EC. .
-		Options were: {'cache' => "1",'from_state' => "Washington",'from_zip' => "98682",'weight' =>
-		"1",'to_zip' => "h9h2v3",'from_country' => "US",'shipper' => "Offline::UPS",'to_country' =>
-		"CA",'service' => "XPD",}
- * [BUG] 99663 = Seldovia, Alaska
+ * [ENH] From Canada to Alaska
+                99663 = Seldovia, Alaska
 		my $rate_request = Business::Shipping->rate_request(
                        shipper         => 'Online::UPS',
                        from_canada     => 'CA',
@@ -367,21 +266,14 @@ Anyway, I think I need to investigate it some more.
  * [ENH] Performance enhancement: instead of transforming the data with
    calc_zone_data() everytime, just re-write the data file.
  
- * [DOC] Refer to Express for Express Plus.  To determine whether Express Plus
-   service is available to your destination postal code, call 800-782-7892.
-
- * Analyze the 'extra services fees' table:
-   - Extended/Domestic Area Surcharge:  Residential = 1.75, Commercial= 1.00
-   - Residential Surcharge = 1.40 (always assume yes, unless explicitly stated
-     no).
- 
- * [ENH] Allow user to specify "use default" for Makefile.PL (already done?)
+ * [ENH] Allow user to specify "use default" or "quiet" for Makefile.PL, which 
+   will cause it to use defaults.
  
  * [ENH] Change from_state to a Shipment function, which will calculate and set 
    the is_from_west_coast() value, instead of doing from within 
    massage_values().
 
- * [ENH] Have a simple example script in the doc directory.
+ * [ENH] Add a simple example script in the bin directory.
 
  * [ENH] How to find the current fuel surcharge rate:
    - http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html	
@@ -389,14 +281,11 @@ Anyway, I think I need to investigate it some more.
    
  * [ENH] Modify the system so that the easy-to-read data is read into memory
          just once, and then is optimized for lookup speed, so the sequential
-		 lookups will be as fast as possible.  (Increases memory footprint, but
-		 it should be worth it).
+         lookups will be as fast as possible.  (Increases memory footprint, but
+         it should be worth it).
  
  * [ENH] Canada needs to check for EAS surcharge (see canww.csv->'EAS' column)
  
- * [ENH] Add support for Canada (UPS Standard, XPD, XPR, XDM)
-         - Requires new parsing method (Canada ZIP style, etc.)
-
  * [ENH] Add test for the support files directory.  (Just warn, because they 
          may be running the test as a non-priveledged user).
  
@@ -404,13 +293,13 @@ Anyway, I think I need to investigate it some more.
 
  * [ENH] New table design?
 
-		zone table:
+        zone table:
 		
- 			zone_from_exactly	zone_from_lt	zone_from_gt	zip_to_exactly	zip_to_lt	zip_to_gt	service
-		
-		weight table:
-		
-			weight	zone	amt
+ 	zone_from_exactly	zone_from_lt	zone_from_gt	zip_to_exactly	zip_to_lt	zip_to_gt	service
+	
+        weight table:
+	
+        weight	zone	amt
 
  * [ENH] Add tests for Alaska, Hawaii, Canada, and International.
          Add tests for 1DAP.
@@ -424,24 +313,23 @@ Anyway, I think I need to investigate it some more.
 ##  Online::UPS TODO
 ################################################################################
  
- * [BUG] Fix the multi-package API for UPS.  
-   # TODO: Move to a different XML generation scheme, since all the packages 
-   #       in a multi-package shipment will have the name "Package".
-   # TODO: multi-package support: loop over the packages
-   
  * [BUG] Return error message if trying to ship to military americas:
    - USP does not ship to APO or FPO addresses.
 
  * [BUG] Be able to handle "mal-formed XML doc" error return from UPS.  
- 	- Right now, it still tries to parse as an XML doc.
+   - Right now, it still tries to parse as an XML doc.
 
  * [ENH] Allow better names, like "One Day Air" instead of 1DA.
    - Better names for packaging too (instead of numbers).
  
  * [ENH] UPS support for sending multiple simultaneous requests
-	- (USPS had built-in support in the API for Intl)
- 	- If they don't support it, try LWP::Parallel::UserAgent.
-	
+   - (USPS had built-in support in the API for Intl)
+   - If they don't support it, try LWP::Parallel::UserAgent.
+ 
+ * [ENH] Implement the multi-package API for UPS.  
+   Move to a different XML generation scheme, since all the packages 
+   in a multi-package shipment will have the name "Package".
+ 	
 ################################################################################
 ##  Interchange UserTag TODO
 ################################################################################

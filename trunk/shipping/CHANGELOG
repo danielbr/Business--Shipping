@@ -6,6 +6,7 @@ Revision history for Business::Shipping
   
   Compatibility
     - Clone module now required (for Tracking).
+    - Test::More module required.
     - Class::MethodMaker 2.02 now required.  CPAN installation instructions:
       perl -MCPAN -e 'install Class::MethodMaker::Engine'
       Updated because the new version has sugary syntax.
@@ -47,7 +48,8 @@ Revision history for Business::Shipping
     - Update fuel surcharge to 6.0%.
     - Minor validity changes:
       - Warning about UPS Standard being available to Canada only.
-      - Cyprus does not have XPD
+      - These do not have XPD: Cyprus, United Arab Emirates, Saudi Arabia, St.
+        Lucia, Israel
     - Restrictions for Canada added.
     - Rewrite of surcharge/adder system for consistency.
     - Make pricing components available to the user.  Allows the user to see
@@ -64,6 +66,7 @@ Revision history for Business::Shipping
       - Caused by the "Gaps in data are not accounted for" bug.
         Error:  Zero cost returned for mode ExpressPlusSM, geo code (key) United 
         Kingdom.
+    - [Fixed] [Bug] France XPR
 
   Online::USPS
     - Pounds, ounces, and weight handling refactored.
@@ -74,6 +77,8 @@ Revision history for Business::Shipping
       the "send incident report code" feature -- it sends it even if to_zip is
       missing.
         - Fixed with "Required Options" changes.
+    - City added
+    - Incident report enhancements.
 
 
 1.06  Feb 11 2004

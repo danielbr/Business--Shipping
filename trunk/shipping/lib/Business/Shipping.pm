@@ -1,6 +1,6 @@
 # Business::Shipping - Interface for shippers (UPS, USPS)
 #
-# $Id: Shipping.pm,v 1.22 2004/05/06 20:15:18 danb Exp $
+# $Id: Shipping.pm,v 1.23 2004/05/12 05:13:13 danb Exp $
 #
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
@@ -96,7 +96,7 @@ config/log4perl.conf.
 
 =cut
 
-$VERSION = do { my @r=(q$Revision: 1.22 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = '1.50';
 
 use strict;
 use warnings;
@@ -111,7 +111,6 @@ use Class::MethodMaker 2.0
       scalar => [ { -static => 1, -default => 'tx_type' }, 'Optional' ]
     ];
 
-    
 =head2 $self->init( %args )
 
 Generic attribute setter.

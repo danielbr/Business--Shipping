@@ -9,7 +9,7 @@ UserTag  ups-query  Routine <<EOR
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
 #
-# $Id: ups-query.tag,v 1.7 2004/03/08 17:13:54 danb Exp $
+# $Id: ups-query.tag,v 1.8 2004/05/12 05:13:13 danb Exp $
 
 =head1 NAME
 
@@ -27,11 +27,11 @@ sub
     my( $mode, $origin, $zip, $weight, $country, $opt) = @_;
     my %opt = %$opt;
     return $Tag->business_shipping(
-        mode             => 'UPS',
-        service            => $mode,
-        weight            => $weight,
-        to_zip            => $zip,
-        to_country        => $country,
+        mode       => 'UPS',
+        service    => $mode,
+        weight     => $weight,
+        to_zip     => $zip,
+        to_country => $country,
         %opt,
     );
 }
