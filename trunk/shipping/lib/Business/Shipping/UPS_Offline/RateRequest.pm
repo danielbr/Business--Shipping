@@ -11,11 +11,11 @@
 # was written by Mike Heins <mike@perusion.com>.  See http://www.icdevgroup.org
 # for more info.
 
-package Business::Shipping::RateRequest::Offline::UPS;
+package Business::Shipping::UPS_Offline::RateRequest;
 
 =head1 NAME
 
-Business::Shipping::RateRequest::Offline::UPS - Calculates shipping cost offline
+Business::Shipping::UPS_Offline::RateRequest - Calculates shipping cost offline
 
 =head1 VERSION
 
@@ -42,8 +42,8 @@ $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 use strict;
 use warnings;
 use base ( 'Business::Shipping::RateRequest::Offline' );
-use Business::Shipping::Shipment::UPS;
-use Business::Shipping::Package::UPS;
+use Business::Shipping::UPS_Offline::Shipment;
+use Business::Shipping::UPS_Offline::Package;
 use Business::Shipping::Logging;
 use Business::Shipping::Data;
 use Business::Shipping::Util;
@@ -106,7 +106,8 @@ use Class::MethodMaker 2.0
                 #
                 # The forward is just for a shortcut.
                 #
-      scalar => [ { -type    => 'Business::Shipping::Shipment::UPS',
+      scalar => [ { -type    => 'Business::Shipping::UPS_Offline::Shipment',
+                    -default_ctor => 'new',
                     -forward => [ 
                                     'service', 
                                     'from_country',

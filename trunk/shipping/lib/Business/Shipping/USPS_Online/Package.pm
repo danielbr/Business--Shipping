@@ -1,11 +1,4 @@
-# $Id$
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-# 
-
-package Business::Shipping::Package::USPS;
+package Business::Shipping::USPS_Online::Package;
 
 =head1 NAME
 

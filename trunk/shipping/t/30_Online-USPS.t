@@ -10,10 +10,10 @@ use Business::Shipping;
 my $standard_method = new Business::Shipping->rate_request( shipper => 'Online::USPS' );
 ok( defined $standard_method,    'USPS standard object construction' );
 
-my $other_method = new Business::Shipping::RateRequest::Online::USPS;
+my $other_method = new Business::Shipping::USPS_Online::RateRequest;
 ok( defined $other_method,        'USPS alternate object construction' );
 
-my $package = new Business::Shipping::Package::USPS;
+my $package = new Business::Shipping::USPS_Online::Package;
 ok( defined $package,            'USPS package object construction' );
 
 sub test

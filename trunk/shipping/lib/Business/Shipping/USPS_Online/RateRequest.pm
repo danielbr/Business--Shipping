@@ -1,15 +1,6 @@
-# Business::Shipping::RateRequest::Online::USPS - Estimates shipping cost online
-# 
-# $Id$
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-# 
-
 =head1 NAME
 
-Business::Shipping::RateRequest::Online::USPS - Estimates shipping cost online 
+Business::Shipping::USPS_Online::RateRequest - Estimates shipping cost online 
 
 See Business::Shipping.pm POD for usage information.
 
@@ -47,7 +38,7 @@ $Rev$      $Date$
 
 =cut
 
-package Business::Shipping::RateRequest::Online::USPS;
+package Business::Shipping::USPS_Online::RateRequest;
 
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
@@ -55,8 +46,8 @@ use strict;
 use warnings;
 use base( 'Business::Shipping::RateRequest::Online' );
 use Business::Shipping::Logging;
-use Business::Shipping::Package::USPS;
-use Business::Shipping::Shipment::USPS;
+use Business::Shipping::USPS_Online::Shipment;
+use Business::Shipping::USPS_Online::Package;
 use XML::Simple 2.05;
 use XML::DOM;
 use LWP::UserAgent;
@@ -73,7 +64,8 @@ use Class::MethodMaker 2.0
       scalar => [ { -default => 1 }, 'domestic' ],
       scalar => [ { -default => 'http://production.shippingapis.com/ShippingAPI.dll'  }, 'prod_url' ],
       scalar => [ { -default => 'http://testing.shippingapis.com/ShippingAPItest.dll' }, 'test_url' ],
-      scalar => [ { -type    => 'Business::Shipping::Shipment::USPS',
+      scalar => [ { -type    => 'Business::Shipping::USPS_Online::Shipment',
+                    -default_ctor => 'new',
                     -forward => [ 
                                   'from_city',
                                   'to_city',

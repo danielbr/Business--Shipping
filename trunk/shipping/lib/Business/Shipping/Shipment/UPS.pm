@@ -37,7 +37,7 @@ use Class::MethodMaker 2.0
     [ 
       new    => [ { -hash => 1, -init => 'this_init' },  'new' ],
       scalar => [ { default => 1 }, 'to_residential' ],
-      scalar => [ 'from_state', '_service' ],
+      scalar => [ '_service' ],
       #
       # We need this offline boolean to know if from_state is required.
       #

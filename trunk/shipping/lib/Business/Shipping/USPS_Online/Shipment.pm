@@ -1,15 +1,8 @@
-# $Id$
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-# 
-
-package Business::Shipping::Shipment::USPS;
+package Business::Shipping::USPS_Online::Shipment;
 
 =head1 NAME
 
-usiness::Shipping::Shipment::USPS
+Business::Shipping::USPS_Online::Shipment
 
 =head1 VERSION
 
@@ -35,11 +28,12 @@ use base ( 'Business::Shipping::Shipment' );
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Util;
-use Business::Shipping::Package;
+use Business::Shipping::USPS_Online::Package;
 use Class::MethodMaker 2.0 
     [ 
       new   =>  [ { -hash    => 1, -init => 'this_init' }, 'new' ],
-      array =>  [ { -type    => 'Business::Shipping::Package::USPS' }, 'packages' ],
+      array =>  [ { -type    => 'Business::Shipping::USPS_Online::Package',
+                    -default_ctor => 'new' }, 'packages' ],
       scalar => [ { -static  => 1, 
                     -default => 'packages=>Business::Shipping::Package::USPS' 
                   }, 

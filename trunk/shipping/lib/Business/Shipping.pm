@@ -201,7 +201,7 @@ or offline tables.  A hash is accepted as input with the following key values:
 =item * shipper
 
 The name of the shipper to use. Must correspond to a module by the name of:
-C<Business::Shipping::RateRequest::SHIPPER>.  For example, C<Offline::UPS>.
+C<Business::Shipping::SHIPPER>.  For example, C<UPS_Online>.
 
 =item * user_id
 
@@ -246,40 +246,35 @@ sub rate_request
 {
     my $class = shift;
     my ( %opt ) = @_;
-    not $opt{ shipper } and Carp::croak( "shipper required" ) and return undef;
+    my $shipper = $opt{ shipper };
+    
+    Carp::croak 'shipper required' unless $opt{ shipper };
 
-    # Supports the specification of 'Offline::UPS' -- but if just 'UPS' is sent
-    # then it assumes 'Online::UPS' for backwards compatibility.
-
-    my $full_shipper;
-    if ( $opt{ shipper } =~ /::/ ) {
-        $full_shipper = $opt{ shipper };
-        my @shipper_components = split( '::', $opt{ shipper } );    
-        $opt{ shipper } = pop @shipper_components;
-    }
-    else {
-        $full_shipper = "Online::" . $opt{ shipper };
+    # COMPAT: shipper compatibility
+    # 1. Really old: "UPS" or "USPS" (assumes Online::)
+    # 2. Semi-old:   "Online::UPS", "Offline::UPS", or "Online::USPS"
+    # 3. New:        "UPS_Online", "UPS_Offline", or "USPS_Online"
+    
+    my %old_to_new = (
+        'Online::UPS'  => 'UPS_Online',
+        'Offline::UPS' => 'UPS_Offline',
+        'Online::USPS' => 'USPS_Online',
+        'UPS'  => 'UPS_Online',
+        'USPS' => 'USPS_Online'
+    );
+    
+    while ( my ( $old, $new ) = each %old_to_new ) {
+        if ( $shipper eq $old ) {
+            $shipper = $new;
+        }
     }
         
-    my $package;
-    my $shipment;
-    my $new_rate_request;
-    $@ = '';
-    eval { $package  = Business::Shipping->new_subclass( 'Package::'  . $opt{ 'shipper' } ); };
-    die "Error when creating Package subclass: $@" if $@;
-    die "package was undefined."  if not defined $package;
-    eval { $shipment = Business::Shipping->new_subclass( 'Shipment::' . $opt{ 'shipper' } ); };
-    die "Error when creating Shipment subclass: $@" if $@;
-    die "shipment was undefined." if not defined $shipment;
-    eval { $new_rate_request = Business::Shipping->new_subclass( 'RateRequest::' . $full_shipper ); };
-    die "Error when creating RateRequest subclass: $@" if $@;
-    die "RateRequest was undefined." if not defined $new_rate_request;
+    my $rr = Business::Shipping->new_subclass( $shipper . '::RateRequest' );
+    die "New $shipper::RateRequest object was undefined." if not defined $rr;
     
-    $shipment->packages_push( $package );
-    $new_rate_request->shipment( $shipment );
-    $new_rate_request->init( %opt );
-    
-    return ( $new_rate_request );
+    $rr->init( %opt );
+   
+    return $rr;
 }
 
 =head2 Business::Shipping->new_subclass( "Subclass::Name", %opt )
@@ -292,10 +287,12 @@ sub new_subclass
 {
     my ( $class, $subclass, %opt ) = @_;
     
-    my $new_class = $class . '::' . $subclass;
     Carp::croak( "Error before new_subclass was called: $@" ) if $@;
+    
+    my $new_class = $class . '::' . $subclass;
     eval "use $new_class";
     Carp::croak( "Error when trying to use $new_class: \n\t$@" ) if $@;
+    
     my $new_sub_object = eval "$new_class->new()";
     Carp::croak( "Failed to create new $new_class object.  Error: $@" ) if $@;
     
@@ -304,8 +301,10 @@ sub new_subclass
 
 sub event_handlers
 {
-    warn 'The event_handlers() method is depreciated.  Event handlers are ' . 
-         'now configured via config/log4perl.conf.'
+    warn 'The event_handlers() method has not yet been implement for the new ' . 
+         'Log::Log4Perl system.  In the mean time, configure event handlers ' .
+         'in config/log4perl.conf.';
+    return;
 }
 
 1;

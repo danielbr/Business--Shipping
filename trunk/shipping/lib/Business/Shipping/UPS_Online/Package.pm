@@ -1,14 +1,13 @@
-package Business::Shipping::Package::UPS;
+package Business::Shipping::UPS_Online::Package;
 
 =head1 NAME
 
-Business::Shipping::Package::UPS
+Business::Shipping::UPS_Online::Package
 
 =head1 VERSION
 
-$Rev$
-
-$Date$
+$Rev: 157 $
+$Date: 2004-07-09 14:25:49 -0700 (Fri, 09 Jul 2004) $
 
 =head1 METHODS
 
@@ -16,17 +15,15 @@ $Date$
 
 =cut
 
-
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+$VERSION = do { my $r = q$Rev: 157 $; $r =~ /\d+/; $&; };
 
 use strict;
 use warnings;
 use base ( 'Business::Shipping::Package' );
 
-
 =item * packaging
 
-UPS-only attribute.
+UPS_Online-only attribute.
 
 =cut
  
@@ -34,13 +31,10 @@ use Class::MethodMaker 2.0
     [ 
       new    => [ qw/ -hash new / ],
       scalar => [ 'packaging' ],
-      scalar => [ { -static => 1, -default => 'weight'    }, 'Required' ],
       scalar => [ { -static => 1, -default => 'packaging' }, 'Optional' ],
       scalar => [ { -static => 1, -default => 'packaging' }, 'Unique' ]      
     ];
 
-
-    
 1;
 
 __END__

@@ -3,7 +3,29 @@ Revision history for Business::Shipping
 
 1.51  CVS
 
-  * [Enh] Die if path to support files is missing files.
+  Compatibility
+    - Module names have been restructured.  When using 
+      Business::Shipping->rate_request(), be sure to use the new values for 
+      'shipper':
+      shipper => 'UPS_Online',
+      shipper => 'USPS_Online',
+      shipper => 'UPS_Offline',
+      
+  General
+    * [Enh] Die if path to support files is missing files.
+    * [Enh] Restructure all of the modules
+      - Keep everything the same, except the "lowest level":
+          "RateRequest::Online::UPS"   => "UPS_Online::RateRequest"
+	  "RateRequest::Offline::UPS"  => "UPS_Offline::RateRequest"
+	  "RateRequest::Online::USPS"  => "USPS_Online::RateRequest"
+	  "Tracking::UPS" => "UPS_Online::Tracking"
+      - Benefits:
+        All of the related code is in one directory.
+        All of the abstract code is in neutral directories.
+      - Note: This will totally break the ClassInfo/ClassAttribs system, because 
+        that system just uses the names, instead of actually checking the 
+        inheritance trees.
+
 
 1.50  CVS
 

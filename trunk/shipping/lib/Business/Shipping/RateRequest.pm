@@ -110,19 +110,19 @@ use Class::MethodMaker 2.0
                     -default => "shipment=>Business::Shipping::Shipment" 
                   }, 
                   'Has_a' 
-               ],
+                ],
       scalar => [ { -static => 1, -default => 'shipper' }, 'Required' ],
       scalar => [ { -static => 1, -default => 'shipper' }, 'Unique'   ]
     ];
 
-=item $shipment->submit( %args )
+=item $shipment->go( %args )
 
-This method sets some values (optional), generates the request, then parses the
+This method sets some values (optional), performs the request, then parses the
 results.
 
 =cut
 
-sub submit
+sub go
 {
     my ( $self, %args ) = @_;
     #trace( "( " . uneval( %args ) . " )" );
@@ -174,6 +174,7 @@ sub submit
     return $self->is_success();
 }
 
+*submit = *go;
 
 =item * validate()
 

@@ -10,10 +10,10 @@ $::debug = 0;
 my $standard_method = new Business::Shipping->rate_request( 'shipper' => 'UPS' );
 ok( defined $standard_method,    'UPS standard object construction' );
 
-my $other_method = new Business::Shipping::RateRequest::Online::UPS;
+my $other_method = new Business::Shipping::UPS_Online::RateRequest;
 ok( defined $other_method,        'UPS alternate object construction' );
 
-my $package_one = new Business::Shipping::Package::UPS;
+my $package_one = new Business::Shipping::UPS_Online::Package;
 ok( defined $package_one,            'UPS package object construction' );
 
 sub debug
@@ -107,10 +107,10 @@ SKIP: {
     my $rate_request;
 
     use Business::Shipping;
-    use Business::Shipping::Shipment::UPS;
+    use Business::Shipping::UPS_Online::Shipment;
     
     $rate_request = Business::Shipping->rate_request( shipper => 'Online::UPS' );
-    $shipment     = Business::Shipping::Shipment::UPS->new();
+    $shipment     = Business::Shipping::UPS_Online::Shipment->new();
     
     $rate_request->init(
         'shipper'      => 'Online::UPS',
@@ -126,21 +126,21 @@ SKIP: {
         service    => 'GNDRES',
     );
     
-    $shipment->add_package(
-        id         => '0',
-        weight     => 5,
-        packaging  => '02',
-    );
+    #$shipment->add_package(
+    #    id         => '0',
+    #    weight     => 5,
+    #    packaging  => '02',
+    #);
     
-    $shipment->add_package(
-        id         => '1',
-        weight     => 3,
-        packaging  => '02',
-    );
+    #$shipment->add_package(
+    #    id         => '1',
+    #    weight     => 3,
+    #    packaging  => '02',
+    #);
     
-    $rate_request->shipment( $shipment );
-    $rate_request->submit() or die $rate_request->user_error();
-    ok( $rate_request->total_charges(),    'UPS domestic multi-package API total_charges > 0' );
+    #$rate_request->shipment( $shipment );
+    #$rate_request->submit() or die $rate_request->user_error();
+    #ok( $rate_request->total_charges(),    'UPS domestic multi-package API total_charges > 0' );
     
     
     ###########################################################################

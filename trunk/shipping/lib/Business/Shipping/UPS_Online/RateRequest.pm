@@ -1,17 +1,14 @@
-# Business::Shipping::RateRequest::Online::UPS - Estimates shipping cost online
-# 
 # $Id$
 # 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
-# 
 
-package Business::Shipping::RateRequest::Online::UPS;
+package Business::Shipping::UPS_Online::RateRequest;
 
 =head1 NAME
 
-Business::Shipping::RateRequest::Online::UPS - Estimates shipping cost online
+Business::Shipping::UPS_Online::RateRequest - Estimates shipping cost online
 
 See Shipping.pm POD for usage information.
 
@@ -91,7 +88,8 @@ use warnings;
 use base ( 'Business::Shipping::RateRequest::Online' );
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
-use Business::Shipping::Package::UPS;
+use Business::Shipping::UPS_Online::Package;
+use Business::Shipping::UPS_Online::Shipment;
 use Business::Shipping::Util;
 use XML::Simple 2.05;
 use Cache::FileCache;
@@ -115,7 +113,8 @@ use Class::MethodMaker 2.0
       scalar => [ { -static => 1, -default => 'test_server, no_ssl, to_city' }, 'Optional' ],
       scalar => [ { -default => 'https://www.ups.com/ups.app/xml/Rate' }, 'prod_url' ],
       scalar => [ { -default => 'https://wwwcie.ups.com/ups.app/xml/Rate' }, 'test_url' ],      
-      scalar => [ { -type    => 'Business::Shipping::Shipment::UPS',
+      scalar => [ { -type    => 'Business::Shipping::UPS_Online::Shipment',
+                    -default_ctor => 'new',
                     -forward => [ 
                                   'from_city',
                                   'to_city',
@@ -143,7 +142,7 @@ use Class::MethodMaker 2.0
                    'shipment'
                  ],
       scalar => [ { -static => 1, 
-                    -default => "shipment=>Business::Shipping::Shipment::UPS" 
+                    -default => "shipment=>Business::Shipping::UPS_Online::Shipment" 
                   }, 
                   'Has_a' 
                ],
@@ -170,12 +169,12 @@ sub pickup_type
     my $alpha = 1 if ( $self->{ 'pickup_type' } =~ /\w+/ );
     if ( $alpha ) { 
         my %pickup_type_map = (
-            'daily pickup'            => '01',
-            'customer counter'        => '03',
-            'one time pickup'        => '06', 
-            'on call air'            => '07', 
-            'letter center'            => '19', 
-            'air service center'    => '20',
+            'daily pickup'       => '01',
+            'customer counter'   => '03',
+            'one time pickup'    => '06', 
+            'on call air'        => '07', 
+            'letter center'      => '19', 
+            'air service center' => '20',
         );
         $self->{ 'pickup_type' } = $pickup_type_map{ $self->{ 'pickup_type' } } 
             if $pickup_type_map{ $self->{ 'pickup_type' } }

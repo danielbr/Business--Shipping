@@ -1,4 +1,4 @@
-# Business::Shipping::Tracking::UPS - Abstract class for tracking shipments
+# Business::Shipping::UPS_Online::Tracking - Abstract class for tracking shipments
 # 
 # $Id$
 # 
@@ -11,7 +11,7 @@
 
 =head1 NAME
 
-Business::Tracking::UPS - A UPS module for Tracking Packages
+Business::Shipping::UPS_Online::Tracking - A UPS module for Tracking Packages
 
 See Tracking.pm POD for usage information.
 

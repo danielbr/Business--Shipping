@@ -69,9 +69,7 @@ TODO: {
 }; #/end TODO
 
 
-SKIP: {
-    skip( 'Verbose Tests are disabled by default', 1 ) 
-        unless ( $ENV{ VERBOSE_TESTS } );
+if ( $ENV{ VERBOSE_TESTS } ) {
 
     #
     # Test error message handling
