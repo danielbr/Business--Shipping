@@ -1,8 +1,8 @@
-# Copyright (c) 2003 Kavod Technologies, and Dan Browning.  
-# All rights reserved. This program is free software; you can 
-# redistribute it and/or modify it under the same terms as Perl 
-# itself.
-# $Id: UPS.pm,v 1.7 2003/04/23 00:45:42 db-ship Exp $
+# Copyright (c) 2003 Kavod Technologies, Dan Browning.
+# All rights reserved. This program is free software; you can redistribute it
+# and/or modify it under the same terms as Perl itself.
+#
+# $Id: UPS.pm,v 1.8 2003/04/30 08:25:47 db-ship Exp $
 package Business::Ship::UPS;
 use strict;
 use warnings;
@@ -67,7 +67,7 @@ The following methods are available:
 =cut
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.7 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.8 $ =~ /(\d+)\.(\d+)/);
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
@@ -405,12 +405,11 @@ sub clone
 
 =head1 COPYRIGHT
 
-Copyright (c) 2003 Kavod Technologies and Dan Browning. 
-All rights reserved. This program is free software; you can 
-redistribute it and/or modify it under the same terms as Perl 
-itself.
+	Copyright (c) 2003 Kavod Technologies, Dan Browning.
+	All rights reserved. This program is free software; you can redistribute it
+	and/or modify it under the same terms as Perl itself.
 
-UPS is a registered trademark of United Parcel Service. 
+	UPS is a registered trademark of United Parcel Service. 
 
 =cut
 

@@ -9,6 +9,8 @@
 	# USPS handles each package as a separate shipment 
 	# (i.e. can have different services)
 	# more concept code:
+	
+		# Note that USPS has a different methodology for International.
 		my $package1 = new Business::Ship::USPS::Package;
 		$package1->set(
 			id => '1',  #optional, will automatically assign id based on arrival. used for array index.

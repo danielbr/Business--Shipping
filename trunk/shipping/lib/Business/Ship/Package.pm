@@ -3,21 +3,19 @@ use strict;
 use warnings;
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.1 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.2 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship;
-
-#@ISA = qw( Business::Ship::Package );
 
 sub new
 {
 	my( $class, %arg ) = @_;
 	
-	my %options_defaults = qw/
-		from_zip	undef
-		to_zip		undef
-		weight		undef
-	/;
+	my %options_defaults = (
+		from_zip	=> undef,
+		to_zip		=> undef,
+		weight		=> undef,
+	);
 	
 	my $self = bless( {}, $class );
 	

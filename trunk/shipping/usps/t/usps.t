@@ -2,11 +2,11 @@
 
 print "Testing USPS...\n\n";
 
-use Business::Ship;
+use Business::Ship::USPS;
+use Business::Ship::UPS;
 use Data::Dumper;
 
-my $shipment = new Business::Ship( 'USPS' );
-
+my $shipment = new Business::Ship::USPS;
 
 $shipment->set(
 	'event_handlers' => ({ 'debug' => 'STDOUT' }),
@@ -36,7 +36,24 @@ my %test_request_2 = (qw/
 	machinable	False
 /);
 
-$shipment->set( %test_request_2 );
+#mail_type: "package", "postcards or aerogrammes", "matter for the blind", "envelope"
+my %intl_request_1 = (qw/
+	test_mode	1
+	pounds		2
+	ounces		0
+	mail_type	Package
+	to_country	Albania
+/);
+
+my %intl_request_2 = (qw/
+	test_mode	1
+	pounds		0
+	ounces		1
+	mail_type	Postcards or Aerogrammes
+	to_country	Algeria
+/);
+
+$shipment->set( %intl_request_1 );
 	
 =pod
 $shipment->set(
@@ -70,7 +87,79 @@ print "\n";
 
 =pod
 
-Test rate requests from USPS...
+International Test rate requests from USPS...
+
+Valid Test Request #1
+http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx">< Package ID="0"><Pounds>2</Pounds><Ounces>0</Ounces><MailType>Package</MailType><Country>Albania</Country></Package></IntlRateRequest>
+
+Request #1 in better form:
+<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx">
+	< Package ID="0">
+		<Pounds>2</Pounds>
+		<Ounces>0</Ounces>
+		<MailType>Package</MailType>
+		<Country>Albania</Country>
+	</Package>
+</IntlRateRequest>
+
+
+Response #1:
+<?xml version="1.0" ?>
+<IntlRateResponse>
+	<Package ID="0">
+		<Prohibitions>Currency of the Albanian State Bank (Banknotes in lek). Extravagant clothes and other articles contrary to Albanians' taste. Items sent by political emigres.</Prohibitions>
+		<Restrictions>Hunting arms require an import permit. Medicines for personal use are admitted provided the addressee has a medical certificate.</Restrictions>
+		International Rates Calculator API 13
+		USPS Web Tool Kit User’s Guide <Observations>1. Letter packages may not contain dutiable articles. 2. Parcel post service extends only to: Berat Konispol Milot Bilisht Korce Peqin</Observations>
+		<CustomsForms>Postal Union Mail (LC/AO): PS Form 2976 or 2976-A (see 123.61) Parcel Post: PS Form 2976-A inside 2976-E (envelope)</CustomsForms>
+		<ExpressMail>Country Code AL Reciprocal Service Name EMS Required Customs Form/Endorsement 1. For correspondence and business papers: PS Form 2976, Customs - CN 22 (Old C 1) and Sender's Declaration (green label). Endorse item clearly next to mailing label as BUSINESS PAPERS.</ExpressMail>
+		<AreasServed>Tirana.</AreasServed>
+		<Service ID="0">
+		<Pounds>2</Pounds>
+		<Ounces>0</Ounces>
+		<MailType>Package</MailType>
+		<Country>ALBANIA</Country>
+		<Postage>87</Postage>
+		<SvcCommitments>See Service Guide</SvcCommitments>
+		<SvcDescription>Global Express Guaranteed (GXG) Document Service</SvcDescription>
+		<MaxDimensions>Max. length 46", depth 35", height 46" and max. girth 108"</MaxDimensions>
+		<MaxWeight>22</MaxWeight>
+		</Service>
+		<Service ID="1">
+		<Pounds>2</Pounds>
+		<Ounces>0</Ounces>
+		<MailType>Package</MailType>
+		<Country>ALBANIA</Country>
+		<Postage>96</Postage>
+		<SvcCommitments>See Service Guide</SvcCommitments>
+		<SvcDescription>Global Express Guaranteed (GXG) Non-Document Service</SvcDescription>
+		<MaxDimensions>Max. length 46", depth 35", height 46" and max. girth 108"</MaxDimensions>
+		<MaxWeight>22</MaxWeight>
+		</Service>
+	</Package>
+</IntlRateResponse>
+
+
+Valid Test Request #2
+http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx">< Package ID="0"><Pounds>0</Pounds><Ounces>1</Ounces><MailType>Postcards or Aerogrammes</MailType><Country>Algeria</Country></Package></IntlRateRequest>
+
+Pre-defined Error Request #1: “Invalid Weight for Pounds”
+The pre-defined error in this request is using non- numeric input for <Pounds>.
+http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx">< Package ID="0"><Pounds>two</Pounds><Ounces>0</Ounces><MailType>Package</MailType><Country>Albania</Country></Package></IntlRateRequest>
+Pre-defined Error Request #2: “Invalid Weight for Ounces”
+The pre-defined error in this request is using non- numeric input for <Ounces>.
+http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx">< Package ID="0"><Pounds>2</Pounds><Ounces>zero</Ounces><MailType>Package</MailType><Country>Albania</Country></Package></IntlRateRequest>
+Error Request #3: “No Weight Entered”
+The pre-defined error in this request is leaving the inputs for both <Pounds> and <Ounces> empty.
+http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx"><Package ID="0"><Pounds>0</Pounds><Ounces>0</Ounces><MailType>Package</MailType><Country>Albania</Country></Package></IntlRateRequest>
+Pre-defined Error Request #4: “Invalid Mail Type”
+The pre-defined error in this request is using input other than: “package,” “postcards or aerogrammes,” “matter for the blind,” or “envelope” for <MailType>.
+http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx">< Package ID="0"><Pounds>2</Pounds><Ounces>2</Ounces><MailType>Express</MailType><Country>Albania</Country></Package></IntlRateRequest>
+Pre-defined Error Request #5: “Invalid Country”
+The pre-defined error in this request is using invalid input for <Country>. (This error was created for testing purposes only.)
+http://SERVERNAME/ShippingAPITest.dll?API=IntlRate&XML=<IntlRateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx"><Package ID="0"><Pounds>2</Pounds><Ounces>2</Ounces><MailType>Package</MailType><Country>Alabama</Country></Package></IntlRateRequest>
+
+Domestic Test rate requests from USPS...
 
 Valid Test Request #1
 Http://SERVERNAME/ShippingAPITest.dll?API=Rate&XML=<RateRequest USERID="xxxxxxxx" PASSWORD="xxxxxxxx"><Package ID="0"><Service> EXPRESS</Service><ZipOrigination>20770</ZipOrigination><ZipDestination>20852</ZipDestination><Pounds>10</Pounds><Ounces>0</Ounces><Container>None</Container><Size>REGULAR</Size><Machinable></Machinable></Package></RateRequest>
@@ -92,5 +181,7 @@ Http://SERVERNAME/ShippingAPITest.dll?API=Rate&XML=<RateRequest USERID="xxxxxxx"
 Valid Test Request #6
 Http://SERVERNAME/ShippingAPITest.dll?API=Rate&XML=<RateRequest USERID="xxxxxx" PASSWORD="xxxxxxx"><Package ID="0"><Service>Priority
 </Service><ZipOrigination>20770</ZipOrigination><ZipDestination>09021</ZipDestination><Pounds>5</Pounds><Ounces>1</Ounces><Container>None</Container><Size>Regular</Size><Machinable>False</Machinable></Package></
+
+
 
 =cut

@@ -2,7 +2,7 @@
 # All rights reserved. This program is free software; you can 
 # redistribute it and/or modify it under the same terms as Perl 
 # itself.
-# $Id: Ship.pm,v 1.9 2003/04/23 09:46:10 db-ship Exp $
+# $Id: Ship.pm,v 1.10 2003/04/30 08:25:47 db-ship Exp $
 package Business::Ship;
 use strict;
 use warnings;
@@ -30,67 +30,58 @@ else {
 
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.9 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.10 $ =~ /(\d+)\.(\d+)/);
 
 use Data::Dumper;
 use Carp;
 
+
+# If called with a 'shipper' argument, then return a sub object (like Ship::USPS)
+# If called without one, then return a Ship object (it's likely a sub-class is calling)
 sub new 
 {
-	my( $class, $shipper, %args) = @_;
+	my( $class, %args ) = @_;
+	print "Business::Ship::new()\n";
 	
-	Carp::croak( "unspecified shipper" ) unless $shipper;
+	# Defaults
+	my %required = (qw/
+		user_id		undef
+		password	undef
+	/);
 	
-	my $subclass = "${class}::$shipper";
-	
-	unless ( defined( &$subclass ) ) {
-		eval "use $subclass";
-		Carp::croak( "Shipper $shipper is unknown or has errors: ($@)" ) if $@;
-	}
-	
-	my @required_vals = qw/
-		user_id
-		password
-	/;
-	
-	my @optional_vals = qw/
-		success
-		tx_type
-		error_msg
-		response
+	my %optional = (qw/
+		success		undef
+		tx_type		undef
+		error_msg	undef
+		response	undef
 		
-		test_url
-		prod_url
-		test_mode
+		test_url	undef
+		prod_url	undef
+		test_mode	undef
 		
-		service 
-		from_zip
-		to_zip
-		weight
-		total_charges
+		service 	undef
+		from_zip	undef
+		to_zip		undef
+		weight		undef
+		total_charges	undef
 		
-		event_handlers
-	/;
-
-	my $self = bless {
-		'shipper' => $shipper,
-		'required_vals' => \@required_vals,
-		'optional_vals' => \@optional_vals,
-	}, $subclass;
+		event_handlers	undef
+	/);
 	
-	$self->build_subs( 'required_vals', 'optional_vals', @required_vals, @optional_vals );
+	my %internal = (qw/
 	
-	if($self->can("set_defaults")) {
-		$self->set_defaults();
-	}
+	/);
+	my $self = bless( {}, $class );
 	
-	foreach(keys %args) {
-		my $key = lc( $_ );
-		my $value = $args{$_};
-		$key =~ s/^\-//;
-		$self->build_subs( $key );
-		$self->$key( $value );
-	}
+	$self->build_subs( keys %required, keys %optional, keys %internal );
+	$self->set( %required, %optional, %internal );
+	$self->set(
+		'event_handlers' => ({ 
+			'debug' => undef,
+			'error' => 'croak',
+		})
+	);
+	$self->set( %args );
 	
 	return $self;
 }
@@ -120,18 +111,6 @@ sub set {
 			$self->error( "$key not valid" );
 		}
 	}
-}
-
-sub set_defaults
-{
-	my $self = shift;
-	$self->set(
-		'event_handlers' => ({ 
-			'debug' => undef,
-			'error' => 'croak',
-		})
-	);
-	return;
 }
 
 sub debug 
@@ -174,10 +153,13 @@ sub _log
 
 sub build_subs 
 {
-    my $self = shift;
+	my $self = shift;
     foreach( @_ ) {
-        eval "sub $_ { my \$self = shift; if(\@_) { \$self->{$_} = shift; } return \$self->{$_}; }";
+		unless ( $self->can( $_ ) ) {
+			eval "sub $_ { my \$self = shift; if(\@_) { \$self->{$_} = shift; } return \$self->{$_}; }";
+		}
     }
+	return;
 }
 
 
