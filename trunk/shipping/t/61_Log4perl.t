@@ -30,7 +30,7 @@ SKIP: {
         if ( defined $what ) 
             { $logger->info( 'Drinking ', $what  ); }
         else
-            { $logger->user_error( 'No drink defined' ); }
+            { $logger->error( 'No drink defined' ); }
     }
     
     ok( 1, 'drink test' );

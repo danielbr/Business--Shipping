@@ -62,7 +62,7 @@ the same terms as Perl itself. See LICENSE for more info.
 
 package Business::Shipping::Tracking::USPS;
 
-$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
 use strict;
 use warnings;

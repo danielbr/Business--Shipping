@@ -28,7 +28,7 @@ Config::IniFiles module.
 
 =cut
 
-$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 @EXPORT = qw/ cfg cfg_obj config_to_hash config_to_ary_of_hashes /;
 use constant DEFAULT_SUPPORT_FILES_DIR => '/var/perl/Business-Shipping';
 #use constant DEFAULT_SUPPORT_FILES_DIR => '~_~SUPPORT_FILES_DIR~_~';

@@ -76,8 +76,11 @@ ok ( defined $usps_rron2,                        "new_subclass() constructor: Ra
 $usps_shipment2->packages_push( $usps_package2 ) ;
 ok ( $usps_shipment2->packages_count == 1,       "Shipment::" . $shipper . "::packages_push " );
 
+# Test to see if $VERSION is being set correctly:
 
+use Business::Shipping;
+ok ( $Business::Shipping::VERSION > 0, "Business::Shipping::VERSION set" );
 
-
-
+use Business::Shipping::RateRequest;
+ok ( $Business::Shipping::RateRequest::VERSION > 0, "Business::Shipping::RateRequest::VERSION set" );
 

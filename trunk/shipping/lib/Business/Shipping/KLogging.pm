@@ -1,21 +1,8 @@
-# Business::Shipping::KLogging - Logging interface
-# 
-# $Id$
-# 
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-# 
-
 package Business::Shipping::KLogging;
 
 =head1 NAME
 
 Business::Shipping::KLogging - Logging interface
-
-=head1 VERSION
-
-$Rev$      $Date$
 
 =head1 DESCRIPTION
 
@@ -28,7 +15,7 @@ via your own wrapper.  See Business::Shipping::Logging as an example wrapper.
 
 =cut
 
-$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
 use strict;
 use warnings;

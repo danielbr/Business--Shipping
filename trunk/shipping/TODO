@@ -2,18 +2,12 @@
 ##  General TODO
 ################################################################################
 
-
-
 * [Enh] Resurrect the event_handlers() method.  Log4perl configuration should 
   allow manual overrides via event_handlers.
 
 * [Enh] Business::Shipping::UPS_XML
   - Add to documentation as an alternative to Business::Shipping
   - Maybe utilize the Parser code?
-
-* [Bug] Test different Perl versions:
-  - 5.6.2
-  - Fedora Core 2 standard perl (5.8.3)  
 
 * [Enh] Unit tests for each class.
   
@@ -213,6 +207,10 @@ Anyway, I think I need to investigate it some more.
 * [Enh] Log4Perl enhancement
   - Remove "Business::Shipping" from the first part of logging output.
   - Perhaps a Filter object?
+
+* [Enh] Test different Perl versions:
+  - 5.6.2
+  - Fedora Core 2 standard perl (5.8.3)  
 
 ################################################################################
 ##  Offline::USPS TODO

@@ -27,7 +27,7 @@ Move the country translator data into configuration.
 
 =cut
 
-$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
 use strict;
 use warnings;

@@ -71,7 +71,7 @@ See Shipping.pm POD for usage information.
     
 =cut
 
-$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
 use strict;
 use warnings;

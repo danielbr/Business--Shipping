@@ -55,7 +55,7 @@ or error messages.
 
 =cut
 
-$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 @EXPORT = qw( debug debug3 trace log_error error );
 
 use strict;
