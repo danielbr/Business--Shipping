@@ -265,6 +265,7 @@ sub _handle_response
     #
     
     my $charges;
+    my @services_results = ();    
     
     #
     # TODO: Get the pricing routines to work for multi-packages (not just
@@ -272,10 +273,34 @@ sub _handle_response
     #
     if ( $self->domestic() ) {
         #
-        # Domestic *doesn't* tell you the price of all services for that package
+        # Domestic *does* tell you the price of all services if you ask for service "ALL"
+        # If you ask for a specific service, it still might send more then one price.  
+        # For example if you ask for "Flat Rate Box" service, it will send you two prices,
+        # one for 'Priority Mail Flat Rate Box (11.25" x 8.75" x 6")' and the other for
+        # 'Priority Mail Flat Rate Box (14" x 12" x 3.5")'
         #
         
         $charges = $response_tree->{ Package }->{ Postage };
+
+	if( defined($charges) )
+	{
+	    $charges = [ $charges ] if( ref $charges ne 'ARRAY' );
+	    foreach my $chg (@$charges)
+	    {
+		next if( ref $chg ne 'HASH' );
+		my $service_hash = {
+		    code       => undef,
+		    nick       => undef,
+		    name       => $chg->{MailService},
+		    deliv_days => undef,
+		    deliv_date => undef,
+		    charges    => $chg->{Rate},
+		    charges_formatted    => Business::Shipping::Util::currency( {}, $chg->{Rate} ),
+		    deliv_date_formatted => undef,
+		};
+		push( @services_results, $service_hash );
+	    }
+	}
     }
     else {
         #
@@ -319,6 +344,21 @@ sub _handle_response
                 $self->user_error( $error_msg );
             }
         }
+	
+	if( defined($charges) )
+	{
+	    my $service_hash = {
+		    code       => undef,
+		    nick       => undef,
+		    name       => undef,
+		    deliv_days => undef,
+		    deliv_date => undef,
+		    charges    => $charges,
+		    charges_formatted    => Business::Shipping::Util::currency( {}, $charges ),
+		    deliv_date_formatted => undef,
+		};
+	    push( @services_results, $service_hash );
+	}
     }
     
     if ( ! $charges ) { 
@@ -330,12 +370,7 @@ sub _handle_response
     my $results = [
         {
             name  => $self->shipper() || 'USPS_Online', 
-            rates => [
-                {
-                    charges   => $charges,
-                    charges_formatted => Business::Shipping::Util::currency( {}, $charges ),
-                },
-            ]
+            rates => \@services_results,
         }
     ];
     

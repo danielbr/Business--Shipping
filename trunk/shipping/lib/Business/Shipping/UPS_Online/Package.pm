@@ -29,7 +29,7 @@ UPS_Online-only attribute.
  
 use Class::MethodMaker 2.0
     [ 
-      new    => [ qw/ -hash new / ],
+      new    => [ qw/ new / ],
       new    => [ qw/ default_new / ],
       scalar => [ 'packaging' ],
       scalar => [ { -static => 1, -default => 'packaging' }, 'Optional' ],
