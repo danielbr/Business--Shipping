@@ -22,7 +22,7 @@ http://www.uspsprioritymail.com/et_regcert.html
 =cut
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.12 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.13 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship;
 use Business::Ship::USPS::Package;
@@ -74,6 +74,7 @@ sub new
 		size		=> 'Regular',
 		machinable	=> 'False',
 		mail_type	=> 'Package',
+		from_country	=> undef,
 	);
 	
 	# We need our internals for the rest of it...
@@ -170,7 +171,7 @@ sub _gen_request_xml
 			$machineEl->appendChild($machineText); 
 			$packageEl->appendChild($machineEl);
 		}
-		elsif ( $self->intl() ) {
+		else {
 			my $mailTypeEl = $rateReqDoc->createElement('MailType'); 
 			my $mailTypeText = $rateReqDoc->createTextNode( $package->mail_type() ); 
 			$mailTypeEl->appendChild($mailTypeText); 
@@ -185,7 +186,8 @@ sub _gen_request_xml
 	} #/foreach package
 	my $request_xml = $rateReqDoc->toString();
 	
-	$self->debug( "request xml = \n" .  $request_xml );
+	my $request_xml_tree = $self->{xs}->XMLin( $request_xml, KeepRoot => 1, ForceArray => 1 );
+	$self->debug( $self->{xs}->XMLout( $request_xml_tree ) );
 	
 	return ( $request_xml );
 }
@@ -207,6 +209,8 @@ sub _gen_request
 	$request->header( 'content-length' => length( $request_xml ) );
 	
 	$request->content(  $request_xml );
+	
+	$self->debug( $request->as_string() );
 	
 	return ( $request );
 }
@@ -313,13 +317,15 @@ sub _handle_response
 	$self->response_tree( $response_tree );
 	
 	if ( $self->domestic() ) {
-		$self->total_charges( $response_tree->{Package}->{Postage} );
+		#$self->total_charges( $response_tree->{Package}->{Postage} );
+		$self->default_package()->set_price( $self->service(), $response_tree->{Package}->{Postage} );
 	}
 	elsif ( $self->intl() ) {
 		# TODO: Sum the get_charges( $service ) for all packages to return to total_charges
 		$self->total_charges( $response_tree->{Package}->{Service}->[0]->{Postage} );
 		foreach my $service ( @{ $response_tree->{Package}->{Service} } ) {
 			$self->debug( " Postage = " . $service->{Postage} );
+			# TODO: store the prices using $self->package_id( $id )->set_charges( $service->{Postage} )
 			$self->packages()->[0]->set_price( $service->{SvcDescription}, $service->{Postage} );
 		}
 	}
@@ -344,7 +350,7 @@ sub _domestic_or_intl
 {
 	my $self = shift;
 	
-	if ( $self->to_country() ) {
+	if ( $self->to_country() and $self->to_country() !~ /(US)|(United States)/) {
 		$self->intl( 1 );
 		$self->domestic( 0 );
 	}
@@ -352,11 +358,16 @@ sub _domestic_or_intl
 		$self->intl( 0 );
 		$self->domestic( 1 );
 	}
-	
+	$self->debug( 'Domestic? ' . $self->domestic() );
 	return;
 }
 
 =pod
+
+ * Domestic Service types:
+ 	EXPRESS
+	Priority
+	Parcel
 
  * International Service types:
  

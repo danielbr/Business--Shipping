@@ -2,6 +2,8 @@
 ##  General TODO
 ######################################################
  
+ * Upgrade the debugging/error handling features: allow user to pass in a callback ref.
+ 
  * Documentation
  
  * Support Multiple packages (also supported by USPS/UPS) 
@@ -151,6 +153,8 @@ BEGIN {
  * Identify the different USPS interfaces (Standard Mail (what we're 
    working on), Priority Mail, International, ?Others? and pull the specs
    from the PDF's on how to structure the requests and parse the responses.
+   
+ * Support get_charges( 'service' ) for domestic types.
 
 ######################################################
 ##  Business::Ship::UPS TODO

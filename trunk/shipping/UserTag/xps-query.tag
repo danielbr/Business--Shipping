@@ -105,6 +105,8 @@ use Business::Ship::USPS;
 sub {
  	my ( $mode, $opt ) = @_;
 	
+	::logDebug( "[xps-query mode=$mode " . uneval( $opt ) );
+	
 	# TODO: handle unpassed mode and weight in a better fashion (with Log(), etc.). 
 	unless ( $mode and $opt->{weight} ) {
 		Log ( "mode and weight required" );
@@ -120,24 +122,23 @@ sub {
 	
 	# Business::Ship takes a hash anyway, we might as well deref it now.
 	my %opt = %$opt;
-	
+
 	my $to_country_default = $Values->{ $Variable->{ XPS_TO_COUNTRY_FIELD } or 'country' };
 	if ( $to_country_default ) {
 		$to_country_default = $Tag->data( 'country', 'name', $to_country_default );
 	}
 
 	my %defaults = (
-		# TODO: handle errors manually, instead of with croak.
 		'event_handlers'	=> ({ 'debug' => undef, 'error' => undef }),
 		'tx_type'			=> 'rate',
 		'user_id'			=> $Variable->{"${mode}_USER_ID"},
 		'password'			=> $Variable->{"${mode}_PASSWORD"},
 		'to_country'		=> $to_country_default,
 		'to_zip'			=> $Values->{ $Variable->{ XPS_TO_ZIP_FIELD } or 'zip' },
-		'from_country'		=> $Values->{ $Variable->{ XPS_FROM_COUNTRY } or 'US' },
-		'from_zip'			=> $Values->{ $Variable->{ XPS_FROM_ZIP } },
+		'from_country'		=> $Variable->{ XPS_FROM_COUNTRY },
+		'from_zip'			=> $Variable->{ XPS_FROM_ZIP },
 	);
-	
+
 	for ( %defaults ) {
 		$opt{ $_ } ||= $defaults{ $_ } if $defaults{ $_ }; 
 	}
@@ -148,6 +149,10 @@ sub {
 	
 	$shipment->submit( %opt ) or ( Log $shipment->error() and return ( undef ) );
 	
-	return $shipment->get_charges( $opt{ 'service' } );
+	my $charges = $shipment->get_charges( $opt{ 'service' } );
+	
+	::logDebug( "[xps-query] returning $charges" );
+	
+	return $charges;
 }
 EOR

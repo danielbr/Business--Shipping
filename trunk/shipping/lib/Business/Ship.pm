@@ -2,7 +2,7 @@
 # All rights reserved. This program is free software; you can 
 # redistribute it and/or modify it under the same terms as Perl 
 # itself.
-# $Id: Ship.pm,v 1.14 2003/05/09 07:52:03 db-ship Exp $
+# $Id: Ship.pm,v 1.15 2003/05/13 00:24:52 db-ship Exp $
 package Business::Ship;
 use strict;
 use warnings;
@@ -73,7 +73,7 @@ print $shipment->get_total_price( 'Airmail Parcel Post' );
 
 
 use vars qw($VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.14 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.15 $ =~ /(\d+)\.(\d+)/);
 
 use Data::Dumper;
 use Carp;
@@ -103,7 +103,7 @@ sub new
 			eval "use $subclass";
 			Carp::croak("unknown shipper $shipper ($@)") if $@;
 		}
-		return( eval "new $subclass" );
+		return( eval "new $subclass( %args )" );
     }
 	
 	# Regular Initiation

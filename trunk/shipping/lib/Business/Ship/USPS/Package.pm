@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.6 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.7 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship::Package;
 use Data::Dumper;
@@ -36,6 +36,13 @@ sub new
 	
 	return $self;
 }
+
+sub from_country
+{
+	# Do absolutely nothing -- USPS is always from US.
+	return;
+}
+
 
 # Alias weight to pounds?
 # For now, just round weight up to the next pound. :-(
