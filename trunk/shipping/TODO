@@ -1,7 +1,50 @@
 ################################################################################
 ##  General TODO
 ################################################################################
+* Class::MethodMaker 2.02 is the last working version.  2.03 and 2.04 have installation
+  problems.  2.05 seems to have a problem with default_ctor (it calls new(), but passes
+  an odd number of arguments?)
 
+* Allow the business-shipping usertag to set the current level ($Variable->{ BS_DEBUG }
+
+* Rename the variables from BS to BSHIPPING.
+
+* Bundle::Business::Shipping requires DataFiles, but DataFiles requires Business::Shipping during
+  installation... just let it pick the directory instead of requiring Business::Shipping.
+
+* [business-shipping] Error: failure to initialize object with parameters: 
+  Odd number of arguments for new
+  
+
+* Micah Gersten <micah@davka.com> [2005-01-14 13:12]:
+> Hi, I tried installing the latest version of your module, but I am still 
+> getting an error.  it seems to be looking for a module that is not there.  
+> You said there was a problem with my system before, but I wanted to make sure 
+> that my system is still the problem.  Attached is the stack-trace.  Thank you 
+> for your time and I am still using Version 1.0.7 on my production box.
+
+I know what is causing the problem, but I'm not sure how to fix it.  A
+work-around is to put a few with these contents:
+
+package Business::Shipping::UPS_Online;
+1;
+ 
+And put the file here: Business/Shipping/UPS_Online.pm
+
+But then you will have to do the same thing for these modules:
+
+Business/Shipping/UPS_Offline.pm
+Business/Shipping/USPS_Offline.pm
+
+Thank you for the bug report, but I'm not sure yet if I can/will fix it anytime
+soon.  You are welcome to, of course.  ;-)
+
+-Dan
+
+
+
+    * .this_is_data did not make it into the release?
+    
     * Build a test that will state with modules are missing at the beginning, 
       then the rest of the tests can be quiet.
 

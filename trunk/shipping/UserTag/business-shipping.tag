@@ -199,7 +199,7 @@ sub {
     my $rate_request;
     eval { $rate_request = Business::Shipping->rate_request( 'shipper' => $shipper ); };
     if ( ! defined $rate_request or $@ ) {
-        Log( "[business-shipping] Error: failure to get Business::Shipping object: $@ " );
+        Log( "[business-shipping] Error during Business::Shipping->rate_request(): $@ " );
         return;
     }
     
@@ -207,7 +207,7 @@ sub {
     
     eval { $rate_request->init( %opt ); };
     if ( $@ ) {
-        Log( "[business-shipping] Error: failure to initialize object with parameters: $@ " );
+        Log( "[business-shipping] Error during rate_request->init(): $@ " );
         return;
     }
     
