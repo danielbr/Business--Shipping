@@ -3,37 +3,61 @@ use strict;
 use warnings;
 
 use vars qw(@ISA $VERSION);
-$VERSION = sprintf("%d.%03d", q$Revision: 1.2 $ =~ /(\d+)\.(\d+)/);
+$VERSION = sprintf("%d.%03d", q$Revision: 1.3 $ =~ /(\d+)\.(\d+)/);
 
 use Business::Ship::Package;
+use Data::Dumper;
 @ISA = qw( Business::Ship::Package );
+
+	
+my %options_defaults = (
+	id			=> undef,
+	service		=> undef,
+	pounds		=> undef,
+	ounces		=> 0,
+	container	=> 'None',
+	size		=> 'Regular',
+	machinable	=> 'False',
+	mail_type	=> 'package',
+);
 
 sub new
 {
 	my $proto = shift;
 	my $class = ref($proto) || $proto;
 	
+	my %args = @_;
 	my $self = $class->SUPER::new();
-	
-	my %options_defaults = (
-		id			=> undef,
-		service		=> undef,
-		pounds		=> undef,
-		ounces		=> 0,
-		container	=> 'None',
-		size		=> 'Regular',
-		machinable	=> 'False',
-		
-		mail_type	=> 'package',
-		to_country	=> undef,
-	);
 	
 	$self->build_subs( keys %options_defaults );
 	$self->set( %options_defaults );
+	$self->set( %args );
 	
 	bless( $self, $class );
 	
 	return $self;
 }
 
+sub get_unique_values
+{
+	my $self = shift;
+	my @unique_keys = $self->get_unique_keys();
+	my @unique_values;
+	foreach my $key ( @unique_keys ) {
+		push( @unique_values, $self->$key() );
+	}
+	
+	return @unique_values;
+}
+
+sub get_unique_keys
+{
+	my $self = shift;
+	my @unique_keys;
+	push @unique_keys, ( 
+		'service', 'pounds', 'ounces', 'container', 
+		'size', 'machinable', 'mail_type', 'to_country',
+	);
+	return( @unique_keys );
+}
 1;

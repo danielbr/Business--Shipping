@@ -9,11 +9,20 @@ use Data::Dumper;
 my $shipment = new Business::Ship::USPS;
 
 $shipment->set(
-	'event_handlers' => ({ 'debug' => 'STDOUT' }),
+	#'event_handlers' => ({ 'debug' => undef, 'trace' => 'STDOUT',}),
 	'user_id' 		=> $ENV{USPS_USER_ID},
 	'password' 		=> $ENV{USPS_PASSWORD},
 	'tx_type' 		=> 'rate', 
-	'test_mode'		=> 1,
+	'test_mode'		=> 0,
+);
+
+#mail_type: "package", "postcards or aerogrammes", "matter for the blind", "envelope"
+$shipment->set( %intl_request_1 );
+$shipment->add_package(
+		pounds		=> 4,
+		ounces		=> 0,
+		mail_type	=> 'Package',
+		to_country	=> 'Germany',
 );
 
 my %test_request_1 = (qw/
@@ -36,14 +45,6 @@ my %test_request_2 = (qw/
 	machinable	False
 /);
 
-#mail_type: "package", "postcards or aerogrammes", "matter for the blind", "envelope"
-my %intl_request_1 = (qw/
-	test_mode	1
-	pounds		2
-	ounces		0
-	mail_type	Package
-	to_country	Albania
-/);
 
 my %intl_request_2 = (qw/
 	test_mode	1
@@ -53,7 +54,15 @@ my %intl_request_2 = (qw/
 	to_country	Algeria
 /);
 
-$shipment->set( %intl_request_1 );
+my %intl_production_request_1 = (
+	test_mode	=> 0,
+	pounds		=> 1,
+	ounces		=> 1,
+	mail_type	=> 'Package',
+	to_country	=> 'France',
+);
+
+#$shipment->set( %intl_request_1 );
 	
 =pod
 $shipment->set(
@@ -73,7 +82,13 @@ $shipment->submit();
 
 $shipment->success() or die "Error = " .  $shipment->error_msg();
 
-print "total_charges = " . $shipment->total_charges();
+#print Dumper( $shipment->response_tree() );
+
+print "Airmail Parcel Post = " . $shipment->packages()->[0]->get_price( 'Airmail Parcel Post' ) . "\n";
+
+#print Dumper ($shipment->packages());
+
+#print "total_charges = " . $shipment->total_charges();
 #$shipment->set(
 #	'event_handlers' => ({ 'debug' => 'croak' })
 #);
