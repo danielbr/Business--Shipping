@@ -17,23 +17,19 @@ DEPENDENCIES
      Cache::FileCache
      Data::Dumper
      Class::MethodMaker
-
+ 
 USAGE
-     * To use USPS interface, you must first sign up online (for free).
+     * See Shipping.pm POD documentation for API and usage examples.
+ 
+     * For USPS: Sign up online for free:
+ 
             - http://www.uspsonlinetools.com
     
-     * Sign up for UPS:
-            You will also need to get a User Id, Password, and Access Key from UPS.
-         
-             * Read about it online:
-         
-            http://www.ec.ups.com/ecommerce/gettools/gtools_intro.html 
-         
-             * US Sign up here:
-         
-            https://www.ups.com/servlet/registration?loc=en_US_EC
-         
-     * See Shipping.pm POD documentation for API notes.
+     * For UPS: Sign up online for free:
+ 
+            - https://www.ups.com/servlet/registration?loc=en_US_EC
+
+            You will get a User Id, Password, and Access Key from UPS. 
 
 EXAMPLES
     This module is used by the Interchange E-Commerce software
@@ -45,13 +41,13 @@ EXAMPLES
 WEBSITE
      http://www.kavod.com/Business-Shipping
  
-    The website will carry the most recent version, as well as instructions
-    for accessing the anonymous CVS repository.
+    The website carries the most recent version, as well as instructions for
+    accessing the anonymous CVS repository.
 
 COPYRIGHT AND LICENCE
     Copyright (c) 2003 Kavod Technologies, Dan Browning. All rights
-    reserved. This program is free software; you can redistribute it and/or
-    modify it under the same terms as Perl itself.
+    reserved. Licensed under the GNU Public Licnese (GPL). See COPYING for
+    more info.
 
 AUTHOR
             Dan Browning
