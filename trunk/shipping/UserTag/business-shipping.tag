@@ -11,7 +11,7 @@ UserTag  business-shipping  Documentation 	<<EOD
 # This program is free software; you can redistribute it and/or modify it 
 # under the same terms as Perl itself.
 #
-# $Id: business-shipping.tag,v 1.7 2004/01/09 20:51:17 db-ship Exp $
+# $Id: business-shipping.tag,v 1.8 2004/01/10 21:27:26 db-ship Exp $
 
 =head1 NAME
 
@@ -69,6 +69,7 @@ USPS_USER_ID	143264KAVOD7241	Shipping
 USPS_PASSWORD	awji2398r2	Shipping
 
 XPS_FROM_COUNTRY	US	Shipping
+XPS_FROM_STATE	Washington	Shipping
 XPS_FROM_ZIP	98682	Shipping
 XPS_TO_COUNTRY_FIELD	country	Shipping
 XPS_TO_ZIP_FIELD	zip	Shipping
@@ -172,14 +173,17 @@ sub {
 		'to_zip'			=> $Values->{ $Variable->{ XPS_TO_ZIP_FIELD } || 'zip' },
 		'from_country'		=> $Variable->{ XPS_FROM_COUNTRY },
 		'from_zip'			=> $Variable->{ XPS_FROM_ZIP },
-		'from_state'		=> $Variable->{ XPS_FROM_STATE },
 	);
 	
 	# Cache enabled by default.
 	if ( not defined $opt{ 'cache' } ) { $opt{ 'cache' } = 1; }
 	
-	if ( $shipper eq 'UPS' ) {
+	if ( $shipper =~ /(UPS|Online::UPS)/ ) {
 		$defaults{ 'access_key' } = $Variable->{ "${shipper}_ACCESS_KEY" } if ( $Variable->{ "${shipper}_ACCESS_KEY" } );
+	}
+	
+	if ( $shipper =~ /Offline::UPS/ ) {
+		$defaults{ 'from_state' } = $Variable->{ XPS_FROM_STATE };
 	}
 	
 	for ( %defaults ) {
@@ -242,7 +246,9 @@ sub {
 	# For now, we just fall back on total_charges()
 	$charges ||= $rate_request->total_charges();
 	
-	if ( ! $charges ) {
+	print STDERR "Charges are now $charges!";
+	
+	if ( ! $charges or $charges !~ /\d+/) {
 		# This is a debugging / support tool.  Set the XPS_GEN_INCIDENTS and
 		# SYSTEMS_SUPPORT_EMAIL variables to enable.
 		if ( $Variable->{ 'XPS_GEN_INCIDENTS' } ) {

@@ -33,26 +33,23 @@ use Business::Shipping::RateRequest::Online::UPS;
 
 my $rate_request = Business::Shipping->rate_request(
 	shipper 		=> 'UPS', 
-	service 		=> 'UPSSTD',
-	
-	cache			=> 0,
-	
-	user_id 		=> $ENV{ UPS_USER_ID },		
-	password 		=> $ENV{ UPS_PASSWORD },
-	access_key 		=> $ENV{ UPS_ACCESS_KEY },		# UPS only
-	
-	from_zip		=> '98682',
-	to_zip			=> 'H3B3A7',
-	to_country		=> 'CA',
-	
-	weight			=> '7.50',
-	
 	event_handlers	=> {
 			'debug' => undef,
 			'debug3' => undef,
 			'trace' => undef, 
 			'error' => 'STDERR',
 	},
+	cache			=> 0,
+	user_id 		=> $ENV{ UPS_USER_ID },		
+	password 		=> $ENV{ UPS_PASSWORD },
+	access_key 		=> $ENV{ UPS_ACCESS_KEY },		# UPS only
+		
+		service			=> 'UPSSTD', 
+		to_country		=> 'CA',
+		to_city			=> 'Richmond',
+		to_zip			=> 'V6X3E1',
+		weight			=> 0.5,
+	
 	
 );
 

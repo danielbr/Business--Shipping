@@ -1,8 +1,11 @@
 Revision history for Business::Shipping.
 
 1.03  Not yet released
-	- Minor UserTag compatibility updates.
+	- Minor UserTag compatibility updates (from_state)
+	- UserTag bug fixes.
 	- Minor documentation updates.
+	- Auto-update function added.
+	- Additional Canadian test.
 
 1.02  Jan 06 2004
 	- Update all data tables from UPS (Jan 05 2004)

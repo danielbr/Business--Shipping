@@ -25,13 +25,11 @@ $rate_request->init(
 	#disable_download	=> 1,
 	#disable_unzip	=> 1,
 	
-	service 		=> 'GNDCOM',
-	#from_zip		=> '98682',
-	#to_zip			=> '98270',
-	from_zip		=> '45061',
-	to_zip			=> '98682',
-	weight			=> '15.50',
-	to_residential	=> 1,
+		service			=> 'UPSSTD', 
+		to_country		=> 'CA',
+		to_city			=> 'Richmond',
+		to_zip			=> 'V6X3E1',
+		weight			=> 0.5,
 );
 
 print STDERR "rate_request = " . Dumper( $rate_request ) . "\n"; 

@@ -1,6 +1,6 @@
 # Business::Shipping::RateRequest::Offline::UPS
 #
-# $Id: UPS.pm,v 1.4 2004/01/07 01:17:42 db-ship Exp $
+# $Id: UPS.pm,v 1.5 2004/01/10 21:27:26 db-ship Exp $
 #
 # Copyright (c) 2003 Interchange Development Group
 # Copyright (c) 2003 Kavod Technologies, Dan Browning. 
@@ -26,7 +26,7 @@ use strict;
 use warnings;
 
 use vars qw( $VERSION );
-$VERSION = do { my @r=(q$Revision: 1.4 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
+$VERSION = do { my @r=(q$Revision: 1.5 $=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 use base ( 'Business::Shipping::RateRequest::Offline' );
 
 use Business::Shipping::Shipment::UPS;
@@ -379,6 +379,13 @@ sub rename_tables_that_have_a_dash
 	}
 	
 	return $new_file;
+}
+
+sub auto_update
+{
+	my ( $self ) = @_;
+	$self->update( 1 );
+	$self->do_update();
 }
 
 sub do_update

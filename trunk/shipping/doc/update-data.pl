@@ -18,8 +18,7 @@ my $rate_request = Business::Shipping->rate_request(
 	shipper		=> 'Offline::UPS', 
 );
 
-$rate_request->auto_update( 1 );
-$rate_request->do_update();
+$rate_request->auto_update();
 
 1;
 __END__

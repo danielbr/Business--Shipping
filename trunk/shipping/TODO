@@ -108,6 +108,8 @@
 ##  UPS OFFLINE TODO
 ######################################################
 
+ * [ENH] Have a simple example script in the doc directory.
+
  * [ENH] How to find the current fuel surcharge rate:
    - http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html	
    - m/Effective.+: ?(\d\.\d\d\)%/
@@ -173,6 +175,10 @@
 ######################################################
 ##  Interchange UserTag TODO
 ######################################################
+
+ * [BUG] The $shipper variable acts as if it can only be "UPS" or "USPS", but
+   now it can actually be "Offline::UPS" or anything else.  Works for now, but
+   should be fixed.
 
  * [ENH] Test for ability to use within Safe?
          [perl]$Tag->business_shipping();[/perl] 
