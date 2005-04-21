@@ -14,11 +14,11 @@ Business::Shipping - Rates and tracking for UPS and USPS
 
 =head1 VERSION
 
-Version 1.56
+Version 1.57
 
 =cut
 
-$VERSION = '1.56';
+$VERSION = '1.57';
 
 =head1 SYNOPSIS
 
@@ -80,16 +80,17 @@ Gets rates for all the services in one request:
 
 =item * C.O.D. (Cash On Delivery)
 
-#DeliveryConfirmation and COD cannot coexist on a single Pakcage (DeliveryConfirmation is not yet implemented in Business::Shiping).
-#cod_code: The code associated with the type of COD.  Values: 1 = Regular COD, 2 = Express COD, 3 = Tagless COD
-
 Add these options to your rate request for C.O.D.:
 
 cod: enable C.O.D.
 
-cod_funds_code:  The code that indicates the type of funds that will be used for the COD payment.  Required if CODCode is 1, 2, or 3.  Valid Values: 0 = All Funds Allowed.  8 = cashier's check or money order, no cash allowed.
+cod_funds_code:  The code that indicates the type of funds that will be used for the COD payment.  
+Required if CODCode is 1, 2, or 3.  Valid Values: 0 = All Funds Allowed.  8 = cashier's check or 
+money order, no cash allowed.
 
 cod_value: The COD value for the package.  Required if COD option is present.  Valid values: 0.01 - 50000.00
+
+cod_code: The code associated with the type of COD.  Values: 1 = Regular COD, 2 = Express COD, 3 = Tagless COD
  
 For example:
 
@@ -368,7 +369,7 @@ sub validate
     my @required = $self->get_grouped_attrs( 'Required' );
     my @optional = $self->get_grouped_attrs( 'Optional' );
     
-    debug( "required = " . join (', ', @required ) ); 
+    debug(  "required = " . join (', ', @required ) ); 
     debug3( "optional = " . join (', ', @optional ) );    
     
     my @missing;
@@ -483,8 +484,8 @@ sub rate_request
 
 =head2 Business::Shipping->log_level()
 
-Simple alternative to editing the config/log4perl.conf file.  Sets the log level for 
-all Business::Shipping objects.  
+Simple alternative to editing the config/log4perl.conf file.  Sets the log level
+for all Business::Shipping objects.  
 
 Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.
 
@@ -569,7 +570,7 @@ Important modules that are related to Business::Shipping:
 
 =item * Business::Shipping::DataFiles - Required for offline cost estimation
 
-=item * Business::Shipping::DataTools - Tools that generating DataFiles 
+=item * Business::Shipping::DataTools - Tools that generate DataFiles 
         (optional)
 
 =back
@@ -596,17 +597,16 @@ author and/or on their website or in their application.
 =item * Interchange e-commerce system ( L<http://www.icdevgroup.org> ).  See 
     C<UserTag/business-shipping.tag>.
 
+=item * Many E-Commerce websites.
+
 =item * PaymentOnline.com software.
 
 =item * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman 
-    <andy@kahncentral.net>.
-    L<http://www.plainblack.com/wobjects?wid=1143&func=viewSubmission&sid=654>
-    L<http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz>
+    L<http://www.plainblack.com/shopping_cart_wobject>
 
 =item * Mentioned in YAPC 2004 Presentation: "Writing web applications with perl ..."
-    L<http://www.beamartyr.net/YAPC-2004/text25.html>
 
-=item * Phatmotorsports.com, EndPCNoise.com, and many other E-Commerce websites.
+=item * Phatmotorsports.com 
 
 =back
 

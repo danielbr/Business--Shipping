@@ -2,21 +2,42 @@
 ##  General TODO
 ################################################################################
 
+* [P2] Estimate shipping prices for heavy shipments
+  - Divide overweight shipments into multiple virtual shipments
+  - Max weight per virtual shipment customizable
+  - Perhaps per shipping method too
 
-* Class::MethodMaker 2.02 is the last working version.  2.03 and 2.04 have installation
-  problems.  2.05 seems to have a problem with default_ctor (it calls new(), but passes
-  an odd number of arguments?)
+* Louie Martinez <louie@kopykake.com>
+> I was wondering if anyone has tackled these additional surcharges with interchange. Right now I have
+> been adding (@@TOTAL@@ * .025) in the additional shipping calculation to cover the ground surcharge
+> and (@@TOTAL@@ * .095) to handle air and international surcharges, but there is also an extended
+> area surcharge overseas and in Canada which is basically another fuel charge once your package gets
+> into that country based on if your package is going to a major city or if it's headed to some small
+> town out in the middle of nowhere. I can't just charge everyone the surcharge because it sometimes
+> adds up to an additional $20 to the shipping price depending on where it's being sent. In major
+> cities there isn't a surcharge. So has anyone tackled this problem yet or will we be stuck with the
+> daunting task of creating zone lookup charts for each country with the shipping to reflect the
+> extended area surcharges.
 
-* Allow the business-shipping usertag to set the current level ($Variable->{ BS_DEBUG }
+* Devel::Cover
+
+* [Fixed] [business-shipping] Error: failure to initialize object with 
+  parameters: 
+  Odd number of arguments for new
+  - Class::MethodMaker 2.02 is the last working version.  2.03 and 2.04 have 
+    installation problems.  2.05 seems to have a problem with default_ctor (it 
+    calls new(), but passes an odd number of arguments?)
+
+* Error: No zone found for geo code (key) South Africa, type ExpeditedSM_WC.
+    
+* Allow the business-shipping usertag to set the current level via 
+  $Variable->{ BS_DEBUG }
 
 * Rename the variables from BS to BSHIPPING.
 
-* Bundle::Business::Shipping requires DataFiles, but DataFiles requires Business::Shipping during
-  installation... just let it pick the directory instead of requiring Business::Shipping.
-
-* [business-shipping] Error: failure to initialize object with parameters: 
-  Odd number of arguments for new
-  
+* Bundle::Business::Shipping requires DataFiles, but DataFiles requires 
+  Business::Shipping during installation... just let it pick the directory 
+  instead of requiring Business::Shipping.
 
 * Micah Gersten <micah@davka.com> [2005-01-14 13:12]:
 > Hi, I tried installing the latest version of your module, but I am still 
@@ -42,8 +63,6 @@ Thank you for the bug report, but I'm not sure yet if I can/will fix it anytime
 soon.  You are welcome to, of course.  ;-)
 
 -Dan
-
-
 
     * .this_is_data did not make it into the release?
     
@@ -156,11 +175,11 @@ soon.  You are welcome to, of course.  ;-)
 * [Enh] Consider using Locale::Country (5.8.x+) & Locale::SubCountry (CPAN), or 
    Geography::States & Geography::Countries.
 
-* [Enh] KLogging: Allow error format to specified 
+* [Enh] KLogging: Allow error format to be specified 
   - With/without caller, line numbers.
 
 * [Enh] Allow the user to set the timeout for http requests.  Sometimes 30
-   seconds is too long.
+  seconds is too long.
 
 * [Enh] Is non-ssl communication with either online provider possible?
  

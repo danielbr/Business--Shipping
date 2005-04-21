@@ -13,8 +13,8 @@ and password.
 =head2 Choosing your bundle
 
 If you are planning on using all of the shipping methods, install 
-C<Bundle::Business::Shipping>.  However, if you would only like to install the
-required modules for one shipper, you can select it individually:
+C<Bundle::Business::Shipping>.  However, you may opt instead to 
+install the required modules for only one shipper:
 
 =over 4
 
