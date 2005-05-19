@@ -23,6 +23,7 @@ use Business::Shipping::Logging;
 use Class::MethodMaker 2.0
     [ 
       new    => 'new',
+      scalar => [ { -default => 150 }, 'max_weight' ],
       scalar => [ 'cod', 'cod_funds_code', 'cod_value' ],
       array  => [ { -type => 'Business::Shipping::UPS_Online::Package',
                     -default_ctor => 'default_new', }, 'packages' ],      

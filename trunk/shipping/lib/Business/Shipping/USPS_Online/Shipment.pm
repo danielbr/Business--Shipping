@@ -51,6 +51,7 @@ use Class::MethodMaker 2.0
                   }, 
                   'Has_a' 
                 ],
+      scalar => [ { -default => 70 }, 'max_weight' ],
 ];
 
 sub _this_init

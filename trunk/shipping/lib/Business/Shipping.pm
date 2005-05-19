@@ -2,7 +2,7 @@
 #
 # $Id$
 #
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
+# Copyright (c) 2003-2005 Daniel Browning <db@kavod.com>. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
 
@@ -34,9 +34,9 @@ $VERSION = '1.57';
      weight    =>  5.00,
  );    
  
- $rate_request->go() or die $rate_request->user_error();
+ $rate_request->execute() or die $rate_request->user_error();
  
- print $rate_request->total_charges();
+ print $rate_request->rate();
 
 =head1 FEATURES
 
@@ -65,7 +65,7 @@ Gets rates for all the services in one request:
      access_key   => $ENV{ UPS_ACCESS_KEY }
  );
  
- $rr_shop->go() or die $rr_shop->user_error();
+ $rr_shop->execute() or die $rr_shop->user_error();
  
  foreach my $shipper ( @$results ) {
      print "Shipper: $shipper->{name}\n\n";
@@ -458,7 +458,7 @@ sub rate_request
     # COMPAT: shipper compatibility
     # 1. Really old: "UPS" or "USPS" (assumes Online::)
     # 2. Semi-old:   "Online::UPS", "Offline::UPS", or "Online::USPS"
-    # 3. New:        "UPS_Online", "UPS_Offline", or "USPS_Online"
+    # 3. Current:    "UPS_Online", "UPS_Offline", or "USPS_Online"
     
     my %old_to_new = (
         'Online::UPS'  => 'UPS_Online',
@@ -468,12 +468,11 @@ sub rate_request
         'USPS' => 'USPS_Online'
     );
     
-    while ( my ( $old, $new ) = each %old_to_new ) {
-        if ( $shipper eq $old ) {
-            $shipper = $new;
-        }
-    }
-        
+    $shipper = $old_to_new{ $shipper } if $old_to_new{ $shipper };
+    
+    # /COMPAT    
+    
+    
     my $rr = Business::Shipping->_new_subclass( $shipper . '::RateRequest' );
     logdie "New $shipper::RateRequest object was undefined." if not defined $rr;
     
@@ -493,15 +492,15 @@ Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.
 
 *log_level = *Business::Shipping::Logging::log_level;
 
-=head2 Business::Shipping->_new_subclass()
-
-Private Method.
-
-Generates an object of a given subclass dynamically.  Will dynamically 'use' 
-the corresponding module, unless runtime module loading has been disabled via 
-the 'preload' option.
-
-=cut
+#=head2 Business::Shipping->_new_subclass()
+#
+#Private Method.
+#
+#Generates an object of a given subclass dynamically.  Will dynamically 'use' 
+#the corresponding module, unless runtime module loading has been disabled via 
+#the 'preload' option.
+#
+#=cut
 
 sub _new_subclass
 {
@@ -524,17 +523,15 @@ sub _new_subclass
 
 # COMPAT: event_handlers()
 
-=head2 $obj->event_handlers()
-
-For backwards compatibility only.
-
-=cut
+#=head2 $obj->event_handlers()
+#
+#For backwards compatibility with 1.06 and prior only.
+#
+#=cut
 
 sub event_handlers
 {
     my ( $self, $event_handlers_hash ) = @_;
-    
-    use Data::Dumper;
     
     KEY: foreach my $key ( keys %$event_handlers_hash ) {
         $key = uc $key;
@@ -585,6 +582,10 @@ very few prerequisites.  Supports shipments that originate in USA and Canada.
 =item * Business::UPS - Online cost estimation module that uses the UPS web form
 instead of the UPS Online Tools.  For shipments that originate in the USA only.
 
+=item * http://www.halofree.com/lib/public/code/Ship/UPS.pm
+
+=item * http://www.halofree.com/lib/public/code/Ship/USPS.pm
+
 =back
  
 =head1 Use of this software
@@ -606,13 +607,11 @@ author and/or on their website or in their application.
 
 =item * Mentioned in YAPC 2004 Presentation: "Writing web applications with perl ..."
 
-=item * Phatmotorsports.com 
+=item * Phatmotorsports.com.
 
 =back
 
 =head1 WEBSITE
-
-The website carries the most recent version.
 
 L<http://www.kavod.com/Business-Shipping>
 
@@ -629,7 +628,7 @@ See the TODO file for a comprehensive list of known bugs.
 
 =head1 CREDITS
 
-See the CREDITS file. 
+Many people have contributed to this module, please see the CREDITS file. 
 
 =head1 AUTHOR
 
@@ -637,8 +636,8 @@ Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.c
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-This program is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself.  See LICENSE for more info.
+Copyright (c) 2003-2005 Daniel Browning E<lt>F<db@kavod.com>E<gt>. All rights 
+reserved.  This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.  See LICENSE for more info.
 
 =cut

@@ -27,7 +27,7 @@ use Class::MethodMaker 2.0
       scalar => [ 'from_state' ],
 
       # We need this offline boolean to know if from_state is required.
-
+      scalar => [ { -default => 150 }, 'max_weight' ],
       scalar => [ { -static => 1, -default => 'to_residential' }, 'Optional' ],
       scalar => [ { -static => 1, -default => 'to_residential' }, 'Unique' ],
       array  => [ { -type => 'Business::Shipping::UPS_Offline::Package',

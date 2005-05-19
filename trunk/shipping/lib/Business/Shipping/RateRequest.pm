@@ -125,14 +125,14 @@ use Class::MethodMaker 2.0
       array  => [ 'error_details' ],
     ];
 
-=head2 $rate_request->go()
+=head2 $rate_request->execute()
 
-This method sets some values (optional), performs the request, then parses the
+This method sets some values (optional), executes the request, then parses the
 results.
 
 =cut
 
-sub go
+sub execute
 {
     my ( $self, %args ) = @_;
     #trace( "( " . uneval( %args ) . " )" );
@@ -161,13 +161,78 @@ sub go
         trace( 'cache disabled' );
     }
     
-    $self->perform_action();
+    # Estimate shipping for overweight shipments by dividing them into 
+    # multiple shipments and sending multiple requests.
+    # Lets not assume that every module can do it, though.
+    my $handle_response_success;
+    my $max_weight_per_shipment;
+    $max_weight_per_shipment = $self->shipment->max_weight if $self->shipment->can( 'max_weight' );
+    my $original_weight = $self->shipment->weight;
+    if ( $max_weight_per_shipment and ( $original_weight > $max_weight_per_shipment ) ) {
+        debug 'calculating multiple shipments due to overweight...';
+        debug "original weight: $original_weight, max_weight_per_shipment: $max_weight_per_shipment";
+        
+        my $MAXIMUM_NUMBER_OF_SHIPMENTS = 10;
+        
+        my $number_of_shipments = $original_weight / $max_weight_per_shipment;
+        if ( $number_of_shipments != int $number_of_shipments ) {
+            # 1 for the remainder, this will be the usual case
+            $number_of_shipments = int $number_of_shipments + 1; 
+        }
+        
+        debug 'number of shipments = ' . $number_of_shipments;
+        
+        if ( $number_of_shipments > $MAXIMUM_NUMBER_OF_SHIPMENTS ) {
+            $self->user_error( "Too heavy" );
+            return $self->is_success( 0 );
+        }
+        
+        my $running_weight = $original_weight;
+        my $running_total_cost;
+        my $sum_rate = 0;
+        my $last_charges = 0;
+        for ( my $c = 1; $c <= $number_of_shipments; $c++ ) {
+            debug "processing shipment #$c";
+            
+            my $current_weight = $running_weight > $max_weight_per_shipment ? 
+                $max_weight_per_shipment # Common path
+                :
+                $running_weight; # Last shipment, unless it divided evenly.
+                
+            $running_weight -= $current_weight;
+            debug "setting weight to $current_weight";
+           
+            $self->shipment->weight( $current_weight );
+            
+            # Need to either create a new shipment object, or somehow cleanse the data between runs
+            $self->_total_charges( 0 );
+            # Unused
+            #$self->shipment->shipment_num( $c );
+            
+            $self->perform_action(); # Only for online people
+            $handle_response_success = $self->_handle_response(); # Does the work.
+            last unless $handle_response_success;
+            
+            # Sum charges.
+            $sum_rate += $self->rate;
+        }
+        $self->results->[ 0 ]->{ rates }->[ 0 ]->{ split_shipment_sum_rate } = $sum_rate;
+        $self->results->[ 0 ]->{ rates }->[ 0 ]->{ split_shipment_sum_rate_formatted } = Business::Shipping::Util::currency( {}, $sum_rate );
+        
+        #push ( @{ $self->results->[ 0 ]->{ rates } } ), { 
+        #    charges => $temp_total_charges,
+        #};
+    }
+    else {
+        $self->perform_action();
+        $handle_response_success = $self->_handle_response();
+    }
     
     my $results = $self->results();
     debug 'results = ' . Dumper( $results );
     
     # Only cache if there weren't any errors.
-    if ( $self->_handle_response() and $self->cache() ) {    
+    if ( $handle_response_success and $self->cache() ) {    
         trace( 'cache enabled, saving results.' );
         #
         # TODO: Allow setting of cache properties (time limit, enable/disable, etc.)
@@ -184,16 +249,10 @@ sub go
     return $self->is_success();
 }
 
+# COMPAT: submit() go()
 
-# COMPAT: submit()
-
-=head2 $rate_request->submit()
-
-For backwards compatibility.
-
-=cut
-
-*submit = *go;
+*submit = *execute;
+*go     = *execute;
 
 =head2 $rate_request->validate()
 
@@ -367,6 +426,9 @@ sub rate
     
     foreach my $shipper ( @{ $self->results } ) {
         # Just return the amount for the first one.
+        
+        return $shipper->{ rates }->[ 0 ]->{ split_shipment_sum_rate } 
+            if $shipper->{ rates }->[ 0 ]->{ split_shipment_sum_rate };
         return $shipper->{ rates }->[ 0 ]->{ charges };
     }
     
@@ -463,7 +525,7 @@ For backwards compatibility.
 
 =cut
 
-*get_total_price = *total_charges;
+*get_total_price = *rate;
 *total_charges = *rate;
 
 1;

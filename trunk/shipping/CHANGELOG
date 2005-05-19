@@ -1,6 +1,24 @@
 Revision history for Business::Shipping
 =======================================
 
+1.58
+
+
+  General
+  
+    * Estimate shipping prices for overweight shipments by splitting
+      - Divide overweight shipments into multiple virtual shipments
+      - Max weight per virtual shipment customizable
+    
+    * Renamed go() to execute(), but go() will continue to work for a long time.
+    
+    * [Fixed] Data direct
+    
+  UPS_Offline
+  
+    * [Fixed] [P1] .this_is_data did not make it into the release
+      - Changed to this_is_the_data_dir
+    
 
 1.57  
 
@@ -15,6 +33,8 @@ Revision history for Business::Shipping
     
     * [Fixed] Class::MethodMaker 2.05 now works
       - Different default_ctor() usage.
+      - Caused this error: "failure to initialize object with parameters: 
+        Odd number of arguments for new"
     
     * Changed how errors were handled.  Instead of just generating an 
       message and exiting, the code now saves the error info to the object,

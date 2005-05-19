@@ -198,7 +198,7 @@ sub data_dir
     my $data_dir_name = data_dir_name();
     
     # A filename that will be present in any data dir (to know if it exists).
-    my $test_filename = '.this_is_data';
+    my $test_filename = 'this_is_the_data_dir';
     if ( -f "./$data_dir_name/$test_filename" ) {
         return "./$data_dir_name";
     }

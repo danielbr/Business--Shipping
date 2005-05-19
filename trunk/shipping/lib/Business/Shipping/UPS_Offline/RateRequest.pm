@@ -212,6 +212,7 @@ sub _handle_response
     #  * Remote Delivery Charges
     #  * Saturday Delivery
     #  * Saturday Pickup
+    # In other words, it applies *after* all the other surcharges have been added.
     
     my @price_components = (
         {
@@ -235,6 +236,7 @@ sub _handle_response
     
     my $final_price_components;
     
+    # This is where, for example, calc_cost, calc_fuel_surcharge, etc. get executed.
     foreach my $price_component ( @price_components ) {
         
         my $fn = "calc_" . $price_component->{ component };
@@ -265,9 +267,13 @@ sub _handle_response
         $self->_total_charges 
     );
     
+    my $name = $self->shipper();
+    
+    debug "total_charges = $total_charges";
+    
     my $results = [
         {
-            name  => $self->shipper(), 
+            name  => $name,
             rates => [
                 {
                     charges   => $total_charges,

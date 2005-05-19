@@ -1,87 +1,90 @@
 ################################################################################
 ##  General TODO
 ################################################################################
+    * Remove UPS_Online from the CPAN distro
+      - Some kind of option in 'make tardist'?
+      - Add a note to the documentation about how it's gone as of x version, 
+        and why.
 
-* [P2] Estimate shipping prices for heavy shipments
-  - Divide overweight shipments into multiple virtual shipments
-  - Max weight per virtual shipment customizable
-  - Perhaps per shipping method too
+    * [P1] [Enh] Split overweight shipments into multiple packages 
+      - Instead of mulitple shipments.
+      - UPS allows each *package* in a shipment to be a max of 150 lbs.
+      - For shippers that don't support multiple packages (USPS Intl), 
+        automatically convert multiple packages into multiple shipments, if
+        possible.
 
-* Louie Martinez <louie@kopykake.com>
-> I was wondering if anyone has tackled these additional surcharges with interchange. Right now I have
-> been adding (@@TOTAL@@ * .025) in the additional shipping calculation to cover the ground surcharge
-> and (@@TOTAL@@ * .095) to handle air and international surcharges, but there is also an extended
-> area surcharge overseas and in Canada which is basically another fuel charge once your package gets
-> into that country based on if your package is going to a major city or if it's headed to some small
-> town out in the middle of nowhere. I can't just charge everyone the surcharge because it sometimes
-> adds up to an additional $20 to the shipping price depending on where it's being sent. In major
-> cities there isn't a surcharge. So has anyone tackled this problem yet or will we be stuck with the
-> daunting task of creating zone lookup charts for each country with the shipping to reflect the
-> extended area surcharges.
-
-* Devel::Cover
-
-* [Fixed] [business-shipping] Error: failure to initialize object with 
-  parameters: 
-  Odd number of arguments for new
-  - Class::MethodMaker 2.02 is the last working version.  2.03 and 2.04 have 
-    installation problems.  2.05 seems to have a problem with default_ctor (it 
-    calls new(), but passes an odd number of arguments?)
-
-* Error: No zone found for geo code (key) South Africa, type ExpeditedSM_WC.
+    * Add UPS Offline Hundredweight shipping
+      - Use cwt tables
+      - Requires overweight shipments to be split into multi-package, not
+        multi-shipment.
     
-* Allow the business-shipping usertag to set the current level via 
-  $Variable->{ BS_DEBUG }
-
-* Rename the variables from BS to BSHIPPING.
-
-* Bundle::Business::Shipping requires DataFiles, but DataFiles requires 
-  Business::Shipping during installation... just let it pick the directory 
-  instead of requiring Business::Shipping.
-
-* Micah Gersten <micah@davka.com> [2005-01-14 13:12]:
-> Hi, I tried installing the latest version of your module, but I am still 
-> getting an error.  it seems to be looking for a module that is not there.  
-> You said there was a problem with my system before, but I wanted to make sure 
-> that my system is still the problem.  Attached is the stack-trace.  Thank you 
-> for your time and I am still using Version 1.0.7 on my production box.
-
-I know what is causing the problem, but I'm not sure how to fix it.  A
-work-around is to put a few with these contents:
-
-package Business::Shipping::UPS_Online;
-1;
- 
-And put the file here: Business/Shipping/UPS_Online.pm
-
-But then you will have to do the same thing for these modules:
-
-Business/Shipping/UPS_Offline.pm
-Business/Shipping/USPS_Offline.pm
-
-Thank you for the bug report, but I'm not sure yet if I can/will fix it anytime
-soon.  You are welcome to, of course.  ;-)
-
--Dan
-
-    * .this_is_data did not make it into the release?
+    * Allow customizing max package weight on a per-service basis
+      - For example, maximum weight per package for Next day air : 50, Ground: 75.
+      
+   * Set default maximum weights per shipper and service:
+      - USPS:
+        Express, Priority, Parcel Post, Media Mail, Library Mail, All: 70 lbs
+        First Class: 13 oz
+        Bound Printed Matter: 15 lbs
+      - UPS:
+        150 lbs for all service types and countries. (Actually, most countries
+        allow 70 kg, which is 154.32 lbs.)
     
-    * Build a test that will state with modules are missing at the beginning, 
-      then the rest of the tests can be quiet.
-
-    * Remove requirement for Cache::FileCache, but put it as an optional installation
-      in the documentation for users of Online modules, if they want to use the 
-      cache feature.
-      - It is required for Tracking and Tracking::*
-  
-    * [Enh] Enhance the CPAN distro
+    * [P1] [Enh] Country Support
+      - Determine which origin countries do UPS_Online and UPS_Offline support?
+      - Update documentation and code.
+    
+    * [P1] [Enh] Build a replacement for ClassInfo and ClassAttribs that will be
+      more simple, efficient, and portable.  Should work for static or dynamic 
+      generation of Required, Optional, Unique, and other metadata.
+      - Should solve installation problem for environments that fail when 
+        'requiring' a module that doesn't exist.  (As reported by
+        Micah Gersten <micah@davka.com>).
+      - Simple solution: just add Required(), Optional(), Unique() to the 
+        RateRequest classes?
+    
+    * Implement USPS_Offline
+        
+    * [P3] [Enh] Enhance the CPAN distro
       - Test::Distribution - Various tests
       - Test::Signature - makes sure your SIGNATURE file is cryptographically valid.
       - Module::Signature
 
-    * [Bug] New 'Ground Residential' service name doesn't work for UPS_Offline:
-      Error: Zone 'u' lookup failed, type 'Ground Residential' not found
+    * [P3] [Enh] Devel::Cover
 
+    * [Enh] Switch to Config::General or Config::Scoped
+      - Use a more advanced configuration system, with more config-file
+        flexibility.
+    
+    * [Enh] Evaluate OODoc
+
+    * [Enh] Look into Params::Validate and/or Class::Contract
+ 
+    * [Enh] Add Test::Inline tests
+
+    * [Enh] Consider using Locale::Country (5.8.x+) & Locale::SubCountry (CPAN),
+      or Geography::States & Geography::Countries.
+
+    * Module::Build
+      - use create_makefile_pl => 'traditional' (because of this post:)
+      - http://perlmonks.org/?node_id=458282
+
+    * Bundle::Business::Shipping requires DataFiles, but DataFiles requires 
+      Business::Shipping during installation... so it recurses.  
+      - Just let it pick the directory instead of requiring Business::Shipping,
+        because it seems that requiring the module is enough to send CPAN off 
+        looking.
+
+    * [P3] Build a test that will state with modules are missing at the 
+      beginning, then the rest of the tests can be quiet.
+
+    * [P3] [Enh] Remove requirement for Cache::FileCache
+      - If users do not specify their cache preference, check if the module 
+        exists and try to do the cache.
+      - If the user specifies to not use the cache, do not check for the module.
+      - Make it optional for the Tracking modules too
+      - Add an "optional modules" section to the installation documentation
+  
     * [Bug] Bundle::Business::Shipping::*
       - It tries to build and install Business::Shipping before anything else,
         when that should be the last module that it installs.  If CPAN is set 
@@ -89,8 +92,8 @@ soon.  You are welcome to, of course.  ;-)
         correctly, but is there some way to specify the order so it doesn't have
         to?
         
-    * [Bug] On a clean 5.8.5, trying to install Bundle::Business::Shipping::UPS_Offline
-      results in:
+    * [Bug] On a clean 5.8.5, trying to install 
+      Bundle::Business::Shipping::UPS_Offlineresults in:
         - tests that try to load Cache::FileCache:
           10
           21
@@ -101,35 +104,19 @@ soon.  You are welcome to, of course.  ;-)
      
     * [Enh] Move main documentation into 'Business::Shipping::Manual'?
     
-    * [Enh] Allow a "Company" name to be placed in the results.  So that the user
-      sees "UPS" instead of "UPS_Online".
+    * [Enh] Allow a "Company" name to be placed in the results.  So that some of
+      the results can have the company field.  That way, user code can display
+      the company name in the results.  For example, "UPS" instead of 
+      "UPS_Online".
 
     * [Enh] Instead of returning a results hash, allow the user to request a results
       object.  It could overcome the inelegance of dereferencing the AOH.
       
     * [Enh] Logging enhancement: allow printf() style message passing arguments
-      so that if a value is undefined, there will not be an error.
+      (%s) so that if a value is undefined, there will not be an error.
     
-    * Clean and apply 'shop rates' patch by selena brewington <computers@chrisking.com>
-    
-    * UPS Tracking Numbers appear in the following formats:
-       1Z 999 999 99 9999 999 9
-       9999 9999 999 9
-       T999 9999 999 
-
-    * USPS tracking formats:
-      - http://hdusps.esecurecare.net/cgi-bin/hdusps.cfg/php/enduser/std_adp.php?p_faqid=1125&p_created=1052781743&p_sid=LjOKtaqh&p_lva=&p_sp=cF9zcmNoPSZwX3NvcnRfYnk9JnBfZ3JpZHNvcnQ9JnBfcm93X2NudD0zNiZwX3Byb2RfbHZsMT01MSZwX3Byb2RfbHZsMj0mcF9wYWdlPTE*&p_li=
-       
-    * [Bug] http://ppm.activestate.com/BuildStatus/5.6plus/solaris/Business-Shipping-1.54.txt
-    
-    * [Bug] http://ppm.activestate.com/BuildStatus/5.8-hpux/hpux-pa-risc-5.8/Business-Shipping-1.54.txt
-    
-    * [Enh] Switch to Config::General
-    
-    * [Enh] Evaluate OODoc
-    
-    * [Enh] Country Support
-      - Which origin countries do UPS_Online and UPS_Offline support?
+    * Check the ppm.activestate.com Build Status and see if the errors can be
+      corrected for other platforms.
     
     * [Enh] Test on Sourceforge Compile Farm systems.
       - Also test using older perl versions (e.g. 5.6.x).
@@ -137,10 +124,6 @@ soon.  You are welcome to, of course.  ;-)
     * [Enh] Auto-generate a todo-list addendum from the "# TODO:" comments 
       strewn throughout the source code.
 
-    * [Enh] Build a replacement for ClassInfo and ClassAttribs that will be more 
-      simple, efficient, and portable.  Should work for static or dynamic 
-      generation of Required, Optional, Unique, and other metadata.
-  
     * [Enh] Profile the application
       - How long does it take to load the required modules?
       - What are the slowest parts of the system?
@@ -153,43 +136,33 @@ soon.  You are welcome to, of course.  ;-)
       
     * Make the configuration file optional for *_Online shipping classes.
       - But still have new, additional configuration parameters, e.g.:
-        + How long to wait for a response
+        + How long to wait for a response (sometimes 30 seconds is too long)
         + How long between retries
-	+ How many retries
+        + How many retries
       - Have a configuration object ($Business::Shipping::Cfg) that starts out
         with default values (stored in Config.pm), but can be overridden by 
-	installing the Config::Ini module, and then using config/*.ini files. 
-	However, if the Config::Ini module is not installed, then everything 
-	will still work via the defaults.  (Offline modules have too much 
-	configuration data to work without a configuration module).
+	    installing the Config::Ini module, and then using config/*.ini files. 
+	    However, if the Config::Ini module is not installed, then everything 
+	    will still work via the defaults.  (Offline modules have too much 
+	    configuration data to work without a configuration module).
   
     * [Enh] Conform to coding style: private methods should be prefixed with an
       underscore. 
  
     * [Enh] Handle alternate units (kilograms, etc.).
 
-    * [Enh] Look into Params::Validate and/or Class::Contract
+    * [Enh] KLogging: Allow error format to be specified 
+      - With/without caller
+      - With/withoutline numbers.
+
+    * [Enh] Is non-ssl communication with either online provider possible?
  
-    * [Enh] Add Test::Inline tests
-
-* [Enh] Consider using Locale::Country (5.8.x+) & Locale::SubCountry (CPAN), or 
-   Geography::States & Geography::Countries.
-
-* [Enh] KLogging: Allow error format to be specified 
-  - With/without caller, line numbers.
-
-* [Enh] Allow the user to set the timeout for http requests.  Sometimes 30
-  seconds is too long.
-
-* [Enh] Is non-ssl communication with either online provider possible?
- 
-* [Enh] Business::Shipping::UPS_Legacy
+* [Enh] Business::Shipping::UPS_Legacy (or UPS_WebForm)
     - Doesn't require signup (no username/password, etc.)
-    - Interface for Business::UPS 2.0.
+    - Wrapper for Business::UPS 2.0.
  
 * [Enh] New feature ideas:
  	- Address Verification
-	- Shipping status (package tracking)
 	- Service Availability
 	- Electronic Merchandise Return?
 	- Shipping label generation?
@@ -197,36 +170,31 @@ soon.  You are welcome to, of course.  ;-)
 	- Shipping time (how long till it gets there)?
 	- Delivery/Signature confirmation?
 
-* [Enh] Allow the user to enable one shipper as a secondary shipper, if the 
+* [P5] [Enh] Allow the user to enable one shipper as a secondary shipper, if the 
   first should fail.  For example, if the UPS/USPS servers are down, it will
   automatically utilize the table-lookup method.
    
-* [Enh] Many of the functions that are currently in 
+* [Enh] OO Design: move Shipment-only methods out of RateRequest package.
+  Many of the functions that are currently in 
   Shipping::RateRequest::UPS_Offline should probably be moved somewhere else.
   They work on one shipment at a time, and having them in the RateRequest 
   object makes it seem like they should be able to work on multiple shipments
-  at once.  Perhaps make the first parameter the given shipment to be worked 
-  on?
+  at once.
  
-* [Enh] Find or create some module that will automatically update the "=head1 
+* [Enh] Auto-update version
+  Find or create some module that will automatically update the "=head1 
   VERSION" POD based on the CVS "Revision" keyword or the perl $VERSION 
   variable in the same file.
   
 * [Doc] Need to create a list of common errors that will be encountered.
  
-* [Enh] Setup a proper "announce", "commits", and "discussion" mailing list 
+* [Enh] Setup proper "announce", "commits", and "discussion" mailing lists 
   where users can sign up for updates and get information.
- 
-* [Enh] Build/use a more advanced configuration system, with more config-file
-  flexibility.
  
 * [Enh] Test for thread-safety-ness.
 
 * [Enh] Add support back in for multi-package API.
 
-* [Enh] Allow the user to configure whether all modules are loaded at startup 
-  (as would be desirable for mod_perl), or when they are needed.  
-   
 * [Enh] Put all the currently supported modules in the config.ini file, to make
   them easier to add. 
   
@@ -252,25 +220,24 @@ soon.  You are welcome to, of course.  ;-)
 		}
 	}
  
-* [Doc] Documentation Ehancements:
-   Look into OODoc or Pod::Tree
-   Use Pod::HtmlEasy to generate CPAN-style (i.e. pretty) HTML docs.
- 
+    * [Doc] Documentation Ehancements:
+      - Look into OODoc or Pod::Tree
+      - Try generating HTML using CPAN style:
+        "generated by TUCS::Pod2HTML v, using Pod::Simple::PullParser v2.02"
+      - Pod::HtmlEasy?
+        
     * [Enh] Log4Perl enhancement
       - Remove "Business::Shipping" from the first part of logging output.
       - Perhaps via Log::Log4perl::NDC->pop() ?
       - Perhaps via a Filter object?
-
-    * Try generating HTML using CPAN style:
-      - "generated by TUCS::Pod2HTML v, using Pod::Simple::PullParser v2.02"
-
+      
 ################################################################################
 ##  USPS_Offline TODO
 ################################################################################
  
- * [Enh] Add First-Class Mail
-   - http://www.usps.com/consumers/domestic.htm#first
-   - Can be done via an off-line calculation.
+    * [Enh] Add First-Class Mail
+      - http://www.usps.com/consumers/domestic.htm#first
+      - Can be done via an off-line calculation.
 
 ################################################################################
 ##  USPS_Online TODO
@@ -312,10 +279,57 @@ soon.  You are welcome to, of course.  ;-)
    * [Enh] Printable labels
    
    * Change USPS error from 'charges are 0, error out' to something better.
+
+   * Andy Grundman <andy@hybridized.org> [2005-04-25 16:54]:
+    > Here are a couple of other things I thought of:
+    > 
+    > USPS international weight calculations are rounded up to 1 pound even 
+    > though it supports ounces.
+    > 
+    > I think you could add First Class support without any additional code if 
+    > you fixed the rounding up to 1 pound.  I think you should maybe never 
+    > round up to 1 pound, and always just pass the exact pounds/ounces the 
+    > user supplies.  Or you could round up if service is not First Class or 
+    > International.
+    > 
+    > I commented out the line $in_weight = 1.00; in USPS_Online::Package line 
+    > 113 and it seems to take care of both above issues.
    
 ################################################################################
 ##  UPS_Offline TODO
 ################################################################################
+    * Implement the following logic:
+    
+	- For UPS GND and 3DS, to determine the rate for multi-pacakge shipments weight 
+	  200 pounds or more, refer to UPS Hundredweight Service
+	
+	- For 1DA and 2da with multi-package shipments weighing over 100 lbs total: 
+	  use ups hundredweight service.
+	
+	- Hundredweight service is for shipments that are less than 1000 totla.
+	- (Some hundred weight shipments will actually be cheaper when estimated at
+	  500 pounds since it uses a rate, so check that if it's close).
+	  
+	- 1da early am not available for hundredweight.
+	
+	- DAS (delivery area) nor residential surcharges apply.
+	
+	- minimum charge for 1da and 2da is based on an average weight of 10
+	  lbs/package.  minimums also apply for certain zone (see page 60)
+
+    * [Bug] New 'Ground Residential' service name doesn't work for UPS_Offline:
+      Error: Zone 'u' lookup failed, type 'Ground Residential' not found
+
+    * Error: No zone found for geo code (key) South Africa, type ExpeditedSM_WC.
+    
+
+
+    * UPS_Offline fuel surcharge enhancement:
+      - If the current date is less or equal to the "through" date, use that.
+      - If the current date is greater than or equal to the effective date, use that.
+      - Key: if the current date is more than 28 days greater than the effective date,
+        get new data from the website.  (This should result in queries only being
+        sent once a month.)  (If new data can't be found, use the old data)
 
     * [Enh] Generate advanced table representations from source material
       - Convert the files that are recieved from shippers into a format that 
@@ -409,6 +423,18 @@ soon.  You are welcome to, of course.  ;-)
  
  * [Enh] Utilize GDBM or SQL, if available, to speed up lookups.
 
+   * Louie Martinez <louie@kopykake.com> - Check for additional surcharges
+    > I was wondering if anyone has tackled these additional surcharges with interchange. Right now I have
+    > been adding (@@TOTAL@@ * .025) in the additional shipping calculation to cover the ground surcharge
+    > and (@@TOTAL@@ * .095) to handle air and international surcharges, but there is also an extended
+    > area surcharge overseas and in Canada which is basically another fuel charge once your package gets
+    > into that country based on if your package is going to a major city or if it's headed to some small
+    > town out in the middle of nowhere. I can't just charge everyone the surcharge because it sometimes
+    > adds up to an additional $20 to the shipping price depending on where it's being sent. In major
+    > cities there isn't a surcharge. So has anyone tackled this problem yet or will we be stuck with the
+    > daunting task of creating zone lookup charts for each country with the shipping to reflect the
+    > extended area surcharges.
+
 ################################################################################
 ##  UPS_Online TODO
 ################################################################################
@@ -443,7 +469,17 @@ soon.  You are welcome to, of course.  ;-)
 ################################################################################
 
     * [Enh] Test for ability to use within Safe?
-   
+
+    * Option to disable errors that aren't important
+
+    * [business-shipping] Error: No zone found for geo code (key) Qatar, 
+      type ExpeditedSM_WC.
+
+    * Allow the business-shipping usertag to set the current debug level via 
+      $Variable->{ BS_DEBUG }
+      
+    * Rename the variables from BS to BSHIPPING.
+
 ################################################################################
 ##  Other Shippers to consider 
 ################################################################################
@@ -474,10 +510,18 @@ soon.  You are welcome to, of course.  ;-)
 
     * Tests
 
+    * UPS Tracking Numbers appear in the following formats:
+       1Z 999 999 99 9999 999 9
+       9999 9999 999 9
+       T999 9999 999 
+
+    * USPS tracking formats:
+      - http://hdusps.esecurecare.net/cgi-bin/hdusps.cfg/php/enduser/std_adp.php?p_faqid=1125&p_created=1052781743&p_sid=LjOKtaqh&p_lva=&p_sp=cF9zcmNoPSZwX3NvcnRfYnk9JnBfZ3JpZHNvcnQ9JnBfcm93X2NudD0zNiZwX3Byb2RfbHZsMT01MSZwX3Byb2RfbHZsMj0mcF9wYWdlPTE*&p_li=
+    
 ################################################################################
 ##  General Ideas
 ################################################################################
 
-    * Other software:
-    * Cold Fushion: UPSRateMonger by Matt Robertson (http://www.mysecretbase.com)
-    * Cold Fushion: FedExMonger by Matt Robertson (http://www.mysecretbase.com)
+    * Similar software in other languages:
+      - Cold Fushion: UPSRateMonger by Matt Robertson (http://www.mysecretbase.com)
+      - Cold Fushion: FedExMonger by Matt Robertson (http://www.mysecretbase.com)
