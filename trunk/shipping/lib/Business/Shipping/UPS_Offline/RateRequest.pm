@@ -52,6 +52,7 @@ use Fcntl ':flock';
 use File::Find;
 use File::Copy;
 use Math::BaseCnv;
+use Storable;
 
 =head2 update
 
@@ -672,6 +673,7 @@ sub rate_table_exceptions
     return $table;
 }
 
+
 =head2 calc_cost( )
 
 * Modifies the class attribute $Zones, and adds data for the zone like so...
@@ -691,6 +693,8 @@ sub rate_table_exceptions
 sub calc_cost
 {
     my ( $self ) = @_;
+    
+    # zone_name is like "986".
     
     if ( ! $self->zone_name ) {
         $self->user_error( "Need zone_name" );
@@ -922,7 +926,7 @@ sub get_cost
         #$cost = record( $table, $zone, $weight );
         
         if ( ! $Business::Shipping::UPS_Offline::data->{ $table } ) {
-            use Storable; # TODO: Preload handling.
+            #use Storable; # TODO: Preload handling.
             my $filename = Business::Shipping::Config::data_dir . "/$table.dat";
             
             if ( ! -f $filename ) {
@@ -989,12 +993,12 @@ sub binary_string {
         foreach my $c ( 0 .. @$data - 1 ) {
             my $row = $data->[ $c ];
             my ( $min, $max ) = ( $row->[ 0 ], $row->[ 1 ] ); # TODO: Use array slice.
-            
             if ( $weight >= $min and $weight < $max ) {
-                debug "Found cost using new method";
-                return $row->[ $col_idx->{ $zone } ];
-            }
-            
+                #debug "Found cost using new method";
+                my $col_num = $col_idx->{ $zone } || error "Could not get column index from zone name/number";
+                my $this_cost = $row->[ $col_num ] or error "Could not find cost in rate table";
+                return $this_cost;
+            }            
         }
         
         

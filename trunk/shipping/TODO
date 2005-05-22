@@ -2,8 +2,12 @@
 ##  General TODO
 ################################################################################
 
-    * Is the 1.75 surcharge added per-shipment or per-package?  I think it may 
-      be per-package.
+    * UPS_Offline: canstnd doesn't convert exactly right.
+      (500+, and the many 'Min' sections).
+      
+    * UPS_Offline: residential surcharge
+      - Is the 1.75 surcharge added per-shipment or per-package?  I think it may 
+        be per-package.
 
     * update.pl is not working
     
@@ -16,7 +20,6 @@
       - Or, just use nstore(), which is cross-platform compatible, but takes
         longer to read.
 	
-
     * Support multiple packages
       - Done for UPS_Offline
       - For shippers that don't support multiple packages (USPS Intl), 

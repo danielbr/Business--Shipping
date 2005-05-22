@@ -6,7 +6,7 @@ use Data::Dumper;
 print "Testing new data format\n";
 
 
-Business::Shipping->log_level( 'debug' );
+#Business::Shipping->log_level( 'debug' );
 
 my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
@@ -24,7 +24,7 @@ my $results = $rate_request->submit(
 ) or die $rate_request->user_error();
 
 #print Dumper( $rate_request );
-print "UPS_Offline One Day Air Hundredweight = " . $rate_request->total_charges() . "\n";
+print "UPS_Offline One Day Air 35 lbs = " . $rate_request->total_charges() . "\n";
 
 
 # Was $443.48 before hundredweight support.
