@@ -242,7 +242,12 @@ sub _handle_response
         my $fn = "calc_" . $price_component->{ component };
         
         my $price;
-        if ( $self->can( $fn ) ) { $price = $self->$fn(); }
+        if ( $self->can( $fn ) ) {
+            $price = $self->$fn(); 
+        }
+        
+        # Most of the price components we don't really care about, but some 
+        # are pretty important (like the main 'cost').
         if ( ! $price ) {
             if ( $price_component->{ fatal } ) {
                 return $self->is_success( 0 );
@@ -699,8 +704,7 @@ sub calc_cost
     my $zone_name = $self->zone_name;
     my $zref      = $self->Zones->{ $zone_name };
     my $type      = $self->shipment->service_nick2;
-    my $table     = $self->ups_name_to_table(        $type            );
-    $table        = $self->rate_table_exceptions(    $self->shipment->service_nick, $table    );
+
     
     
     my ( $key, $raw_key ) = $self->determine_keys; 
@@ -713,7 +717,6 @@ sub calc_cost
     my $rawzip;
     
     
-    my $weight = $self->weight;
     my $code = 'u';
     my $opt = {};
     $opt->{residential} ||= $self->shipment()->to_residential();
@@ -725,7 +728,7 @@ sub calc_cost
     # Check that the zone (e.g. 450) was defined.
     # Check that we have the zone data calculated.
     #
-    debug( "rate table = " . ( $table ? $table : 'undef' ) . ", zone_name = " . ( $zone_name ? $zone_name : 'undef' ) );
+    debug( ", zone_name = " . ( $zone_name ? $zone_name : 'undef' ) );
     if ( ! defined $zref->{zone_data} ) {
         $self->user_error( "zone data could not be found" );
         return 0;
@@ -733,32 +736,14 @@ sub calc_cost
     
     my $zdata = $zref->{zone_data};
     
-    #
-    # Here we can adapt for pounds/kg
-    #
-    if ($zref->{mult_factor}) {
-        $weight = $weight * $zref->{mult_factor};
-    }
-    
-    #
-    # Tables don't cover fractional pounds, so round up.
-    #
-    $weight = POSIX::ceil($weight);
-
-    #
     # Handle eastcoast / westcoast fieldnames
     # Except for Canada.
-    #
     if ( $self->to_canada ) {
-        #
         # Remove the 'SM' from the end, Canada doesn't have that silliness.
-        #
         $type =~ s/SM$//;
     }
     else {
-        #
         # The only other Express/Expedited methods are intl.
-        #
         if ( $type eq 'ExpressSM' ) {
             $type = $self->is_from_west_coast() ? 'ExpressSM_WC' : 'ExpressSM_EC';
         }
@@ -837,16 +822,81 @@ sub calc_cost
         $self->invalid( 1 );
         return 0;
     }
-
+    
+    my $table     = $self->ups_name_to_table(        $type            );
+    $table        = $self->rate_table_exceptions(    $self->shipment->service_nick, $table    );
+    debug( "rate table = " . ( $table ? $table : 'undef' ) );
+    
+    # Check to see if this shipment qualifies for hundred-weight shipping, which is probably
+    # cheaper than regular shipping if it qualifies.
+    # Requires that it be multi-package, over a certain total weight, and only certain services.
+    # 100 pounds for airborn services, 200 pounds for ground (Ground, 3DS)
+    
+    my $use_hundred_weight;
+    if ( $self->shipment->packages > 1 ) {
+        my $hundred_weight_qualification;
+        
+        #my %hundred_weight_info = (
+            
+        my @airborn_100 = qw/ 1da 1dasaver 2da 2dam /;
+        my @ground_200  = qw/ gndres gndcom 3ds /;
+        
+        if ( grep( $self->shipment->service, @airborn_100 ) ) {
+            if ( $self->shipment->weight > 100 ) {
+                $use_hundred_weight = 1;
+            }
+        }
+        elsif ( grep( $self->shipment->service, @ground_200 ) ) {
+            if ( $self->shipment->weight > 200 ) {
+                $use_hundred_weight = 1;
+            }
+        }
+        else {
+            debug "Does not qualify for hundred weight service";
+        }
+    }
+    
+    
+    
+    if ( $use_hundred_weight ) {
+        debug "Qualifies for hundred-weight service";
+        my $h_table = 'a_' . lc $self->shipment->service . 'cwt';
+        # Except for ground, which is just 'gndcwt'
+        debug "hundredweight table = $h_table";
+        
+        # It's a very different calculation.  The value isn't cost, it's rate per pound.
+        #$table = $h_table;
+        
+        # match is found.  This would probably be the best so
+    }
+    
+    
+    # TODO: Rather than use record(), just do select * and process each record.  This way, 
+    # the +1 hack doesn't need to be used... but will more records will be processed.  The 
+    # best algorithm would probably be a binary tree search.
+    
     # Some UPS files (ww_xpr) do not have a record for every weight (e.g. 55). 
     # To solve the problem, add 1 to the weight, and try again.
-
     my $cost;
-    for ( my $tries = 0; $tries <= 5; $tries++ ) {
-        debug( "zone=$zone, going to call record( $table, $zone, " . ( $weight + $tries ) . " ) " );
-        $cost = record( $table, $zone, $weight + $tries );
-        last if $cost;
+    my $running_sum_cost;
+    foreach my $package ( $self->shipment->packages ) {
+        
+        my $weight = $package->weight;
+        
+        # Here we can adapt for pounds/kg
+        if ($zref->{mult_factor}) {
+            $weight = $weight * $zref->{mult_factor};
+        }
+        
+        # Tables don't cover fractional pounds, and UPS specifies "at least",
+        # so any fraction should cause a jump to the next integer.
+        $weight = POSIX::ceil($weight);
+        
+        $cost = get_cost( $table, $zone, $weight );
+        
+        $running_sum_cost += $cost;
     }
+    $cost = $running_sum_cost;
     
     if ( ! $cost ) {
         $self->user_error( "Zero cost returned for mode $type, geo code (key) $key.");
@@ -854,13 +904,115 @@ sub calc_cost
     }
    
     debug "cost = $cost";
-    #
+
     # TODO: Surcharge table + Surcharge_field?
     # TODO: Residential field (same table)?
-    #
     
     return $cost || 0;
 }
+
+sub get_cost
+{
+    my ( $table, $zone, $weight ) = @_;
+    
+    my $cost;
+    my $ENABLE_NEW_METHOD = 1;
+    
+    if ( $ENABLE_NEW_METHOD ) {
+        #$cost = record( $table, $zone, $weight );
+        
+        if ( ! $Business::Shipping::UPS_Offline::data->{ $table } ) {
+            use Storable; # TODO: Preload handling.
+            my $filename = Business::Shipping::Config::data_dir . "/$table.dat";
+            
+            if ( ! -f $filename ) {
+                return error "file does not exist: $filename";
+            }
+            # TODO: Change to a C:MM class (static) variable?
+            $Business::Shipping::UPS_Offline::data->{ $table } = retrieve( $filename );
+        }
+        
+        my $obj = $Business::Shipping::UPS_Offline::data->{ $table };
+        my $data = $obj->{ table };
+        
+        # Create a "Zone name to array element number" for later lookups.
+        # This should be done in create_binary_data.
+        my $col_idx = $obj->{ meta }->{ col_idx };
+        #my $header = $obj->{ meta }->{ header };
+        
+        # TODO: Search algorithm: start in the middle then go up or down and start again.
+        # For now, just do a sequential scan.
+        
+        # From Mastering Algorithms in Perl
+        
+=pod
+
+# $index = binary_string( \@array, $target )
+#        @array is sorted strings
+#    on return,
+#        either (if the element was in the array):
+#           # $index is the element
+#           $array[$index] eq $target
+#        or (if the element was not in the array):
+#           # $index is the position where the element should be inserted
+#           $index == @array or $array[$index] gt $target
+#           splice( @array, $index, 0, $target ) would insert it
+#               into the right place in either case
+#
+sub binary_string {
+     my ($array, $target) = @_;
+
+     # $low is first element that is not too low;
+     # $high is the first that is too high
+     #
+     my ( $low, $high ) = ( 0, scalar(@$array) );
+
+     # Keep trying as long as there are elements that might work.
+     #
+     while ( $low < $high ) {
+         # Try the middle element.
+
+         use integer;
+         my $cur = ($low+$high)/2;
+         if ($array->[$cur] lt $target) {
+             $low  = $cur + 1;                     # too small, try higher
+         } else {
+             $high = $cur;                         # not too small, try lower
+         }
+     }
+     return $low;
+}
+
+=cut
+        
+        
+        foreach my $c ( 0 .. @$data - 1 ) {
+            my $row = $data->[ $c ];
+            my ( $min, $max ) = ( $row->[ 0 ], $row->[ 1 ] ); # TODO: Use array slice.
+            
+            if ( $weight >= $min and $weight < $max ) {
+                debug "Found cost using new method";
+                return $row->[ $col_idx->{ $zone } ];
+            }
+            
+        }
+        
+        
+        #print Dumper( $data );
+        
+        #print Dumper( $obj );
+    }
+    else {
+        for ( my $tries = 0; $tries <= 5; $tries++ ) {
+            debug( "zone=$zone, going to call record( $table, $zone, " . ( $weight + $tries ) . " ) " );
+            $cost = record( $table, $zone, $weight + $tries );
+            last if $cost;
+        }
+    }
+    
+    return $cost;
+}
+
 
 =head2 special_zone_hi_ak( $type )
 

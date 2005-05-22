@@ -1,10 +1,12 @@
 use strict;
 use warnings;
-
 use Business::Shipping;
 use Data::Dumper;
 
-#Business::Shipping->log_level( 'debug' );
+print "Testing new data format\n";
+
+
+Business::Shipping->log_level( 'debug' );
 
 my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
@@ -16,7 +18,7 @@ my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
 my $results = $rate_request->submit(
     service    => '1DA',
-    weight     => '345',
+    weight     => '35',
     from_zip   => '98682',
     to_zip     => '98270',
 ) or die $rate_request->user_error();
@@ -26,3 +28,6 @@ print "UPS_Offline One Day Air Hundredweight = " . $rate_request->total_charges(
 
 
 # Was $443.48 before hundredweight support.
+
+
+

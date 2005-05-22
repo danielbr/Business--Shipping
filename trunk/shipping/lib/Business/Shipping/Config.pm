@@ -56,6 +56,7 @@ if ( ! -f $main_config_file ) {
 # See Online.pm
 
 $Business::Shipping::Config::Try_Limit = 2;
+$Business::Shipping::Config::data_dir_test_filename = 'this_is_the_data_dir';
 
 tie my %cfg, 'Config::IniFiles', (      -file => $main_config_file );
 my $cfg_obj = Config::IniFiles->new(    -file => $main_config_file );
@@ -198,7 +199,7 @@ sub data_dir
     my $data_dir_name = data_dir_name();
     
     # A filename that will be present in any data dir (to know if it exists).
-    my $test_filename = 'this_is_the_data_dir';
+    my $test_filename = $Business::Shipping::Config::data_dir_test_filename;
     if ( -f "./$data_dir_name/$test_filename" ) {
         return "./$data_dir_name";
     }

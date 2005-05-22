@@ -14,11 +14,11 @@ Business::Shipping - Rates and tracking for UPS and USPS
 
 =head1 VERSION
 
-Version 1.57
+Version 1.58
 
 =cut
 
-$VERSION = '1.57';
+$VERSION = '1.58';
 
 =head1 SYNOPSIS
 
@@ -572,7 +572,7 @@ Important modules that are related to Business::Shipping:
 
 =back
 
-Other CPAN modules that are simliar to Business::Shipping:
+Other Perl modules that are simliar to Business::Shipping:
 
 =over 4
 

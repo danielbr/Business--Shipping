@@ -165,63 +165,54 @@ sub execute
     # multiple shipments and sending multiple requests.
     # Lets not assume that every module can do it, though.
     my $handle_response_success;
-    my $max_weight_per_shipment;
-    $max_weight_per_shipment = $self->shipment->max_weight if $self->shipment->can( 'max_weight' );
-    my $original_weight = $self->shipment->weight;
-    if ( $max_weight_per_shipment and ( $original_weight > $max_weight_per_shipment ) ) {
+    my $max_weight_per_package;
+    $max_weight_per_package = $self->shipment->max_weight if $self->shipment->can( 'max_weight' );
+    my $original_weight = $self->shipment->weight; 
+    if ( $max_weight_per_package and ( $original_weight > $max_weight_per_package ) ) {
         debug 'calculating multiple shipments due to overweight...';
-        debug "original weight: $original_weight, max_weight_per_shipment: $max_weight_per_shipment";
+        debug "original weight: $original_weight, max_weight_per_package: $max_weight_per_package";
         
-        my $MAXIMUM_NUMBER_OF_SHIPMENTS = 10;
+        my $MAX_NUM_PACKAGES = 10;
         
-        my $number_of_shipments = $original_weight / $max_weight_per_shipment;
-        if ( $number_of_shipments != int $number_of_shipments ) {
+        my $number_of_packages = $original_weight / $max_weight_per_package;
+        if ( $number_of_packages != int $number_of_packages ) {
             # 1 for the remainder, this will be the usual case
-            $number_of_shipments = int $number_of_shipments + 1; 
+            $number_of_packages = int $number_of_packages + 1; 
         }
         
-        debug 'number of shipments = ' . $number_of_shipments;
+        debug 'number of packages = ' . $number_of_packages;
         
-        if ( $number_of_shipments > $MAXIMUM_NUMBER_OF_SHIPMENTS ) {
-            $self->user_error( "Too heavy" );
+        if ( $number_of_packages > $MAX_NUM_PACKAGES ) {
+            $self->user_error( "Too heavy." );
             return $self->is_success( 0 );
         }
+        
+        
+        # Start by deleting the current package0, which has the current weight.
+        # TODO: What if the user *already* divided up the shipment into multiple packages?
+        # In that case, the correct thing to do is actually check the packages themselves
+        # to see if they are over weight.  But that's a corner case for now.
+        $self->shipment->packages_pop;
         
         my $running_weight = $original_weight;
         my $running_total_cost;
         my $sum_rate = 0;
         my $last_charges = 0;
-        for ( my $c = 1; $c <= $number_of_shipments; $c++ ) {
-            debug "processing shipment #$c";
+        for ( my $c = 1; $c <= $number_of_packages; $c++ ) {
+            debug "splitting out package #$c";
             
-            my $current_weight = $running_weight > $max_weight_per_shipment ? 
-                $max_weight_per_shipment # Common path
+            my $current_weight = $running_weight > $max_weight_per_package ? 
+                $max_weight_per_package # Common path
                 :
                 $running_weight; # Last shipment, unless it divided evenly.
                 
             $running_weight -= $current_weight;
             debug "setting weight to $current_weight";
            
-            $self->shipment->weight( $current_weight );
-            
-            # Need to either create a new shipment object, or somehow cleanse the data between runs
-            $self->_total_charges( 0 );
-            # Unused
-            #$self->shipment->shipment_num( $c );
-            
-            $self->perform_action(); # Only for online people
-            $handle_response_success = $self->_handle_response(); # Does the work.
-            last unless $handle_response_success;
-            
-            # Sum charges.
-            $sum_rate += $self->rate;
+            $self->shipment->add_package( weight => $current_weight );
         }
-        $self->results->[ 0 ]->{ rates }->[ 0 ]->{ split_shipment_sum_rate } = $sum_rate;
-        $self->results->[ 0 ]->{ rates }->[ 0 ]->{ split_shipment_sum_rate_formatted } = Business::Shipping::Util::currency( {}, $sum_rate );
-        
-        #push ( @{ $self->results->[ 0 ]->{ rates } } ), { 
-        #    charges => $temp_total_charges,
-        #};
+        $self->perform_action(); # Only for online people
+        $handle_response_success = $self->_handle_response(); # Does the work.
     }
     else {
         $self->perform_action();

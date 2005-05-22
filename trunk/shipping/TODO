@@ -1,14 +1,24 @@
 ################################################################################
 ##  General TODO
 ################################################################################
-    * Remove UPS_Online from the CPAN distro
-      - Some kind of option in 'make tardist'?
-      - Add a note to the documentation about how it's gone as of x version, 
-        and why.
 
-    * [P1] [Enh] Split overweight shipments into multiple packages 
-      - Instead of mulitple shipments.
-      - UPS allows each *package* in a shipment to be a max of 150 lbs.
+    * Is the 1.75 surcharge added per-shipment or per-package?  I think it may 
+      be per-package.
+
+    * update.pl is not working
+    
+    * UPS_Offline: store tables as perl objects
+      - Use Storable
+      - During installation of Business::Shipping::DataFiles, compile perl 
+        objects, then use Storable to output them to the data directory.  (So
+	that differences in Storable versions and platforms wont cause the
+	binary Storable files to be difficult to read).
+      - Or, just use nstore(), which is cross-platform compatible, but takes
+        longer to read.
+	
+
+    * Support multiple packages
+      - Done for UPS_Offline
       - For shippers that don't support multiple packages (USPS Intl), 
         automatically convert multiple packages into multiple shipments, if
         possible.
@@ -21,7 +31,7 @@
     * Allow customizing max package weight on a per-service basis
       - For example, maximum weight per package for Next day air : 50, Ground: 75.
       
-   * Set default maximum weights per shipper and service:
+    * Set default maximum weights per shipper and service:
       - USPS:
         Express, Priority, Parcel Post, Media Mail, Library Mail, All: 70 lbs
         First Class: 13 oz
@@ -29,7 +39,23 @@
       - UPS:
         150 lbs for all service types and countries. (Actually, most countries
         allow 70 kg, which is 154.32 lbs.)
+	
+    * Tests for recently-added functionality
     
+    * Get UPS_Offline down to as few required modules as possible, then make 
+      that the standard required modules list.  The modules for the online 
+      shippers are for in the "optional" section.
+    
+    * Don't load the modules until they are needed.  If the Cache::FileCache is
+      being used on a given query, then XML::DOM, etc. aren't needed.  However,
+      the preload option still needs to load XML::DOM and friends.
+
+    * Remove UPS_Online from the CPAN distro
+      - Some kind of option in 'make tardist'?
+      - Add a note to the documentation about how it's gone as of x version, 
+        and why.
+      - Or, just "disable" the code so that users cannot use it.
+
     * [P1] [Enh] Country Support
       - Determine which origin countries do UPS_Online and UPS_Offline support?
       - Update documentation and code.
@@ -434,6 +460,9 @@
     > cities there isn't a surcharge. So has anyone tackled this problem yet or will we be stuck with the
     > daunting task of creating zone lookup charts for each country with the shipping to reflect the
     > extended area surcharges.
+
+   * zone_file and zone_name don't really need to be stored in the RateRequest
+     object, do they?
 
 ################################################################################
 ##  UPS_Online TODO

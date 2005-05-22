@@ -103,7 +103,21 @@ sub package0 { $_[ 0 ]->packages_index( 0 ) }
 *default_package = *package0;
 *dflt_pkg        = *package0;
 
-sub weight { $_[ 0 ]->package0->weight( @_ ) }
+sub weight
+{
+    my ( $self, $in_weight ) = @_;
+    
+    if ( $in_weight ) {
+        return $self->package0->weight( $in_weight );
+    }
+    else {
+        my $sum_weight;
+        foreach my $package ( $self->packages ) {
+            $sum_weight += $package->weight;
+        }
+        return $sum_weight;
+    } 
+}
 
 =head2 total_weight
 

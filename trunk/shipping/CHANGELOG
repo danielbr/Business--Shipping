@@ -12,15 +12,24 @@ Revision history for Business::Shipping
     
     * Renamed go() to execute(), but go() will continue to work for a long time.
     
-    * [Fixed] Data direct
-    
+    * Support multiple packages
+      - Done for UPS_Offline
+
+    * [P1] [Enh] Split overweight shipments into multiple packages 
+      - Instead of mulitple shipments.
+      - UPS allows each *package* in a shipment to be a max of 150 lbs.
+
   UPS_Offline
+
+    * [Enh] New data format for increased performance.
+      - Uses Storable for the fastest rate lookups.
+      - Implemented for just gndcomm and 1da so far.
   
     * [Fixed] [P1] .this_is_data did not make it into the release
       - Changed to this_is_the_data_dir
     
 
-1.57  
+1.57  (unreleased)
 
 
   General
