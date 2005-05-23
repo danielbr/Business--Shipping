@@ -6,11 +6,12 @@ To determine the zone take the receiver's Country and refer to the chart below:,
 Extended Area Surcharge may apply to indicated countries.,,,,,,
 
 Destination,UPS Worldwide,UPS Worldwide,UPS Worldwide,UPS Worldwide,UPS Worldwide,Extended Area
-Country,ExpressPlusSM,ExpressSM_WC,ExpressSM_EC,ExpeditedSM_WC,ExpeditedSM_EC,Surcharge
+Country,Express PlusSM,ExpressSM,ExpressSM,ExpeditedSM,ExpeditedSM,Surcharge
 ,,,Originating from,Originating from,Originating from,
 ,,,Dade and Broward ,Western U.S.,Eastern U.S.,
 ,,,Counties Florida,,,
 
+Aland Islands,,903,903,607,603,
 Albania,,907,907,,,
 Algeria,,907,907,,,
 American Samoa,,907,907,,,
@@ -148,6 +149,7 @@ Micronesia - Federated States of,,907,907,,,
 Moldova,,907,907,,,Y
 Monaco,,901,901,605,601,
 Mongolia,,904,904,,,
+Montenegro,,907,907,,,
 Montserrat,,902,900,,,
 Morocco,,907,907,,,
 Mozambique,,908,908,,,
@@ -187,11 +189,12 @@ San Marino,,901,901,605,601,
 Saudi Arabia,,905,905,,,
 Scotland (United Kingdom),,901,901,605,601,Y
 Senegal,,908,908,,,
+Serbia,,907,907,,,
 Seychelles,,908,908,,,
 Sierra Leone,,908,908,,,
 Singapore,,901,901,606,602,Y
 Slovakia,,907,907,610,609,Y
-Slovenia,,907,907,610,609,
+Slovenia,,907,907,610,609,Y
 Solomon Islands,,907,907,,,
 South Africa,,908,908,,,
 Spain,903,903,903,607,603,Y
@@ -245,15 +248,15 @@ Wallis and Futuna Islands,,907,907,,,
 Western Samoa,,907,907,,,
 Yap (Federated States of Micronesia),,907,907,,,
 Yemen,,905,905,,,
-Yugoslavia,,907,907,,,
+Yugoslavia (See Serbia and Montenegro),,,,,,
 Zaire (Democratic Republic of the Congo),,908,908,,,
 Zambia,,908,908,,,
 Zimbabwe,,908,908,,,
 
 For shipments from Eastern U.S. in the following states:,,,,,,
-"Alabama, Connecticut, Delaware, District of Columbia, Florida,",,,,,,
-"Georgia, Illinois, Indiana, Iowa, Kentucky, Maine, Maryland, Massachusetts, Michigan, Missouri,",,,,,,
-"New Hampshire, New Jersey, New York, North Carolina, Ohio, Pennsylvania, Rhode Island,",,,,,,
+"Alabama, Connecticut, Delaware, District of Columbia, Florida,"
+"Georgia, Illinois, Indiana, Iowa, Kentucky, Maine, Maryland, Massachusetts, Michigan, Missouri,"
+"New Hampshire, New Jersey, New York, North Carolina, Ohio, Pennsylvania, Rhode Island,"
 "South Carolina, Tennessee, Vermont, Virginia, West Virginia and Wisconsin."
 
 For shipments from Western U.S. in the following states: 
