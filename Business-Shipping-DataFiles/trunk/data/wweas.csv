@@ -2562,21 +2562,21 @@ Czech Republic,79081 - 79084,,Yes
 Czech Republic,79376,,Yes
 Czech Republic,,All Other Points, 
 
-Denmark,3630,,Yes
-Denmark,3700 - 3799,,Yes
-Denmark,4230 - 4296,,Yes
-Denmark,4340 - 4599,,Yes
-Denmark,4720 - 4999,,Yes
-Denmark,5290 - 5399,,Yes
-Denmark,5600 - 5999,,Yes
-Denmark,6240 - 6280,,Yes
-Denmark,6330 - 6392,,Yes
-Denmark,6800 - 6990,,Yes
-Denmark,7600 - 7899,,Yes
-Denmark,8400 - 8500,,Yes
-Denmark,8543 - 8599,,Yes
-Denmark,9492 - 9510,,Yes
-Denmark,9540 - 9999,,Yes
+Denmark*,3630,,Yes
+Denmark*,3700 - 3799,,Yes
+Denmark*,4230 - 4296,,Yes
+Denmark*,4340 - 4599,,Yes
+Denmark*,4720 - 4999,,Yes
+Denmark*,5290 - 5399,,Yes
+Denmark*,5600 - 5999,,Yes
+Denmark*,6240 - 6280,,Yes
+Denmark*,6330 - 6392,,Yes
+Denmark*,6800 - 6990,,Yes
+Denmark*,7600 - 7899,,Yes
+Denmark*,8400 - 8500,,Yes
+Denmark*,8543 - 8599,,Yes
+Denmark*,9492 - 9510,,Yes
+Denmark*,9540 - 9999,,Yes
 Denmark,,All Other Points, 
 
 Dominican Republic,,ARENOSO,Yes
@@ -2737,182 +2737,182 @@ Ecuador,,SUCRE,Yes
 Ecuador,,ZAMORA,Yes
 Ecuador,,All Other Points, 
 
-Finland,01100 - 01199,,Yes
-Finland,01800 - 01999,,Yes
-Finland,03000 - 04199,,Yes
-Finland,04460 - 05450,,Yes
-Finland,06460 - 07999,,Yes
-Finland,08210 - 10200,,Yes
-Finland,10240 - 10290,,Yes
-Finland,10330 - 10640,,Yes
-Finland,10670 - 10899,,Yes
-Finland,12000 - 12999,,Yes
-Finland,13610 - 14999,,Yes
-Finland,16000 - 19999,,Yes
-Finland,21130 - 21199,,Yes
-Finland,25000 - 25999,,Yes
-Finland,26830 - 27999,,Yes
-Finland,28000 - 29990,,Yes
-Finland,30000 - 32290,,Yes
-Finland,32300 - 32999,,Yes
-Finland,34000 - 36999,,Yes
-Finland,37160 - 37499,,Yes
-Finland,37700 - 39999,,Yes
-Finland,40000 - 99999,,Yes
+Finland*,01100 - 01199,,Yes
+Finland*,01800 - 01999,,Yes
+Finland*,03000 - 04199,,Yes
+Finland*,04460 - 05450,,Yes
+Finland*,06460 - 07999,,Yes
+Finland*,08210 - 10200,,Yes
+Finland*,10240 - 10290,,Yes
+Finland*,10330 - 10640,,Yes
+Finland*,10670 - 10899,,Yes
+Finland*,12000 - 12999,,Yes
+Finland*,13610 - 14999,,Yes
+Finland*,16000 - 19999,,Yes
+Finland*,21130 - 21199,,Yes
+Finland*,25000 - 25999,,Yes
+Finland*,26830 - 27999,,Yes
+Finland*,28000 - 29990,,Yes
+Finland*,30000 - 32290,,Yes
+Finland*,32300 - 32999,,Yes
+Finland*,34000 - 36999,,Yes
+Finland*,37160 - 37499,,Yes
+Finland*,37700 - 39999,,Yes
+Finland*,40000 - 99999,,Yes
 Finland,,All Other Points, 
 
-France,04000 - 04999,,Yes
-France,05000 - 05999,,Yes
-France,6260,,Yes
-France,6380,,Yes
-France,6390,,Yes
-France,6420,,Yes
-France,6430,,Yes
-France,6440,,Yes
-France,6450,,Yes
-France,6460,,Yes
-France,6470,,Yes
-France,6540,,Yes
-France,6620,,Yes
-France,6660,,Yes
-France,6710,,Yes
-France,6750,,Yes
-France,6790,,Yes
-France,6830,,Yes
-France,6850,,Yes
-France,6910,,Yes
-France,09000 - 09999,,Yes
-France,11001 - 11099,,Yes
-France,11101 - 11999,,Yes
-France,12000 - 12999,,Yes
-France,15000 - 15999,,Yes
-France,17111,,Yes
-France,17123,,Yes
-France,17190,,Yes
-France,17310,,Yes
-France,17370,,Yes
-France,17410,,Yes
-France,17480,,Yes
-France,17550,,Yes
-France,17580,,Yes
-France,17590,,Yes
-France,17630,,Yes
-France,17650,,Yes
-France,17670,,Yes
-France,17740,,Yes
-France,17840,,Yes
-France,17880,,Yes
-France,17940,,Yes
-France,20000 - 20999,,Yes
-France,22870,,Yes
-France,25160,,Yes
-France,25190,,Yes
-France,25240,,Yes
-France,25370,,Yes
-France,25380,,Yes
-France,25430,,Yes
-France,25470,,Yes
-France,29242,,Yes
-France,29253,,Yes
-France,29259,,Yes
-France,29980,,Yes
-France,29990,,Yes
-France,32000 - 32999,,Yes
-France,38112,,Yes
-France,38114,,Yes
-France,38142,,Yes
-France,38250,,Yes
-France,38520,,Yes
-France,38580,,Yes
-France,38650,,Yes
-France,38710,,Yes
-France,38720,,Yes
-France,38740,,Yes
-France,38750,,Yes
-France,38860,,Yes
-France,38880,,Yes
-France,38930,,Yes
-France,38970,,Yes
-France,39220,,Yes
-France,39310,,Yes
-France,39400,,Yes
-France,48000 - 48999,,Yes
-France,56360,,Yes
-France,56590,,Yes
-France,56780,,Yes
-France,56840,,Yes
-France,63113,,Yes
-France,63240,,Yes
-France,63610,,Yes
-France,63680,,Yes
-France,63850,,Yes
-France,64190 - 64199,,Yes
-France,64210 - 64499,,Yes
-France,64510 - 64599,,Yes
-France,64610 - 64999,,Yes
-France,65001 - 65099,,Yes
-France,65101 - 65419,,Yes
-France,65421 - 65999,,Yes
-France,66001 - 66999,,Yes
-France,73120,,Yes
-France,73150,,Yes
-France,73270,,Yes
-France,73320,,Yes
-France,73340,,Yes
-France,73350,,Yes
-France,73440,,Yes
-France,73450,,Yes
-France,73480,,Yes
-France,73500,,Yes
-France,73530,,Yes
-France,73550,,Yes
-France,73590,,Yes
-France,73620,,Yes
-France,73630,,Yes
-France,73710,,Yes
-France,73870,,Yes
-France,74110,,Yes
-France,74120,,Yes
-France,74170,,Yes
-France,74190,,Yes
-France,74220,,Yes
-France,74260,,Yes
-France,74310,,Yes
-France,74340,,Yes
-France,74360,,Yes
-France,74390,,Yes
-France,74400,,Yes
-France,74420,,Yes
-France,74430,,Yes
-France,74440,,Yes
-France,74450,,Yes
-France,74470,,Yes
-France,74480,,Yes
-France,74490,,Yes
-France,74660,,Yes
-France,74920,,Yes
-France,85330,,Yes
-France,85630,,Yes
-France,85680,,Yes
-France,85740,,Yes
-France,88340,,Yes
+France*,04000 - 04999,,Yes
+France*,05000 - 05999,,Yes
+France*,6260,,Yes
+France*,6380,,Yes
+France*,6390,,Yes
+France*,6420,,Yes
+France*,6430,,Yes
+France*,6440,,Yes
+France*,6450,,Yes
+France*,6460,,Yes
+France*,6470,,Yes
+France*,6540,,Yes
+France*,6620,,Yes
+France*,6660,,Yes
+France*,6710,,Yes
+France*,6750,,Yes
+France*,6790,,Yes
+France*,6830,,Yes
+France*,6850,,Yes
+France*,6910,,Yes
+France*,09000 - 09999,,Yes
+France*,11001 - 11099,,Yes
+France*,11101 - 11999,,Yes
+France*,12000 - 12999,,Yes
+France*,15000 - 15999,,Yes
+France*,17111,,Yes
+France*,17123,,Yes
+France*,17190,,Yes
+France*,17310,,Yes
+France*,17370,,Yes
+France*,17410,,Yes
+France*,17480,,Yes
+France*,17550,,Yes
+France*,17580,,Yes
+France*,17590,,Yes
+France*,17630,,Yes
+France*,17650,,Yes
+France*,17670,,Yes
+France*,17740,,Yes
+France*,17840,,Yes
+France*,17880,,Yes
+France*,17940,,Yes
+France*,20000 - 20999,,Yes
+France*,22870,,Yes
+France*,25160,,Yes
+France*,25190,,Yes
+France*,25240,,Yes
+France*,25370,,Yes
+France*,25380,,Yes
+France*,25430,,Yes
+France*,25470,,Yes
+France*,29242,,Yes
+France*,29253,,Yes
+France*,29259,,Yes
+France*,29980,,Yes
+France*,29990,,Yes
+France*,32000 - 32999,,Yes
+France*,38112,,Yes
+France*,38114,,Yes
+France*,38142,,Yes
+France*,38250,,Yes
+France*,38520,,Yes
+France*,38580,,Yes
+France*,38650,,Yes
+France*,38710,,Yes
+France*,38720,,Yes
+France*,38740,,Yes
+France*,38750,,Yes
+France*,38860,,Yes
+France*,38880,,Yes
+France*,38930,,Yes
+France*,38970,,Yes
+France*,39220,,Yes
+France*,39310,,Yes
+France*,39400,,Yes
+France*,48000 - 48999,,Yes
+France*,56360,,Yes
+France*,56590,,Yes
+France*,56780,,Yes
+France*,56840,,Yes
+France*,63113,,Yes
+France*,63240,,Yes
+France*,63610,,Yes
+France*,63680,,Yes
+France*,63850,,Yes
+France*,64190 - 64199,,Yes
+France*,64210 - 64499,,Yes
+France*,64510 - 64599,,Yes
+France*,64610 - 64999,,Yes
+France*,65001 - 65099,,Yes
+France*,65101 - 65419,,Yes
+France*,65421 - 65999,,Yes
+France*,66001 - 66999,,Yes
+France*,73120,,Yes
+France*,73150,,Yes
+France*,73270,,Yes
+France*,73320,,Yes
+France*,73340,,Yes
+France*,73350,,Yes
+France*,73440,,Yes
+France*,73450,,Yes
+France*,73480,,Yes
+France*,73500,,Yes
+France*,73530,,Yes
+France*,73550,,Yes
+France*,73590,,Yes
+France*,73620,,Yes
+France*,73630,,Yes
+France*,73710,,Yes
+France*,73870,,Yes
+France*,74110,,Yes
+France*,74120,,Yes
+France*,74170,,Yes
+France*,74190,,Yes
+France*,74220,,Yes
+France*,74260,,Yes
+France*,74310,,Yes
+France*,74340,,Yes
+France*,74360,,Yes
+France*,74390,,Yes
+France*,74400,,Yes
+France*,74420,,Yes
+France*,74430,,Yes
+France*,74440,,Yes
+France*,74450,,Yes
+France*,74470,,Yes
+France*,74480,,Yes
+France*,74490,,Yes
+France*,74660,,Yes
+France*,74920,,Yes
+France*,85330,,Yes
+France*,85630,,Yes
+France*,85680,,Yes
+France*,85740,,Yes
+France*,88340,,Yes
 France,,All Other Points, 
 
-Georgia,384500 - 384520,,Yes
-Georgia,384690 - 384698,,Yes
+Georgia,6000 - 6020,,Yes
+Georgia,4400 - 4407,,Yes
 Georgia,,All Other Points, 
 
-Germany,18561 - 18565,,Yes
-Germany,25846 - 25849,,Yes
-Germany,25859,,Yes
-Germany,25863,,Yes
-Germany,25869,,Yes
-Germany,25929 - 25999,,Yes
-Germany,26453 - 26486,,Yes
-Germany,26533 - 26548,,Yes
-Germany,26557 - 26579,,Yes
-Germany,26737 - 26757,,Yes
-Germany,27483 - 27499,,Yes
+Germany*,18561 - 18565,,Yes
+Germany*,25846 - 25849,,Yes
+Germany*,25859,,Yes
+Germany*,25863,,Yes
+Germany*,25869,,Yes
+Germany*,25929 - 25999,,Yes
+Germany*,26453 - 26486,,Yes
+Germany*,26533 - 26548,,Yes
+Germany*,26557 - 26579,,Yes
+Germany*,26737 - 26757,,Yes
+Germany*,27483 - 27499,,Yes
 Germany,,All Other Points, 
 
 Greece,00000 - 10430,,Yes
@@ -3074,403 +3074,403 @@ India,800021 - 826000,,Yes
 India,834013 - 999999,,Yes
 India,,All Other Points, 
 
-Indonesia,00000 - 09999,,Yes
-Indonesia,14471 - 14999,,Yes
-Indonesia,15900 - 16109,,Yes
-Indonesia,16400 - 16409,,Yes
-Indonesia,16500 - 16509,,Yes
-Indonesia,16600 - 16609,,Yes
-Indonesia,16900 - 16909,,Yes
-Indonesia,17000 - 17109,,Yes
-Indonesia,17700 - 19109,,Yes
-Indonesia,19131 - 20109,,Yes
-Indonesia,20500 - 28109,,Yes
-Indonesia,28400 - 28709,,Yes
-Indonesia,28800 - 29110,,Yes
-Indonesia,29156 - 29410,,Yes
-Indonesia,29488 - 39999,,Yes
-Indonesia,40910 - 41109,,Yes
-Indonesia,41200 - 41209,,Yes
-Indonesia,41300 - 41309,,Yes
-Indonesia,41400 - 42109,,Yes
-Indonesia,42200 - 43356,,Yes
-Indonesia,43361 - 45109,,Yes
-Indonesia,45200 - 49999,,Yes
-Indonesia,50300 - 50509,,Yes
-Indonesia,50700 - 55109,,Yes
-Indonesia,55300 - 55509,,Yes
-Indonesia,55600 - 55609,,Yes
-Indonesia,56552 - 57109,,Yes
-Indonesia,57200 - 57209,,Yes
-Indonesia,57300 - 57309,,Yes
-Indonesia,57600 - 57609,,Yes
-Indonesia,57772 - 59109,,Yes
-Indonesia,59200 - 60109,,Yes
-Indonesia,60300 - 61109,,Yes
-Indonesia,61200 - 61209,,Yes
-Indonesia,61300 - 61309,,Yes
-Indonesia,61400 - 63109,,Yes
-Indonesia,63200 - 63409,,Yes
-Indonesia,63500 - 65109,,Yes
-Indonesia,65300 - 67109,,Yes
-Indonesia,67200 - 75109,,Yes
-Indonesia,75300 - 76109,,Yes
-Indonesia,76200 - 80109,,Yes
-Indonesia,80600 - 90109,,Yes
-Indonesia,90300 - 95109,,Yes
-Indonesia,95400 - 99999,,Yes
+Indonesia*,00000 - 09999,,Yes
+Indonesia*,14471 - 14999,,Yes
+Indonesia*,15900 - 16109,,Yes
+Indonesia*,16400 - 16409,,Yes
+Indonesia*,16500 - 16509,,Yes
+Indonesia*,16600 - 16609,,Yes
+Indonesia*,16900 - 16909,,Yes
+Indonesia*,17000 - 17109,,Yes
+Indonesia*,17700 - 19109,,Yes
+Indonesia*,19131 - 20109,,Yes
+Indonesia*,20500 - 28109,,Yes
+Indonesia*,28400 - 28709,,Yes
+Indonesia*,28800 - 29110,,Yes
+Indonesia*,29156 - 29410,,Yes
+Indonesia*,29488 - 39999,,Yes
+Indonesia*,40910 - 41109,,Yes
+Indonesia*,41200 - 41209,,Yes
+Indonesia*,41300 - 41309,,Yes
+Indonesia*,41400 - 42109,,Yes
+Indonesia*,42200 - 43356,,Yes
+Indonesia*,43361 - 45109,,Yes
+Indonesia*,45200 - 49999,,Yes
+Indonesia*,50300 - 50509,,Yes
+Indonesia*,50700 - 55109,,Yes
+Indonesia*,55300 - 55509,,Yes
+Indonesia*,55600 - 55609,,Yes
+Indonesia*,56552 - 57109,,Yes
+Indonesia*,57200 - 57209,,Yes
+Indonesia*,57300 - 57309,,Yes
+Indonesia*,57600 - 57609,,Yes
+Indonesia*,57772 - 59109,,Yes
+Indonesia*,59200 - 60109,,Yes
+Indonesia*,60300 - 61109,,Yes
+Indonesia*,61200 - 61209,,Yes
+Indonesia*,61300 - 61309,,Yes
+Indonesia*,61400 - 63109,,Yes
+Indonesia*,63200 - 63409,,Yes
+Indonesia*,63500 - 65109,,Yes
+Indonesia*,65300 - 67109,,Yes
+Indonesia*,67200 - 75109,,Yes
+Indonesia*,75300 - 76109,,Yes
+Indonesia*,76200 - 80109,,Yes
+Indonesia*,80600 - 90109,,Yes
+Indonesia*,90300 - 95109,,Yes
+Indonesia*,95400 - 99999,,Yes
 Indonesia,,All Other Points, 
 
-Italy,21 - 25,,Yes
-Italy,27 - 33,,Yes
-Italy,2020 - 2030,,Yes
-Italy,3046 - 3049,,Yes
-Italy,4017,,Yes
-Italy,4020 - 4021,,Yes
-Italy,4025 - 4029,,Yes
-Italy,5010 - 5014,,Yes
-Italy,5016 - 5017,,Yes
-Italy,5020,,Yes
-Italy,5022 - 5025,,Yes
-Italy,5028,,Yes
-Italy,5030 - 5034,,Yes
-Italy,5037,,Yes
-Italy,5039,,Yes
-Italy,6010,,Yes
-Italy,6020,,Yes
-Italy,6026 - 6028,,Yes
-Italy,6040 - 6041,,Yes
-Italy,6043,,Yes
-Italy,6046 - 6047,,Yes
-Italy,6060,,Yes
-Italy,11010,,Yes
-Italy,11012,,Yes
-Italy,11025,,Yes
-Italy,12010,,Yes
-Italy,12019 - 12020,,Yes
-Italy,12027,,Yes
-Italy,12034,,Yes
-Italy,12070 - 12071,,Yes
-Italy,12073 - 12074,,Yes
-Italy,12080 - 12082,,Yes
-Italy,13020 - 13028,,Yes
-Italy,15010,,Yes
-Italy,15012 - 15032,,Yes
-Italy,15034 - 15039,,Yes
-Italy,15041 - 15047,,Yes
-Italy,15049 - 15056,,Yes
-Italy,15058 - 15060,,Yes
-Italy,15064 - 15066,,Yes
-Italy,15069 - 15075,,Yes
-Italy,15077 - 15079,,Yes
-Italy,16010 - 16023,,Yes
-Italy,16025 - 16029,,Yes
-Italy,16041,,Yes
-Italy,16045,,Yes
-Italy,16048 - 16049,,Yes
-Italy,17010 - 17011,,Yes
-Italy,17013 - 17017,,Yes
-Italy,17020 - 17023,,Yes
-Italy,17025 - 17030,,Yes
-Italy,17032 - 17039,,Yes
-Italy,17041 - 17046,,Yes
-Italy,17048 - 17055,,Yes
-Italy,17058,,Yes
-Italy,18020 - 18037,,Yes
-Italy,19010 - 19020,,Yes
-Italy,19022 - 19033,,Yes
-Italy,19035 - 19037,,Yes
-Italy,22018,,Yes
-Italy,22021 - 22025,,Yes
-Italy,22027,,Yes
-Italy,22034,,Yes
-Italy,23030 - 23033,,Yes
-Italy,23035,,Yes
-Italy,23038,,Yes
-Italy,23802 - 23806,,Yes
-Italy,23811 - 23819,,Yes
-Italy,24012 - 24017,,Yes
-Italy,24023,,Yes
-Italy,24028 - 24029,,Yes
-Italy,24031,,Yes
-Italy,24037 - 24038,,Yes
-Italy,24051,,Yes
-Italy,24053 - 24056,,Yes
-Italy,24062 - 24063,,Yes
-Italy,24065,,Yes
-Italy,25022 - 25023,,Yes
-Italy,25041 - 25044,,Yes
-Italy,25047 - 25048,,Yes
-Italy,25051 - 25061,,Yes
-Italy,25063,,Yes
-Italy,25071 - 25072,,Yes
-Italy,25074,,Yes
-Italy,25083 - 25084,,Yes
-Italy,25088,,Yes
-Italy,26011 - 26012,,Yes
-Italy,26015,,Yes
-Italy,26018,,Yes
-Italy,26021,,Yes
-Italy,26024,,Yes
-Italy,26026,,Yes
-Italy,26031 - 26034,,Yes
-Italy,26036 - 26038,,Yes
-Italy,26042,,Yes
-Italy,26045 - 26049,,Yes
-Italy,27014 - 27015,,Yes
-Italy,27017 - 27018,,Yes
-Italy,27021,,Yes
-Italy,27027,,Yes
-Italy,27031 - 27033,,Yes
-Italy,27037,,Yes
-Italy,27039,,Yes
-Italy,27041 - 27042,,Yes
-Italy,27044 - 27048,,Yes
-Italy,27050 - 27057,,Yes
-Italy,27059,,Yes
-Italy,28815 - 28819,,Yes
-Italy,28824 - 28826,,Yes
-Italy,28836,,Yes
-Italy,28839 - 28843,,Yes
-Italy,28851 - 28854,,Yes
-Italy,28856 - 28858,,Yes
-Italy,28861 - 28864,,Yes
-Italy,28866 - 28879,,Yes
-Italy,28892 - 28897,,Yes
-Italy,29013 - 29016,,Yes
-Italy,29018 - 29019,,Yes
-Italy,29021 - 29025,,Yes
-Italy,29028 - 29029,,Yes
-Italy,30010,,Yes
-Italy,30013 - 30014,,Yes
-Italy,30021,,Yes
-Italy,30028,,Yes
-Italy,31012,,Yes
-Italy,31017,,Yes
-Italy,31054,,Yes
-Italy,32011 - 32012,,Yes
-Italy,32022 - 32024,,Yes
-Italy,32027,,Yes
-Italy,32031,,Yes
-Italy,32033 - 32035,,Yes
-Italy,32041,,Yes
-Italy,32047,,Yes
-Italy,33015 - 33016,,Yes
-Italy,33021 - 33024,,Yes
-Italy,33027,,Yes
-Italy,33045 - 33046,,Yes
-Italy,33090,,Yes
-Italy,33094 - 33095,,Yes
-Italy,36012,,Yes
-Italy,36032,,Yes
-Italy,36046,,Yes
-Italy,36052,,Yes
-Italy,36062,,Yes
-Italy,37028,,Yes
-Italy,37030,,Yes
-Italy,38018,,Yes
-Italy,38030,,Yes
-Italy,38058,,Yes
-Italy,38089,,Yes
-Italy,39016,,Yes
-Italy,39020,,Yes
-Italy,39027,,Yes
-Italy,39029 - 39030,,Yes
-Italy,39040 - 39041,,Yes
-Italy,39050 - 39051,,Yes
-Italy,39054,,Yes
-Italy,39056,,Yes
-Italy,39058 - 39059,,Yes
-Italy,40020 - 40022,,Yes
-Italy,40025,,Yes
-Italy,40032,,Yes
-Italy,40034 - 40036,,Yes
-Italy,40040,,Yes
-Italy,40042,,Yes
-Italy,40045,,Yes
-Italy,40048,,Yes
-Italy,40060,,Yes
-Italy,40063,,Yes
-Italy,41020 - 41025,,Yes
-Italy,41027,,Yes
-Italy,41029,,Yes
-Italy,41035,,Yes
-Italy,41038,,Yes
-Italy,41040,,Yes
-Italy,41044 - 41047,,Yes
-Italy,41055,,Yes
-Italy,42032 - 42033,,Yes
-Italy,42036 - 42037,,Yes
-Italy,42039,,Yes
-Italy,43011,,Yes
-Italy,43020 - 43021,,Yes
-Italy,43024 - 43025,,Yes
-Italy,43028,,Yes
-Italy,43032,,Yes
-Italy,43041 - 43043,,Yes
-Italy,43047,,Yes
-Italy,43050 - 43051,,Yes
-Italy,43053,,Yes
-Italy,43057,,Yes
-Italy,44010,,Yes
-Italy,44017,,Yes
-Italy,44020,,Yes
-Italy,44026,,Yes
-Italy,46022,,Yes
-Italy,46028,,Yes
-Italy,47011 - 47013,,Yes
-Italy,47016 - 47018,,Yes
-Italy,47021,,Yes
-Italy,47026 - 47028,,Yes
-Italy,47824 - 47825,,Yes
-Italy,47833 - 47837,,Yes
-Italy,47842,,Yes
-Italy,47854 - 47855,,Yes
-Italy,47890,,Yes
-Italy,47893 - 47894,,Yes
-Italy,47896,,Yes
-Italy,47898,,Yes
-Italy,48013,,Yes
-Italy,48025,,Yes
-Italy,48028,,Yes
-Italy,50020,,Yes
-Italy,50022,,Yes
-Italy,50030,,Yes
-Italy,50033 - 50035,,Yes
-Italy,50060,,Yes
-Italy,50066,,Yes
-Italy,51020,,Yes
-Italy,51022 - 51028,,Yes
-Italy,52012 - 52018,,Yes
-Italy,52021 - 52024,,Yes
-Italy,52029 - 52036,,Yes
-Italy,52038,,Yes
-Italy,52041 - 52043,,Yes
-Italy,52045 - 52047,,Yes
-Italy,53010,,Yes
-Italy,53030,,Yes
-Italy,53040 - 53041,,Yes
-Italy,53047,,Yes
-Italy,54010 - 54030,,Yes
-Italy,55019 - 55022,,Yes
-Italy,55024 - 55028,,Yes
-Italy,55030 - 55031,,Yes
-Italy,55033 - 55036,,Yes
-Italy,55038,,Yes
-Italy,55050 - 55053,,Yes
-Italy,55055 - 55057,,Yes
-Italy,55060 - 55065,,Yes
-Italy,55067 - 55068,,Yes
-Italy,56032 - 56037,,Yes
-Italy,56040 - 56041,,Yes
-Italy,56045 - 56046,,Yes
-Italy,56048,,Yes
-Italy,57030 - 57039,,Yes
-Italy,58010 - 58014,,Yes
-Italy,58017 - 58018,,Yes
-Italy,58020,,Yes
-Italy,58025 - 58030,,Yes
-Italy,58032,,Yes
-Italy,58034,,Yes
-Italy,58038,,Yes
-Italy,58040,,Yes
-Italy,58044,,Yes
-Italy,58050,,Yes
-Italy,58053 - 58055,,Yes
-Italy,59022 - 59028,,Yes
-Italy,60011,,Yes
-Italy,60013,,Yes
-Italy,60017 - 60018,,Yes
-Italy,60029,,Yes
-Italy,60031 - 60034,,Yes
-Italy,60038 - 60042,,Yes
-Italy,60045 - 60046,,Yes
-Italy,60049,,Yes
-Italy,61013 - 61014,,Yes
-Italy,61016 - 61019,,Yes
-Italy,61021,,Yes
-Italy,61023 - 61024,,Yes
-Italy,61026,,Yes
-Italy,61028,,Yes
-Italy,61037 - 61039,,Yes
-Italy,61041 - 61044,,Yes
-Italy,61046 - 61048,,Yes
-Italy,62021,,Yes
-Italy,62025 - 62026,,Yes
-Italy,62034 - 62039,,Yes
-Italy,63010 - 63012,,Yes
-Italy,63020 - 63021,,Yes
-Italy,63024 - 63032,,Yes
-Italy,63034 - 63036,,Yes
-Italy,63040 - 63041,,Yes
-Italy,63043 - 63045,,Yes
-Italy,63047 - 63049,,Yes
-Italy,64010,,Yes
-Italy,64012 - 64013,,Yes
-Italy,64015,,Yes
-Italy,64017,,Yes
-Italy,64020,,Yes
-Italy,64024,,Yes
-Italy,64027,,Yes
-Italy,64030 - 64049,,Yes
-Italy,65011 - 65012,,Yes
-Italy,65014,,Yes
-Italy,65017,,Yes
-Italy,65019 - 65029,,Yes
-Italy,66010 - 66012,,Yes
-Italy,66014 - 66019,,Yes
-Italy,66021 - 66022,,Yes
-Italy,66030 - 66033,,Yes
-Italy,66036 - 66038,,Yes
-Italy,66040,,Yes
-Italy,66042 - 66047,,Yes
-Italy,66050 - 66053,,Yes
-Italy,67010 - 67038,,Yes
-Italy,67040 - 67050,,Yes
-Italy,67052 - 67069,,Yes
-Italy,70011,,Yes
-Italy,70034,,Yes
-Italy,70036,,Yes
-Italy,70040 - 70041,,Yes
-Italy,70046,,Yes
-Italy,70055,,Yes
-Italy,70058,,Yes
-Italy,71012 - 71015,,Yes
-Italy,71017 - 71028,,Yes
-Italy,71030 - 71035,,Yes
-Italy,71037 - 71041,,Yes
-Italy,71046 - 71048,,Yes
-Italy,72020,,Yes
-Italy,72022,,Yes
-Italy,72024 - 72029,,Yes
-Italy,73011 - 73012,,Yes
-Italy,73015 - 73019,,Yes
-Italy,73021 - 73023,,Yes
-Italy,73025 - 73029,,Yes
-Italy,73031 - 73038,,Yes
-Italy,73041,,Yes
-Italy,73045,,Yes
-Italy,73047,,Yes
-Italy,73049 - 73054,,Yes
-Italy,73056,,Yes
-Italy,73058 - 73059,,Yes
-Italy,74010 - 74014,,Yes
-Italy,74017 - 74019,,Yes
-Italy,74021 - 74022,,Yes
-Italy,74025,,Yes
-Italy,74027 - 74028,,Yes
-Italy,75010 - 75029,,Yes
-Italy,85010 - 85018,,Yes
-Italy,85020 - 85038,,Yes
-Italy,85040,,Yes
-Italy,85042 - 85044,,Yes
-Italy,85046,,Yes
-Italy,85048 - 85059,,Yes
-Italy,86010 - 86033,,Yes
-Italy,86035 - 86038,,Yes
-Italy,86040 - 86049,,Yes
-Italy,86070 - 86075,,Yes
-Italy,86077 - 86097,,Yes
+Italy*,21 - 25,,Yes
+Italy*,27 - 33,,Yes
+Italy*,2020 - 2030,,Yes
+Italy*,3046 - 3049,,Yes
+Italy*,4017,,Yes
+Italy*,4020 - 4021,,Yes
+Italy*,4025 - 4029,,Yes
+Italy*,5010 - 5014,,Yes
+Italy*,5016 - 5017,,Yes
+Italy*,5020,,Yes
+Italy*,5022 - 5025,,Yes
+Italy*,5028,,Yes
+Italy*,5030 - 5034,,Yes
+Italy*,5037,,Yes
+Italy*,5039,,Yes
+Italy*,6010,,Yes
+Italy*,6020,,Yes
+Italy*,6026 - 6028,,Yes
+Italy*,6040 - 6041,,Yes
+Italy*,6043,,Yes
+Italy*,6046 - 6047,,Yes
+Italy*,6060,,Yes
+Italy*,11010,,Yes
+Italy*,11012,,Yes
+Italy*,11025,,Yes
+Italy*,12010,,Yes
+Italy*,12019 - 12020,,Yes
+Italy*,12027,,Yes
+Italy*,12034,,Yes
+Italy*,12070 - 12071,,Yes
+Italy*,12073 - 12074,,Yes
+Italy*,12080 - 12082,,Yes
+Italy*,13020 - 13028,,Yes
+Italy*,15010,,Yes
+Italy*,15012 - 15032,,Yes
+Italy*,15034 - 15039,,Yes
+Italy*,15041 - 15047,,Yes
+Italy*,15049 - 15056,,Yes
+Italy*,15058 - 15060,,Yes
+Italy*,15064 - 15066,,Yes
+Italy*,15069 - 15075,,Yes
+Italy*,15077 - 15079,,Yes
+Italy*,16010 - 16023,,Yes
+Italy*,16025 - 16029,,Yes
+Italy*,16041,,Yes
+Italy*,16045,,Yes
+Italy*,16048 - 16049,,Yes
+Italy*,17010 - 17011,,Yes
+Italy*,17013 - 17017,,Yes
+Italy*,17020 - 17023,,Yes
+Italy*,17025 - 17030,,Yes
+Italy*,17032 - 17039,,Yes
+Italy*,17041 - 17046,,Yes
+Italy*,17048 - 17055,,Yes
+Italy*,17058,,Yes
+Italy*,18020 - 18037,,Yes
+Italy*,19010 - 19020,,Yes
+Italy*,19022 - 19033,,Yes
+Italy*,19035 - 19037,,Yes
+Italy*,22018,,Yes
+Italy*,22021 - 22025,,Yes
+Italy*,22027,,Yes
+Italy*,22034,,Yes
+Italy*,23030 - 23033,,Yes
+Italy*,23035,,Yes
+Italy*,23038,,Yes
+Italy*,23802 - 23806,,Yes
+Italy*,23811 - 23819,,Yes
+Italy*,24012 - 24017,,Yes
+Italy*,24023,,Yes
+Italy*,24028 - 24029,,Yes
+Italy*,24031,,Yes
+Italy*,24037 - 24038,,Yes
+Italy*,24051,,Yes
+Italy*,24053 - 24056,,Yes
+Italy*,24062 - 24063,,Yes
+Italy*,24065,,Yes
+Italy*,25022 - 25023,,Yes
+Italy*,25041 - 25044,,Yes
+Italy*,25047 - 25048,,Yes
+Italy*,25051 - 25061,,Yes
+Italy*,25063,,Yes
+Italy*,25071 - 25072,,Yes
+Italy*,25074,,Yes
+Italy*,25083 - 25084,,Yes
+Italy*,25088,,Yes
+Italy*,26011 - 26012,,Yes
+Italy*,26015,,Yes
+Italy*,26018,,Yes
+Italy*,26021,,Yes
+Italy*,26024,,Yes
+Italy*,26026,,Yes
+Italy*,26031 - 26034,,Yes
+Italy*,26036 - 26038,,Yes
+Italy*,26042,,Yes
+Italy*,26045 - 26049,,Yes
+Italy*,27014 - 27015,,Yes
+Italy*,27017 - 27018,,Yes
+Italy*,27021,,Yes
+Italy*,27027,,Yes
+Italy*,27031 - 27033,,Yes
+Italy*,27037,,Yes
+Italy*,27039,,Yes
+Italy*,27041 - 27042,,Yes
+Italy*,27044 - 27048,,Yes
+Italy*,27050 - 27057,,Yes
+Italy*,27059,,Yes
+Italy*,28815 - 28819,,Yes
+Italy*,28824 - 28826,,Yes
+Italy*,28836,,Yes
+Italy*,28839 - 28843,,Yes
+Italy*,28851 - 28854,,Yes
+Italy*,28856 - 28858,,Yes
+Italy*,28861 - 28864,,Yes
+Italy*,28866 - 28879,,Yes
+Italy*,28892 - 28897,,Yes
+Italy*,29013 - 29016,,Yes
+Italy*,29018 - 29019,,Yes
+Italy*,29021 - 29025,,Yes
+Italy*,29028 - 29029,,Yes
+Italy*,30010,,Yes
+Italy*,30013 - 30014,,Yes
+Italy*,30021,,Yes
+Italy*,30028,,Yes
+Italy*,31012,,Yes
+Italy*,31017,,Yes
+Italy*,31054,,Yes
+Italy*,32011 - 32012,,Yes
+Italy*,32022 - 32024,,Yes
+Italy*,32027,,Yes
+Italy*,32031,,Yes
+Italy*,32033 - 32035,,Yes
+Italy*,32041,,Yes
+Italy*,32047,,Yes
+Italy*,33015 - 33016,,Yes
+Italy*,33021 - 33024,,Yes
+Italy*,33027,,Yes
+Italy*,33045 - 33046,,Yes
+Italy*,33090,,Yes
+Italy*,33094 - 33095,,Yes
+Italy*,36012,,Yes
+Italy*,36032,,Yes
+Italy*,36046,,Yes
+Italy*,36052,,Yes
+Italy*,36062,,Yes
+Italy*,37028,,Yes
+Italy*,37030,,Yes
+Italy*,38018,,Yes
+Italy*,38030,,Yes
+Italy*,38058,,Yes
+Italy*,38089,,Yes
+Italy*,39016,,Yes
+Italy*,39020,,Yes
+Italy*,39027,,Yes
+Italy*,39029 - 39030,,Yes
+Italy*,39040 - 39041,,Yes
+Italy*,39050 - 39051,,Yes
+Italy*,39054,,Yes
+Italy*,39056,,Yes
+Italy*,39058 - 39059,,Yes
+Italy*,40020 - 40022,,Yes
+Italy*,40025,,Yes
+Italy*,40032,,Yes
+Italy*,40034 - 40036,,Yes
+Italy*,40040,,Yes
+Italy*,40042,,Yes
+Italy*,40045,,Yes
+Italy*,40048,,Yes
+Italy*,40060,,Yes
+Italy*,40063,,Yes
+Italy*,41020 - 41025,,Yes
+Italy*,41027,,Yes
+Italy*,41029,,Yes
+Italy*,41035,,Yes
+Italy*,41038,,Yes
+Italy*,41040,,Yes
+Italy*,41044 - 41047,,Yes
+Italy*,41055,,Yes
+Italy*,42032 - 42033,,Yes
+Italy*,42036 - 42037,,Yes
+Italy*,42039,,Yes
+Italy*,43011,,Yes
+Italy*,43020 - 43021,,Yes
+Italy*,43024 - 43025,,Yes
+Italy*,43028,,Yes
+Italy*,43032,,Yes
+Italy*,43041 - 43043,,Yes
+Italy*,43047,,Yes
+Italy*,43050 - 43051,,Yes
+Italy*,43053,,Yes
+Italy*,43057,,Yes
+Italy*,44010,,Yes
+Italy*,44017,,Yes
+Italy*,44020,,Yes
+Italy*,44026,,Yes
+Italy*,46022,,Yes
+Italy*,46028,,Yes
+Italy*,47011 - 47013,,Yes
+Italy*,47016 - 47018,,Yes
+Italy*,47021,,Yes
+Italy*,47026 - 47028,,Yes
+Italy*,47824 - 47825,,Yes
+Italy*,47833 - 47837,,Yes
+Italy*,47842,,Yes
+Italy*,47854 - 47855,,Yes
+Italy*,47890,,Yes
+Italy*,47893 - 47894,,Yes
+Italy*,47896,,Yes
+Italy*,47898,,Yes
+Italy*,48013,,Yes
+Italy*,48025,,Yes
+Italy*,48028,,Yes
+Italy*,50020,,Yes
+Italy*,50022,,Yes
+Italy*,50030,,Yes
+Italy*,50033 - 50035,,Yes
+Italy*,50060,,Yes
+Italy*,50066,,Yes
+Italy*,51020,,Yes
+Italy*,51022 - 51028,,Yes
+Italy*,52012 - 52018,,Yes
+Italy*,52021 - 52024,,Yes
+Italy*,52029 - 52036,,Yes
+Italy*,52038,,Yes
+Italy*,52041 - 52043,,Yes
+Italy*,52045 - 52047,,Yes
+Italy*,53010,,Yes
+Italy*,53030,,Yes
+Italy*,53040 - 53041,,Yes
+Italy*,53047,,Yes
+Italy*,54010 - 54030,,Yes
+Italy*,55019 - 55022,,Yes
+Italy*,55024 - 55028,,Yes
+Italy*,55030 - 55031,,Yes
+Italy*,55033 - 55036,,Yes
+Italy*,55038,,Yes
+Italy*,55050 - 55053,,Yes
+Italy*,55055 - 55057,,Yes
+Italy*,55060 - 55065,,Yes
+Italy*,55067 - 55068,,Yes
+Italy*,56032 - 56037,,Yes
+Italy*,56040 - 56041,,Yes
+Italy*,56045 - 56046,,Yes
+Italy*,56048,,Yes
+Italy*,57030 - 57039,,Yes
+Italy*,58010 - 58014,,Yes
+Italy*,58017 - 58018,,Yes
+Italy*,58020,,Yes
+Italy*,58025 - 58030,,Yes
+Italy*,58032,,Yes
+Italy*,58034,,Yes
+Italy*,58038,,Yes
+Italy*,58040,,Yes
+Italy*,58044,,Yes
+Italy*,58050,,Yes
+Italy*,58053 - 58055,,Yes
+Italy*,59022 - 59028,,Yes
+Italy*,60011,,Yes
+Italy*,60013,,Yes
+Italy*,60017 - 60018,,Yes
+Italy*,60029,,Yes
+Italy*,60031 - 60034,,Yes
+Italy*,60038 - 60042,,Yes
+Italy*,60045 - 60046,,Yes
+Italy*,60049,,Yes
+Italy*,61013 - 61014,,Yes
+Italy*,61016 - 61019,,Yes
+Italy*,61021,,Yes
+Italy*,61023 - 61024,,Yes
+Italy*,61026,,Yes
+Italy*,61028,,Yes
+Italy*,61037 - 61039,,Yes
+Italy*,61041 - 61044,,Yes
+Italy*,61046 - 61048,,Yes
+Italy*,62021,,Yes
+Italy*,62025 - 62026,,Yes
+Italy*,62034 - 62039,,Yes
+Italy*,63010 - 63012,,Yes
+Italy*,63020 - 63021,,Yes
+Italy*,63024 - 63032,,Yes
+Italy*,63034 - 63036,,Yes
+Italy*,63040 - 63041,,Yes
+Italy*,63043 - 63045,,Yes
+Italy*,63047 - 63049,,Yes
+Italy*,64010,,Yes
+Italy*,64012 - 64013,,Yes
+Italy*,64015,,Yes
+Italy*,64017,,Yes
+Italy*,64020,,Yes
+Italy*,64024,,Yes
+Italy*,64027,,Yes
+Italy*,64030 - 64049,,Yes
+Italy*,65011 - 65012,,Yes
+Italy*,65014,,Yes
+Italy*,65017,,Yes
+Italy*,65019 - 65029,,Yes
+Italy*,66010 - 66012,,Yes
+Italy*,66014 - 66019,,Yes
+Italy*,66021 - 66022,,Yes
+Italy*,66030 - 66033,,Yes
+Italy*,66036 - 66038,,Yes
+Italy*,66040,,Yes
+Italy*,66042 - 66047,,Yes
+Italy*,66050 - 66053,,Yes
+Italy*,67010 - 67038,,Yes
+Italy*,67040 - 67050,,Yes
+Italy*,67052 - 67069,,Yes
+Italy*,70011,,Yes
+Italy*,70034,,Yes
+Italy*,70036,,Yes
+Italy*,70040 - 70041,,Yes
+Italy*,70046,,Yes
+Italy*,70055,,Yes
+Italy*,70058,,Yes
+Italy*,71012 - 71015,,Yes
+Italy*,71017 - 71028,,Yes
+Italy*,71030 - 71035,,Yes
+Italy*,71037 - 71041,,Yes
+Italy*,71046 - 71048,,Yes
+Italy*,72020,,Yes
+Italy*,72022,,Yes
+Italy*,72024 - 72029,,Yes
+Italy*,73011 - 73012,,Yes
+Italy*,73015 - 73019,,Yes
+Italy*,73021 - 73023,,Yes
+Italy*,73025 - 73029,,Yes
+Italy*,73031 - 73038,,Yes
+Italy*,73041,,Yes
+Italy*,73045,,Yes
+Italy*,73047,,Yes
+Italy*,73049 - 73054,,Yes
+Italy*,73056,,Yes
+Italy*,73058 - 73059,,Yes
+Italy*,74010 - 74014,,Yes
+Italy*,74017 - 74019,,Yes
+Italy*,74021 - 74022,,Yes
+Italy*,74025,,Yes
+Italy*,74027 - 74028,,Yes
+Italy*,75010 - 75029,,Yes
+Italy*,85010 - 85018,,Yes
+Italy*,85020 - 85038,,Yes
+Italy*,85040,,Yes
+Italy*,85042 - 85044,,Yes
+Italy*,85046,,Yes
+Italy*,85048 - 85059,,Yes
+Italy*,86010 - 86033,,Yes
+Italy*,86035 - 86038,,Yes
+Italy*,86040 - 86049,,Yes
+Italy*,86070 - 86075,,Yes
+Italy*,86077 - 86097,,Yes
 Italy,,All Other Points, 
 
 Jamaica,,ABOVE ROCKS,Yes
@@ -3895,64 +3895,66 @@ Jamaica,,All Other Points,
 
 Japan,0000000 - 0099999,,Yes
 Japan,0400000 - 0999999,,Yes
-Japan,7600000 - 9099999,,Yes
+Japan,7600000 - 8100000,,Yes
+Japan,8100002 - 8120007,,Yes
+Japan,8120009 - 9099999,,Yes
 Japan,,All Other Points, 
 
 Kazakhstan,000000 - 479999,,Yes
 Kazakhstan,480101 - 999999,,Yes
 Kazakhstan,,All Other Points, 
 
-Malaysia,02501 - 04999,,Yes
-Malaysia,06661 - 06999,,Yes
-Malaysia,07001 - 07999,,Yes
-Malaysia,08101 - 08399,,Yes
-Malaysia,08401 - 08599,,Yes
-Malaysia,08601 - 08999,,Yes
-Malaysia,09011 - 09399,,Yes
-Malaysia,09401 - 09599,,Yes
-Malaysia,09601 - 09999,,Yes
-Malaysia,16151 - 19999,,Yes
-Malaysia,21611 - 22999,,Yes
-Malaysia,23001 - 23999,,Yes
-Malaysia,24301 - 24999,,Yes
-Malaysia,26251 - 26599,,Yes
-Malaysia,26700 - 27599,,Yes
-Malaysia,27601 - 27999,,Yes
-Malaysia,28001 - 28399,,Yes
-Malaysia,28401 - 28599,,Yes
-Malaysia,28601 - 28699,,Yes
-Malaysia,28701 - 29999,,Yes
-Malaysia,31651 - 31749,,Yes
-Malaysia,31951 - 31999,,Yes
-Malaysia,32801 - 32999,,Yes
-Malaysia,33701 - 33999,,Yes
-Malaysia,34901 - 34999,,Yes
-Malaysia,35901 - 35999,,Yes
-Malaysia,36101 - 36399,,Yes
-Malaysia,36401 - 36699,,Yes
-Malaysia,36801 - 39999,,Yes
-Malaysia,44501 - 44999,,Yes
-Malaysia,72000 - 72999,,Yes
-Malaysia,73001 - 74999,,Yes
-Malaysia,76500 - 76999,,Yes
-Malaysia,77001 - 77199,,Yes
-Malaysia,77201 - 77299,,Yes
-Malaysia,77401 - 77999,,Yes
-Malaysia,78301 - 79999,,Yes
-Malaysia,82201 - 82999,,Yes
-Malaysia,83800 - 83999,,Yes
-Malaysia,85011 - 85299,,Yes
-Malaysia,85301 - 85999,,Yes
-Malaysia,86500 - 86999,,Yes
-Malaysia,87009 - 87999,,Yes
-Malaysia,89851 - 89999,,Yes
-Malaysia,90001 - 91099,,Yes
-Malaysia,91101 - 91199,,Yes
-Malaysia,91201 - 91299,,Yes
-Malaysia,91301 - 92999,,Yes
-Malaysia,96801 - 96999,,Yes
-Malaysia,97001 - 97999,,Yes
-Malaysia,98701 - 98850,,Yes
+Malaysia*,02501 - 04999,,Yes
+Malaysia*,06661 - 06999,,Yes
+Malaysia*,07001 - 07999,,Yes
+Malaysia*,08101 - 08399,,Yes
+Malaysia*,08401 - 08599,,Yes
+Malaysia*,08601 - 08999,,Yes
+Malaysia*,09011 - 09399,,Yes
+Malaysia*,09401 - 09599,,Yes
+Malaysia*,09601 - 09999,,Yes
+Malaysia*,16151 - 19999,,Yes
+Malaysia*,21611 - 22999,,Yes
+Malaysia*,23001 - 23999,,Yes
+Malaysia*,24301 - 24999,,Yes
+Malaysia*,26251 - 26599,,Yes
+Malaysia*,26700 - 27599,,Yes
+Malaysia*,27601 - 27999,,Yes
+Malaysia*,28001 - 28399,,Yes
+Malaysia*,28401 - 28599,,Yes
+Malaysia*,28601 - 28699,,Yes
+Malaysia*,28701 - 29999,,Yes
+Malaysia*,31651 - 31749,,Yes
+Malaysia*,31951 - 31999,,Yes
+Malaysia*,32801 - 32999,,Yes
+Malaysia*,33701 - 33999,,Yes
+Malaysia*,34901 - 34999,,Yes
+Malaysia*,35901 - 35999,,Yes
+Malaysia*,36101 - 36399,,Yes
+Malaysia*,36401 - 36699,,Yes
+Malaysia*,36801 - 39999,,Yes
+Malaysia*,44501 - 44999,,Yes
+Malaysia*,72000 - 72999,,Yes
+Malaysia*,73001 - 74999,,Yes
+Malaysia*,76500 - 76999,,Yes
+Malaysia*,77001 - 77199,,Yes
+Malaysia*,77201 - 77299,,Yes
+Malaysia*,77401 - 77999,,Yes
+Malaysia*,78301 - 79999,,Yes
+Malaysia*,82201 - 82999,,Yes
+Malaysia*,83800 - 83999,,Yes
+Malaysia*,85011 - 85299,,Yes
+Malaysia*,85301 - 85999,,Yes
+Malaysia*,86500 - 86999,,Yes
+Malaysia*,87009 - 87999,,Yes
+Malaysia*,89851 - 89999,,Yes
+Malaysia*,90001 - 91099,,Yes
+Malaysia*,91101 - 91199,,Yes
+Malaysia*,91201 - 91299,,Yes
+Malaysia*,91301 - 92999,,Yes
+Malaysia*,96801 - 96999,,Yes
+Malaysia*,97001 - 97999,,Yes
+Malaysia*,98701 - 98850,,Yes
 Malaysia,,All Other Points, 
 
 Mexico,20316 - 20354,,Yes
@@ -4218,10 +4220,10 @@ Nepal,00000 - 44600,,Yes
 Nepal,44618 - 99999,,Yes
 Nepal,,All Other Points, 
 
-Netherlands,1790 - 1797,,Yes
-Netherlands,4500 - 4589,,Yes
-Netherlands,8880 - 8899,,Yes
-Netherlands,9160 - 9166,,Yes
+Netherlands*,1790 - 1797,,Yes
+Netherlands*,4500 - 4589,,Yes
+Netherlands*,8880 - 8899,,Yes
+Netherlands*,9160 - 9166,,Yes
 Netherlands,,All Other Points, 
 
 New Zealand,0000 - 0999,,Yes
@@ -4587,110 +4589,110 @@ Peru,,TUMBES,Yes
 Peru,,YURIMAGUAS,Yes
 Peru,,All Other Points, 
 
-Philippines,2100 - 2104,,Yes
-Philippines,2107 - 2114,,Yes
-Philippines,2201 - 2208,,Yes
-Philippines,2210 - 2213,,Yes
-Philippines,2402,,Yes
-Philippines,2405,,Yes
-Philippines,2407 - 2427,,Yes
-Philippines,2429,,Yes
-Philippines,2431 - 2434,,Yes
-Philippines,2436 - 2447,,Yes
-Philippines,2502 - 2520,,Yes
-Philippines,2603 - 2625,,Yes
-Philippines,2701 - 2733,,Yes
-Philippines,2800 - 2826,,Yes
-Philippines,2902 - 2905,,Yes
-Philippines,2907 - 2915,,Yes
-Philippines,2917 - 2922,,Yes
-Philippines,3111 - 3116,,Yes
-Philippines,3118,,Yes
-Philippines,3120 - 3133,,Yes
-Philippines,3200 - 3207,,Yes
-Philippines,3300 - 3336,,Yes
-Philippines,3400 - 3405,,Yes
-Philippines,3500 - 3528,,Yes
-Philippines,3600 - 3610,,Yes
-Philippines,3700 - 3714,,Yes
-Philippines,3800 - 3814,,Yes
-Philippines,3900 - 3905,,Yes
-Philippines,4001 - 4002,,Yes
-Philippines,4004 - 4015,,Yes
-Philippines,4017 - 4021,,Yes
-Philippines,4202 - 4205,,Yes
-Philippines,4207 - 4211,,Yes
-Philippines,4213 - 4214,,Yes
-Philippines,4218 - 4230,,Yes
-Philippines,4232,,Yes
-Philippines,4300,,Yes
-Philippines,4302 - 4322,,Yes
-Philippines,4324 - 4342,,Yes
-Philippines,4406 - 4417,,Yes
-Philippines,4419 - 4430,,Yes
-Philippines,4432 - 4436,,Yes
-Philippines,4502,,Yes
-Philippines,4504 - 4510,,Yes
-Philippines,4512,,Yes
-Philippines,4514 - 4517,,Yes
-Philippines,4601 - 4612,,Yes
-Philippines,4700 - 4715,,Yes
-Philippines,4801 - 4810,,Yes
-Philippines,4900 - 4905,,Yes
-Philippines,5001 - 5046,,Yes
-Philippines,5100 - 5111,,Yes
-Philippines,5200 - 5214,,Yes
-Philippines,5301 - 5312,,Yes
-Philippines,5314 - 5322,,Yes
-Philippines,5401 - 5421,,Yes
-Philippines,5501 - 5508,,Yes
-Philippines,5510 - 5516,,Yes
-Philippines,5601 - 5616,,Yes
-Philippines,5700 - 5717,,Yes
-Philippines,5801 - 5816,,Yes
-Philippines,6002 - 6013,,Yes
-Philippines,6017 - 6044,,Yes
-Philippines,6047 - 6053,,Yes
-Philippines,6101 - 6132,,Yes
-Philippines,6201 - 6205,,Yes
-Philippines,6207 - 6215,,Yes
-Philippines,6217 - 6230,,Yes
-Philippines,6301 - 6347,,Yes
-Philippines,6401 - 6423,,Yes
-Philippines,6501 - 6540,,Yes
-Philippines,6542 - 6550,,Yes
-Philippines,6601 - 6617,,Yes
-Philippines,6702 - 6725,,Yes
-Philippines,6801 - 6822,,Yes
-Philippines,7001 - 7015,,Yes
-Philippines,7017 - 7042,,Yes
-Philippines,7101 - 7124,,Yes
-Philippines,7200 - 7215,,Yes
-Philippines,7300 - 7306,,Yes
-Philippines,7400 - 7416,,Yes
-Philippines,7500 - 7509,,Yes
-Philippines,8001,,Yes
-Philippines,8003 - 8015,,Yes
-Philippines,8100 - 8120,,Yes
-Philippines,8200 - 8210,,Yes
-Philippines,8301 - 8310,,Yes
-Philippines,8312 - 8318,,Yes
-Philippines,8401 - 8427,,Yes
-Philippines,8500 - 8513,,Yes
-Philippines,8600 - 8611,,Yes
-Philippines,8701 - 8723,,Yes
-Philippines,9001 - 9013,,Yes
-Philippines,9015 - 9025,,Yes
-Philippines,9100 - 9104,,Yes
-Philippines,9201 - 9222,,Yes
-Philippines,9300 - 9321,,Yes
-Philippines,9400 - 9417,,Yes
-Philippines,9501 - 9505,,Yes
-Philippines,9507 - 9517,,Yes
-Philippines,9601 - 9618,,Yes
-Philippines,9701 - 9706,,Yes
-Philippines,9708 - 9716,,Yes
-Philippines,9800 - 9811,,Yes
+Philippines*,2100 - 2104,,Yes
+Philippines*,2107 - 2114,,Yes
+Philippines*,2201 - 2208,,Yes
+Philippines*,2210 - 2213,,Yes
+Philippines*,2402,,Yes
+Philippines*,2405,,Yes
+Philippines*,2407 - 2427,,Yes
+Philippines*,2429,,Yes
+Philippines*,2431 - 2434,,Yes
+Philippines*,2436 - 2447,,Yes
+Philippines*,2502 - 2520,,Yes
+Philippines*,2603 - 2625,,Yes
+Philippines*,2701 - 2733,,Yes
+Philippines*,2800 - 2826,,Yes
+Philippines*,2902 - 2905,,Yes
+Philippines*,2907 - 2915,,Yes
+Philippines*,2917 - 2922,,Yes
+Philippines*,3111 - 3116,,Yes
+Philippines*,3118,,Yes
+Philippines*,3120 - 3133,,Yes
+Philippines*,3200 - 3207,,Yes
+Philippines*,3300 - 3336,,Yes
+Philippines*,3400 - 3405,,Yes
+Philippines*,3500 - 3528,,Yes
+Philippines*,3600 - 3610,,Yes
+Philippines*,3700 - 3714,,Yes
+Philippines*,3800 - 3814,,Yes
+Philippines*,3900 - 3905,,Yes
+Philippines*,4001 - 4002,,Yes
+Philippines*,4004 - 4015,,Yes
+Philippines*,4017 - 4021,,Yes
+Philippines*,4202 - 4205,,Yes
+Philippines*,4207 - 4211,,Yes
+Philippines*,4213 - 4214,,Yes
+Philippines*,4218 - 4230,,Yes
+Philippines*,4232,,Yes
+Philippines*,4300,,Yes
+Philippines*,4302 - 4322,,Yes
+Philippines*,4324 - 4342,,Yes
+Philippines*,4406 - 4417,,Yes
+Philippines*,4419 - 4430,,Yes
+Philippines*,4432 - 4436,,Yes
+Philippines*,4502,,Yes
+Philippines*,4504 - 4510,,Yes
+Philippines*,4512,,Yes
+Philippines*,4514 - 4517,,Yes
+Philippines*,4601 - 4612,,Yes
+Philippines*,4700 - 4715,,Yes
+Philippines*,4801 - 4810,,Yes
+Philippines*,4900 - 4905,,Yes
+Philippines*,5001 - 5046,,Yes
+Philippines*,5100 - 5111,,Yes
+Philippines*,5200 - 5214,,Yes
+Philippines*,5301 - 5312,,Yes
+Philippines*,5314 - 5322,,Yes
+Philippines*,5401 - 5421,,Yes
+Philippines*,5501 - 5508,,Yes
+Philippines*,5510 - 5516,,Yes
+Philippines*,5601 - 5616,,Yes
+Philippines*,5700 - 5717,,Yes
+Philippines*,5801 - 5816,,Yes
+Philippines*,6002 - 6013,,Yes
+Philippines*,6017 - 6044,,Yes
+Philippines*,6047 - 6053,,Yes
+Philippines*,6101 - 6132,,Yes
+Philippines*,6201 - 6205,,Yes
+Philippines*,6207 - 6215,,Yes
+Philippines*,6217 - 6230,,Yes
+Philippines*,6301 - 6347,,Yes
+Philippines*,6401 - 6423,,Yes
+Philippines*,6501 - 6540,,Yes
+Philippines*,6542 - 6550,,Yes
+Philippines*,6601 - 6617,,Yes
+Philippines*,6702 - 6725,,Yes
+Philippines*,6801 - 6822,,Yes
+Philippines*,7001 - 7015,,Yes
+Philippines*,7017 - 7042,,Yes
+Philippines*,7101 - 7124,,Yes
+Philippines*,7200 - 7215,,Yes
+Philippines*,7300 - 7306,,Yes
+Philippines*,7400 - 7416,,Yes
+Philippines*,7500 - 7509,,Yes
+Philippines*,8001,,Yes
+Philippines*,8003 - 8015,,Yes
+Philippines*,8100 - 8120,,Yes
+Philippines*,8200 - 8210,,Yes
+Philippines*,8301 - 8310,,Yes
+Philippines*,8312 - 8318,,Yes
+Philippines*,8401 - 8427,,Yes
+Philippines*,8500 - 8513,,Yes
+Philippines*,8600 - 8611,,Yes
+Philippines*,8701 - 8723,,Yes
+Philippines*,9001 - 9013,,Yes
+Philippines*,9015 - 9025,,Yes
+Philippines*,9100 - 9104,,Yes
+Philippines*,9201 - 9222,,Yes
+Philippines*,9300 - 9321,,Yes
+Philippines*,9400 - 9417,,Yes
+Philippines*,9501 - 9505,,Yes
+Philippines*,9507 - 9517,,Yes
+Philippines*,9601 - 9618,,Yes
+Philippines*,9701 - 9706,,Yes
+Philippines*,9708 - 9716,,Yes
+Philippines*,9800 - 9811,,Yes
 Philippines,,All Other Points, 
 
 Poland,10000 - 10999,,Yes
@@ -4716,8 +4718,7 @@ Puerto Rico,765,,Yes
 Puerto Rico,775,,Yes
 Puerto Rico,,All Other Points, 
 
-Romania,0000 - 6999,,Yes
-Romania,7001 - 9999,,Yes
+Romania,070000-927250,,Yes
 Romania,,All Other Points, 
 
 Russia,000000 - 100999,,Yes
@@ -4767,575 +4768,575 @@ Slovakia,98000 - 98299,,Yes
 Slovakia,99000 - 99299,,Yes
 Slovakia,,All Other Points, 
 
-Spain,01110 - 01340,,Yes
-Spain,01420 - 01468,,Yes
-Spain,01474 - 01478,,Yes
-Spain,01510 - 01999,,Yes
-Spain,02100 - 02360,,Yes
-Spain,02409 - 02536,,Yes
-Spain,02610 - 02620,,Yes
-Spain,02636 - 02639,,Yes
-Spain,02650 - 02999,,Yes
-Spain,03108 - 03109,,Yes
-Spain,03111 - 03115,,Yes
-Spain,03138 - 03139,,Yes
-Spain,03149 - 03159,,Yes
-Spain,03170 - 03179,,Yes
-Spain,03186 - 03188,,Yes
-Spain,03193 - 03195,,Yes
-Spain,3292,,Yes
-Spain,3296,,Yes
-Spain,03310 - 03316,,Yes
-Spain,03318 - 03320,,Yes
-Spain,03340 - 03350,,Yes
-Spain,03369 - 03390,,Yes
-Spain,03408 - 03409,,Yes
-Spain,03459 - 03469,,Yes
-Spain,03509 - 03520,,Yes
-Spain,3569,,Yes
-Spain,03578 - 03579,,Yes
-Spain,3639,,Yes
-Spain,3649,,Yes
-Spain,03657 - 03659,,Yes
-Spain,03668 - 03679,,Yes
-Spain,03688 - 03689,,Yes
-Spain,03698 - 03699,,Yes
-Spain,3709,,Yes
-Spain,3724,,Yes
-Spain,03727 - 03729,,Yes
-Spain,3737,,Yes
-Spain,03740 - 03779,,Yes
-Spain,03786 - 03795,,Yes
-Spain,03810 - 03819,,Yes
-Spain,03827 - 03828,,Yes
-Spain,03837 - 03999,,Yes
-Spain,04110 - 04150,,Yes
-Spain,04160 - 04569,,Yes
-Spain,04619 - 04661,,Yes
-Spain,4694,,Yes
-Spain,04710 - 04720,,Yes
-Spain,04729 - 04730,,Yes
-Spain,04741 - 04750,,Yes
-Spain,4768,,Yes
-Spain,04778 - 04814,,Yes
-Spain,04820 - 04999,,Yes
-Spain,05100 - 05999,,Yes
-Spain,6050,,Yes
-Spain,06105 - 06197,,Yes
-Spain,06207 - 06210,,Yes
-Spain,06225 - 06293,,Yes
-Spain,06310 - 06394,,Yes
-Spain,06410 - 06479,,Yes
-Spain,06486 - 06693,,Yes
-Spain,06710 - 06770,,Yes
-Spain,06810 - 06999,,Yes
-Spain,07100 - 07110,,Yes
-Spain,7140,,Yes
-Spain,07142 - 07183,,Yes
-Spain,07190 - 07196,,Yes
-Spain,07208 - 07260,,Yes
-Spain,07310 - 07320,,Yes
-Spain,7349,,Yes
-Spain,07369 - 07459,,Yes
-Spain,07469 - 07470,,Yes
-Spain,07509 - 07540,,Yes
-Spain,07559 - 07599,,Yes
-Spain,07629 - 07640,,Yes
-Spain,07659 - 07689,,Yes
-Spain,7691,,Yes
-Spain,07710 - 07713,,Yes
-Spain,07720 - 07750,,Yes
-Spain,07810 - 07816,,Yes
-Spain,07818 - 07819,,Yes
-Spain,07828 - 07829,,Yes
-Spain,7839,,Yes
-Spain,07849 - 07999,,Yes
-Spain,08104 - 08107,,Yes
-Spain,08146 - 08148,,Yes
-Spain,8160,,Yes
-Spain,08178 - 08183,,Yes
-Spain,8185,,Yes
-Spain,08187 - 08189,,Yes
-Spain,08193 - 08194,,Yes
-Spain,8199,,Yes
-Spain,08212 - 08213,,Yes
-Spain,08230 - 08233,,Yes
-Spain,08250 - 08289,,Yes
-Spain,08293 - 08299,,Yes
-Spain,08317 - 08319,,Yes
-Spain,08328 - 08329,,Yes
-Spain,08338 - 08339,,Yes
-Spain,08348 - 08349,,Yes
-Spain,08358 - 08359,,Yes
-Spain,8389,,Yes
-Spain,08391 - 08396,,Yes
-Spain,8398,,Yes
-Spain,08410 - 08416,,Yes
-Spain,08445 - 08461,,Yes
-Spain,8474,,Yes
-Spain,8480,,Yes
-Spain,8495,,Yes
-Spain,08503 - 08519,,Yes
-Spain,8521,,Yes
-Spain,08540 - 08554,,Yes
-Spain,8569,,Yes
-Spain,08573 - 08593,,Yes
-Spain,08610 - 08619,,Yes
-Spain,08629 - 08635,,Yes
-Spain,08650 - 08699,,Yes
-Spain,08710 - 08719,,Yes
-Spain,08729 - 08739,,Yes
-Spain,8753,,Yes
-Spain,8756,,Yes
-Spain,8758,,Yes
-Spain,8769,,Yes
-Spain,08773 - 08779,,Yes
-Spain,08781 - 08783,,Yes
-Spain,08785 - 08787,,Yes
-Spain,08789 - 08799,,Yes
-Spain,08811 - 08818,,Yes
-Spain,8849,,Yes
-Spain,8859,,Yes
-Spain,08871 - 08999,,Yes
-Spain,09100 - 09199,,Yes
-Spain,09210 - 09391,,Yes
-Spain,09410 - 09999,,Yes
-Spain,10100 - 10292,,Yes
-Spain,10317 - 10593,,Yes
-Spain,10610 - 10759,,Yes
-Spain,10810 - 10999,,Yes
-Spain,11120,,Yes
-Spain,11138,,Yes
-Spain,11149,,Yes
-Spain,11158 - 11159,,Yes
-Spain,11178 - 11190,,Yes
-Spain,11310 - 11351,,Yes
-Spain,11369,,Yes
-Spain,11390 - 11400,,Yes
-Spain,11518 - 11519,,Yes
-Spain,11549,,Yes
-Spain,11560 - 11597,,Yes
-Spain,11610 - 11620,,Yes
-Spain,11638 - 11649,,Yes
-Spain,11659 - 11999,,Yes
-Spain,12100,,Yes
-Spain,12118 - 12194,,Yes
-Spain,12210 - 12499,,Yes
-Spain,12510 - 12513,,Yes
-Spain,12526 - 12529,,Yes
-Spain,12539,,Yes
-Spain,12549,,Yes
-Spain,12570 - 12579,,Yes
-Spain,12589 - 12599,,Yes
-Spain,12609 - 12999,,Yes
-Spain,13100 - 13160,,Yes
-Spain,13179 - 13197,,Yes
-Spain,13210 - 13230,,Yes
-Spain,13247 - 13249,,Yes
-Spain,13270 - 13279,,Yes
-Spain,13310 - 13499,,Yes
-Spain,13580 - 13598,,Yes
-Spain,13619 - 13629,,Yes
-Spain,13640 - 13690,,Yes
-Spain,13710 - 13999,,Yes
-Spain,14029,,Yes
-Spain,14110 - 14193,,Yes
-Spain,14206 - 14350,,Yes
-Spain,14410 - 14491,,Yes
-Spain,14510 - 14549,,Yes
-Spain,14600 - 14670,,Yes
-Spain,14709 - 14740,,Yes
-Spain,14810 - 14814,,Yes
-Spain,14816 - 14840,,Yes
-Spain,14857 - 14880,,Yes
-Spain,14910 - 14915,,Yes
-Spain,14930,,Yes
-Spain,14950,,Yes
-Spain,14970 - 14999,,Yes
-Spain,15101,,Yes
-Spain,15105 - 15108,,Yes
-Spain,15110 - 15140,,Yes
-Spain,15143,,Yes
-Spain,15146 - 15155,,Yes
-Spain,15161,,Yes
-Spain,15166 - 15171,,Yes
-Spain,15174 - 15179,,Yes
-Spain,15181 - 15188,,Yes
-Spain,15191 - 15199,,Yes
-Spain,15210 - 15216,,Yes
-Spain,15220 - 15228,,Yes
-Spain,15236 - 15240,,Yes
-Spain,15256 - 15289,,Yes
-Spain,15292 - 15299,,Yes
-Spain,15306 - 15318,,Yes
-Spain,15324 - 15392,,Yes
-Spain,15485 - 15494,,Yes
-Spain,15509 - 15556,,Yes
-Spain,15561 - 15577,,Yes
-Spain,15579 - 15585,,Yes
-Spain,15590 - 15619,,Yes
-Spain,15621 - 15630,,Yes
-Spain,15637 - 15659,,Yes
-Spain,15668 - 15679,,Yes
-Spain,15681 - 15687,,Yes
-Spain,15690 - 15692,,Yes
-Spain,15800 - 15839,,Yes
-Spain,15841 - 15863,,Yes
-Spain,15865 - 15882,,Yes
-Spain,15884 - 15885,,Yes
-Spain,15887 - 15897,,Yes
-Spain,15899,,Yes
-Spain,15910 - 15917,,Yes
-Spain,15928,,Yes
-Spain,15938 - 15939,,Yes
-Spain,15947 - 15959,,Yes
-Spain,15964 - 15969,,Yes
-Spain,15978 - 15992,,Yes
-Spain,15994,,Yes
-Spain,15996 - 15999,,Yes
-Spain,16100 - 16393,,Yes
-Spain,16410 - 16999,,Yes
-Spain,17100 - 17185,,Yes
-Spain,17199,,Yes
-Spain,17210 - 17214,,Yes
-Spain,17240 - 17258,,Yes
-Spain,17320 - 17476,,Yes
-Spain,17481 - 17497,,Yes
-Spain,17510 - 17583,,Yes
-Spain,17700 - 17781,,Yes
-Spain,17810 - 17814,,Yes
-Spain,17830 - 17999,,Yes
-Spain,18110 - 18132,,Yes
-Spain,18150 - 18198,,Yes
-Spain,18210,,Yes
-Spain,18247 - 18250,,Yes
-Spain,18270 - 18295,,Yes
-Spain,18310 - 18314,,Yes
-Spain,18327 - 18495,,Yes
-Spain,18510 - 18570,,Yes
-Spain,18610 - 18670,,Yes
-Spain,18697 - 18770,,Yes
-Spain,18810 - 18999,,Yes
-Spain,19100 - 19198,,Yes
-Spain,19208 - 19999,,Yes
-Spain,20115,,Yes
-Spain,20128 - 20130,,Yes
-Spain,20150 - 20159,,Yes
-Spain,20170 - 20180,,Yes
-Spain,20210 - 20270,,Yes
-Spain,20490 - 20496,,Yes
-Spain,20509 - 20550,,Yes
-Spain,20567 - 20568,,Yes
-Spain,20577 - 20590,,Yes
-Spain,20690,,Yes
-Spain,20709,,Yes
-Spain,20737 - 20759,,Yes
-Spain,20808 - 20999,,Yes
-Spain,21120 - 21390,,Yes
-Spain,21409,,Yes
-Spain,21420 - 21430,,Yes
-Spain,21449,,Yes
-Spain,21459,,Yes
-Spain,21510 - 21595,,Yes
-Spain,21609 - 21700,,Yes
-Spain,21720,,Yes
-Spain,21740 - 21760,,Yes
-Spain,21810 - 21999,,Yes
-Spain,22100 - 22283,,Yes
-Spain,22310 - 22395,,Yes
-Spain,22410 - 22514,,Yes
-Spain,22528 - 22666,,Yes
-Spain,22709 - 22999,,Yes
-Spain,23100 - 23196,,Yes
-Spain,23211 - 23298,,Yes
-Spain,23310 - 23393,,Yes
-Spain,23410 - 23430,,Yes
-Spain,23450 - 23489,,Yes
-Spain,23499,,Yes
-Spain,23509 - 23592,,Yes
-Spain,23610 - 23639,,Yes
-Spain,23649,,Yes
-Spain,23657 - 23659,,Yes
-Spain,23669 - 23670,,Yes
-Spain,23684 - 23693,,Yes
-Spain,23711 - 23730,,Yes
-Spain,23746 - 23999,,Yes
-Spain,24100 - 24230,,Yes
-Spain,24232 - 24294,,Yes
-Spain,24310 - 24398,,Yes
-Spain,24411 - 24457,,Yes
-Spain,24459 - 24699,,Yes
-Spain,24710 - 24746,,Yes
-Spain,24760 - 24999,,Yes
-Spain,25100 - 25187,,Yes
-Spain,25200 - 25222,,Yes
-Spain,25240 - 25290,,Yes
-Spain,25310 - 25599,,Yes
-Spain,25610 - 25693,,Yes
-Spain,25710 - 25999,,Yes
-Spain,26100 - 26376,,Yes
-Spain,26509 - 26570,,Yes
-Spain,26584 - 26999,,Yes
-Spain,27100 - 27289,,Yes
-Spain,27293 - 27392,,Yes
-Spain,27410 - 27596,,Yes
-Spain,27610 - 27798,,Yes
-Spain,27810 - 27849,,Yes
-Spain,27860 - 27999,,Yes
-Spain,28130 - 28196,,Yes
-Spain,28209 - 28219,,Yes
-Spain,28229,,Yes
-Spain,28240 - 28248,,Yes
-Spain,28270 - 28279,,Yes
-Spain,28292 - 28297,,Yes
-Spain,28310 - 28312,,Yes
-Spain,28339,,Yes
-Spain,28359 - 28391,,Yes
-Spain,28409 - 28413,,Yes
-Spain,28430 - 28439,,Yes
-Spain,28450 - 28499,,Yes
-Spain,28510 - 28515,,Yes
-Spain,28530 - 28599,,Yes
-Spain,28607 - 28650,,Yes
-Spain,28693 - 28696,,Yes
-Spain,28707,,Yes
-Spain,28710 - 28749,,Yes
-Spain,28751 - 28756,,Yes
-Spain,28792 - 28794,,Yes
-Spain,28810 - 28818,,Yes
-Spain,28861 - 28891,,Yes
-Spain,28939,,Yes
-Spain,28971 - 28979,,Yes
-Spain,28990 - 28999,,Yes
-Spain,29109 - 29110,,Yes
-Spain,29140 - 29195,,Yes
-Spain,29197,,Yes
-Spain,29210 - 29395,,Yes
-Spain,29410 - 29494,,Yes
-Spain,29520 - 29569,,Yes
-Spain,29591 - 29593,,Yes
-Spain,29610 - 29611,,Yes
-Spain,29678 - 29679,,Yes
-Spain,29689 - 29693,,Yes
-Spain,29710 - 29720,,Yes
-Spain,29740 - 29760,,Yes
-Spain,29788,,Yes
-Spain,29790 - 29999,,Yes
-Spain,30107 - 30139,,Yes
-Spain,30149 - 30169,,Yes
-Spain,30176 - 30179,,Yes
-Spain,30189 - 30196,,Yes
-Spain,30319,,Yes
-Spain,30329 - 30351,,Yes
-Spain,30364 - 30398,,Yes
-Spain,30410 - 30420,,Yes
-Spain,30438,,Yes
-Spain,30440 - 30441,,Yes
-Spain,30508 - 30509,,Yes
-Spain,30528 - 30529,,Yes
-Spain,30535 - 30540,,Yes
-Spain,30559 - 30564,,Yes
-Spain,30566,,Yes
-Spain,30579 - 30594,,Yes
-Spain,30609 - 30648,,Yes
-Spain,30708 - 30720,,Yes
-Spain,30739,,Yes
-Spain,30810 - 30812,,Yes
-Spain,30814,,Yes
-Spain,30816 - 30817,,Yes
-Spain,30830 - 30837,,Yes
-Spain,30858 - 30859,,Yes
-Spain,30868 - 30869,,Yes
-Spain,30876 - 30879,,Yes
-Spain,30889,,Yes
-Spain,30891 - 30999,,Yes
-Spain,31100 - 31110,,Yes
-Spain,31120 - 31154,,Yes
-Spain,31170 - 31179,,Yes
-Spain,31190 - 31194,,Yes
-Spain,31208 - 31293,,Yes
-Spain,31310 - 31496,,Yes
-Spain,31510 - 31594,,Yes
-Spain,31610 - 31799,,Yes
-Spain,31809 - 31999,,Yes
-Spain,32100 - 32243,,Yes
-Spain,32310 - 32312,,Yes
-Spain,32320 - 32459,,Yes
-Spain,32510 - 32514,,Yes
-Spain,32519 - 32593,,Yes
-Spain,32610 - 32616,,Yes
-Spain,32618,,Yes
-Spain,32621,,Yes
-Spain,32624 - 32625,,Yes
-Spain,32630 - 32634,,Yes
-Spain,32636 - 32708,,Yes
-Spain,32711 - 32900,,Yes
-Spain,32907 - 32960,,Yes
-Spain,32971 - 32999,,Yes
-Spain,33100 - 33114,,Yes
-Spain,33116 - 33191,,Yes
-Spain,33193 - 33196,,Yes
-Spain,33299 - 33350,,Yes
-Spain,33394,,Yes
-Spain,33410 - 33416,,Yes
-Spain,33418,,Yes
-Spain,33424 - 33427,,Yes
-Spain,33430 - 33509,,Yes
-Spain,33518 - 33599,,Yes
-Spain,33610 - 33708,,Yes
-Spain,33716 - 33929,,Yes
-Spain,33934 - 33937,,Yes
-Spain,33939 - 33999,,Yes
-Spain,34100 - 34999,,Yes
-Spain,35001 - 35999,,Yes
-Spain,36110 - 36161,,Yes
-Spain,36163 - 36200,,Yes
-Spain,36307 - 36309,,Yes
-Spain,36360,,Yes
-Spain,36410 - 36414,,Yes
-Spain,36420 - 36494,,Yes
-Spain,36510 - 36516,,Yes
-Spain,36518 - 36539,,Yes
-Spain,36542 - 36599,,Yes
-Spain,36611 - 36614,,Yes
-Spain,36617 - 36619,,Yes
-Spain,36626 - 36629,,Yes
-Spain,36638 - 36679,,Yes
-Spain,36681 - 36693,,Yes
-Spain,36712 - 36715,,Yes
-Spain,36729 - 36739,,Yes
-Spain,36746 - 36779,,Yes
-Spain,36788 - 36794,,Yes
-Spain,36810 - 36859,,Yes
-Spain,36861 - 36879,,Yes
-Spain,36883 - 36895,,Yes
-Spain,36910 - 36914,,Yes
-Spain,36937 - 36939,,Yes
-Spain,36945 - 36949,,Yes
-Spain,36955 - 36959,,Yes
-Spain,36966 - 36979,,Yes
-Spain,36992 - 36999,,Yes
-Spain,37100 - 37999,,Yes
-Spain,38001 - 38999,,Yes
-Spain,39100 - 39197,,Yes
-Spain,39211 - 39294,,Yes
-Spain,39310 - 39360,,Yes
-Spain,39407 - 39595,,Yes
-Spain,39608,,Yes
-Spain,39611 - 39699,,Yes
-Spain,39706 - 39708,,Yes
-Spain,39710 - 39739,,Yes
-Spain,39749 - 39766,,Yes
-Spain,39776 - 39820,,Yes
-Spain,39849 - 39999,,Yes
-Spain,40100 - 40999,,Yes
-Spain,41089,,Yes
-Spain,41110 - 41120,,Yes
-Spain,41140 - 41300,,Yes
-Spain,41318 - 41390,,Yes
-Spain,41409,,Yes
-Spain,41420 - 41439,,Yes
-Spain,41449 - 41479,,Yes
-Spain,41550,,Yes
-Spain,41564 - 41599,,Yes
-Spain,41610,,Yes
-Spain,41630,,Yes
-Spain,41650 - 41670,,Yes
-Spain,41719,,Yes
-Spain,41727 - 41729,,Yes
-Spain,41749 - 41780,,Yes
-Spain,41804 - 41830,,Yes
-Spain,41849 - 41899,,Yes
-Spain,41908,,Yes
-Spain,41928,,Yes
-Spain,41970,,Yes
-Spain,41989 - 41999,,Yes
-Spain,42100 - 42999,,Yes
-Spain,43100 - 43178,,Yes
-Spain,43300 - 43479,,Yes
-Spain,43481 - 43491,,Yes
-Spain,43510 - 43530,,Yes
-Spain,43548 - 43570,,Yes
-Spain,43590 - 43597,,Yes
-Spain,43710 - 43792,,Yes
-Spain,43810 - 43817,,Yes
-Spain,43839,,Yes
-Spain,43860,,Yes
-Spain,43877 - 43999,,Yes
-Spain,44100 - 44597,,Yes
-Spain,44610 - 44999,,Yes
-Spain,45100 - 45191,,Yes
-Spain,45210 - 45489,,Yes
-Spain,45510 - 45594,,Yes
-Spain,45610 - 45695,,Yes
-Spain,45720 - 45999,,Yes
-Spain,46035,,Yes
-Spain,46111 - 46112,,Yes
-Spain,46114 - 46116,,Yes
-Spain,46118 - 46119,,Yes
-Spain,46127,,Yes
-Spain,46131 - 46137,,Yes
-Spain,46139 - 46149,,Yes
-Spain,46164 - 46182,,Yes
-Spain,46184,,Yes
-Spain,46191 - 46199,,Yes
-Spain,46210,,Yes
-Spain,46229,,Yes
-Spain,46260 - 46270,,Yes
-Spain,46291 - 46295,,Yes
-Spain,46310 - 46339,,Yes
-Spain,46350 - 46369,,Yes
-Spain,46388 - 46394,,Yes
-Spain,46408 - 46409,,Yes
-Spain,46417 - 46439,,Yes
-Spain,46510 - 46512,,Yes
-Spain,46529,,Yes
-Spain,46540,,Yes
-Spain,46590 - 46591,,Yes
-Spain,46593,,Yes
-Spain,46610 - 46639,,Yes
-Spain,46649,,Yes
-Spain,46659 - 46670,,Yes
-Spain,46687 - 46692,,Yes
-Spain,46710 - 46728,,Yes
-Spain,46749 - 46759,,Yes
-Spain,46770,,Yes
-Spain,46790 - 46792,,Yes
-Spain,46810 - 46844,,Yes
-Spain,46868,,Yes
-Spain,46891 - 46894,,Yes
-Spain,46909 - 46999,,Yes
-Spain,47100 - 47134,,Yes
-Spain,47150,,Yes
-Spain,47152 - 47153,,Yes
-Spain,47160 - 47161,,Yes
-Spain,47164 - 47192,,Yes
-Spain,47194,,Yes
-Spain,47196 - 47360,,Yes
-Spain,47410 - 47609,,Yes
-Spain,47620 - 47999,,Yes
-Spain,48110 - 48145,,Yes
-Spain,48190 - 48196,,Yes
-Spain,48210 - 48213,,Yes
-Spain,48249 - 48250,,Yes
-Spain,48269 - 48292,,Yes
-Spain,48309 - 48330,,Yes
-Spain,48350 - 48360,,Yes
-Spain,48380 - 48460,,Yes
-Spain,48490 - 48509,,Yes
-Spain,48520 - 48550,,Yes
-Spain,48610 - 48820,,Yes
-Spain,48840 - 48999,,Yes
-Spain,49100 - 49594,,Yes
-Spain,49610 - 49999,,Yes
-Spain,50100 - 50170,,Yes
-Spain,50172 - 50178,,Yes
-Spain,50190 - 50299,,Yes
-Spain,50310 - 50409,,Yes
-Spain,50411,,Yes
-Spain,50430 - 50491,,Yes
-Spain,50510 - 50596,,Yes
-Spain,50610 - 50999,,Yes
+Spain*,01110 - 01340,,Yes
+Spain*,01420 - 01468,,Yes
+Spain*,01474 - 01478,,Yes
+Spain*,01510 - 01999,,Yes
+Spain*,02100 - 02360,,Yes
+Spain*,02409 - 02536,,Yes
+Spain*,02610 - 02620,,Yes
+Spain*,02636 - 02639,,Yes
+Spain*,02650 - 02999,,Yes
+Spain*,03108 - 03109,,Yes
+Spain*,03111 - 03115,,Yes
+Spain*,03138 - 03139,,Yes
+Spain*,03149 - 03159,,Yes
+Spain*,03170 - 03179,,Yes
+Spain*,03186 - 03188,,Yes
+Spain*,03193 - 03195,,Yes
+Spain*,3292,,Yes
+Spain*,3296,,Yes
+Spain*,03310 - 03316,,Yes
+Spain*,03318 - 03320,,Yes
+Spain*,03340 - 03350,,Yes
+Spain*,03369 - 03390,,Yes
+Spain*,03408 - 03409,,Yes
+Spain*,03459 - 03469,,Yes
+Spain*,03509 - 03520,,Yes
+Spain*,3569,,Yes
+Spain*,03578 - 03579,,Yes
+Spain*,3639,,Yes
+Spain*,3649,,Yes
+Spain*,03657 - 03659,,Yes
+Spain*,03668 - 03679,,Yes
+Spain*,03688 - 03689,,Yes
+Spain*,03698 - 03699,,Yes
+Spain*,3709,,Yes
+Spain*,3724,,Yes
+Spain*,03727 - 03729,,Yes
+Spain*,3737,,Yes
+Spain*,03740 - 03779,,Yes
+Spain*,03786 - 03795,,Yes
+Spain*,03810 - 03819,,Yes
+Spain*,03827 - 03828,,Yes
+Spain*,03837 - 03999,,Yes
+Spain*,04110 - 04150,,Yes
+Spain*,04160 - 04569,,Yes
+Spain*,04619 - 04661,,Yes
+Spain*,4694,,Yes
+Spain*,04710 - 04720,,Yes
+Spain*,04729 - 04730,,Yes
+Spain*,04741 - 04750,,Yes
+Spain*,4768,,Yes
+Spain*,04778 - 04814,,Yes
+Spain*,04820 - 04999,,Yes
+Spain*,05100 - 05999,,Yes
+Spain*,6050,,Yes
+Spain*,06105 - 06197,,Yes
+Spain*,06207 - 06210,,Yes
+Spain*,06225 - 06293,,Yes
+Spain*,06310 - 06394,,Yes
+Spain*,06410 - 06479,,Yes
+Spain*,06486 - 06693,,Yes
+Spain*,06710 - 06770,,Yes
+Spain*,06810 - 06999,,Yes
+Spain*,07100 - 07110,,Yes
+Spain*,7140,,Yes
+Spain*,07142 - 07183,,Yes
+Spain*,07190 - 07196,,Yes
+Spain*,07208 - 07260,,Yes
+Spain*,07310 - 07320,,Yes
+Spain*,7349,,Yes
+Spain*,07369 - 07459,,Yes
+Spain*,07469 - 07470,,Yes
+Spain*,07509 - 07540,,Yes
+Spain*,07559 - 07599,,Yes
+Spain*,07629 - 07640,,Yes
+Spain*,07659 - 07689,,Yes
+Spain*,7691,,Yes
+Spain*,07710 - 07713,,Yes
+Spain*,07720 - 07750,,Yes
+Spain*,07810 - 07816,,Yes
+Spain*,07818 - 07819,,Yes
+Spain*,07828 - 07829,,Yes
+Spain*,7839,,Yes
+Spain*,07849 - 07999,,Yes
+Spain*,08104 - 08107,,Yes
+Spain*,08146 - 08148,,Yes
+Spain*,8160,,Yes
+Spain*,08178 - 08183,,Yes
+Spain*,8185,,Yes
+Spain*,08187 - 08189,,Yes
+Spain*,08193 - 08194,,Yes
+Spain*,8199,,Yes
+Spain*,08212 - 08213,,Yes
+Spain*,08230 - 08233,,Yes
+Spain*,08250 - 08289,,Yes
+Spain*,08293 - 08299,,Yes
+Spain*,08317 - 08319,,Yes
+Spain*,08328 - 08329,,Yes
+Spain*,08338 - 08339,,Yes
+Spain*,08348 - 08349,,Yes
+Spain*,08358 - 08359,,Yes
+Spain*,8389,,Yes
+Spain*,08391 - 08396,,Yes
+Spain*,8398,,Yes
+Spain*,08410 - 08416,,Yes
+Spain*,08445 - 08461,,Yes
+Spain*,8474,,Yes
+Spain*,8480,,Yes
+Spain*,8495,,Yes
+Spain*,08503 - 08519,,Yes
+Spain*,8521,,Yes
+Spain*,08540 - 08554,,Yes
+Spain*,8569,,Yes
+Spain*,08573 - 08593,,Yes
+Spain*,08610 - 08619,,Yes
+Spain*,08629 - 08635,,Yes
+Spain*,08650 - 08699,,Yes
+Spain*,08710 - 08719,,Yes
+Spain*,08729 - 08739,,Yes
+Spain*,8753,,Yes
+Spain*,8756,,Yes
+Spain*,8758,,Yes
+Spain*,8769,,Yes
+Spain*,08773 - 08779,,Yes
+Spain*,08781 - 08783,,Yes
+Spain*,08785 - 08787,,Yes
+Spain*,08789 - 08799,,Yes
+Spain*,08811 - 08818,,Yes
+Spain*,8849,,Yes
+Spain*,8859,,Yes
+Spain*,08871 - 08999,,Yes
+Spain*,09100 - 09199,,Yes
+Spain*,09210 - 09391,,Yes
+Spain*,09410 - 09999,,Yes
+Spain*,10100 - 10292,,Yes
+Spain*,10317 - 10593,,Yes
+Spain*,10610 - 10759,,Yes
+Spain*,10810 - 10999,,Yes
+Spain*,11120,,Yes
+Spain*,11138,,Yes
+Spain*,11149,,Yes
+Spain*,11158 - 11159,,Yes
+Spain*,11178 - 11190,,Yes
+Spain*,11310 - 11351,,Yes
+Spain*,11369,,Yes
+Spain*,11390 - 11400,,Yes
+Spain*,11518 - 11519,,Yes
+Spain*,11549,,Yes
+Spain*,11560 - 11597,,Yes
+Spain*,11610 - 11620,,Yes
+Spain*,11638 - 11649,,Yes
+Spain*,11659 - 11999,,Yes
+Spain*,12100,,Yes
+Spain*,12118 - 12194,,Yes
+Spain*,12210 - 12499,,Yes
+Spain*,12510 - 12513,,Yes
+Spain*,12526 - 12529,,Yes
+Spain*,12539,,Yes
+Spain*,12549,,Yes
+Spain*,12570 - 12579,,Yes
+Spain*,12589 - 12599,,Yes
+Spain*,12609 - 12999,,Yes
+Spain*,13100 - 13160,,Yes
+Spain*,13179 - 13197,,Yes
+Spain*,13210 - 13230,,Yes
+Spain*,13247 - 13249,,Yes
+Spain*,13270 - 13279,,Yes
+Spain*,13310 - 13499,,Yes
+Spain*,13580 - 13598,,Yes
+Spain*,13619 - 13629,,Yes
+Spain*,13640 - 13690,,Yes
+Spain*,13710 - 13999,,Yes
+Spain*,14029,,Yes
+Spain*,14110 - 14193,,Yes
+Spain*,14206 - 14350,,Yes
+Spain*,14410 - 14491,,Yes
+Spain*,14510 - 14549,,Yes
+Spain*,14600 - 14670,,Yes
+Spain*,14709 - 14740,,Yes
+Spain*,14810 - 14814,,Yes
+Spain*,14816 - 14840,,Yes
+Spain*,14857 - 14880,,Yes
+Spain*,14910 - 14915,,Yes
+Spain*,14930,,Yes
+Spain*,14950,,Yes
+Spain*,14970 - 14999,,Yes
+Spain*,15101,,Yes
+Spain*,15105 - 15108,,Yes
+Spain*,15110 - 15140,,Yes
+Spain*,15143,,Yes
+Spain*,15146 - 15155,,Yes
+Spain*,15161,,Yes
+Spain*,15166 - 15171,,Yes
+Spain*,15174 - 15179,,Yes
+Spain*,15181 - 15188,,Yes
+Spain*,15191 - 15199,,Yes
+Spain*,15210 - 15216,,Yes
+Spain*,15220 - 15228,,Yes
+Spain*,15236 - 15240,,Yes
+Spain*,15256 - 15289,,Yes
+Spain*,15292 - 15299,,Yes
+Spain*,15306 - 15318,,Yes
+Spain*,15324 - 15392,,Yes
+Spain*,15485 - 15494,,Yes
+Spain*,15509 - 15556,,Yes
+Spain*,15561 - 15577,,Yes
+Spain*,15579 - 15585,,Yes
+Spain*,15590 - 15619,,Yes
+Spain*,15621 - 15630,,Yes
+Spain*,15637 - 15659,,Yes
+Spain*,15668 - 15679,,Yes
+Spain*,15681 - 15687,,Yes
+Spain*,15690 - 15692,,Yes
+Spain*,15800 - 15839,,Yes
+Spain*,15841 - 15863,,Yes
+Spain*,15865 - 15882,,Yes
+Spain*,15884 - 15885,,Yes
+Spain*,15887 - 15897,,Yes
+Spain*,15899,,Yes
+Spain*,15910 - 15917,,Yes
+Spain*,15928,,Yes
+Spain*,15938 - 15939,,Yes
+Spain*,15947 - 15959,,Yes
+Spain*,15964 - 15969,,Yes
+Spain*,15978 - 15992,,Yes
+Spain*,15994,,Yes
+Spain*,15996 - 15999,,Yes
+Spain*,16100 - 16393,,Yes
+Spain*,16410 - 16999,,Yes
+Spain*,17100 - 17185,,Yes
+Spain*,17199,,Yes
+Spain*,17210 - 17214,,Yes
+Spain*,17240 - 17258,,Yes
+Spain*,17320 - 17476,,Yes
+Spain*,17481 - 17497,,Yes
+Spain*,17510 - 17583,,Yes
+Spain*,17700 - 17781,,Yes
+Spain*,17810 - 17814,,Yes
+Spain*,17830 - 17999,,Yes
+Spain*,18110 - 18132,,Yes
+Spain*,18150 - 18198,,Yes
+Spain*,18210,,Yes
+Spain*,18247 - 18250,,Yes
+Spain*,18270 - 18295,,Yes
+Spain*,18310 - 18314,,Yes
+Spain*,18327 - 18495,,Yes
+Spain*,18510 - 18570,,Yes
+Spain*,18610 - 18670,,Yes
+Spain*,18697 - 18770,,Yes
+Spain*,18810 - 18999,,Yes
+Spain*,19100 - 19198,,Yes
+Spain*,19208 - 19999,,Yes
+Spain*,20115,,Yes
+Spain*,20128 - 20130,,Yes
+Spain*,20150 - 20159,,Yes
+Spain*,20170 - 20180,,Yes
+Spain*,20210 - 20270,,Yes
+Spain*,20490 - 20496,,Yes
+Spain*,20509 - 20550,,Yes
+Spain*,20567 - 20568,,Yes
+Spain*,20577 - 20590,,Yes
+Spain*,20690,,Yes
+Spain*,20709,,Yes
+Spain*,20737 - 20759,,Yes
+Spain*,20808 - 20999,,Yes
+Spain*,21120 - 21390,,Yes
+Spain*,21409,,Yes
+Spain*,21420 - 21430,,Yes
+Spain*,21449,,Yes
+Spain*,21459,,Yes
+Spain*,21510 - 21595,,Yes
+Spain*,21609 - 21700,,Yes
+Spain*,21720,,Yes
+Spain*,21740 - 21760,,Yes
+Spain*,21810 - 21999,,Yes
+Spain*,22100 - 22283,,Yes
+Spain*,22310 - 22395,,Yes
+Spain*,22410 - 22514,,Yes
+Spain*,22528 - 22666,,Yes
+Spain*,22709 - 22999,,Yes
+Spain*,23100 - 23196,,Yes
+Spain*,23211 - 23298,,Yes
+Spain*,23310 - 23393,,Yes
+Spain*,23410 - 23430,,Yes
+Spain*,23450 - 23489,,Yes
+Spain*,23499,,Yes
+Spain*,23509 - 23592,,Yes
+Spain*,23610 - 23639,,Yes
+Spain*,23649,,Yes
+Spain*,23657 - 23659,,Yes
+Spain*,23669 - 23670,,Yes
+Spain*,23684 - 23693,,Yes
+Spain*,23711 - 23730,,Yes
+Spain*,23746 - 23999,,Yes
+Spain*,24100 - 24230,,Yes
+Spain*,24232 - 24294,,Yes
+Spain*,24310 - 24398,,Yes
+Spain*,24411 - 24457,,Yes
+Spain*,24459 - 24699,,Yes
+Spain*,24710 - 24746,,Yes
+Spain*,24760 - 24999,,Yes
+Spain*,25100 - 25187,,Yes
+Spain*,25200 - 25222,,Yes
+Spain*,25240 - 25290,,Yes
+Spain*,25310 - 25599,,Yes
+Spain*,25610 - 25693,,Yes
+Spain*,25710 - 25999,,Yes
+Spain*,26100 - 26376,,Yes
+Spain*,26509 - 26570,,Yes
+Spain*,26584 - 26999,,Yes
+Spain*,27100 - 27289,,Yes
+Spain*,27293 - 27392,,Yes
+Spain*,27410 - 27596,,Yes
+Spain*,27610 - 27798,,Yes
+Spain*,27810 - 27849,,Yes
+Spain*,27860 - 27999,,Yes
+Spain*,28130 - 28196,,Yes
+Spain*,28209 - 28219,,Yes
+Spain*,28229,,Yes
+Spain*,28240 - 28248,,Yes
+Spain*,28270 - 28279,,Yes
+Spain*,28292 - 28297,,Yes
+Spain*,28310 - 28312,,Yes
+Spain*,28339,,Yes
+Spain*,28359 - 28391,,Yes
+Spain*,28409 - 28413,,Yes
+Spain*,28430 - 28439,,Yes
+Spain*,28450 - 28499,,Yes
+Spain*,28510 - 28515,,Yes
+Spain*,28530 - 28599,,Yes
+Spain*,28607 - 28650,,Yes
+Spain*,28693 - 28696,,Yes
+Spain*,28707,,Yes
+Spain*,28710 - 28749,,Yes
+Spain*,28751 - 28756,,Yes
+Spain*,28792 - 28794,,Yes
+Spain*,28810 - 28818,,Yes
+Spain*,28861 - 28891,,Yes
+Spain*,28939,,Yes
+Spain*,28971 - 28979,,Yes
+Spain*,28990 - 28999,,Yes
+Spain*,29109 - 29110,,Yes
+Spain*,29140 - 29195,,Yes
+Spain*,29197,,Yes
+Spain*,29210 - 29395,,Yes
+Spain*,29410 - 29494,,Yes
+Spain*,29520 - 29569,,Yes
+Spain*,29591 - 29593,,Yes
+Spain*,29610 - 29611,,Yes
+Spain*,29678 - 29679,,Yes
+Spain*,29689 - 29693,,Yes
+Spain*,29710 - 29720,,Yes
+Spain*,29740 - 29760,,Yes
+Spain*,29788,,Yes
+Spain*,29790 - 29999,,Yes
+Spain*,30107 - 30139,,Yes
+Spain*,30149 - 30169,,Yes
+Spain*,30176 - 30179,,Yes
+Spain*,30189 - 30196,,Yes
+Spain*,30319,,Yes
+Spain*,30329 - 30351,,Yes
+Spain*,30364 - 30398,,Yes
+Spain*,30410 - 30420,,Yes
+Spain*,30438,,Yes
+Spain*,30440 - 30441,,Yes
+Spain*,30508 - 30509,,Yes
+Spain*,30528 - 30529,,Yes
+Spain*,30535 - 30540,,Yes
+Spain*,30559 - 30564,,Yes
+Spain*,30566,,Yes
+Spain*,30579 - 30594,,Yes
+Spain*,30609 - 30648,,Yes
+Spain*,30708 - 30720,,Yes
+Spain*,30739,,Yes
+Spain*,30810 - 30812,,Yes
+Spain*,30814,,Yes
+Spain*,30816 - 30817,,Yes
+Spain*,30830 - 30837,,Yes
+Spain*,30858 - 30859,,Yes
+Spain*,30868 - 30869,,Yes
+Spain*,30876 - 30879,,Yes
+Spain*,30889,,Yes
+Spain*,30891 - 30999,,Yes
+Spain*,31100 - 31110,,Yes
+Spain*,31120 - 31154,,Yes
+Spain*,31170 - 31179,,Yes
+Spain*,31190 - 31194,,Yes
+Spain*,31208 - 31293,,Yes
+Spain*,31310 - 31496,,Yes
+Spain*,31510 - 31594,,Yes
+Spain*,31610 - 31799,,Yes
+Spain*,31809 - 31999,,Yes
+Spain*,32100 - 32243,,Yes
+Spain*,32310 - 32312,,Yes
+Spain*,32320 - 32459,,Yes
+Spain*,32510 - 32514,,Yes
+Spain*,32519 - 32593,,Yes
+Spain*,32610 - 32616,,Yes
+Spain*,32618,,Yes
+Spain*,32621,,Yes
+Spain*,32624 - 32625,,Yes
+Spain*,32630 - 32634,,Yes
+Spain*,32636 - 32708,,Yes
+Spain*,32711 - 32900,,Yes
+Spain*,32907 - 32960,,Yes
+Spain*,32971 - 32999,,Yes
+Spain*,33100 - 33114,,Yes
+Spain*,33116 - 33191,,Yes
+Spain*,33193 - 33196,,Yes
+Spain*,33299 - 33350,,Yes
+Spain*,33394,,Yes
+Spain*,33410 - 33416,,Yes
+Spain*,33418,,Yes
+Spain*,33424 - 33427,,Yes
+Spain*,33430 - 33509,,Yes
+Spain*,33518 - 33599,,Yes
+Spain*,33610 - 33708,,Yes
+Spain*,33716 - 33929,,Yes
+Spain*,33934 - 33937,,Yes
+Spain*,33939 - 33999,,Yes
+Spain*,34100 - 34999,,Yes
+Spain*,35001 - 35999,,Yes
+Spain*,36110 - 36161,,Yes
+Spain*,36163 - 36200,,Yes
+Spain*,36307 - 36309,,Yes
+Spain*,36360,,Yes
+Spain*,36410 - 36414,,Yes
+Spain*,36420 - 36494,,Yes
+Spain*,36510 - 36516,,Yes
+Spain*,36518 - 36539,,Yes
+Spain*,36542 - 36599,,Yes
+Spain*,36611 - 36614,,Yes
+Spain*,36617 - 36619,,Yes
+Spain*,36626 - 36629,,Yes
+Spain*,36638 - 36679,,Yes
+Spain*,36681 - 36693,,Yes
+Spain*,36712 - 36715,,Yes
+Spain*,36729 - 36739,,Yes
+Spain*,36746 - 36779,,Yes
+Spain*,36788 - 36794,,Yes
+Spain*,36810 - 36859,,Yes
+Spain*,36861 - 36879,,Yes
+Spain*,36883 - 36895,,Yes
+Spain*,36910 - 36914,,Yes
+Spain*,36937 - 36939,,Yes
+Spain*,36945 - 36949,,Yes
+Spain*,36955 - 36959,,Yes
+Spain*,36966 - 36979,,Yes
+Spain*,36992 - 36999,,Yes
+Spain*,37100 - 37999,,Yes
+Spain*,38001 - 38999,,Yes
+Spain*,39100 - 39197,,Yes
+Spain*,39211 - 39294,,Yes
+Spain*,39310 - 39360,,Yes
+Spain*,39407 - 39595,,Yes
+Spain*,39608,,Yes
+Spain*,39611 - 39699,,Yes
+Spain*,39706 - 39708,,Yes
+Spain*,39710 - 39739,,Yes
+Spain*,39749 - 39766,,Yes
+Spain*,39776 - 39820,,Yes
+Spain*,39849 - 39999,,Yes
+Spain*,40100 - 40999,,Yes
+Spain*,41089,,Yes
+Spain*,41110 - 41120,,Yes
+Spain*,41140 - 41300,,Yes
+Spain*,41318 - 41390,,Yes
+Spain*,41409,,Yes
+Spain*,41420 - 41439,,Yes
+Spain*,41449 - 41479,,Yes
+Spain*,41550,,Yes
+Spain*,41564 - 41599,,Yes
+Spain*,41610,,Yes
+Spain*,41630,,Yes
+Spain*,41650 - 41670,,Yes
+Spain*,41719,,Yes
+Spain*,41727 - 41729,,Yes
+Spain*,41749 - 41780,,Yes
+Spain*,41804 - 41830,,Yes
+Spain*,41849 - 41899,,Yes
+Spain*,41908,,Yes
+Spain*,41928,,Yes
+Spain*,41970,,Yes
+Spain*,41989 - 41999,,Yes
+Spain*,42100 - 42999,,Yes
+Spain*,43100 - 43178,,Yes
+Spain*,43300 - 43479,,Yes
+Spain*,43481 - 43491,,Yes
+Spain*,43510 - 43530,,Yes
+Spain*,43548 - 43570,,Yes
+Spain*,43590 - 43597,,Yes
+Spain*,43710 - 43792,,Yes
+Spain*,43810 - 43817,,Yes
+Spain*,43839,,Yes
+Spain*,43860,,Yes
+Spain*,43877 - 43999,,Yes
+Spain*,44100 - 44597,,Yes
+Spain*,44610 - 44999,,Yes
+Spain*,45100 - 45191,,Yes
+Spain*,45210 - 45489,,Yes
+Spain*,45510 - 45594,,Yes
+Spain*,45610 - 45695,,Yes
+Spain*,45720 - 45999,,Yes
+Spain*,46035,,Yes
+Spain*,46111 - 46112,,Yes
+Spain*,46114 - 46116,,Yes
+Spain*,46118 - 46119,,Yes
+Spain*,46127,,Yes
+Spain*,46131 - 46137,,Yes
+Spain*,46139 - 46149,,Yes
+Spain*,46164 - 46182,,Yes
+Spain*,46184,,Yes
+Spain*,46191 - 46199,,Yes
+Spain*,46210,,Yes
+Spain*,46229,,Yes
+Spain*,46260 - 46270,,Yes
+Spain*,46291 - 46295,,Yes
+Spain*,46310 - 46339,,Yes
+Spain*,46350 - 46369,,Yes
+Spain*,46388 - 46394,,Yes
+Spain*,46408 - 46409,,Yes
+Spain*,46417 - 46439,,Yes
+Spain*,46510 - 46512,,Yes
+Spain*,46529,,Yes
+Spain*,46540,,Yes
+Spain*,46590 - 46591,,Yes
+Spain*,46593,,Yes
+Spain*,46610 - 46639,,Yes
+Spain*,46649,,Yes
+Spain*,46659 - 46670,,Yes
+Spain*,46687 - 46692,,Yes
+Spain*,46710 - 46728,,Yes
+Spain*,46749 - 46759,,Yes
+Spain*,46770,,Yes
+Spain*,46790 - 46792,,Yes
+Spain*,46810 - 46844,,Yes
+Spain*,46868,,Yes
+Spain*,46891 - 46894,,Yes
+Spain*,46909 - 46999,,Yes
+Spain*,47100 - 47134,,Yes
+Spain*,47150,,Yes
+Spain*,47152 - 47153,,Yes
+Spain*,47160 - 47161,,Yes
+Spain*,47164 - 47192,,Yes
+Spain*,47194,,Yes
+Spain*,47196 - 47360,,Yes
+Spain*,47410 - 47609,,Yes
+Spain*,47620 - 47999,,Yes
+Spain*,48110 - 48145,,Yes
+Spain*,48190 - 48196,,Yes
+Spain*,48210 - 48213,,Yes
+Spain*,48249 - 48250,,Yes
+Spain*,48269 - 48292,,Yes
+Spain*,48309 - 48330,,Yes
+Spain*,48350 - 48360,,Yes
+Spain*,48380 - 48460,,Yes
+Spain*,48490 - 48509,,Yes
+Spain*,48520 - 48550,,Yes
+Spain*,48610 - 48820,,Yes
+Spain*,48840 - 48999,,Yes
+Spain*,49100 - 49594,,Yes
+Spain*,49610 - 49999,,Yes
+Spain*,50100 - 50170,,Yes
+Spain*,50172 - 50178,,Yes
+Spain*,50190 - 50299,,Yes
+Spain*,50310 - 50409,,Yes
+Spain*,50411,,Yes
+Spain*,50430 - 50491,,Yes
+Spain*,50510 - 50596,,Yes
+Spain*,50610 - 50999,,Yes
 Spain,,All Other Points, 
 
 Sri Lanka,00000 - 00099,,Yes
@@ -5343,72 +5344,72 @@ Sri Lanka,10733 - 10999,,Yes
 Sri Lanka,11897 - 99999,,Yes
 Sri Lanka,,All Other Points, 
 
-Sweden,13025 - 13061,,Yes
-Sweden,13406 - 13408,,Yes
-Sweden,13460 - 13469,,Yes
-Sweden,13900 - 13990,,Yes
-Sweden,14770 - 14995,,Yes
-Sweden,23000 - 23099,,Yes
-Sweden,23600 - 23691,,Yes
-Sweden,23900 - 24009,,Yes
-Sweden,24033 - 24036,,Yes
-Sweden,26070 - 26093,,Yes
-Sweden,27000 - 27099,,Yes
-Sweden,27200 - 27399,,Yes
-Sweden,27500 - 27999,,Yes
-Sweden,28300 - 28395,,Yes
-Sweden,28900 - 29099,,Yes
-Sweden,29193 - 29796,,Yes
-Sweden,30279,,Yes
-Sweden,30592,,Yes
-Sweden,30811 - 31042,,Yes
-Sweden,31050 - 31106,,Yes
-Sweden,31193 - 31207,,Yes
-Sweden,31240 - 31261,,Yes
-Sweden,31301 - 32999,,Yes
-Sweden,35591 - 35597,,Yes
-Sweden,36010 - 36024,,Yes
-Sweden,37000 - 39999,,Yes
-Sweden,43090 - 43097,,Yes
-Sweden,44030,,Yes
-Sweden,44203 - 44896,,Yes
-Sweden,51000 - 52026,,Yes
-Sweden,52043,,Yes
-Sweden,52103 - 52105,,Yes
-Sweden,52172 - 52173,,Yes
-Sweden,52175,,Yes
-Sweden,52188,,Yes
-Sweden,52197,,Yes
-Sweden,52301 - 53032,,Yes
-Sweden,53401,,Yes
-Sweden,53420 - 53450,,Yes
-Sweden,53481 - 53491,,Yes
-Sweden,53494 - 53496,,Yes
-Sweden,54701 - 54793,,Yes
-Sweden,56013 - 56034,,Yes
-Sweden,56301 - 56393,,Yes
-Sweden,57001 - 57993,,Yes
-Sweden,59010 - 59994,,Yes
-Sweden,61010 - 61992,,Yes
-Sweden,62010 - 62199,,Yes
-Sweden,64030 - 64034,,Yes
-Sweden,64050 - 64061,,Yes
-Sweden,64601 - 64793,,Yes
-Sweden,65000 - 69999,,Yes
-Sweden,71178,,Yes
-Sweden,71220 - 71234,,Yes
-Sweden,71294 - 71295,,Yes
-Sweden,71401 - 71840,,Yes
-Sweden,71901 - 71995,,Yes
-Sweden,74000 - 74999,,Yes
-Sweden,76000 - 76999,,Yes
-Sweden,77010 - 77071,,Yes
-Sweden,77201 - 77294,,Yes
-Sweden,77499,,Yes
-Sweden,77696 - 77698,,Yes
-Sweden,78040 - 78069,,Yes
-Sweden,78199 - 78395,,Yes
-Sweden,79015 - 99999,,Yes
+Sweden*,13025 - 13061,,Yes
+Sweden*,13406 - 13408,,Yes
+Sweden*,13460 - 13469,,Yes
+Sweden*,13900 - 13990,,Yes
+Sweden*,14770 - 14995,,Yes
+Sweden*,23000 - 23099,,Yes
+Sweden*,23600 - 23691,,Yes
+Sweden*,23900 - 24009,,Yes
+Sweden*,24033 - 24036,,Yes
+Sweden*,26070 - 26093,,Yes
+Sweden*,27000 - 27099,,Yes
+Sweden*,27200 - 27399,,Yes
+Sweden*,27500 - 27999,,Yes
+Sweden*,28300 - 28395,,Yes
+Sweden*,28900 - 29099,,Yes
+Sweden*,29193 - 29796,,Yes
+Sweden*,30279,,Yes
+Sweden*,30592,,Yes
+Sweden*,30811 - 31042,,Yes
+Sweden*,31050 - 31106,,Yes
+Sweden*,31193 - 31207,,Yes
+Sweden*,31240 - 31261,,Yes
+Sweden*,31301 - 32999,,Yes
+Sweden*,35591 - 35597,,Yes
+Sweden*,36010 - 36024,,Yes
+Sweden*,37000 - 39999,,Yes
+Sweden*,43090 - 43097,,Yes
+Sweden*,44030,,Yes
+Sweden*,44203 - 44896,,Yes
+Sweden*,51000 - 52026,,Yes
+Sweden*,52043,,Yes
+Sweden*,52103 - 52105,,Yes
+Sweden*,52172 - 52173,,Yes
+Sweden*,52175,,Yes
+Sweden*,52188,,Yes
+Sweden*,52197,,Yes
+Sweden*,52301 - 53032,,Yes
+Sweden*,53401,,Yes
+Sweden*,53420 - 53450,,Yes
+Sweden*,53481 - 53491,,Yes
+Sweden*,53494 - 53496,,Yes
+Sweden*,54701 - 54793,,Yes
+Sweden*,56013 - 56034,,Yes
+Sweden*,56301 - 56393,,Yes
+Sweden*,57001 - 57993,,Yes
+Sweden*,59010 - 59994,,Yes
+Sweden*,61010 - 61992,,Yes
+Sweden*,62010 - 62199,,Yes
+Sweden*,64030 - 64034,,Yes
+Sweden*,64050 - 64061,,Yes
+Sweden*,64601 - 64793,,Yes
+Sweden*,65000 - 69999,,Yes
+Sweden*,71178,,Yes
+Sweden*,71220 - 71234,,Yes
+Sweden*,71294 - 71295,,Yes
+Sweden*,71401 - 71840,,Yes
+Sweden*,71901 - 71995,,Yes
+Sweden*,74000 - 74999,,Yes
+Sweden*,76000 - 76999,,Yes
+Sweden*,77010 - 77071,,Yes
+Sweden*,77201 - 77294,,Yes
+Sweden*,77499,,Yes
+Sweden*,77696 - 77698,,Yes
+Sweden*,78040 - 78069,,Yes
+Sweden*,78199 - 78395,,Yes
+Sweden*,79015 - 99999,,Yes
 Sweden,,All Other Points, 
 
 Switzerland,1657 - 1660,,Yes
@@ -5630,23 +5631,23 @@ Ukraine,88000 - 88499,,Yes
 Ukraine,91000 - 91479,,Yes
 Ukraine,,All Other Points, 
 
-United Kingdom,HS1 - HS9,,Yes
-United Kingdom,IM,,Yes
-United Kingdom,IV21 - IV24,,Yes
-United Kingdom,IV26 - IV28,,Yes
-United Kingdom,IV40 - IV56,,Yes
-United Kingdom,KA27 - KA28,,Yes
-United Kingdom,KW,,Yes
-United Kingdom,PA20,,Yes
-United Kingdom,PA21,,Yes
-United Kingdom,PA41,,Yes
-United Kingdom,PA42 - PA49,,Yes
-United Kingdom,PA60,,Yes
-United Kingdom,PA61 - PA78,,Yes
-United Kingdom,PA80 - PA88,,Yes
-United Kingdom,PH36 - PH44,,Yes
-United Kingdom,TR21 - TR25,,Yes
-United Kingdom,ZE,,Yes
+United Kingdom*,HS1 - HS9,,Yes
+United Kingdom*,IM,,Yes
+United Kingdom*,IV21 - IV24,,Yes
+United Kingdom*,IV26 - IV28,,Yes
+United Kingdom*,IV40 - IV56,,Yes
+United Kingdom*,KA27 - KA28,,Yes
+United Kingdom*,KW,,Yes
+United Kingdom*,PA20,,Yes
+United Kingdom*,PA21,,Yes
+United Kingdom*,PA41,,Yes
+United Kingdom*,PA42 - PA49,,Yes
+United Kingdom*,PA60,,Yes
+United Kingdom*,PA61 - PA78,,Yes
+United Kingdom*,PA80 - PA88,,Yes
+United Kingdom*,PH36 - PH44,,Yes
+United Kingdom*,TR21 - TR25,,Yes
+United Kingdom*,ZE,,Yes
 United Kingdom,,All Other Points, 
 
 Venezuela,,BACHAQUERO,Yes
