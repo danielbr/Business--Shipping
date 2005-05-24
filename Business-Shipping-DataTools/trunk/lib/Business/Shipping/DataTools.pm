@@ -14,6 +14,7 @@ use English;
 use Data::Dumper;
 use Storable;
 use File::Basename;
+use Text::CSV::Simple;
 
 =head1 NAME
 
@@ -44,6 +45,7 @@ use Class::MethodMaker 2.0
     [
         new    => [ qw/ -hash new / ],
         scalar => [ qw/ update download unzip convert create_bin / ],
+        scalar => [ qw/ pause / ], # Pause after every event, if enabled.
     ];
 
 =item * do_update
@@ -176,7 +178,7 @@ sub remove_extension
 {
     my $file = shift;
     trace "( $file )";
-    my ( $base, $path ) = fileparse( $file, ( '.csv' ) );
+    my ( $base, $path ) = fileparse( $file, ( '.csv', '.tmp' ) );
     return $path . $base;
 }
 
@@ -191,8 +193,8 @@ sub remove_windows_carriage_returns
     my $file = shift;
     trace "( $file )";
     
-    open(    IN,        $file      );
-    open(    OUT,       ">$file.1" );
+    open(    IN,        $file      ) or die "Could not open file $file: $!";
+    open(    OUT,       ">$file.1" ) or die "could not open file $file.1: $!";
 
     # read it all in at once.
     undef $INPUT_RECORD_SEPARATOR;
@@ -214,20 +216,56 @@ sub remove_windows_carriage_returns
     return;
 }
 
+=head2 * scrub_file( $filename )
+
+Removes blank lines.
+
+=cut
+
+sub scrub_file
+{
+    my ( $file ) = @_;
+    
+    # TODO: Convert ISO-8859 into ASCII text.
+    # Text::iconv()?
+    
+    #print "writing to >$file.new";
+    open(  RATE_FILE, $file ) or logdie $!;
+    open(  NEW_FILE,  ">$file.new" ) or logdie $!;
+    <RATE_FILE>; # thow away the first line, 
+    # because it has the "Registered" symbol in ISO-8859 text, and I can't figure out how to get rid of it.
+    # except that the reg also appears in other locations sometimes too.
+    while ( defined( my $line = <RATE_FILE> ) ) {
+        next unless $line and $line !~ /^\s+$/;
+        next if $line =~ /^,+$/;
+        #$line =~ s/!([a-z][A-Z]\s\w
+        # TODO: Converts  ISO-8859 text to regular text.  (like the (R) at the top of 1da.csv)
+        print NEW_FILE $line if $line and $line 
+    }
+    close( RATE_FILE );
+    close( NEW_FILE );
+    rename( "$file.new", $file ) or die $!;
+    
+    return;
+}
+
 sub convert_ups_rate_file
 {
     trace "( $_[0] )";
-
+    
     my $aoa = [];
     my $meta = {};
     
-    my ( $file ) = @_;
+    my ( $self, $file, $opt ) = @_;
     if ( ! -f $file ) { error "Could not convert file $file because it didn't exist."; return; }
     
-    # TODO: All of this locking isn't necessary, since the tools should only ever be run in single user mode.
-    open(    RATE_FILE,     $file     ) or logdie $@;
-    binmode( RATE_FILE                ) if $Global::Windows;
     
+    # Note that not every file is a valid CSV file.  One is a binary XLS file, and others have invalid lines.
+    # TODO: Handle files that aren't valid CSV.
+    # Here we scrub the file of blank lines, which throw off the CSV module:
+    scrub_file( $file );
+    
+    # need to ISO-8859 text into regular text.
     
     # Format usually follows the following, but not always:
     # Description1
@@ -241,64 +279,173 @@ sub convert_ups_rate_file
     my $c = -1;
     my $row_num = 0;
     my $LIMIT = 9999;
+    my $PAUSE = 0;
+    my %next_record;
     my $set_max_in_next_record;
     my $next_record_should_be_minimums;
+    my $next_line_is_header;
+    my $file_basename = File::Basename::basename( $file );
+    
+    my $zone_file = $opt->{ zone_file } ? 1 : 0;
+    
+    debug "zone_file = $zone_file"; #, opt->zone_File = $opt->{zone_file}";
     
     use constant MIN => 0;
     use constant MAX => 1;
     use constant ADD_TO_LAST_RECORD => 1;  # so that the max for, e.g. 150, will be 180 if set to 30.
     
-    while ( defined( my $line = <RATE_FILE> ) and $c < $LIMIT) {
-        $c++;
-        #print $line;
-        # Skip the line if it is empty, all spaces, or just has commas.
-
-        next if not $line;
-        next if $line =~ /^\s+$/; 
-        next if $line =~ /^(,| )+$/;
+    my $parser = Text::CSV::Simple->new;
+    my @all_records = $parser->read_file( $file );
         
-        $line =~ s/\$//g;           # Dollar signs
-        $line =~ s/(\d\d) ,/$1,/g;  # Extra space after numerical data "35 ," becomes "35,"
+    foreach my $record ( @all_records ) {
+        last if ++$c > $LIMIT;
+        if ( $PAUSE ) {
+            print "Press enter to continue...\n";
+            my $enter = <STDIN>;
+        }
+        
+        my $num_elements = scalar( @$record ) - 1;
+        debug join( ",", @$record );
+        
+        next if not $record;
+        next if not @$record;
+        next if not ( join( "", @$record ) );
+        
+        # Skip the line if it is empty, all spaces, or just has commas.
+        #next if $line =~ /^\s+$/; 
+        #next if $line =~ /^(,| )+$/;
+        
+        # Convert thousands into numeric.  "$1,076.59" => 1076.59
+        #"$1,076.59"
+        foreach my $c4 ( 0 .. $num_elements ) {
+            $record->[ $c4 ] =~ s/(\d+),(\d+)/$1$2/;  # Remove the comma from thousands.
+            $record->[ $c4 ] =~ s/\$//; # Remove Dollar signs
+            #print "checking '$record->[$c4]'\n";
+            if ( $record->[ $c4 ] =~ /^[\d\s\.]+$/ ) {
+                $record->[ $c4 ] =~ s/\s+//g;
+                #print "changed $record->[$c4]!\n";
+            }
+            #$record->[ $c4 ] =~ s/^(\d+) $/$1/g;  # Extra space after numerical data "35 " becomes "35"
+            #$record->[ $c4 ] =~ s/^ (\d+)$/$1/g;  # Extra space before numerical data " 35" becomes "35"
+            #$record->[ $c4 ] =~ s/^ (\d+) $/$1/g;  # Extra space before and after numerical data " 35" becomes "35"
+        }
+        
+        #if ( $line =~ /$1,076.59"/ ) {
+        #    debug "line = $line";
+        #    $line =~ s/"\$(\d+,\d+)"/$1/g;
+        #    print "line after = $line";
+        #}
+        
+        #$line =~ s/\$//g;           
+        #$line =~ s/(\d\d) ,/$1,/g;  # Extra space after numerical data "35 ," becomes "35,"
         
         # Remove all the left-over spaces, only if it isn't meta data.
         # $line =~ s/ //g;
         
-        my ( $key, @cols ) = split( ',', $line );
-        chomp( $line );
-        print "$line\n";
+        my ( $key, @cols ) = ( @$record );
+        #print "'$key'\n";
+        #chomp( $line );
+        #print "$line\n";
+        
+        #print "key = $key, cols = " . join( ', ', @cols );
+        #exit;
         
         # Sometimes the key is in the second column and the first column is empty
         $key = shift @cols if not length $key;
         
-        for my $i ( 0 .. scalar( @cols ) - 1) {
-            next unless defined $cols[ $i ];
-            $cols[ $i ] =~ s/\s+//g;
+        for my $c5 ( 0 .. @cols - 1 ) {
+            next unless defined $cols[ $c5 ];
+            
+            #debug "checking $cols[$c5]...";
+            # If it's all numbers and spaces, get rid of the spaces.
+            if ( $cols[ $c5 ] =~ /^ \d+$/ ) {
+                $cols[ $c5 ] =~ s/\s+//g;
+            }
         }
         
-        if ( $key eq 'Weight Not To Exceed' or $key eq 'Zone' ) {
+        if ( $key eq 'Weight Not To Exceed' 
+          or $key eq 'Zone' 
+          or $next_line_is_header 
+          or $key eq 'Dest. ZIP'       # 986.csv
+          or $key eq 'Postal Range'    # wash.csv 
+          or $key eq 'Country'         # ewwzone.csv 
+           )  
+        {
+            
             debug "This is a Header (zone) line";
-            # This is the header
+            $next_line_is_header = 0;
+            # This is the headers
+            
+            # Remove empty columns
+            @cols = grep { $_ } @cols;
+            my $cols = [];
+            my $min_max_offset; # number of columns that aren't part of the "data" (2 for min, max.  1 for just country.)
             
             # Some tables (e.g. gndcomm) list the headers as "Zone 2" instead of "2".  Remove the "Zone" part.
             for my $c3 ( 0 .. @cols -1 ) {
-                $cols[ $c3 ] =~ s/Zone//;
+                $cols[ $c3 ] =~ s/Zone\s+//;
+                $cols[ $c3 ] =~ s/\s+//g;
             }
+            
+            if ( $file_basename eq 'ewwzone.tmp' ) {
+                # The column names need to be converted a bit.
+                # 0 = UPS Worldwide Express Plus
+                # 1 = UPS Worldwide Express
+                # 2 = UPS Worldwide Express originating from Dade and Broward Counties, FL.
+                # 3 = UPS Worldwide Expedited from Western U.S.
+                # 4 = UPS Worldwide Expedited from Eastern U.S.
+                # 5 = Extended Area Surcharge
+                $cols = [ 'Country', 'ExpressPlus', 'Express', 
+                          'Express Originating from Dade and Broward Counties Florida', 
+                          'Expedited_WC', 'Expedited_EC', 'Extended Area Surcharge' ];
+                $min_max_offset = 1;
+            }
+            else {
+                $cols = [ 'Min', 'Max', @cols ];
+                $min_max_offset = 2;
+            }
+            
             if ( $meta->{ columns } ) {
                 # Header already exists, so this is probably a secondary header, which applies only to
                 # something else.  Use the line number as a unique identifier
-                $meta->{ "columns_$c" } = [ 'Min', 'Max', @cols ];
+                $meta->{ "columns_$c" } = $cols;
             }
             else {
-                $meta->{ columns } = [ 'Min', 'Max', @cols ];
+                # This is commented out because I thought that zone files didn't have min-max, but most of 
+                # them actually do.  (zone between ... and ... ).  Use 'lt' and 'gt' for comparing alpha 
+                # zones.
+                #if ( $zone_file ) {
+                #    $meta->{ columns } = [ @cols ];
+                #}
+                #else {
+                #    $meta->{ columns } = [ 'Min', 'Max', @cols ];
+                #}
+                
+                $meta->{ columns } = $cols;
+                
                 # col_idx is a lookup for which array element the zone corresponds to.
-                foreach my $c2 ( 0 .. @cols - 1 + 2) {  # plus 2 because we add 'Min' and 'Max' 
+                foreach my $c2 ( 0 .. @$cols - 1 + $min_max_offset ) {  # plus 2 because we ignore 'Min' and 'Max' in the lookup 
                     my $zone_name_or_number = $meta->{ columns }[ $c2 ];
                     next unless $zone_name_or_number;
                     $meta->{ col_idx }->{ $zone_name_or_number } = $c2;
                 }
             }
+            debug "Column index after setting up header: " . Dumper( $meta->{ col_idx } );
             #$aoa->[ $c ][ 0 ] = 'Header';
         }
+        elsif ( grep( /^Counties Florida$/, @cols ) ) {
+            # ewwzone
+            $next_record{ single_key } = 1;
+        }
+        elsif ( $key eq 'For shipments from Eastern U.S. in the following states:' ) {
+            # ewwzone
+            $next_record{ single_key } = 0;
+        }
+        elsif ( $key eq 'ZONES' ) {
+            # This indicates that the next line will be a header for zone files.
+            debug "Next record should be a header (for zone files)";
+            $next_line_is_header = 1;
+        }   
         elsif ( $key eq 'Letter' ) {
             @cols = ( 0, 1, @cols );
             push @{ $aoa->[ $row_num++ ] }, @cols;
@@ -325,19 +472,25 @@ sub convert_ups_rate_file
         }
         # "35 to 45" or "35 to 45lbs." or "35-45"
         elsif ( 
-            $key =~ /^\d+ to \d+(lbs\.)?$/ 
+            $key =~ /^\d+ to \d+ ?(lbs\.)?$/i 
             or $key =~ /^\d+-\d+$/ 
-            or $key =~ /^\d+lbs\. or more$/ ) 
+            or $key =~ /^\d+\+? ? ?lbs\.( or more)?$/i ) 
         {
-            
+            #debug "key specifies min and max: $key";
             my ( $min, $max );
-            ( $min, $max ) = split( ' to ', $key ) if $key =~ /to/;
+            ( $min, $max ) = split( ' to ', $key ) if $key =~ /to/i;
             ( $min, $max ) = split( '-', $key ) if $key =~ /-/;
-            if ( $key =~ /^(\d+)lbs\. or more/ ) {
+            if ( $key =~ /^(\d+)lbs\. or more/i
+              or $key =~ /^(\d+)\+?(\s+)?Lbs./i ) {
                 $min = $1;
                 $max = 9999;
             }
-            $max =~ s/lbs\.//;
+            if ( ! $max ) {
+                error "Max was not specified with key: $key!";
+            }
+            else {
+                $max =~ s/lbs\.//i;
+            }
             
             # Set the previous record's maximum using this record's minimum.
             if ( $set_max_in_next_record ) {
@@ -350,11 +503,33 @@ sub convert_ups_rate_file
             
             # Set this record's min.
             $aoa->[ $row_num ][ 0 ] = $min;
-            # Prepare a spot for the max in this record so that it can be set by the next record.
             $aoa->[ $row_num ][ 1 ] = $max;
             #debug( "pushing cols " . Dumper( \@cols ) );
             push @{ $aoa->[ $row_num++ ] }, @cols;
+        }
+        elsif ( $key =~ /[a-zA-Z]/ and length( $key ) <= 3 ) {
+            # Canadian Zip code
+            debug "canadian";
+            my ( $min, $max, @zones ) = @cols;
+            # $min = cnv( $min, 36, 10 ); # Don't convert, just use lt and gt.  They are slower, but we don't
+            # need math::base cnv
+            # $max = cnv( $max, 36, 10 );
             
+            if ( $set_max_in_next_record ) {
+                $aoa->[ $row_num - 1 ][ 1 ] = $min if $row_num > 0;
+                $set_max_in_next_record = 0;
+            }
+            
+            push @{ $aoa->[ $row_num++ ] }, ( $key, @cols );
+        }
+        elsif ( $next_record{ single_key } ) {
+            # Not using the regex anymore:
+            # Name of country (the only country not caught by the regex below is 
+            # "Ponape (Federated States of Micronesia+A193)", so we have the length too.
+            # $key =~ /^[ a-zA-Z\'\.\(\)\-\+]+$/ or length( $key ) > 35
+        
+            push @{ $aoa->[ $row_num++ ] }, ( $key, @cols );
+            #die "stopping" if $c > 100;
         }
         elsif ( $key eq 'Multiplier' ) {
             #"Multiplier: if the dimensional weight is more than 150 pounds (but the actual weight still has
@@ -384,6 +559,12 @@ sub convert_ups_rate_file
             my $date = $key . ', ' . $cols[ 0 ];
             push @{ $meta->{ unknown } }, $date;
         }
+        elsif ( $key =~ /^\[\d+\]/ ) {
+            # This is most likely one of the special messages at the bottom of the zone files.
+            # At this time, the effects of these messages must be extracted manually (e.g. the special
+            # Hawaii/Alaska zip codes).  So, we don't really want these in the table.  
+            last;
+        }
         else {
             debug "Unknown key type, adding to meta";
             # Remove empty data from @cols
@@ -394,24 +575,24 @@ sub convert_ups_rate_file
             else {
                 push @{ $meta->{ unknown } }, [ @combined ];
             }
-            next;
         }
+        #debug Dumper( $aoa );        
     }
     
-    if ( $aoa->[ $row_num - 1 ] ) {
+    if ( $aoa->[ $row_num - 1 ] and $aoa->[ $row_num  - 1 ][ 0 ] =~ /^\d+$/ ) {
         debug "Setting the max on the last record: $row_num  minus one";
         # The last record in the table is the minimum plus one.
         $aoa->[ $row_num  - 1 ][ 1 ] ||= $aoa->[ $row_num  - 1 ][ 0 ] + ADD_TO_LAST_RECORD; 
     }
     else {
-        debug "not found";
+        debug "Setting max on the last record not needed.";
     }
     
     if ( $c <= 1 ) {
         error "No records were processed.";
     }
     
-    close(     RATE_FILE                 ) or logdie $@;
+    #close(     RATE_FILE                 ) or logdie $@;
     
     my $root_object = { 
         table => $aoa,
@@ -423,7 +604,10 @@ sub convert_ups_rate_file
     debug Dumper( $root_object );
     
     debug "Storing object to file";
-    store $root_object, "$file.dat" or die $@;
+    
+    my $new_filename = remove_extension( $file ) . ".dat";
+    #debug "going to store to $new_filename";
+    Storable::nstore $root_object, $new_filename or die $@;
 
     
     return;
@@ -618,53 +802,82 @@ sub do_convert_data
     
     #my @files_to_process = $self->get_files_to_process;
     # TODO: Remove temporary list
-    my @files_to_process = qw{
+    # rate_files
+    
+    
+    
+
+    #my @files_to_process = qw{
+    #     
+    #};
+
+=pod
         ./data/gndcomm.csv
         ./data/1da.csv
-    };
+        ./data/1daeam.csv
+        ./data/2da.csv
+        ./data/3ds.csv
+        ./data/gndcwt.csv
+        ./data/canstnd.csv 
+        ./data/ww-xpd.csv
+        
+=cut
     
     #die "files_to_process = " . Dumper( \@files_to_process );
     
     # Only csv files, remove non-.csv files.
-    @files_to_process = grep /.csv$/, @files_to_process;
+    #@files_to_process = grep /.csv$/, @files_to_process;
     #return if $_ !~ /\.csv$/i and not $opt->{ include_csv };
 
-    my $PAUSE = 1;
     #debug3( "files_to_process = " . join( "\n", @files_to_process ) );
-    for ( @files_to_process ) {
-        
-        if ( $PAUSE ) {
-            print "Processing $_, press enter to continue...\n";
-            my $keypress = <STDIN>;
-        }
+    
 
-        # Copy to new file, then rename, then process.  That way the originals will stay in place
-        # and do not need to be restored from .zip or SCM.
-        
-        my $new_filename = remove_extension( $_ );
-        File::Copy::copy( $_, $new_filename );
-        $_ = $new_filename;
-        $_ = rename_tables_that_start_with_numbers( $_);
-        $_ = rename_tables_that_have_a_dash( $_ );
-        
-        debug "remove_windows_carriage returns...";
-        
-        remove_windows_carriage_returns( $_ );
-        
-        convert_ups_rate_file( $_ );
-        
-        #remove_misc( $_ );
-        
-        debug "filename after all operations are done: $_";
+    #$self->process_file( 'ewwzone.csv', { zone_file => 1 } );
+    #exit;
+    
+    my $rate_files = dtcfg()->{ ups_information }->{ us_origin_rates_filenames_individual };
+    my $zone_files = dtcfg()->{ ups_information }->{ us_origin_zones_filenames_individual };
+    for ( @$rate_files ) {
+        $self->process_file( $_, { zone_file => 0 } );
     }
-    
-    # Convert the ewwzone.csv file manually, since it is skipped, above.
-    remove_windows_carriage_returns( 
-        Business::Shipping::Config::data_dir() . '/ewwzone.csv' 
-    );
-    $self->convert_zone_file( 'ewwzone.csv' );
-    
+    for ( @$zone_files ) {
+        $self->process_file( $_, { zone_file => 1 } );
+    }
+    return;  
 }
+
+sub process_file
+{
+    my ( $self, $file, $opt ) = @_;
+    
+    $file = Business::Shipping::Config::data_dir() . '/' . $file;
+    print "Processing $file...";
+    if ( $self->pause ) {
+        print ", press enter to continue...";
+        my $keypress = <STDIN>;
+    }
+    print "\n";
+
+    # Copy to new file, then rename, then process.  That way the originals will stay in place
+    # and do not need to be restored from .zip or SCM.
+    
+    my $new_filename = remove_extension( $file ) . ".tmp";
+    File::Copy::copy( $file, $new_filename ) or die "Could not copy $file to $new_filename: $!";
+    $file = $new_filename;
+    #$file = rename_tables_that_start_with_numbers( $file );  # No longer necessary
+    $file = rename_tables_that_have_a_dash( $file );
+    
+    debug "remove_windows_carriage returns...";
+    
+    remove_windows_carriage_returns( $file );
+    
+    $self->convert_ups_rate_file( $file, $opt );
+    
+    debug "filename after all operations are done: $file";
+    return;    
+}
+
+
 
 =head2 remove_misc()
 
@@ -713,64 +926,6 @@ sub write_file
     close_fh( $fh );
     
     return;    
-}
-
-=item * convert_zone_file
-
-=cut
-
-sub convert_zone_file
-{
-    my ( $self, $file ) = @_;
-    trace "( $file )";
-    #$file =  Business::Shipping::Config::data_dir() . "/$file";
-    my $file2 = "$file.new";
-
-    open(         ZONE_FILE,        $file            ) or logdie "Could not open file $file. $@";
-    binmode(     ZONE_FILE                         ) if $Global::Windows;
-    flock(         ZONE_FILE,         LOCK_EX         ) or logdie $@;
-    open(         NEW_ZONE_FILE,    ">$file2"        ) or logdie $@;
-    binmode(     NEW_ZONE_FILE                     ) if $Global::Windows;
-    flock(         NEW_ZONE_FILE,    LOCK_EX            ) or logdie $@;
-    
-    my $line;
-
-    # Ensure that line ending is now \n, just in case it was changed to something else in the enclosing scope.
-    # I'm pretty sure that it hasn't been changed.
-    # $INPUT_RECORD_SEPARATOR = "\n";
-
-    debug( "check zone file for ExpressSM..." );
-    while ( $line = <ZONE_FILE> ) {
-        if ( $line =~ /ExpressSM/ ) {
-            debug( "changing ExpressSM to ExpressSM_WC, etc..." );
-            #
-            # Change *just* the first occurrence of ExpressSM to ExpressSM
-            #
-            $line =~ s/ExpressSM,/ExpressSM_WC,/;
-            $line =~ s/ExpeditedSM,/ExpeditedSM_WC,/;
-            
-            #
-            # Change *just* the first occurence (which will now ignore the "WC")
-            #
-            $line =~ s/ExpressSM,/ExpressSM_EC,/;
-            $line =~ s/ExpeditedSM,/ExpeditedSM_EC,/;
-            
-            #
-            # Remove the space in "Express Plus"
-            #
-            $line =~ s/Express PlusSM/ExpressPlusSM/;
-        }
-        print NEW_ZONE_FILE $line;
-    }
-    
-    flock(     ZONE_FILE,         LOCK_UN    ) or logdie $@;
-    close(     ZONE_FILE                 ) or logdie $@;
-    flock(    NEW_ZONE_FILE,     LOCK_UN    ) or logdie $@;
-    close(    NEW_ZONE_FILE             ) or logdie $@;
-    copy(     $file2,         $file     ) or logdie $@;
-    unlink( $file2                     ) or logdie $@;
-
-    return;
 }
 
 =item * rename_tables_that_start_with_numbers
