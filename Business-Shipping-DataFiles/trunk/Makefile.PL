@@ -54,14 +54,14 @@ sub extra_WriteMakefile_options {
     # TODO: Try to determine the directory by using 
     # Business::Shipping::Config::support_files()
     
-    
-    eval {
-        use Business::Shipping;
-        my $support_files_installed = Business::Shipping::Config::support_files();
-        if ( $support_files_installed ) {
-            $my_globals{ SUPPORT_FILES_DIR } = $support_files_installed;
-        }
-    };
+    # TODO: This probaby causes CPAN to try to install Business::Shipping, so don't do it for now.
+    # eval {
+    #    use Business::Shipping;
+    #    my $support_files_installed = Business::Shipping::Config::support_files();
+    #    if ( $support_files_installed ) {
+    #        $my_globals{ SUPPORT_FILES_DIR } = $support_files_installed;
+    #    }
+    #};
     
     # ignore errors.  If Business::Shipping isn't installed, don't make
     # a big deal about it.

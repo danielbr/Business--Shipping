@@ -1,6 +1,10 @@
 Revision history for Business::Shipping::DataFiles
 =================================================
 
+0.90
+
+ * Converted to new data format (Storable), which is much faster and allows much cleaner code.
+
 0.01  Sep 14 2004
 
  * Initial revision
