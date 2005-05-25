@@ -1,3 +1,5 @@
+package Business::Shipping::Tracking::UPS;
+
 # Business::Shipping::UPS_Online::Tracking - Abstract class for tracking shipments
 # 
 # $Id$
@@ -7,7 +9,9 @@
 # 
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
-# 
+
+use constant UPS_ONLINE_DISABLED => '1';
+#use constant UPS_ONLINE_DISABLED => '~_~UPS_ONLINE_DISABLED~_~';
 
 =head1 NAME
 
@@ -81,8 +85,6 @@ This program is free software; you may redistribute it and/or modify it under
 the same terms as Perl itself. See LICENSE for more info.
 
 =cut
-
-package Business::Shipping::Tracking::UPS;
 
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
@@ -355,7 +357,11 @@ sub _handle_response
 
     Business::Shipping::Tracking::_delete_undefined_keys($result_hash);
 
-    $self->results($shipment_id => $result_hash);                     
+    $self->results($shipment_id => $result_hash);
+    
+    if ( UPS_ONLINE_DISABLED ) {
+        die "Support for UPS_Online has been disabled, see doc/UPS_Online_disabled.txt";
+    }
 
     trace 'returning success';
     return $self->is_success( 1 );

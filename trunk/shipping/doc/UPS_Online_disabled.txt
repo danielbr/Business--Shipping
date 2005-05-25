@@ -1,0 +1,7 @@
+UPS lawyers have claimed that the UPS_Online module violates their terms because
+it is available to the public.  Therefore, I have disabled the UPS_Online module
+(see line 3 of lib/Business/Shipping/UPS_Online/RateRequest.pm).  The 
+UPS_Offline module (which does not use the UPS OnLine Tools) is still enabled,
+of course.
+
+Questions or comments: Daniel Browning <db@kavod.com>. 

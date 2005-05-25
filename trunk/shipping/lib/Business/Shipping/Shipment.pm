@@ -390,12 +390,14 @@ sub add_package
 {
     my ( $self, %options ) = @_;
     
-    trace( 'called with' . uneval( @_ ) );
+    #trace( 'called with ' . uneval( @_ ) );
     
     if ( not $self->shipper ) {
         error "Need shipper to get the package subclass.";
         return;
     }
+    
+    debug2 "add_package shipper = " . $self->shipper;
     
     my $package;
     eval { $package  = Business::Shipping->_new_subclass( $self->shipper . '::Package' ); };

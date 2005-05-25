@@ -234,10 +234,8 @@ sub get_req_mod
             /
         ],
         'UPS_Offline' => [ qw/
-            Bundle::DBD::CSV
             Business::Shipping::DataFiles
             Config::IniFiles
-            Math::BaseCnv
             /
         ],
         'UPS_Online' => [ qw/

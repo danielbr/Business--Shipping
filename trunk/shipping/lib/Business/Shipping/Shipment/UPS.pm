@@ -48,7 +48,7 @@ use Class::MethodMaker 2.0
 =cut
 
 sub packaging { shift->package0->packaging( @_ ) }
-sub weight    { shift->package0->weight( @_ )    }
+#sub weight    { shift->package0->weight( @_ )    }  # UPS uses the Shipping::Shipment::weight() method.
 
 =head2 massage_values()
 

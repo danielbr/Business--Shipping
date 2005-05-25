@@ -4,10 +4,15 @@ use warnings;
 use Test::More;
 use Carp;
 use Business::Shipping;
+use Data::Dumper;
 plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'UPS_Offline' );
 plan 'no_plan';
 $::UPS_Online = 1 if Business::Shipping::Config::calc_req_mod( 'UPS_Online' ); 
 $::UPS_Online = 0 unless $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY };
+$::UPS_Online = 0 if $ENV{ DISABLE_UPS_ONLINE };
+
+# How to test for performance: time DIABLE_UPS_ONLINE=1 /usr/local/perl/bin/perl t/45_UPS_Offline.t
+# Currently 1.8 - 2.2 seconds.
 
 use constant CLOSE_ENOUGH_PERCENT   => 10;
 
@@ -24,7 +29,7 @@ sub test
     my ( %args ) = @_;
     my $shipment = Business::Shipping->rate_request( 
         from_state => 'Washington',    
-        shipper    => 'Offline::UPS',
+        shipper    => 'UPS_Offline',
         cache      => 0,
     );
     
@@ -59,6 +64,9 @@ sub close_enough
 
 my $shipment;
 my $shipment_online;
+my $rr;
+my $rr_online;
+
 
 my $ups_online_msg = 'UPS: we need the username, password, and access license key';
 ###########################################################################
@@ -293,19 +301,19 @@ SKIP: {
 
 
 
-my $rr = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
+my $rr2 = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
 
-$rr->submit(
+$rr2->submit(
     service        => '1DA',
     weight        => 20,
     from_zip    => '98682',
     from_state    => 'Washington',
     to_zip        => '96826',
     
-) or die $rr->user_error();
+) or die $rr2->user_error();
 
-print "Hawaii 2DA (alternate calling method):" . $rr->total_charges() . "\n";
-ok( $rr->total_charges, "Hawaii 2DA (alternate calling method):" );
+print "Hawaii 2DA (alternate calling method):" . $rr2->total_charges() . "\n";
+ok( $rr2->total_charges, "Hawaii 2DA (alternate calling method):" );
 
 
 
@@ -517,3 +525,79 @@ SKIP: {
         'UPS Offline and Online are close enough for GNDRES, light, far' 
       );
 }
+
+
+
+
+
+
+########################################################################
+## Multi-package
+########################################################################
+%test = (
+        service =>              '2DA',
+        from_zip =>             '98682',
+        to_zip =>               '98270',
+);
+$this_test_desc = "UPS Offline: Multi-package: ";
+
+$rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
+$rr->init( %test );
+$rr->shipment->add_package( weight => 5 );
+$rr->shipment->add_package( weight => 15 );
+$rr->shipment->add_package( weight => 7 );
+
+$rr->execute or die $rr->user_error;
+
+ok( $rr->total_charges(), $this_test_desc );
+print $this_test_desc . $rr->total_charges() . "\n";
+
+########################################################################
+## Overweight split shipments
+########################################################################
+%test = (
+        service =>              'GNDRES',
+        from_zip =>             '98682',
+        to_zip =>               '98270',
+        weight =>               151,
+);
+$this_test_desc = "UPS Offline: Over max package weight: ";
+$rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
+$rr->init( %test );
+$rr->execute or die $rr->user_error;
+ok( $rr->total_charges(), $this_test_desc );
+print $this_test_desc . $rr->total_charges() . "\n";
+
+
+########################################################################
+## Hundredweight
+########################################################################
+%test = (
+        service =>              'GNDRES',
+        from_zip =>             '98682',
+        to_zip =>               '98270',
+        weight =>               455,
+);
+$this_test_desc = "UPS Offline: Hundredweight: ";
+$rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
+$rr->init( %test );
+$rr->execute or die $rr->user_error;
+ok( $rr->total_charges(), $this_test_desc );
+print $this_test_desc . $rr->total_charges() . "\n";
+
+########################################################################
+## Named services
+########################################################################
+%test = (
+        service =>              'Ground Residential',
+        from_zip =>             '98682',
+        to_zip =>               '98270',
+        weight =>               5,
+);
+$this_test_desc = "UPS Offline: Use the long name of the service: ";
+$rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
+$rr->init( %test );
+$rr->execute or die $rr->user_error;
+ok( $rr->total_charges(), $this_test_desc );
+print $this_test_desc . $rr->total_charges() . "\n";
+

@@ -14,11 +14,11 @@ Business::Shipping - Rates and tracking for UPS and USPS
 
 =head1 VERSION
 
-Version 1.58
+Version 1.90
 
 =cut
 
-$VERSION = '1.58';
+$VERSION = '1.90';
 
 =head1 SYNOPSIS
 
@@ -28,8 +28,8 @@ $VERSION = '1.58';
  
  my $rate_request = Business::Shipping->rate_request(
      shipper   => 'UPS_Offline',
-     service   => 'GNDRES',
-     from_zip  => '98682',
+     service   => 'Ground Residential',
+     from_zip  => '98683',
      to_zip    => '98270',
      weight    =>  5.00,
  );    
@@ -42,11 +42,21 @@ $VERSION = '1.58';
 
 Business::Shipping currently supports three shippers:
 
-=head2 UPS_Online: United Parcel Service
+=head2 UPS_Offline: United Parcel Service
 
 =over 4
 
-=item * Shipment rate estimation using UPS Online WebTools.
+=item * Shipment rate estimation using offline tables.
+
+=back
+
+=head2 UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)
+
+=over 4
+
+=item * Disabled as of version 1.90, see doc/UPS_Online_disabled.txt.
+
+=item * Shipment rate estimation
 
 =item * Shipment tracking.
 
@@ -60,9 +70,9 @@ Gets rates for all the services in one request:
      from_zip     => '98682',
      to_zip       => '98270',
      weight       => 5.00,
-     user_id      => $ENV{ UPS_USER_ID },
-     password     => $ENV{ UPS_PASSWORD },
-     access_key   => $ENV{ UPS_ACCESS_KEY }
+     user_id      => '',
+     password     => '',
+     access_key   => '',
  );
  
  $rr_shop->execute() or die $rr_shop->user_error();
@@ -100,49 +110,42 @@ For example:
 
 =back
 
-=head2 UPS_Offline: United Parcel Service
-
-=over 4
-
-=item * Shipment rate estimation using offline tables.
-
-=back
-
 =head2 USPS_Online: United States Postal Service
 
 =over 4
 
 =item * Shipment rate estimation using USPS Online WebTools.
 
-=item * Shipment tracking.
+=item * Shipment tracking
 
-=back 
+=back
 
 =head1 INSTALLATION
 
  perl -MCPAN -e 'install Bundle::Business::Shipping'
 
-See the INSTALL file for more details.
+See doc/INSTALL.
 
 =head1 REQUIRED MODULES
 
-Some of these modules are not required to use only one shipper.  See the INSTALL
-file for more information.
+The following modules are required for offline UPS rate estimation.  See doc/INSTALL.
 
- Bundle::DBD::CSV (any)
  Business::Shipping::DataFiles (any)
- Cache::FileCache (any)
  Class::MethodMaker::Engine (any)
- Clone (any)
  Config::IniFiles (any)
- Crypt::SSLeay (any)
  Log::Log4perl (any)
+
+=head1 OPTIONAL MODULES
+
+The following modules are used by online rate estimation and tracking.  See doc/INSTALL.
+
+ Cache::FileCache (any)
+ Clone (any)
+ Crypt::SSLeay (any)
  LWP::UserAgent (any)
- Math::BaseCnv (any)
- Scalar::Util (any)
  XML::DOM (any)
  XML::Simple (2.05)
-
+ 
 =head1 GETTING STARTED
 
 Be careful to read, understand, and comply with the terms of use for the 
@@ -196,9 +199,9 @@ L<http://www.ups.com/content/us/en/resources/service/terms/index.html>
 
 =head1 ERROR/DEBUG HANDLING
 
-Log4perl is used for logging error, debug, etc. messages.  See 
-config/log4perl.conf.  For simple manipulation of the current log level, use
-the Business::Shipping->log_level( $log_level ) class method (below).
+Log4perl is used for logging error, debug, etc. messages.  For simple manipulation of the current log level, 
+use the Business::Shipping->log_level( $log_level ) class method (below).  For more advanced logging/debugging
+options, see config/log4perl.conf.
 
 =head1 Preloading Modules
 
@@ -598,7 +601,7 @@ author and/or on their website or in their application.
 =item * Interchange e-commerce system ( L<http://www.icdevgroup.org> ).  See 
     C<UserTag/business-shipping.tag>.
 
-=item * Many E-Commerce websites.
+=item * Many E-Commerce websites, such as Phatmotorsports.com.
 
 =item * PaymentOnline.com software.
 
@@ -606,8 +609,6 @@ author and/or on their website or in their application.
     L<http://www.plainblack.com/shopping_cart_wobject>
 
 =item * Mentioned in YAPC 2004 Presentation: "Writing web applications with perl ..."
-
-=item * Phatmotorsports.com.
 
 =back
 
@@ -632,7 +633,7 @@ Many people have contributed to this module, please see the CREDITS file.
 
 =head1 AUTHOR
 
-Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+Daniel Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
 
 =head1 COPYRIGHT AND LICENCE
 

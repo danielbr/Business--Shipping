@@ -6,7 +6,7 @@ Simulator for Business::Shipping Interchange UserTag
 
 =head1 VERSION
 
-This is simulator version ___, which is based on usertag version 1.13.
+This is simulator version 221, which is based on usertag version 1.13.
 
 =head1 DESCRIPTION
 
@@ -39,6 +39,8 @@ use Test::More;
 plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'UPS_Online' );
 plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'USPS_Online' );
 plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'UPS_Offline' );
+plan skip_all => 'No credentials' 
+    unless $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY };
 plan 'no_plan';
 
 

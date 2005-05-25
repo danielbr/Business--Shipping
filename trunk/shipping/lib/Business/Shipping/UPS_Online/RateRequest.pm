@@ -1,5 +1,8 @@
 package Business::Shipping::UPS_Online::RateRequest;
 
+use constant UPS_ONLINE_DISABLED => '1';
+#use constant UPS_ONLINE_DISABLED => '~_~UPS_ONLINE_DISABLED~_~';
+
 =head1 NAME
 
 Business::Shipping::UPS_Online::RateRequest
@@ -454,6 +457,8 @@ sub _handle_response
         $ups_results = [ $response_tree->{ RatedShipment } ];
     }
     
+    use Data::Dumper;
+    debug "ups_results = " . Dumper( $ups_results ); 
     foreach my $ups_rate_info ( @$ups_results ) {
         
         my $service_code = $ups_rate_info->{ Service }->{ Code };
@@ -512,6 +517,10 @@ sub _handle_response
     ];
     debug3 'results = ' . uneval(  $results );
     $self->results( $results );
+    
+    if ( UPS_ONLINE_DISABLED ) {
+        die "Support for UPS_Online has been disabled, see doc/UPS_Online_disabled.txt";
+    }
     
     return $self->is_success( 1 );
 }

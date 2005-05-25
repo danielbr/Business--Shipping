@@ -1,33 +1,37 @@
 Revision history for Business::Shipping
 =======================================
 
-1.58
+1.90
 
 
   General
   
-    * Estimate shipping prices for overweight shipments by splitting
-      - Divide overweight shipments into multiple virtual shipments
-      - Max weight per virtual shipment customizable
-    
     * Renamed go() to execute(), but go() will continue to work for a long time.
     
     * Support multiple packages
       - Done for UPS_Offline
+      - Add test cases
 
-    * [P1] [Enh] Split overweight shipments into multiple packages 
+    * [Enh] Split overweight shipments into multiple packages 
       - Instead of mulitple shipments.
       - UPS allows each *package* in a shipment to be a max of 150 lbs.
+      - Divide overweight shipments into multiple virtual shipments
+      - Max weight per virtual shipment customizable
+      - Add test cases
 
   UPS_Offline
 
-    * [Enh] New data format for increased performance.
-      - Uses Storable for the fastest rate lookups.
-      - Implemented for just gndcomm and 1da so far.
+    * [Enh] Major change: new data format for increased performance.
+      - Instead of parsing UPS files at run-time, all the data is parsed into
+        perl objects (like an in-memory database), and saved as Storable files. 
+      - Significant performance increase and code simplification.
+      - Reduces many required modules.
   
-    * [Fixed] [P1] .this_is_data did not make it into the release
-      - Changed to this_is_the_data_dir
+    * Add Hundredweight rate estimation 
     
+    * [Fixed] .this_is_data did not make it into the release
+      - Changed to this_is_the_data_dir
+      
 
 1.57  (unreleased)
 

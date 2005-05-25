@@ -50,6 +50,8 @@ sub perform_action
                         "Content: " . $self->response->content() 
                     ); 
     }
+    use Data::Dumper;
+    #debug3 "self->response = " . Dumper( $self->response() );
     
     return ( undef );
 }

@@ -29,7 +29,6 @@ use Class::MethodMaker 2.0
                     -default_ctor => 'default_new', }, 'packages' ],      
     ];
 
-
 1;
 
 __END__

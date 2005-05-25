@@ -23,14 +23,14 @@
 	<li><a href="#features">FEATURES</a></li>
 	<ul>
 
-		<li><a href="#ups_online__united_parcel_service">UPS_Online: United Parcel Service</a></li>
+		<li><a href="#ups_online__united_parcel_service_using_ups_online_tools__disabled_">UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)</a></li>
 		<li><a href="#ups_offline__united_parcel_service">UPS_Offline: United Parcel Service</a></li>
 		<li><a href="#usps_online__united_states_postal_service">USPS_Online: United States Postal Service</a></li>
 	</ul>
 
 	<li><a href="#installation">INSTALLATION</a></li>
 	<li><a href="#required_modules">REQUIRED MODULES</a></li>
-	<li><a href="#getting_started">GETTING STARTED</a></li>
+	<li><a href="#optional_modules">OPTIONAL MODULES</a></li>
 	<ul>
 
 		<li><a href="#ups_offline__for_united_parcel_service__ups__offline_rate_requests">UPS_Offline: For United Parcel Service (UPS) offline rate requests</a></li>
@@ -48,8 +48,6 @@
 		<li><a href="#_obj_validate__">$obj-&gt;<code>validate()</code></a></li>
 		<li><a href="#_obj_rate_request__">$obj-&gt;<code>rate_request()</code></a></li>
 		<li><a href="#business__shipping_log_level__">Business::Shipping-&gt;<code>log_level()</code></a></li>
-		<li><a href="#business__shipping__new_subclass__">Business::Shipping-&gt;<code>_new_subclass()</code></a></li>
-		<li><a href="#_obj_event_handlers__">$obj-&gt;<code>event_handlers()</code></a></li>
 	</ul>
 
 	<li><a href="#see_also">SEE ALSO</a></li>
@@ -71,7 +69,7 @@
 </p>
 <hr />
 <h1><a name="version">VERSION</a></h1>
-<p>Version 1.56</p>
+<p>Version 1.90</p>
 <p>
 </p>
 <hr />
@@ -90,9 +88,9 @@
      weight    =&gt;  5.00,
  );    
  
- $rate_request-&gt;go() or die $rate_request-&gt;user_error();
+ $rate_request-&gt;execute() or die $rate_request-&gt;user_error();
  
- print $rate_request-&gt;total_charges();</pre>
+ print $rate_request-&gt;rate();</pre>
 <p>
 </p>
 <hr />
@@ -100,9 +98,11 @@
 <p>Business::Shipping currently supports three shippers:</p>
 <p>
 </p>
-<h2><a name="ups_online__united_parcel_service">UPS_Online: United Parcel Service</a></h2>
+<h2><a name="ups_online__united_parcel_service_using_ups_online_tools__disabled_">UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)</a></h2>
 <ul>
-<li><strong><a name="item_shipment_rate_estimation_using_ups_online_webtools">Shipment rate estimation using UPS Online WebTools.</a></strong><br />
+<li><strong><a name="item_disabled_as_of_version_1_2e90_2c_see_doc_2fups_onl">Disabled as of version 1.90, see doc/UPS_Online_disabled.txt.</a></strong><br />
+</li>
+<li><strong><a name="item_shipment_rate_estimation">Shipment rate estimation</a></strong><br />
 </li>
 <li><strong><a name="item_shipment_tracking_2e">Shipment tracking.</a></strong><br />
 </li>
@@ -121,7 +121,7 @@ Gets rates for all the services in one request:
      access_key   =&gt; $ENV{ UPS_ACCESS_KEY }
  );
  
- $rr_shop-&gt;go() or die $rr_shop-&gt;user_error();
+ $rr_shop-&gt;execute() or die $rr_shop-&gt;user_error();
  
  foreach my $shipper ( @$results ) {
      print &quot;Shipper: $shipper-&gt;{name}\n\n&quot;;
@@ -136,12 +136,13 @@ Gets rates for all the services in one request:
 <p></p>
 <li><strong><a name="item_c_2eo_2ed_2e__28cash_on_delivery_29">C.O.D. (Cash On Delivery)</a></strong><br />
 </li>
-#DeliveryConfirmation and COD cannot coexist on a single Pakcage (DeliveryConfirmation is not yet implemented in Business::Shiping).
-#cod_code: The code associated with the type of COD.  Values: 1 = Regular COD, 2 = Express COD, 3 = Tagless COD
-<p>Add these options to your rate request for C.O.D.:</p>
+Add these options to your rate request for C.O.D.:
 <p>cod: enable C.O.D.</p>
-<p>cod_funds_code:  The code that indicates the type of funds that will be used for the COD payment.  Required if CODCode is 1, 2, or 3.  Valid Values: 0 = All Funds Allowed.  8 = cashier's check or money order, no cash allowed.</p>
-<p>cod_value: The COD value for the package.  Required if COD option is present.  Valid values: 0.01 - 50000.00
+<p>cod_funds_code:  The code that indicates the type of funds that will be used for the COD payment.  
+Required if CODCode is 1, 2, or 3.  Valid Values: 0 = All Funds Allowed.  8 = cashier's check or 
+money order, no cash allowed.</p>
+<p>cod_value: The COD value for the package.  Required if COD option is present.  Valid values: 0.01 - 50000.00</p>
+<p>cod_code: The code associated with the type of COD.  Values: 1 = Regular COD, 2 = Express COD, 3 = Tagless COD
 </p>
 <pre>
 
@@ -164,7 +165,7 @@ For example:</pre>
 <ul>
 <li><strong><a name="item_shipment_rate_estimation_using_usps_online_webtool">Shipment rate estimation using USPS Online WebTools.</a></strong><br />
 </li>
-<li><strong>Shipment tracking.</strong><br />
+<li><strong><a name="item_shipment_tracking">Shipment tracking</a></strong><br />
 </li>
 </ul>
 <p>
@@ -178,26 +179,26 @@ For example:</pre>
 </p>
 <hr />
 <h1><a name="required_modules">REQUIRED MODULES</a></h1>
-<p>Some of these modules are not required to use only one shipper.  See the INSTALL
-file for more information.</p>
+<p>The following modules are required for offline UPS rate estimation.  Some of these modules are not required 
+to use only one shipper.  See the INSTALL file for more information.</p>
 <pre>
- Bundle::DBD::CSV (any)
  Business::Shipping::DataFiles (any)
- Cache::FileCache (any)
  Class::MethodMaker::Engine (any)
- Clone (any)
  Config::IniFiles (any)
- Crypt::SSLeay (any)
- Log::Log4perl (any)
- LWP::UserAgent (any)
- Math::BaseCnv (any)
- Scalar::Util (any)
- XML::DOM (any)
- XML::Simple (2.05)</pre>
+ Log::Log4perl (any)</pre>
 <p>
 </p>
 <hr />
-<h1><a name="getting_started">GETTING STARTED</a></h1>
+<h1><a name="optional_modules">OPTIONAL MODULES</a></h1>
+<pre>
+ Cache::FileCache (any)
+ Clone (any)
+ Crypt::SSLeay (any)
+ LWP::UserAgent (any)
+ XML::DOM (any)
+ XML::Simple (2.05)
+ 
+=head1 GETTING STARTED</pre>
 <p>Be careful to read, understand, and comply with the terms of use for the 
 provider that you will use.</p>
 <p>
@@ -343,20 +344,9 @@ this, while UPS_Offline does not.
 <p>
 </p>
 <h2><a name="business__shipping_log_level__">Business::Shipping-&gt;<code>log_level()</code></a></h2>
-<p>Simple alternative to editing the config/log4perl.conf file.  Sets the log level for 
-all Business::Shipping objects.</p>
+<p>Simple alternative to editing the config/log4perl.conf file.  Sets the log level
+for all Business::Shipping objects.</p>
 <p>Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.</p>
-<p>
-</p>
-<h2><a name="business__shipping__new_subclass__">Business::Shipping-&gt;<code>_new_subclass()</code></a></h2>
-<p>Private Method.</p>
-<p>Generates an object of a given subclass dynamically.  Will dynamically 'use' 
-the corresponding module, unless runtime module loading has been disabled via 
-the 'preload' option.</p>
-<p>
-</p>
-<h2><a name="_obj_event_handlers__">$obj-&gt;<code>event_handlers()</code></a></h2>
-<p>For backwards compatibility only.</p>
 <p>
 </p>
 <hr />
@@ -365,19 +355,21 @@ the 'preload' option.</p>
 <ul>
 <li><strong><a name="item_business_3a_3ashipping_3a_3adatafiles__2d_required">Business::Shipping::DataFiles - Required for offline cost estimation</a></strong><br />
 </li>
-<li><strong><a name="item_datafiles">Business::Shipping::DataTools - Tools that generating DataFiles 
+<li><strong><a name="item_datafiles">Business::Shipping::DataTools - Tools that generate DataFiles 
         (optional)</a></strong><br />
 </li>
 </ul>
-<p>Other CPAN modules that are simliar to Business::Shipping:
-
-</p>
+<p>Other Perl modules that are simliar to Business::Shipping:</p>
 <ul>
 <li><strong><a name="item_business_3a_3ashipping_3a_3aups_xml__2d_online_cos">Business::Shipping::UPS_XML - Online cost estimation module that has 
 very few prerequisites.  Supports shipments that originate in USA and Canada.</a></strong><br />
 </li>
 <li><strong><a name="item_business_3a_3aups__2d_online_cost_estimation_modul">Business::UPS - Online cost estimation module that uses the UPS web form
 instead of the UPS Online Tools.  For shipments that originate in the USA only.</a></strong><br />
+</li>
+<li><strong><a name="item_http_3a_2f_2fwww_2ehalofree_2ecom_2flib_2fpublic_2"><a href="http://www.halofree.com/lib/public/code/Ship/UPS.pm">http://www.halofree.com/lib/public/code/Ship/UPS.pm</a></a></strong><br />
+</li>
+<li><strong><a href="http://www.halofree.com/lib/public/code/Ship/USPS.pm">http://www.halofree.com/lib/public/code/Ship/USPS.pm</a></strong><br />
 </li>
 </ul>
 <p>It is appreciated when users mention their use of Business::Shipping to the 
@@ -388,26 +380,22 @@ author and/or on their website or in their application.
 <li><strong><a name="item_system">Interchange e-commerce system ( <a href="http://www.icdevgroup.org">http://www.icdevgroup.org</a> ).  See 
     <code>UserTag/business-shipping.tag</code>.</a></strong><br />
 </li>
+<li><strong><a name="item_many_e_2dcommerce_websites_2e">Many E-Commerce websites.</a></strong><br />
+</li>
 <li><strong><a name="item_paymentonline_2ecom_software_2e">PaymentOnline.com software.</a></strong><br />
 </li>
 <li><strong><a name="item_the__22shopping_cart_22_wobject_for_the_webgui_pro">The ``Shopping Cart'' Wobject for the WebGUI project, by Andy Grundman 
-    &lt;<a href="mailto:andy@kahncentral.net">andy@kahncentral.net</a>&gt;.
-    <a href="http://www.plainblack.com/wobjects?wid=1143&func=viewSubmission&sid=654">http://www.plainblack.com/wobjects</a>
-    <a href="http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz">http://www.plainblack.com/uploads/1143/654/webgui-shopping-cart-1.0.tar.gz</a></a></strong><br />
+    <a href="http://www.plainblack.com/shopping_cart_wobject">http://www.plainblack.com/shopping_cart_wobject</a></a></strong><br />
 </li>
-<li><strong><a name="item_mentioned_in_yapc_2004_presentation_3a__22writing_">Mentioned in YAPC 2004 Presentation: ``Writing web applications with perl ...''
-    <a href="http://www.beamartyr.net/YAPC-2004/text25.html">http://www.beamartyr.net/YAPC-2004/text25.html</a></a></strong><br />
+<li><strong><a name="item_mentioned_in_yapc_2004_presentation_3a__22writing_">Mentioned in YAPC 2004 Presentation: ``Writing web applications with perl ...''</a></strong><br />
 </li>
-<li><strong><a name="item_phatmotorsports_2ecom_2c_endpcnoise_2ecom_2c_and_m">Phatmotorsports.com, EndPCNoise.com, and many other E-Commerce websites.</a></strong><br />
+<li><strong><a name="item_phatmotorsports_2ecom_2e">Phatmotorsports.com.</a></strong><br />
 </li>
 </ul>
 <p>
 </p>
 <hr />
 <h1><a name="website">WEBSITE</a></h1>
-<p>The website carries the most recent version.
-
-</p>
 <p><a href="http://www.kavod.com/Business-Shipping">http://www.kavod.com/Business-Shipping</a>
 
 </p>
@@ -432,7 +420,7 @@ automatically be notified of progress on your bug as the author makes changes.
 </p>
 <hr />
 <h1><a name="credits">CREDITS</a></h1>
-<p>See the CREDITS file. 
+<p>Many people have contributed to this module, please see the CREDITS file. 
 
 </p>
 <p>
@@ -446,9 +434,9 @@ automatically be notified of progress on your bug as the author makes changes.
 </p>
 <hr />
 <h1><a name="copyright_and_licence">COPYRIGHT AND LICENCE</a></h1>
-<p>Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-This program is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself.  See LICENSE for more info.
+<p>Copyright (c) 2003-2005 Daniel Browning &lt;<em><a href="mailto:db@kavod.com">db@kavod.com</a></em>&gt;. All rights 
+reserved.  This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.  See LICENSE for more info.
 
 </p>
 

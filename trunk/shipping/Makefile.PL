@@ -127,11 +127,14 @@ $module Support files directory:);
     
     subst( 
         variables => {
-            SUPPORT_FILES_DIR => $my_globals{ SUPPORT_FILES_DIR }
+            SUPPORT_FILES_DIR => $my_globals{ SUPPORT_FILES_DIR },
+            UPS_ONLINE_DISABLED => 1,
         },
         files     => [
             'lib/Business/Shipping/Config.pm',
-            'config/log4perl.conf'
+            'config/log4perl.conf',
+            'lib/Business/Shipping/UPS_Online/RateRequest.pm',
+            'lib/Business/Shipping/UPS_Online/Tracking.pm',
         ]
     );
 

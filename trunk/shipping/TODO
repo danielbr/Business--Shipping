@@ -2,6 +2,41 @@
 ##  General TODO
 ################################################################################
 
+    * Add UPS Offline Hundredweight shipping
+      - Use cwt tables
+      - Requires overweight shipments to be split into multi-package, not
+        multi-shipment.
+      - Description of calculation:
+        Calculate price for entire shipment weight altogether (not per-package).
+      - Add a default safety padding.  If the weight is only x% higher than the
+        required limit for hundredweight shipping, then do not calculate as 
+	hundredweight (so that just in case the weights given to B::S are lower
+	than actual billiable weight, the shipper wont be stuck paying 50% 
+	higher fees).
+	
+    * DataTools: Remove the data from the "unknown" section since it is unused.
+    
+    * DataTools: wweas.csv has two difficult characters:
+      - Causes CSV module to "fail" on those lines.
+      grep 'Colombia,,COV' data/*.csv
+      grep 'Colombia,,SAL' data/*.csv
+    
+    * Remove files that we don't use from the DataFiles distribution
+    
+    * DataTools: Excel documents
+      The following files are actually MS Excel documents.  Put a note in 
+      the docs somewhere that specifies they must be manually converted.
+      
+      akz_48.csv akz_air.csv hiz_48pr.csv hiz_ak.csv hiz_hi.csv
+      
+    * Interchange Usertag: Store rate_request objects of like types between
+      requests.  So that, for example, two requests that are run from the same
+      Prefork'ed daemon will not have to load the Storable objects seperately.
+    
+    * UPS_Offline: Don't convert letter to 0, because letter means it is
+      enclosed in an envelope which may actually weigh more (for WW express, not
+      sure about other methods).
+      
     * UPS_Offline: canstnd doesn't convert exactly right.
       (500+, and the many 'Min' sections).
       
@@ -9,8 +44,6 @@
       - Is the 1.75 surcharge added per-shipment or per-package?  I think it may 
         be per-package.
 
-    * update.pl is not working
-    
     * UPS_Offline: store tables as perl objects
       - Use Storable
       - During installation of Business::Shipping::DataFiles, compile perl 
@@ -26,11 +59,6 @@
         automatically convert multiple packages into multiple shipments, if
         possible.
 
-    * Add UPS Offline Hundredweight shipping
-      - Use cwt tables
-      - Requires overweight shipments to be split into multi-package, not
-        multi-shipment.
-    
     * Allow customizing max package weight on a per-service basis
       - For example, maximum weight per package for Next day air : 50, Ground: 75.
       
