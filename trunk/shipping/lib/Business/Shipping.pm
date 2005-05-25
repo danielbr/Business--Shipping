@@ -625,11 +625,11 @@ automatically be notified of progress on your bug as the author makes changes.
 
 =head1 KNOWN BUGS
 
-See the TODO file for a comprehensive list of known bugs.
+See the C<doc/Todo> file for a comprehensive list of known bugs.
 
 =head1 CREDITS
 
-Many people have contributed to this module, please see the CREDITS file. 
+Many people have contributed to this module, please see the C<doc/Credits> file. 
 
 =head1 AUTHOR
 
@@ -639,6 +639,6 @@ Daniel Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavo
 
 Copyright (c) 2003-2005 Daniel Browning E<lt>F<db@kavod.com>E<gt>. All rights 
 reserved.  This program is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.  See LICENSE for more info.
+it under the same terms as Perl itself.  See C<doc/License> for more info.
 
 =cut

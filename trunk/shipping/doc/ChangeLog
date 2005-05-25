@@ -18,6 +18,9 @@ Revision history for Business::Shipping
       - Divide overweight shipments into multiple virtual shipments
       - Max weight per virtual shipment customizable
       - Add test cases
+      
+    * Moved a lot of files into doc/ so that the root directory would be a 
+      little cleaner.
 
   UPS_Offline
 
