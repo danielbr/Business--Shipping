@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2003-2005 Daniel Browning <db@kavod.com>. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
+# the same terms as Perl itself. See doc/License for more info.
 
 package Business::Shipping;
 
@@ -615,6 +615,8 @@ author and/or on their website or in their application.
 =head1 WEBSITE
 
 L<http://www.kavod.com/Business-Shipping>
+
+Also see L<http://search.cpan.org/~dbrowning/Business-Shipping>
 
 =head1 SUPPORT
 

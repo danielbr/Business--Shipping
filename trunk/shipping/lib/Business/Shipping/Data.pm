@@ -28,7 +28,6 @@ use warnings;
 use base ( 'Exporter' );
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
-use DBI;
 
 =head2 record( $table, $field, $key, $opt )
 

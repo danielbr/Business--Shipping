@@ -21,6 +21,15 @@ Revision history for Business::Shipping
       
     * Moved a lot of files into doc/ so that the root directory would be a 
       little cleaner.
+      
+    * Default config/log/data directory changed to /usr/local/B_Shipping
+
+    * [Fixed] Make test doesn't currently work because after installing 
+      DataFiles, the data/ directory is in one place, and the config/ directory
+      is in another.  However, the Config.pm module expects them all to be in 
+      one location.
+      - Solution: split out the directories so that they can be in separate 
+        places.
 
   UPS_Offline
 
@@ -34,7 +43,11 @@ Revision history for Business::Shipping
     
     * [Fixed] .this_is_data did not make it into the release
       - Changed to this_is_the_data_dir
-      
+
+  UPS_Online
+  
+    * Disabled.  See doc/UPS_Online_disabled.txt
+        
 
 1.57  (unreleased)
 

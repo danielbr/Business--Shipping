@@ -408,8 +408,7 @@ sub calc_fuel_surcharge
     my $is_ground_svc = 0;
     $is_ground_svc = 1 if grep /$ups_service_name/i, @ground_services;
     
-    my $fuel_surcharge_filename = Business::Shipping::Config::support_files 
-    . '/config/fuel_surcharge.txt';
+    my $fuel_surcharge_filename = Business::Shipping::Config::config_dir . '/fuel_surcharge.txt';
     
     my $fuel_surcharge_contents = readfile( $fuel_surcharge_filename );
     my ( $line1, undef, $line3 ) = split( "\n", $fuel_surcharge_contents );

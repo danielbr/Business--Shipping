@@ -11,9 +11,10 @@ use warnings;
 # Defaults
 
 my %my_globals = (
-	CONFIG_DIR	=> '/usr/local/B_Shipping/config',
-    LOG_DIR     => '/usr/local/B_Shipping/log',
-    DATA_DIR	=> '/usr/local/B_Shipping/data',
+    PREFIX_DIR  => '/usr/local/B_Shipping'
+	#CONFIG_DIR	=> '/usr/local/B_Shipping/config', # These are set manually later on, so don't bother 
+    #LOG_DIR     => '/usr/local/B_Shipping/log',   # defaulting them.
+    #DATA_DIR	=> '/usr/local/B_Shipping/data',
 );
 
 =head1 USAGE
@@ -92,7 +93,7 @@ docs :
 	
 support_files_install :
 	\@echo "Installing configuration files to $my_globals{CONFIG_DIR}"
-	\@\$(MKPATH) $my_globals{CONFIG_DIR}/log
+	\@\$(MKPATH) $my_globals{LOG_DIR}
 	\@\$(MKPATH) $my_globals{CONFIG_DIR}
 	\@\$(CP) --recursive --force config/* $my_globals{CONFIG_DIR}/
 };  #/qq
@@ -100,9 +101,30 @@ support_files_install :
 
 sub extra_WriteMakefile_options {
     
+    
     if ( not $::UseDefaults ) {
-        %my_globals = prompt_user( %my_globals );
-    }
+        my $module = 'Business::Shipping';
+        
+        my $question = qq(
+             ---  $module configuration, logging, and data directory  ---
+  
+What directory should be used for storing configuration files, logging files, and data?
+
+$module support files directory:);
+
+    
+        $my_globals{ PREFIX_DIR } = prompt( 
+            $question, 
+            $my_globals{ PREFIX_DIR },
+        );
+    
+        $my_globals{ PREFIX_DIR } =~ s:[\\/]\s*$::;
+        $my_globals{ PREFIX_DIR } =~ s:^\s*::;
+    } # end if not use defaults
+    
+    $my_globals{ CONFIG_DIR } = $my_globals{ PREFIX_DIR } . '/config';
+    $my_globals{ LOG_DIR    } = $my_globals{ PREFIX_DIR } . '/log';
+    $my_globals{ DATA_DIR   } = $my_globals{ PREFIX_DIR } . '/data';
     
     # Now we are going to substitute the support files directory in 
     # lib/Business/Shipping/Config.pm
@@ -141,82 +163,6 @@ sub extra_WriteMakefile_options {
 =head1 METHODS
 
 
-=head2 prompt_user
-
-=cut
-
-sub prompt_user
-{
-    my $module = "Business::Shipping";
-
-    my $question = qq(
-             ---  $module configuration directory  ---
-  
-$module module comes with various configuration files.  Please input the path
-you would like to copy these files to.  You can modify the path later by 
-changing the Config.pm file.
-
-$module config files directory:);
-
-    
-	$my_globals{ CONFIG_DIR } = prompt( 
-        $question, 
-		$my_globals{ CONFIG_DIR },
-	);
-    
-    
-    
-    if ( 0 ) {
-    my $question = qq(
-             ---  $module configuration directory  ---
-  
-$module module comes with various configuration files.  Please input the path
-you would like to copy these files to.  You can modify the path later by 
-changing the Config.pm file.
-
-$module config files directory:);
-
-    
-	$my_globals{ CONFIG_DIR } = prompt( 
-        $question, 
-		$my_globals{ CONFIG_DIR },
-	);
-    
-    my $question2 = qq(
-             ---  $module logging directory  ---
-  
-What directory should be used for logging errors and debugging information?
-
-$module log directory:);
-
-    
-	$my_globals{ LOG_DIR } = prompt( 
-        $question2, 
-		$my_globals{ LOG_DIR },
-	);
-    
-    my $question3 = qq(
-             ---  $module data directory  ---
-  
-What directory should be used for data, such as offline rate estimation tables?
-
-$module data directory:);
-
-    
-	$my_globals{ DATA_DIR } = prompt( 
-        $question3, 
-		$my_globals{ DATA_DIR },
-	);
-
-    } # end if not use defaults
-    
-    $my_globals{ CONFIG_DIR } =~ s:[\\/]\s*$::;
-	$my_globals{ CONFIG_DIR } =~ s:^\s*::;
-
-	$my_globals{ DATA_DIR } =~ s:[\\/]\s*$::;
-	$my_globals{ DATA_DIR } =~ s:^\s*::;
-    }
-}
 
 =head2 subst( files => [ ], variables => { } )
 

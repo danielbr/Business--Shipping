@@ -10,8 +10,8 @@ SYNOPSIS
  
      my $rate_request = Business::Shipping->rate_request(
          shipper   => 'UPS_Offline',
-         service   => 'GNDRES',
-         from_zip  => '98682',
+         service   => 'Ground Residential',
+         from_zip  => '98683',
          to_zip    => '98270',
          weight    =>  5.00,
      );    
@@ -22,6 +22,9 @@ SYNOPSIS
 
 FEATURES
     Business::Shipping currently supports three shippers:
+
+  UPS_Offline: United Parcel Service
+    * Shipment rate estimation using offline tables.
 
   UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)
     * Disabled as of version 1.90, see doc/UPS_Online_disabled.txt.
@@ -36,9 +39,9 @@ FEATURES
              from_zip     => '98682',
              to_zip       => '98270',
              weight       => 5.00,
-             user_id      => $ENV{ UPS_USER_ID },
-             password     => $ENV{ UPS_PASSWORD },
-             access_key   => $ENV{ UPS_ACCESS_KEY }
+             user_id      => '',
+             password     => '',
+             access_key   => '',
          );
  
          $rr_shop->execute() or die $rr_shop->user_error();
@@ -76,9 +79,6 @@ FEATURES
                 cod_value      => 400.00,
                 cod_funds_code => 0,
 
-  UPS_Offline: United Parcel Service
-    * Shipment rate estimation using offline tables.
-
   USPS_Online: United States Postal Service
     * Shipment rate estimation using USPS Online WebTools.
     * Shipment tracking
@@ -86,12 +86,11 @@ FEATURES
 INSTALLATION
      perl -MCPAN -e 'install Bundle::Business::Shipping'
 
-    See the INSTALL file for more details.
+    See doc/INSTALL.
 
 REQUIRED MODULES
-    The following modules are required for offline UPS rate estimation. Some
-    of these modules are not required to use only one shipper. See the
-    INSTALL file for more information.
+    The following modules are required for offline UPS rate estimation. See
+    doc/INSTALL.
 
      Business::Shipping::DataFiles (any)
      Class::MethodMaker::Engine (any)
@@ -99,6 +98,9 @@ REQUIRED MODULES
      Log::Log4perl (any)
 
 OPTIONAL MODULES
+    The following modules are used by online rate estimation and tracking.
+    See doc/INSTALL.
+
      Cache::FileCache (any)
      Clone (any)
      Crypt::SSLeay (any)
@@ -140,10 +142,10 @@ GETTING STARTED
     or phone: 1-800-344-7779.
 
 ERROR/DEBUG HANDLING
-    Log4perl is used for logging error, debug, etc. messages. See
-    config/log4perl.conf. For simple manipulation of the current log level,
-    use the Business::Shipping->log_level( $log_level ) class method
-    (below).
+    Log4perl is used for logging error, debug, etc. messages. For simple
+    manipulation of the current log level, use the
+    Business::Shipping->log_level( $log_level ) class method (below). For
+    more advanced logging/debugging options, see config/log4perl.conf.
 
 Preloading Modules
     To preload all modules, call Business::Shipping with this syntax:
@@ -247,13 +249,12 @@ Use of this software
 
     * Interchange e-commerce system ( <http://www.icdevgroup.org> ). See
     "UserTag/business-shipping.tag".
-    * Many E-Commerce websites.
+    * Many E-Commerce websites, such as Phatmotorsports.com.
     * PaymentOnline.com software.
     * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman
     <http://www.plainblack.com/shopping_cart_wobject>
     * Mentioned in YAPC 2004 Presentation: "Writing web applications with
     perl ..."
-    * Phatmotorsports.com.
 
 WEBSITE
     <http://www.kavod.com/Business-Shipping>
@@ -266,18 +267,19 @@ SUPPORT
     author makes changes.
 
 KNOWN BUGS
-    See the TODO file for a comprehensive list of known bugs.
+    See the "doc/Todo" file for a comprehensive list of known bugs.
 
 CREDITS
-    Many people have contributed to this module, please see the CREDITS
-    file.
+    Many people have contributed to this module, please see the
+    "doc/Credits" file.
 
 AUTHOR
-    Dan Browning <db@kavod.com>, Kavod Technologies, <http://www.kavod.com>.
+    Daniel Browning <db@kavod.com>, Kavod Technologies,
+    <http://www.kavod.com>.
 
 COPYRIGHT AND LICENCE
     Copyright (c) 2003-2005 Daniel Browning <db@kavod.com>. All rights
     reserved. This program is free software; you can redistribute it and/or
-    modify it under the same terms as Perl itself. See LICENSE for more
-    info.
+    modify it under the same terms as Perl itself. See "doc/License" for
+    more info.
 

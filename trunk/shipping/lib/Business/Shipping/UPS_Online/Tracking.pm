@@ -1,5 +1,8 @@
 package Business::Shipping::Tracking::UPS;
 
+use constant UPS_ONLINE_DISABLED => '1';
+#use constant UPS_ONLINE_DISABLED => '~_~UPS_ONLINE_DISABLED~_~';
+
 # Business::Shipping::UPS_Online::Tracking - Abstract class for tracking shipments
 # 
 # $Id$
@@ -9,9 +12,6 @@ package Business::Shipping::Tracking::UPS;
 # 
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
-
-use constant UPS_ONLINE_DISABLED => '1';
-#use constant UPS_ONLINE_DISABLED => '~_~UPS_ONLINE_DISABLED~_~';
 
 =head1 NAME
 

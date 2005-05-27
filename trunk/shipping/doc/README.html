@@ -23,8 +23,8 @@
 	<li><a href="#features">FEATURES</a></li>
 	<ul>
 
-		<li><a href="#ups_online__united_parcel_service_using_ups_online_tools__disabled_">UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)</a></li>
 		<li><a href="#ups_offline__united_parcel_service">UPS_Offline: United Parcel Service</a></li>
+		<li><a href="#ups_online__united_parcel_service_using_ups_online_tools__disabled_">UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)</a></li>
 		<li><a href="#usps_online__united_states_postal_service">USPS_Online: United States Postal Service</a></li>
 	</ul>
 
@@ -82,8 +82,8 @@
  
  my $rate_request = Business::Shipping-&gt;rate_request(
      shipper   =&gt; 'UPS_Offline',
-     service   =&gt; 'GNDRES',
-     from_zip  =&gt; '98682',
+     service   =&gt; 'Ground Residential',
+     from_zip  =&gt; '98683',
      to_zip    =&gt; '98270',
      weight    =&gt;  5.00,
  );    
@@ -96,6 +96,13 @@
 <hr />
 <h1><a name="features">FEATURES</a></h1>
 <p>Business::Shipping currently supports three shippers:</p>
+<p>
+</p>
+<h2><a name="ups_offline__united_parcel_service">UPS_Offline: United Parcel Service</a></h2>
+<ul>
+<li><strong><a name="item_shipment_rate_estimation_using_offline_tables_2e">Shipment rate estimation using offline tables.</a></strong><br />
+</li>
+</ul>
 <p>
 </p>
 <h2><a name="ups_online__united_parcel_service_using_ups_online_tools__disabled_">UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)</a></h2>
@@ -116,9 +123,9 @@ Gets rates for all the services in one request:
      from_zip     =&gt; '98682',
      to_zip       =&gt; '98270',
      weight       =&gt; 5.00,
-     user_id      =&gt; $ENV{ UPS_USER_ID },
-     password     =&gt; $ENV{ UPS_PASSWORD },
-     access_key   =&gt; $ENV{ UPS_ACCESS_KEY }
+     user_id      =&gt; '',
+     password     =&gt; '',
+     access_key   =&gt; '',
  );
  
  $rr_shop-&gt;execute() or die $rr_shop-&gt;user_error();
@@ -154,13 +161,6 @@ For example:</pre>
 <p></p></ul>
 <p>
 </p>
-<h2><a name="ups_offline__united_parcel_service">UPS_Offline: United Parcel Service</a></h2>
-<ul>
-<li><strong><a name="item_shipment_rate_estimation_using_offline_tables_2e">Shipment rate estimation using offline tables.</a></strong><br />
-</li>
-</ul>
-<p>
-</p>
 <h2><a name="usps_online__united_states_postal_service">USPS_Online: United States Postal Service</a></h2>
 <ul>
 <li><strong><a name="item_shipment_rate_estimation_using_usps_online_webtool">Shipment rate estimation using USPS Online WebTools.</a></strong><br />
@@ -174,13 +174,12 @@ For example:</pre>
 <h1><a name="installation">INSTALLATION</a></h1>
 <pre>
  perl -MCPAN -e 'install Bundle::Business::Shipping'</pre>
-<p>See the INSTALL file for more details.</p>
+<p>See doc/INSTALL.</p>
 <p>
 </p>
 <hr />
 <h1><a name="required_modules">REQUIRED MODULES</a></h1>
-<p>The following modules are required for offline UPS rate estimation.  Some of these modules are not required 
-to use only one shipper.  See the INSTALL file for more information.</p>
+<p>The following modules are required for offline UPS rate estimation.  See doc/INSTALL.</p>
 <pre>
  Business::Shipping::DataFiles (any)
  Class::MethodMaker::Engine (any)
@@ -190,6 +189,7 @@ to use only one shipper.  See the INSTALL file for more information.</p>
 </p>
 <hr />
 <h1><a name="optional_modules">OPTIONAL MODULES</a></h1>
+<p>The following modules are used by online rate estimation and tracking.  See doc/INSTALL.</p>
 <pre>
  Cache::FileCache (any)
  Clone (any)
@@ -247,9 +247,9 @@ every first monday of the month.</p>
 </p>
 <hr />
 <h1><a name="error_debug_handling">ERROR/DEBUG HANDLING</a></h1>
-<p>Log4perl is used for logging error, debug, etc. messages.  See 
-config/log4perl.conf.  For simple manipulation of the current log level, use
-the Business::Shipping-&gt;log_level( $log_level ) class method (below).</p>
+<p>Log4perl is used for logging error, debug, etc. messages.  For simple manipulation of the current log level, 
+use the Business::Shipping-&gt;log_level( $log_level ) class method (below).  For more advanced logging/debugging
+options, see config/log4perl.conf.</p>
 <p>
 </p>
 <hr />
@@ -359,7 +359,9 @@ for all Business::Shipping objects.</p>
         (optional)</a></strong><br />
 </li>
 </ul>
-<p>Other Perl modules that are simliar to Business::Shipping:</p>
+<p>Other Perl modules that are simliar to Business::Shipping:
+
+</p>
 <ul>
 <li><strong><a name="item_business_3a_3ashipping_3a_3aups_xml__2d_online_cos">Business::Shipping::UPS_XML - Online cost estimation module that has 
 very few prerequisites.  Supports shipments that originate in USA and Canada.</a></strong><br />
@@ -380,7 +382,7 @@ author and/or on their website or in their application.
 <li><strong><a name="item_system">Interchange e-commerce system ( <a href="http://www.icdevgroup.org">http://www.icdevgroup.org</a> ).  See 
     <code>UserTag/business-shipping.tag</code>.</a></strong><br />
 </li>
-<li><strong><a name="item_many_e_2dcommerce_websites_2e">Many E-Commerce websites.</a></strong><br />
+<li><strong><a name="item_many_e_2dcommerce_websites_2c_such_as_phatmotorspo">Many E-Commerce websites, such as Phatmotorsports.com.</a></strong><br />
 </li>
 <li><strong><a name="item_paymentonline_2ecom_software_2e">PaymentOnline.com software.</a></strong><br />
 </li>
@@ -388,8 +390,6 @@ author and/or on their website or in their application.
     <a href="http://www.plainblack.com/shopping_cart_wobject">http://www.plainblack.com/shopping_cart_wobject</a></a></strong><br />
 </li>
 <li><strong><a name="item_mentioned_in_yapc_2004_presentation_3a__22writing_">Mentioned in YAPC 2004 Presentation: ``Writing web applications with perl ...''</a></strong><br />
-</li>
-<li><strong><a name="item_phatmotorsports_2ecom_2e">Phatmotorsports.com.</a></strong><br />
 </li>
 </ul>
 <p>
@@ -413,21 +413,21 @@ automatically be notified of progress on your bug as the author makes changes.
 </p>
 <hr />
 <h1><a name="known_bugs">KNOWN BUGS</a></h1>
-<p>See the TODO file for a comprehensive list of known bugs.
+<p>See the <code>doc/Todo</code> file for a comprehensive list of known bugs.
 
 </p>
 <p>
 </p>
 <hr />
 <h1><a name="credits">CREDITS</a></h1>
-<p>Many people have contributed to this module, please see the CREDITS file. 
+<p>Many people have contributed to this module, please see the <code>doc/Credits</code> file. 
 
 </p>
 <p>
 </p>
 <hr />
 <h1><a name="author">AUTHOR</a></h1>
-<p>Dan Browning &lt;<em><a href="mailto:db@kavod.com">db@kavod.com</a></em>&gt;, Kavod Technologies, <a href="http://www.kavod.com">http://www.kavod.com</a>.
+<p>Daniel Browning &lt;<em><a href="mailto:db@kavod.com">db@kavod.com</a></em>&gt;, Kavod Technologies, <a href="http://www.kavod.com">http://www.kavod.com</a>.
 
 </p>
 <p>
@@ -436,7 +436,7 @@ automatically be notified of progress on your bug as the author makes changes.
 <h1><a name="copyright_and_licence">COPYRIGHT AND LICENCE</a></h1>
 <p>Copyright (c) 2003-2005 Daniel Browning &lt;<em><a href="mailto:db@kavod.com">db@kavod.com</a></em>&gt;. All rights 
 reserved.  This program is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.  See LICENSE for more info.
+it under the same terms as Perl itself.  See <code>doc/License</code> for more info.
 
 </p>
 

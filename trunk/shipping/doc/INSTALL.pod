@@ -7,8 +7,8 @@ INSTALL - How to install Business::Shipping
 =head2 Getting Started
 
 Be sure to read the "GETTING STARTED" section of the README, because some 
-services (e.g. online rate requests) require that the user signup for a username
-and password.
+services (e.g. online tracking requests) require that the user signup for a 
+username and password.
 
 =head2 Choosing your bundle
 
@@ -18,9 +18,9 @@ install the required modules for only one shipper:
 
 =over 4
 
-=item * C<Bundle::Business::Shipping::UPS_Online>
-
 =item * C<Bundle::Business::Shipping::UPS_Offline>
+
+=item * C<Bundle::Business::Shipping::UPS_Online>
 
 =item * C<Bundle::Business::Shipping::USPS_Online>
 
@@ -64,7 +64,6 @@ tarball, execute the following:
 Each Bundle lists the required modules for each shipper type.  Here is the 
 combined list for all shippers:
 
- Bundle::DBD::CSV (any)
  Business::Shipping::DataFiles (any)
  Cache::FileCache (any)
  Class::MethodMaker::Engine (any)
@@ -74,7 +73,6 @@ combined list for all shippers:
  Getopt::Mixed (any)
  Log::Log4perl (any)
  LWP::UserAgent (any)
- Math::BaseCnv (any)
  XML::DOM (any)
  XML::Simple (2.05)
 

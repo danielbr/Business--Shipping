@@ -17,8 +17,12 @@ Config::IniFiles module.
 
 =cut
 
-use constant DEFAULT_SUPPORT_FILES_DIR => '/var/perl/Business-Shipping';
-#use constant DEFAULT_SUPPORT_FILES_DIR => '~_~SUPPORT_FILES_DIR~_~';
+use constant DEFAULT_CONFIG_DIR => '/usr/local/B_Shipping/config';
+#use constant DEFAULT_CONFIG_DIR => '~_~DEFAULT_CONFIG_DIR~_~';
+
+use constant DEFAULT_DATA_DIR => '/usr/local/B_Shipping/data';
+#use constant DEFAULT_DATA_DIR => '~_~DEFAULT_DATA_DIR~_~';
+
 
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 @EXPORT = qw/ cfg cfg_obj config_to_hash config_to_ary_of_hashes /;
@@ -30,36 +34,50 @@ use Config::IniFiles;
 use Business::Shipping::Logging;
 use Carp;
 
-my $support_files_dir;
-my $main_config_file;
+$Business::Shipping::Config::config_dir = '';
+$Business::Shipping::Config::data_dir = '';
+$Business::Shipping::Config::main_config_file = '';
+$Business::Shipping::Config::data_dir_test_filename = 'this_is_the_data_dir';
+
+sub data_dir_test_filename
+{
+    return $Business::Shipping::Config::data_dir_test_filename;
+}
 
 # Try the current directory first.
-
-if ( -f 'config/config.ini' ) {
-    $support_files_dir = '.';
+if ( -f './config/config.ini' ) {
+    $Business::Shipping::Config::config_dir = './config';
+}
+if ( -f './data/' . data_dir_test_filename() ) {
+    $Business::Shipping::Config::data_dir = './data';
+}
+elsif ( -f '../Business-Shipping-DataFiles/data/' . data_dir_test_filename() ) {
+    $Business::Shipping::Config::data_dir = '../Business-Shipping-DataFiles/data/';
 }
 
 # Then try environment variables
-
-$support_files_dir ||= $ENV{ BUSINESS_SHIPPING_SUPPORT_FILES };
+$Business::Shipping::Config::data_dir   ||= $ENV{ B_SHIPPING_DATA_DIR };
+$Business::Shipping::Config::config_dir ||= $ENV{ B_SHIPPING_CONFIG_DIR };
 
 # Then fall back on the default.
+$Business::Shipping::Config::data_dir   ||= DEFAULT_DATA_DIR;
+$Business::Shipping::Config::config_dir ||= DEFAULT_CONFIG_DIR;
 
-$support_files_dir ||= DEFAULT_SUPPORT_FILES_DIR;
+die "Config dir could not be found." if ( ! -d $Business::Shipping::Config::config_dir );
+die "Data dir could not be found." if ( ! -d $Business::Shipping::Config::config_dir );
 
-$main_config_file = "$support_files_dir/config/config.ini";
+$Business::Shipping::Config::main_config_file = "$Business::Shipping::Config::config_dir/config.ini";
 
-if ( ! -f $main_config_file ) {
-    die "Could not open main configuration file: $main_config_file: $!";
+if ( ! -f $Business::Shipping::Config::main_config_file ) {
+    die "Could not open main configuration file: $Business::Shipping::Config::main_config_file: $!";
 }
 
 # See Online.pm
 
 $Business::Shipping::Config::Try_Limit = 2;
-$Business::Shipping::Config::data_dir_test_filename = 'this_is_the_data_dir';
 
-tie my %cfg, 'Config::IniFiles', (      -file => $main_config_file );
-my $cfg_obj = Config::IniFiles->new(    -file => $main_config_file );
+tie my %cfg, 'Config::IniFiles', (      -file => $Business::Shipping::Config::main_config_file );
+my $cfg_obj = Config::IniFiles->new(    -file => $Business::Shipping::Config::main_config_file );
 
 =head2 cfg()
 
@@ -77,7 +95,9 @@ Returns the path of the support_files directory.
 
 sub cfg             { return \%cfg;                 }
 sub cfg_obj         { return $cfg_obj;              }
-sub support_files   { return $support_files_dir;    }
+#sub support_files   { return $support_files_dir;    }
+sub data_dir   { return $Business::Shipping::Config::data_dir   }
+sub config_dir { return $Business::Shipping::Config::config_dir }
 
 =head2 config_to_hash( $ary, $del )
 
@@ -191,28 +211,6 @@ sub data_dir_name
 The path of the data_dir (e.g. "/var/perl/Business-Shipping/data").
 
 =cut
-
-sub data_dir
-{
-    # full path.  combine with support files dir if applicable.
-    
-    my $data_dir_name = data_dir_name();
-    
-    # A filename that will be present in any data dir (to know if it exists).
-    my $test_filename = $Business::Shipping::Config::data_dir_test_filename;
-    if ( -f "./$data_dir_name/$test_filename" ) {
-        return "./$data_dir_name";
-    }
-    elsif ( -f "../Business-Shipping-DataFiles/$data_dir_name/$test_filename" ) {
-        return "../Business-Shipping-DataFiles/$data_dir_name";
-    }
-    elsif ( -f support_files() . "/$data_dir_name/$test_filename" ) {
-        return support_files() . "/$data_dir_name";
-    }
-    else {
-        die "Data dir could not be found.  Is data_dir configured correctly?";
-    }
-}
 
 =head2 get_req_mod()
 

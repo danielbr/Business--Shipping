@@ -2,6 +2,14 @@
 ##  General TODO
 ################################################################################
 
+    * Makefile.PL: Automatically determine if the user has write permissions
+      for /usr/local.  If so, default to that directory.  Otherwise, default
+      to something in the home directory, and if that isn't accessible, default
+      to the parent directory (ugh).
+    
+    * Look for a way to move MANIFEST and Meta.yml to doc/ or etc/ so that the
+      root directory can be less cluttered.
+
     * Add UPS Offline Hundredweight shipping
       - Use cwt tables
       - Requires overweight shipments to be split into multi-package, not
@@ -99,6 +107,8 @@
         Micah Gersten <micah@davka.com>).
       - Simple solution: just add Required(), Optional(), Unique() to the 
         RateRequest classes?
+      - Can remove dependancy on Scalar::Util after this is complete (since
+        we'll no longer need the 'blessed' function).
     
     * Implement USPS_Offline
         
