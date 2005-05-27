@@ -259,6 +259,8 @@ Use of this software
 WEBSITE
     <http://www.kavod.com/Business-Shipping>
 
+    Also see <http://search.cpan.org/~dbrowning/Business-Shipping>
+
 SUPPORT
     This module is supported by the author. Please report any bugs or
     feature requests to "bug-business-shipping@rt.cpan.org", or through the

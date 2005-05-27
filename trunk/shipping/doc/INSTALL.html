@@ -39,8 +39,8 @@
 </p>
 <h2><a name="getting_started">Getting Started</a></h2>
 <p>Be sure to read the ``GETTING STARTED'' section of the README, because some 
-services (e.g. online rate requests) require that the user signup for a username
-and password.</p>
+services (e.g. online tracking requests) require that the user signup for a 
+username and password.</p>
 <p>
 </p>
 <h2><a name="choosing_your_bundle">Choosing your bundle</a></h2>
@@ -48,9 +48,9 @@ and password.</p>
 <a href="#item_bundle_3a_3abusiness_3a_3ashipping"><code>Bundle::Business::Shipping</code></a>.  However, you may opt instead to 
 install the required modules for only one shipper:</p>
 <ul>
-<li><strong><a name="item_bundle_3a_3abusiness_3a_3ashipping_3a_3aups_online"><code>Bundle::Business::Shipping::UPS_Online</code></a></strong><br />
-</li>
 <li><strong><a name="item_bundle_3a_3abusiness_3a_3ashipping_3a_3aups_offlin"><code>Bundle::Business::Shipping::UPS_Offline</code></a></strong><br />
+</li>
+<li><strong><a name="item_bundle_3a_3abusiness_3a_3ashipping_3a_3aups_online"><code>Bundle::Business::Shipping::UPS_Online</code></a></strong><br />
 </li>
 <li><strong><a name="item_bundle_3a_3abusiness_3a_3ashipping_3a_3ausps_onlin"><code>Bundle::Business::Shipping::USPS_Online</code></a></strong><br />
 </li>
@@ -94,7 +94,6 @@ tarball, execute the following:</p>
 <p>Each Bundle lists the required modules for each shipper type.  Here is the 
 combined list for all shippers:</p>
 <pre>
- Bundle::DBD::CSV (any)
  Business::Shipping::DataFiles (any)
  Cache::FileCache (any)
  Class::MethodMaker::Engine (any)
@@ -104,7 +103,6 @@ combined list for all shippers:</p>
  Getopt::Mixed (any)
  Log::Log4perl (any)
  LWP::UserAgent (any)
- Math::BaseCnv (any)
  XML::DOM (any)
  XML::Simple (2.05)</pre>
 

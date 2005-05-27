@@ -1,12 +1,12 @@
 Revision history for Business::Shipping
 =======================================
 
-1.90
+1.90  May 26 2005
 
 
   General
   
-    * Renamed go() to execute(), but go() will continue to work for a long time.
+    * Renamed go() to execute()
     
     * Support multiple packages
       - Done for UPS_Offline
@@ -18,6 +18,8 @@ Revision history for Business::Shipping
       - Divide overweight shipments into multiple virtual shipments
       - Max weight per virtual shipment customizable
       - Add test cases
+      - $shipment->max_weight() can be used to customize the maximum package 
+        weight for a given shipment. 
       
     * Moved a lot of files into doc/ so that the root directory would be a 
       little cleaner.
@@ -39,8 +41,19 @@ Revision history for Business::Shipping
       - Significant performance increase and code simplification.
       - Reduces many required modules.
   
-    * Add Hundredweight rate estimation 
-    
+    * Add UPS Offline Hundredweight shipping
+      - Use cwt tables
+      - Requires overweight shipments to be split into multi-package, not
+        multi-shipment.
+      - Description of calculation:
+        Calculate price for entire shipment weight altogether (not per-package).
+      - Add a default safety padding.  If the weight is only x% higher than the
+        required limit for hundredweight shipping, then do not calculate as 
+	hundredweight (so that just in case the weights given to B::S are lower
+	than actual billiable weight, the shipper wont be stuck paying 50% 
+	higher fees).
+      - Currently uses Storable::nstore for compatibilty.
+      
     * [Fixed] .this_is_data did not make it into the release
       - Changed to this_is_the_data_dir
 

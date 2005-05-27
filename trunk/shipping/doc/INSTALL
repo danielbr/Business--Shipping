@@ -4,16 +4,16 @@ NAME
 NOTES
   Getting Started
     Be sure to read the "GETTING STARTED" section of the README, because
-    some services (e.g. online rate requests) require that the user signup
-    for a username and password.
+    some services (e.g. online tracking requests) require that the user
+    signup for a username and password.
 
   Choosing your bundle
     If you are planning on using all of the shipping methods, install
     "Bundle::Business::Shipping". However, you may opt instead to install
     the required modules for only one shipper:
 
-    * "Bundle::Business::Shipping::UPS_Online"
     * "Bundle::Business::Shipping::UPS_Offline"
+    * "Bundle::Business::Shipping::UPS_Online"
     * "Bundle::Business::Shipping::USPS_Online"
     * "Bundle::Business::Shipping"
 
@@ -50,7 +50,6 @@ All required modules
     Each Bundle lists the required modules for each shipper type. Here is
     the combined list for all shippers:
 
-     Bundle::DBD::CSV (any)
      Business::Shipping::DataFiles (any)
      Cache::FileCache (any)
      Class::MethodMaker::Engine (any)
@@ -60,7 +59,6 @@ All required modules
      Getopt::Mixed (any)
      Log::Log4perl (any)
      LWP::UserAgent (any)
-     Math::BaseCnv (any)
      XML::DOM (any)
      XML::Simple (2.05)
 

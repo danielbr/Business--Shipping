@@ -2,6 +2,19 @@
 ##  General TODO
 ################################################################################
 
+    * [P1] [Enh] Build a replacement for ClassInfo and ClassAttribs that will be
+      more simple, efficient, and portable.  Should work for static or dynamic 
+      generation of Required, Optional, Unique, and other metadata.
+      - Should solve installation problem for environments that fail when 
+        'requiring' a module that doesn't exist.  (As reported by
+        Micah Gersten <micah@davka.com>).
+      - Simple solution: just add Required(), Optional(), Unique() to the 
+        RateRequest classes with calls to SUPER?
+      - Can remove dependancy on Scalar::Util after this is complete (since
+        we'll no longer need the 'blessed' function).
+	
+    * UPS_Offline: Extended Area Surcharges: International and Domestic
+
     * Makefile.PL: Automatically determine if the user has write permissions
       for /usr/local.  If so, default to that directory.  Otherwise, default
       to something in the home directory, and if that isn't accessible, default
@@ -10,26 +23,14 @@
     * Look for a way to move MANIFEST and Meta.yml to doc/ or etc/ so that the
       root directory can be less cluttered.
 
-    * Add UPS Offline Hundredweight shipping
-      - Use cwt tables
-      - Requires overweight shipments to be split into multi-package, not
-        multi-shipment.
-      - Description of calculation:
-        Calculate price for entire shipment weight altogether (not per-package).
-      - Add a default safety padding.  If the weight is only x% higher than the
-        required limit for hundredweight shipping, then do not calculate as 
-	hundredweight (so that just in case the weights given to B::S are lower
-	than actual billiable weight, the shipper wont be stuck paying 50% 
-	higher fees).
-	
     * DataTools: Remove the data from the "unknown" section since it is unused.
     
+    * Remove files that we don't use from the DataFiles distribution
+
     * DataTools: wweas.csv has two difficult characters:
       - Causes CSV module to "fail" on those lines.
       grep 'Colombia,,COV' data/*.csv
       grep 'Colombia,,SAL' data/*.csv
-    
-    * Remove files that we don't use from the DataFiles distribution
     
     * DataTools: Excel documents
       The following files are actually MS Excel documents.  Put a note in 
@@ -50,26 +51,17 @@
       
     * UPS_Offline: residential surcharge
       - Is the 1.75 surcharge added per-shipment or per-package?  I think it may 
-        be per-package.
+        be per-package, but is currently calculated per-shipment.
 
-    * UPS_Offline: store tables as perl objects
-      - Use Storable
-      - During installation of Business::Shipping::DataFiles, compile perl 
-        objects, then use Storable to output them to the data directory.  (So
-	that differences in Storable versions and platforms wont cause the
-	binary Storable files to be difficult to read).
-      - Or, just use nstore(), which is cross-platform compatible, but takes
-        longer to read.
-	
-    * Support multiple packages
-      - Done for UPS_Offline
+    * Catch up on POD coverage.
+    
+    * Support multiple packages for remaining shippers
+      - UPS Online (Intl and Domestic)
+      - USPS Online (Intl and Domestic)
       - For shippers that don't support multiple packages (USPS Intl), 
         automatically convert multiple packages into multiple shipments, if
         possible.
 
-    * Allow customizing max package weight on a per-service basis
-      - For example, maximum weight per package for Next day air : 50, Ground: 75.
-      
     * Set default maximum weights per shipper and service:
       - USPS:
         Express, Priority, Parcel Post, Media Mail, Library Mail, All: 70 lbs
@@ -98,17 +90,6 @@
     * [P1] [Enh] Country Support
       - Determine which origin countries do UPS_Online and UPS_Offline support?
       - Update documentation and code.
-    
-    * [P1] [Enh] Build a replacement for ClassInfo and ClassAttribs that will be
-      more simple, efficient, and portable.  Should work for static or dynamic 
-      generation of Required, Optional, Unique, and other metadata.
-      - Should solve installation problem for environments that fail when 
-        'requiring' a module that doesn't exist.  (As reported by
-        Micah Gersten <micah@davka.com>).
-      - Simple solution: just add Required(), Optional(), Unique() to the 
-        RateRequest classes?
-      - Can remove dependancy on Scalar::Util after this is complete (since
-        we'll no longer need the 'blessed' function).
     
     * Implement USPS_Offline
         
@@ -504,6 +485,11 @@
 
    * zone_file and zone_name don't really need to be stored in the RateRequest
      object, do they?
+
+   * UPS_Offline: Very low priority: Compile data files during installation 
+      - During installation of Business::Shipping::DataFiles, read the Storable
+        objects and compile them into platform-specific (i.e. faster) versions.
+	
 
 ################################################################################
 ##  UPS_Online TODO
