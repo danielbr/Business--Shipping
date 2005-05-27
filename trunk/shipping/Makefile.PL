@@ -2,6 +2,8 @@ use 5.006000;
 use ExtUtils::MakeMaker;
 use File::Copy;
 use English;
+use strict;
+use warnings;
 
 # Auto-update REQUIRED MODULES documentation if needed
 #eval "use Devel::Required text => [ '' ], pod => [qw(lib/Business/Shipping.pm), qw(doc/README.pod), qw(doc/INSTALL.pod), qw(UserTag/business-shipping.tag)]";
@@ -9,7 +11,9 @@ use English;
 # Defaults
 
 my %my_globals = (
-	SUPPORT_FILES_DIR	=> '/var/perl/Business-Shipping'
+	CONFIG_DIR	=> '/usr/local/B_Shipping/config',
+    LOG_DIR     => '/usr/local/B_Shipping/log',
+    DATA_DIR	=> '/usr/local/B_Shipping/data',
 );
 
 =head1 USAGE
@@ -23,7 +27,7 @@ my %my_globals = (
 =cut
 
 $::UseDefaults = $ENV{ BS_USE_DEFAULTS } ? 1 : 0;
-$::UseOptions;
+$::UseOptions = 0;
 
 if ( @ARGV ) {
     eval "use Getopt::Mixed";
@@ -73,6 +77,8 @@ sub MY::install {
 	return $new;
 }
 
+
+# Currently there is no data files installation, because the data files are installed by the DataFiles module.
 sub MY::postamble {
 	return qq{
 docs :
@@ -85,58 +91,45 @@ docs :
 	pod2html lib/Business/Shipping.pm > doc/README.html
 	
 support_files_install :
-	\@echo "Installing support files (database, configuration, etc.) to $my_globals{SUPPORT_FILES_DIR}"
-	\@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/log
-	\@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/config
-	\@\$(CP) --recursive --force config/* $my_globals{SUPPORT_FILES_DIR}/config/
+	\@echo "Installing configuration files to $my_globals{CONFIG_DIR}"
+	\@\$(MKPATH) $my_globals{CONFIG_DIR}/log
+	\@\$(MKPATH) $my_globals{CONFIG_DIR}
+	\@\$(CP) --recursive --force config/* $my_globals{CONFIG_DIR}/
 };  #/qq
 }
 
 sub extra_WriteMakefile_options {
     
-    my $module = "Business::Shipping";
     if ( not $::UseDefaults ) {
-
-    my $question = qq(
-             ---  $module Support files directory  ---
-  
-$module module comes with various support files for configuration, logging, etc.
-Please input the path you would like to copy these files to.  You can modify the
-path later by changing the Config.pm file.
-
-On many systems, this directory will only be accessible by the user who 
-installed perl, typically root.
-
-Note: If you wish to use offline cost estimation, the data files should be 
-installed: Business::Shipping::DataFiles.
-
-$module Support files directory:);
-
+        %my_globals = prompt_user( %my_globals );
+    }
     
-	$my_globals{ SUPPORT_FILES_DIR } = prompt( 
-        $question, 
-		$my_globals{ SUPPORT_FILES_DIR },
-	);
-    } # end if not use defaults
-    
-	$my_globals{ SUPPORT_FILES_DIR } =~ s:[\\/]\s*$::;
-	$my_globals{ SUPPORT_FILES_DIR } =~ s:^\s*::;
-
     # Now we are going to substitute the support files directory in 
     # lib/Business/Shipping/Config.pm
     
     subst( 
         variables => {
-            SUPPORT_FILES_DIR => $my_globals{ SUPPORT_FILES_DIR },
-            UPS_ONLINE_DISABLED => 1,
+            DEFAULT_CONFIG_DIR  => $my_globals{ CONFIG_DIR },
+            DEFAULT_LOG_DIR     => $my_globals{ LOG_DIR    },
+            DEFAULT_DATA_DIR    => $my_globals{ DATA_DIR   },
         },
         files     => [
             'lib/Business/Shipping/Config.pm',
             'config/log4perl.conf',
+        ]
+    );
+
+    subst( 
+        variables => {
+            UPS_ONLINE_DISABLED => 1,
+        },
+        files     => [
             'lib/Business/Shipping/UPS_Online/RateRequest.pm',
             'lib/Business/Shipping/UPS_Online/Tracking.pm',
         ]
     );
+    
+    
 
 	my %EXTRA_CONFIG_OPTIONS;
     #$EXTRA_CONFIG_OPTIONS{ } 
@@ -146,6 +139,84 @@ $module Support files directory:);
 }
 
 =head1 METHODS
+
+
+=head2 prompt_user
+
+=cut
+
+sub prompt_user
+{
+    my $module = "Business::Shipping";
+
+    my $question = qq(
+             ---  $module configuration directory  ---
+  
+$module module comes with various configuration files.  Please input the path
+you would like to copy these files to.  You can modify the path later by 
+changing the Config.pm file.
+
+$module config files directory:);
+
+    
+	$my_globals{ CONFIG_DIR } = prompt( 
+        $question, 
+		$my_globals{ CONFIG_DIR },
+	);
+    
+    
+    
+    if ( 0 ) {
+    my $question = qq(
+             ---  $module configuration directory  ---
+  
+$module module comes with various configuration files.  Please input the path
+you would like to copy these files to.  You can modify the path later by 
+changing the Config.pm file.
+
+$module config files directory:);
+
+    
+	$my_globals{ CONFIG_DIR } = prompt( 
+        $question, 
+		$my_globals{ CONFIG_DIR },
+	);
+    
+    my $question2 = qq(
+             ---  $module logging directory  ---
+  
+What directory should be used for logging errors and debugging information?
+
+$module log directory:);
+
+    
+	$my_globals{ LOG_DIR } = prompt( 
+        $question2, 
+		$my_globals{ LOG_DIR },
+	);
+    
+    my $question3 = qq(
+             ---  $module data directory  ---
+  
+What directory should be used for data, such as offline rate estimation tables?
+
+$module data directory:);
+
+    
+	$my_globals{ DATA_DIR } = prompt( 
+        $question3, 
+		$my_globals{ DATA_DIR },
+	);
+
+    } # end if not use defaults
+    
+    $my_globals{ CONFIG_DIR } =~ s:[\\/]\s*$::;
+	$my_globals{ CONFIG_DIR } =~ s:^\s*::;
+
+	$my_globals{ DATA_DIR } =~ s:[\\/]\s*$::;
+	$my_globals{ DATA_DIR } =~ s:^\s*::;
+    }
+}
 
 =head2 subst( files => [ ], variables => { } )
 
