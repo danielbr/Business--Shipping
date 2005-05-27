@@ -3,7 +3,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %my_globals = (
-	SUPPORT_FILES_DIR	=> '/var/perl/Business-Shipping'
+	SUPPORT_FILES_DIR	=> '/usr/local/B_Shipping/data'
 );
 
 WriteMakefile(
@@ -70,16 +70,9 @@ sub extra_WriteMakefile_options {
     
     
     my $question = qq(
-             ---  $module Support files directory  ---
+             ---  $module data directory  ---
   
-$module module comes with various support files for configuration, database, 
-etc.  Please input the path you would like to copy these files to.  You can 
-modify the path later by changing the Config.pm file.
-
-On many systems, this directory will only be accessible by the user who 
-installed perl, typically root.
-
-$module Support files directory:);
+$module data directory:);
 
         $my_globals{ SUPPORT_FILES_DIR } = prompt( 
             $question, 
