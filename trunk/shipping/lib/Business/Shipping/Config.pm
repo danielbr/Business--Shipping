@@ -33,6 +33,7 @@ use base ( 'Exporter' );
 use Config::IniFiles;
 use Business::Shipping::Logging;
 use Carp;
+use Cwd;
 
 $Business::Shipping::Config::config_dir = '';
 $Business::Shipping::Config::data_dir = '';
@@ -63,8 +64,9 @@ $Business::Shipping::Config::config_dir ||= $ENV{ B_SHIPPING_CONFIG_DIR };
 $Business::Shipping::Config::data_dir   ||= DEFAULT_DATA_DIR;
 $Business::Shipping::Config::config_dir ||= DEFAULT_CONFIG_DIR;
 
-die "Config dir could not be found." if ( ! -d $Business::Shipping::Config::config_dir );
-die "Data dir could not be found." if ( ! -d $Business::Shipping::Config::config_dir );
+my $cwd = Cwd::getcwd;
+die "Config dir could not be found.  Current working dir: $cwd." if ( ! -d $Business::Shipping::Config::config_dir );
+die "Data dir could not be found.  Current working dir: $cwd." if ( ! -d $Business::Shipping::Config::config_dir );
 
 $Business::Shipping::Config::main_config_file = "$Business::Shipping::Config::config_dir/config.ini";
 
