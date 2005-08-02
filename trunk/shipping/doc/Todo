@@ -2,6 +2,26 @@
 ##  General TODO
 ################################################################################
 
+    * Remove t/manual/test-data... what is it?
+
+    * Add multiple source zips to the testing for offline ups: e.g. 33124
+
+    * Use Pod::Readme
+    
+    * UPS_Offline: Zone finder doesn't get correct zone record for 97015 zip.
+    
+    * UPS_Offline: In the tests, check to see if support for UPS_Online has been
+      disabled.  If so, don't run tests that use it.  (Then again, for most 
+      users, those tests wont be run anyway because they haven't setup the 
+      credentials).
+
+    * UPS_Offline: add a "adder_margin" to hundredweight shipments.  
+      Increases the price by x% percent (10% default) as a safety against the
+      very low default rates.
+
+    * Checkout CPAN tests.  It appears that t/16 is failing because it lacks a
+      plan.
+
     * [P1] [Enh] Build a replacement for ClassInfo and ClassAttribs that will be
       more simple, efficient, and portable.  Should work for static or dynamic 
       generation of Required, Optional, Unique, and other metadata.
@@ -13,6 +33,9 @@
       - Can remove dependancy on Scalar::Util after this is complete (since
         we'll no longer need the 'blessed' function).
 	
+    * Remove old versions from CPAN (up to 1.06) to ease the requirements of 
+      mirrors.  Backpan will still carry the old versions.
+      
     * UPS_Offline: Extended Area Surcharges: International and Domestic
 
     * Makefile.PL: Automatically determine if the user has write permissions
@@ -490,6 +513,12 @@
       - During installation of Business::Shipping::DataFiles, read the Storable
         objects and compile them into platform-specific (i.e. faster) versions.
 	
+    * UPS_Offline: Add more sophisticated dimensional weight handling
+      - All each package to have a "demensions" parameter, so that the various
+        dimensional weights can be automatically calculated (it is different 
+	for air than it is for ground).  How can this be done if the only 
+	parameter sent to BSHIPPING is weight, and half of the items (in one 
+	package) might be dimensional, and the other half not?
 
 ################################################################################
 ##  UPS_Online TODO

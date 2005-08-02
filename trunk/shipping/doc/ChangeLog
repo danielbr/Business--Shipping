@@ -1,13 +1,76 @@
 Revision history for Business::Shipping
 =======================================
 
+1.92  
+
+
+  General
+  
+    * We need a little more testing before we bump the version to 2.0, 1.91 was
+      not released.
+      
+    * POD::Coverage tests did not have a plan.
+    
+    * Disable POD::Coverage unless the user *really* wants to run it.
+    
+    * Add current working directory to configuration error message.
+    
+    * Misc code clarity cleanups.
+    
+    * META cleanup.
+  
+  UPS_Offline
+  
+    * Fix major bug in zone finder.  
+      - String equality functions shouldn't be used for numbers.
+      - Zip codes like 850* should start working again.
+      - Add a test for this zip code.
+      
+    * Update fuel surcharge
+
+    * New testing system: makes it easier to test lots of queries.
+    
+    * [Fixed] Some records are off by one
+      - This was fixed in the data, but also required a minor change to the
+        binary search algorithm to match the new data style.
+    
+    * [Fixed] Testing: The "close enough to correct value" detector is broken.
+  
+    * Test updates.
+    
+    * Fix 3 Day Select
+    
+    * Update copyright.
+    
+  UPS_Online
+    
+    * Added signature_type, insured_value, and insured_currency_type.  Patch by
+      Ed Zborowski <ed@rubensteintech.com> of the Rubenstein Technology Group).
+      Thanks!
+      
+    * Test updates.
+       
+  UserTag
+  
+    * Expose split-shipment max_weight functionality through new variable:
+      BSHIPPING_MAX_WEIGHT.
+      
+    * [Tests] Slightly enhanced simulation of Interchange environment.
+    
+    * [Tests] Update to a more recent version of the usertag.
+    
+    * Documentation update.
+    
+    * Require 1.90 of Business::Shipping.
+    
+    * Additional error logging.
+
+    
 1.90  May 26 2005
 
 
   General
   
-    * Renamed go() to execute()
-    
     * Support multiple packages
       - Done for UPS_Offline
       - Add test cases
@@ -32,6 +95,8 @@ Revision history for Business::Shipping
       one location.
       - Solution: split out the directories so that they can be in separate 
         places.
+
+    * Renamed go() to execute()
 
   UPS_Offline
 
@@ -62,7 +127,7 @@ Revision history for Business::Shipping
     * Disabled.  See doc/UPS_Online_disabled.txt
         
 
-1.57  (unreleased)
+1.57  (Unreleased)
 
 
   General
