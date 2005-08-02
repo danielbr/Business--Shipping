@@ -319,22 +319,6 @@ sub _gen_request_xml
     return ( $request_xml );
 }
 
-=head2 get_total_charges()
-
-Returns the total charges.
-
-=cut
-
-#
-# TODO: redundant?
-#
-sub get_total_charges
-{
-    my ( $self ) = shift;
-    return $self->{'total_charges'} if $self->{'total_charges'};
-    return 0;
-}
-
 =head2 _handle_response
 
 =head2 error_details()
