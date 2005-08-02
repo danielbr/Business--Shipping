@@ -52,12 +52,17 @@ sub test_online
 
 sub close_enough
 {
-    my ( $n1, $n2 ) = @_;
+    my ( $n1, $n2, $percent ) = @_;
     
+	$percent ||= CLOSE_ENOUGH_PERCENT;
+	
     my ( $greater, $lesser ) = $n1 > $n2 ? ( $n1, $n2 ) : ( $n2, $n1 );
-    my $percentage_of_difference = $lesser / $greater;
-    
-    return 1 if ( $percentage_of_difference <= ( CLOSE_ENOUGH_PERCENT * .10 ) );
+    my $percentage_of_difference = 1 - ( $lesser / $greater );
+    my $required_percentage = $percent * .01;
+	
+	#print "percentage_of_difference = $percentage_of_difference, required = $required_percentage\n";
+	
+    return 1 if ( $percentage_of_difference <= $required_percentage );
     return 0;
 }
 
@@ -526,11 +531,6 @@ SKIP: {
       );
 }
 
-
-
-
-
-
 ########################################################################
 ## Multi-package
 ########################################################################
@@ -601,3 +601,34 @@ $rr->execute or die $rr->user_error;
 ok( $rr->total_charges(), $this_test_desc );
 print $this_test_desc . $rr->total_charges() . "\n";
 
+
+
+while ( defined( my $data = <DATA> ) ) {
+	my $autotest_count = 0;
+    foreach my $line ( split( "\n", $data ) ) {
+        
+        $autotest_count++;
+        #print "TEST $autotest_count...line=$line\n";
+        my @values = split( "\t", $line );
+        
+        # exp_price = Expected price
+        my ( $exp_price, $service, $weight, $from_zip, $to_zip ) = @values;
+        
+        %test = (
+                service =>              $service,
+                from_zip =>             $from_zip,
+                to_zip =>               $to_zip,
+                weight =>               $weight,
+        );
+        $this_test_desc = "UPS Offline: Autotest " . $autotest_count . " is close enough to $exp_price.";
+        $rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
+        $rr->init( %test );
+        $rr->execute or die $rr->user_error;
+        ok( close_enough( $exp_price, $rr->total_charges() ), $this_test_desc );
+        print $this_test_desc . "  " . $rr->total_charges() . "\n";
+    }
+	
+}
+__DATA__
+8.15	GNDRES	1	98682	85028
+18.07	1DA	1	98682	97015
