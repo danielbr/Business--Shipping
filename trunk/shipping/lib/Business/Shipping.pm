@@ -14,11 +14,11 @@ Business::Shipping - Rates and tracking for UPS and USPS
 
 =head1 VERSION
 
-Version 1.90
+Version 1.92
 
 =cut
 
-$VERSION = '1.90';
+$VERSION = '1.92';
 
 =head1 SYNOPSIS
 
@@ -156,12 +156,10 @@ provider that you will use.
 No signup required.  C<Business::Shipping::DataFiles> has all of rate tables, 
 which are usually updated only once per year.
 
-We recommend that you run the following program to update your fuel surcharge
+We recommend that you run the following script to update your fuel surcharge
 every first monday of the month.
 
- Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
-
-See bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
+ bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
 
 =head2 UPS_Online: For United Parcel Service (UPS) Online XML: Free signup
 
