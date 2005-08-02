@@ -1,13 +1,20 @@
-# http://module-build.sourceforge.net/META-spec.html
+--- #YAML:1.0
 name:         Business-Shipping
-version:      1.90
+version:      1.92
 version_from: lib/Business/Shipping.pm
 installdirs:  site
+author:       Daniel Browning <db@kavod.com>
+abstract:     Rates and tracking for UPS and USPS
+license:      perl
 requires:
     Class::MethodMaker::Engine:    0
     Log::Log4perl:                 0
     Scalar::Util:                  0
     Test::More:                    0.4
-
-distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.17
+recommends:
+    Cache::FileCache               0
+    Clone                          0
+    Crypt::SSLeay                  0
+    LWP::UserAgent                 0
+    XML::DOM                       0
+    XML::Simple                    0
