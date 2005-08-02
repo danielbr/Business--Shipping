@@ -16,5 +16,3 @@ $rr->event_handlers(
 );
 my @Unique = $rr->get_grouped_attrs( 'Unique' );
 print STDOUT "Unique = " . join( ',', @Unique )  . "\n";
-
-
