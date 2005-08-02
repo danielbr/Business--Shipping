@@ -20,7 +20,8 @@ UserTag  business-shipping  Documentation <<EOD
 =head1 VERSION
 
 [business-shipping] usertag:    $Rev$
-Requires Business::Shipping:     Revision: 1.54+
+
+Requires Business::Shipping:     Revision: 1.90+
 
 =head1 AUTHOR 
 
@@ -35,23 +36,27 @@ Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.c
     to_zip=98270
     weight=5.00
 ]
-    
+
 =head1 REQUIRED MODULES
 
-Bundle::DBD::CSV (any)
-Cache::FileCache (any)
-Class::MethodMaker::Engine (any)
-Clone (any)
-Config::IniFiles (any)
-Crypt::SSLeay (any)
-Getopt::Mixed (any)
-Log::Log4perl (any)
-LWP::UserAgent (any)
-Math::BaseCnv (any)
-Scalar::Util (1.10)
-XML::DOM (any)
-XML::Simple (2.05)
+The following modules are required for offline UPS rate estimation.  See doc/INSTALL.
 
+ Business::Shipping::DataFiles (any)
+ Class::MethodMaker::Engine (any)
+ Config::IniFiles (any)
+ Log::Log4perl (any)
+
+=head1 OPTIONAL MODULES
+
+The following modules are used by online rate estimation and tracking.  See doc/INSTALL.
+
+ Cache::FileCache (any)
+ Clone (any)
+ Crypt::SSLeay (any)
+ LWP::UserAgent (any)
+ XML::DOM (any)
+ XML::Simple (2.05)
+ 
 =head1 INSTALLATION
 
 Here is a general outline for installing [business-shipping] in Interchange.
@@ -59,42 +64,47 @@ Here is a general outline for installing [business-shipping] in Interchange.
  * Follow the instructions for installing Business::Shipping.
     - (http://www.kavod.com/Business-Shipping/latest/doc/INSTALL.html)
  
- * Copy the business-shipping.tag file into one of these directories:
+ * Copy the business-shipping.tag global usertag into one of these directories:
     - interchange/usertags (IC 4.8.x)
     - interchange/code/UserTags (IC 4.9+)
+   The directory will be found in /usr/lib/interchange/ if you are using the LSB
+   or RPM installation.
 
  * Add any shipping methods that are needed to catalog/products/shipping.asc
+   (examples below)
  
  * Add the following Interchange variables to provide default information.
    These can be added by copying/pasting into the variable.txt file, then
    restarting Interchange.
    
-   Note that "BS" is used to denote fields that can be used for any 
-   Business::Shipping shipper.  Note that the spaces below are one tab.
+   Note that "BSHIPPING" is used to denote fields that can be used for any 
+   Business::Shipping shipper.  Note that there should be one tab separating
+   each of the three columns below.
 
-BSHIPPING_LOG_INVALID_REQUESTS
-BSHIPPING_DEBUG	0	Shipping
-BSHIPPING_GEN_INCIDENTS    0   Shipping
-BSHIPPING_FROM_COUNTRY	US	Shipping
-BSHIPPING_FROM_STATE	WA	Shipping
-BSHIPPING_FROM_ZIP	98682	Shipping
-BSHIPPING_TO_COUNTRY_FIELD	country	Shipping
-BSHIPPING_TO_CITY_FIELD	city	Shipping
-BSHIPPING_TO_ZIP_FIELD	zip	Shipping
-UPS_ACCESS_KEY	AB12CDEF345G6	Shipping 
-UPS_USER_ID	userid	Shipping
-UPS_PASSWORD	mypassword	Shipping
-UPS_PICKUP_TYPE	Daily Pickup	Shipping
-USPS_USER_ID	123456ABCDE7890	Shipping
-USPS_PASSWORD	abcd1234d5	Shipping
+ BSHIPPING_LOG_INVALID_REQUESTS	1	Shipping
+ BSHIPPING_DEBUG	0	Shipping
+ BSHIPPING_GEN_INCIDENTS	0	Shipping
+ BSHIPPING_FROM_COUNTRY	US	Shipping
+ BSHIPPING_FROM_STATE	WA	Shipping
+ BSHIPPING_FROM_ZIP	98682	Shipping
+ BSHIPPING_MAX_WEIGHT	0	Shipping
+ BSHIPPING_TO_COUNTRY_FIELD	country	Shipping
+ BSHIPPING_TO_CITY_FIELD	city	Shipping
+ BSHIPPING_TO_ZIP_FIELD	zip	Shipping
+ UPS_ACCESS_KEY	AB12CDEF345G6	Shipping 
+ UPS_USER_ID	userid	Shipping
+ UPS_PASSWORD	mypassword	Shipping
+ UPS_PICKUP_TYPE	Daily Pickup	Shipping
+ USPS_USER_ID	123456ABCDE7890	Shipping
+ USPS_PASSWORD	abcd1234d5	Shipping
     
  * Sample shipping.asc entry:
 
 UPS_GROUND: UPS Ground
     criteria    weight
     min         0
-    max         150
-    cost        f [business-shipping mode="UPS_Offline" service="GNDRES" weight="@@TOTAL@@"]
+    max         2000
+    cost        f [business-shipping mode="UPS_Offline" service="Ground Residential" weight="@@TOTAL@@"]
 
 =head1 UPGRADE from [ups-query]
 
@@ -109,11 +119,13 @@ This program is free software; you may redistribute it and/or modify it under
 the same terms as Perl itself. See LICENSE for more info.
 
 =cut
-EOD
-UserTag  business-shipping  Routine <<EOR
-use Business::Shipping 1.54;
 
-sub {
+EOD
+
+UserTag  business-shipping  Routine <<EOR
+use Business::Shipping 1.90;
+
+sub business_shipping_tag {
     my ( $shipper, $opt ) = @_;
     
     my $debug = delete $opt->{ debug } || $Variable->{ BSHIPPING_DEBUG } || 0;
@@ -166,7 +178,7 @@ sub {
                 'country', 
                 'name', 
                 $Variable->{ BSHIPPING_TO_COUNTRY_FIELD } || 'country'
-            )
+            ),
         },
         'UPS_Online' => {
             'access_key'        => $Variable->{ UPS_ACCESS_KEY },
@@ -212,6 +224,11 @@ sub {
         return;
     }
     
+    # Setting maximum weight per package.
+    
+    $rate_request->shipment->max_weight( $Variable->{ BSHIPPING_MAX_WEIGHT } ) 
+        if $Variable->{ BSHIPPING_MAX_WEIGHT }; 
+    
     ::logDebug( "calling \$rate_request->go()" ) if $debug;
 
     my $success;
@@ -226,7 +243,7 @@ sub {
              ( $rate_request->invalid and $Variable->{ BSHIPPING_LOG_INVALID_REQUESTS } )
            )
         {
-            Log( "[business-shipping] Error: " . $rate_request->user_error() . "$@" );
+            Log( "[business-shipping] Error: " . ( $rate_request->user_error() || 'no user_error returned, perl error: ' . $@ ) );
         }
         
         # Prevent 500 error on some systems?
@@ -298,6 +315,9 @@ sub {
     
     return $charges;
 }
+
+\&business_shipping_tag;
+
 EOR
 Message ...done.
 endif

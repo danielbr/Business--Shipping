@@ -33,7 +33,6 @@ $VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r };
 
 use strict;
 use warnings;
-use Business::Shipping;
 use Test::More;
 
 plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'UPS_Online' );
@@ -48,6 +47,7 @@ plan 'no_plan';
 use Data::Dumper;
 our $Values = {};
 our $Variable = {};
+$Variable->{ BSHIPPING_MAX_WEIGHT } = 75;
 
 package Nothing;
 sub Nothing::data { return ''; };
@@ -56,13 +56,21 @@ package main;
 
 
 
-sub Log { print @_ };
+sub Log { print $_[ 0 ] . "\n" };
 sub uneval { return Dumper( @_ ); };
 
-sub business_shipping_sim {
+
+
+###############################################################################
+##  Begin contents of business-shipping.tag 
+###############################################################################
+
+use Business::Shipping 1.90;
+
+sub business_shipping_tag {
     my ( $shipper, $opt ) = @_;
     
-    my $debug = delete $opt->{ debug } || $Variable->{ BS_DEBUG } || 0;
+    my $debug = delete $opt->{ debug } || $Variable->{ BSHIPPING_DEBUG } || 0;
     
     $shipper ||= delete $opt->{ shipper } || '';
     
@@ -87,7 +95,7 @@ sub business_shipping_sim {
     my %opt = %$opt;
     $opt = undef;
 
-    my $to_country_default = $Values->{ $Variable->{ BS_TO_COUNTRY_FIELD } || 'country' };
+    my $to_country_default = $Values->{ $Variable->{ BSHIPPING_TO_COUNTRY_FIELD } || 'country' };
     
     # STDOUT goes to the IC debug files (usually '/tmp/debug')
     # STDERR goes to the global error log (usually 'interchange/error.log').
@@ -97,12 +105,12 @@ sub business_shipping_sim {
     my $defaults = {
         'All' => {
             'to_country'        => $Values->{ 
-                $Variable->{ BS_TO_COUNTRY_FIELD } || 'country' 
+                $Variable->{ BSHIPPING_TO_COUNTRY_FIELD } || 'country' 
             },
-            'to_zip'            => $Values->{ $Variable->{ BS_TO_ZIP_FIELD } || 'zip' },
-            'to_city'           => $Values->{ $Variable->{ BS_TO_CITY_FIELD } || 'city' },
-            'from_country'      => $Variable->{ BS_FROM_COUNTRY },
-            'from_zip'          => $Variable->{ BS_FROM_ZIP },
+            'to_zip'            => $Values->{ $Variable->{ BSHIPPING_TO_ZIP_FIELD } || 'zip' },
+            'to_city'           => $Values->{ $Variable->{ BSHIPPING_TO_CITY_FIELD } || 'city' },
+            'from_country'      => $Variable->{ BSHIPPING_FROM_COUNTRY },
+            'from_zip'          => $Variable->{ BSHIPPING_FROM_ZIP },
             'cache'             => ( defined $opt{ cache } ? $opt{ cache } : 1 ), # Allow 0
         },
         'USPS_Online' => {
@@ -111,8 +119,8 @@ sub business_shipping_sim {
             'to_country' => $Tag->data( 
                 'country', 
                 'name', 
-                $Variable->{ BS_TO_COUNTRY_FIELD } || 'country'
-            )
+                $Variable->{ BSHIPPING_TO_COUNTRY_FIELD } || 'country'
+            ),
         },
         'UPS_Online' => {
             'access_key'        => $Variable->{ UPS_ACCESS_KEY },
@@ -120,7 +128,7 @@ sub business_shipping_sim {
             'password'          => $Variable->{ UPS_PASSWORD },
         },
         'UPS_Offline' => { 
-            'from_state'        => $Variable->{ BS_FROM_STATE },
+            'from_state'        => $Variable->{ BSHIPPING_FROM_STATE },
             'cache'             => 0,
         },
     };
@@ -146,7 +154,7 @@ sub business_shipping_sim {
     my $rate_request;
     eval { $rate_request = Business::Shipping->rate_request( 'shipper' => $shipper ); };
     if ( ! defined $rate_request or $@ ) {
-        Log( "[business-shipping] Error: failure to get Business::Shipping object: $@ " );
+        Log( "[business-shipping] Error during Business::Shipping->rate_request(): $@ " );
         return;
     }
     
@@ -154,9 +162,14 @@ sub business_shipping_sim {
     
     eval { $rate_request->init( %opt ); };
     if ( $@ ) {
-        Log( "[business-shipping] Error: failure to initialize object with parameters: $@ " );
+        Log( "[business-shipping] Error during rate_request->init(): $@ " );
         return;
     }
+    
+    # Setting maximum weight per package.
+    
+    $rate_request->shipment->max_weight( $Variable->{ BSHIPPING_MAX_WEIGHT } ) 
+        if $Variable->{ BSHIPPING_MAX_WEIGHT }; 
     
     ::logDebug( "calling \$rate_request->go()" ) if $debug;
 
@@ -165,7 +178,15 @@ sub business_shipping_sim {
 
     eval { $submit_results = $rate_request->go( %opt ); };
     if ( not $submit_results or $@ ) { 
-        Log( "[business-shipping] Error: " . $rate_request->user_error() . "$@" );
+        
+        if ( 
+             ( not $rate_request->invalid ) 
+             or
+             ( $rate_request->invalid and $Variable->{ BSHIPPING_LOG_INVALID_REQUESTS } )
+           )
+        {
+            Log( "[business-shipping] Error: " . ( $rate_request->user_error() || 'no user_error returned, perl error: ' . $@ ) );
+        }
         
         # Prevent 500 error on some systems?
         $@ = '';
@@ -181,24 +202,22 @@ sub business_shipping_sim {
     $charges ||= $rate_request->total_charges();
 
     # This is a debugging / support tool.  It uses these variables: 
-    #   BS_GEN_INCIDENTS
+    #   BSHIPPING_GEN_INCIDENTS
     #   SYSTEMS_SUPPORT_EMAIL
     
     my $report_incident;
     if ( 
             ( ! $charges or $charges !~ /\d+/ )
         and
-            $Variable->{ 'BS_GEN_INCIDENTS' }
+            $Variable->{ 'BSHIPPING_GEN_INCIDENTS' }
        ) 
     {
         # Don't report invalid rate requests:No zip code, GNDRES to Canada, etc.
        
-        if ( $rate_request->invalid ) {
-            $report_incident = 0;
-        }
-        else {
-             $report_incident = 1;
-        }
+        if ( $rate_request->invalid ) 
+            { $report_incident = 0; }
+        else 
+            { $report_incident = 1; }
     }
     
     if ( $report_incident ) {
@@ -224,7 +243,6 @@ sub business_shipping_sim {
         my $error = $rate_request->user_error();
         
         # Ignore errors if [incident] is missing or misbehaves.
-
         eval {
             $Tag->incident(
                 {
@@ -233,12 +251,23 @@ sub business_shipping_sim {
                 }
             );
         };
-        $@ = '';
+        
     }
     ::logDebug( "[business-shipping] returning " . ( $charges || 'undef' ) ) if $debug;
     
     return $charges;
 }
+
+
+
+###############################################################################
+##  End contents of business-shipping.tag
+##   - be sure to exclude the final line: \&business_shipping_tag;
+###############################################################################
+
+sub business_shipping_sim { return business_shipping_tag( @_ ); }
+
+#Business::Shipping->log_level( 'debug' );
 
 my $charges;
 my $opt;
@@ -252,7 +281,9 @@ $opt = {
     'weight'    => 10,
     'from_zip'    => '20770',
     'to_zip'    => '20852',
+    #cache => 1,
 };
+
 $charges = business_shipping_sim( 'Online::USPS', $opt );
 ok( $charges, "USPS_Online OK: $charges" );
 
@@ -269,7 +300,15 @@ $opt = {
     'access_key' => $ENV{ UPS_ACCESS_KEY },
     'user_id' => $ENV{ UPS_USER_ID },
     'password' => $ENV{ UPS_PASSWORD },
+    #cache => 0,
 };
 
+$charges = business_shipping_sim( 'UPS_Offline', $opt );
+ok( $charges, "UPS_Offline: $charges" );
+
 $charges = business_shipping_sim( 'UPS', $opt );
-ok( $charges, "UPS OK: $charges" );
+ok( $charges, "UPS OK: " . ( $charges || 'charges not found' ) );
+
+$opt->{ weight } = 175;
+$charges = business_shipping_sim( 'UPS_Offline', $opt );
+ok( $charges, "UPS_Offline: $charges" );
