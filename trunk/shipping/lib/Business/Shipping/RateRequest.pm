@@ -522,21 +522,13 @@ sub display_price_components
     return;
 }
 
+# COMPAT: get_total_charges()
 # COMPAT: get_total_price()
 # COMPAT: total_charges()
 
-=head2 $rate_request->get_total_price()
-
-For backwards compatibility.
-
-=head2 $rate_request->total_charges()
-
-For backwards compatibility.
-
-=cut
-
-*get_total_price = *rate;
-*total_charges = *rate;
+*get_total_charges = *rate;
+*get_total_price   = *rate;
+*total_charges     = *rate;
 
 1;
 
