@@ -1,15 +1,6 @@
-# Copyright (c) 2003 Interchange Development Group
-# Copyright (c) 2003, 2004 Kavod Technologies, Dan Browning. 
-#
-# All rights reserved. 
-# 
 # Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
-#
-# Portions based on the corresponding work in the Interchange project, which 
-# was written by Mike Heins <mike@perusion.com>.  See http://www.icdevgroup.org
-# for more info.
 
 package Business::Shipping::UPS_Offline::RateRequest;
 
@@ -620,13 +611,15 @@ sub calc_zone
 
         # Note that here we use less than or equal to instead of just less than.
         if ( 
-             ( $self->shipment->domestic_or_ca and $key ge $min and $key le $max )
+             ( $self->shipment->domestic  and $key >= $min and $key <= $max )
              or
-             ( $self->shipment->intl and lc $key eq lc $min )
+             ( $self->shipment->to_canada and $key ge $min and $key le $max )
+             or
+             ( $self->shipment->intl       and lc $key eq lc $min )
            )
         {
-
             debug "found zone record:" . join( ', ', @$record );
+            #debug "(key = $key, min = $min, max = $max)";
             #my $col_num = $col_idx{ $self->service_nick2 } or do {
             #    error "Could not find the column ($self->service_nick2) in the column list: " 
             #        . join( ', ', @$cols );
@@ -740,7 +733,7 @@ sub calc_cost
             
             $cost = $self->get_cost( $table, $self->zone, $weight );
             
-            $running_sum_cost += $cost;
+            $running_sum_cost += $cost if $cost;
         }
         $cost = $running_sum_cost;
     }
@@ -844,11 +837,11 @@ sub binary_numeric
             # Too high, try lower
             $high = $cur;
         }
-        elsif ( $target >= $max ) {
+        elsif ( $target > $max ) {
             # Too low, try higher
             $low  = $cur + 1;
         }
-        elsif ( $target >= $min and $target < $max ) {
+        elsif ( $target >= $min and $target <= $max ) {
             # Just right.  Return matching row.
             return $row;
         }
