@@ -1,24 +1,21 @@
 bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
+CHANGELOG
 config/config.ini
 config/fuel_surcharge.txt
 config/log4perl.conf
 configure
+CREDITS
 doc/Artistic
-doc/ChangeLog
-doc/Credits
 doc/GPL
-doc/INSTALL
 doc/INSTALL.html
 doc/INSTALL.pod
 doc/INSTALL.txt
-doc/License
 doc/README.html
 doc/README.txt
 doc/Todo
 doc/UPS_Online_disabled.txt
+INSTALL
 lib/Business/Shipping.pm
-lib/Business/Shipping/ClassAttribs.pm
-lib/Business/Shipping/ClassInfo.pm
 lib/Business/Shipping/Config.pm
 lib/Business/Shipping/Data.pm
 lib/Business/Shipping/Debug.pm
@@ -47,6 +44,7 @@ lib/Business/Shipping/USPS_Online/RateRequest.pm
 lib/Business/Shipping/USPS_Online/Shipment.pm
 lib/Business/Shipping/USPS_Online/Tracking.pm
 lib/Business/Shipping/Util.pm
+LICENSE
 Makefile.PL
 MANIFEST			This list of files
 META.yml
@@ -137,6 +135,7 @@ t/manual/testlib.pm
 t/manual/Unique-test.pl
 t/manual/UPS-Offline-error.pl
 t/manual/UPS-Online-cod.pl
+t/manual/UPS-Online-error.pl
 t/manual/UPS-Online-shop_rates.pl
 t/manual/UPS_Offline-hundredweight.pl
 t/manual/UPS_Offline-multipackage.pl
@@ -144,8 +143,10 @@ t/manual/UPS_Offline-new-data-format.pl
 t/manual/UPS_Offline_new.pl
 t/manual/UPS_Offline_overweight.pl
 t/manual/UPS_Offline_performance_test.pl
+t/manual/UPS_Online_cache.pl
 t/manual/UPS_Online_hundred_weight.pl
 t/manual/USPS_Online-domestic-1.pl
+t/manual/USPS_Online_cache.pl
 t/manual/usps_tester_simple.pl
 t/manual/xps-query-simulator-new.pl
 t/manual/xps-query-simulator-smallest.pl

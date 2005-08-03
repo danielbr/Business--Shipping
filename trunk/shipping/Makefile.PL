@@ -84,7 +84,7 @@ sub MY::postamble {
 	return qq{
 docs :
 	find lib -name '*.pm' -or -name '*.pod' -exec podchecker -nowarnings {} \\;
-	pod2text doc/INSTALL.pod > doc/INSTALL
+	pod2text doc/INSTALL.pod > INSTALL
 	pod2html doc/INSTALL.pod > doc/INSTALL.html
 	pod2text doc/INSTALL.pod > doc/INSTALL.txt
 	pod2text lib/Business/Shipping.pm > README

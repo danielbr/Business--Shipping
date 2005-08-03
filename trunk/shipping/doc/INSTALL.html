@@ -61,20 +61,22 @@ install the required modules for only one shipper:</p>
 </p>
 <hr />
 <h1><a name="cpan_installation">CPAN INSTALLATION</a></h1>
+<p>Note that the XML::DOM uses XML::Parser, and XML::Parser uses Expat.  Therefore,
+you may need to install Expat before XML::Parser will install.</p>
 <p>All shippers:</p>
 <pre>
- perl -MCPAN -e 'force install XML::DOM'
+ perl -MCPAN -e 'force install XML::Parser'
  perl -MCPAN -e 'install Bundle::Business::Shipping'</pre>
 <p>UPS_Online only:</p>
 <pre>
- perl -MCPAN -e 'force install XML::DOM'
+ perl -MCPAN -e 'force install XML::Parser'
  perl -MCPAN -e 'install Bundle::Business::Shipping::UPS_Offline'</pre>
 <p>UPS_Offline only:</p>
 <pre>
  perl -MCPAN -e 'install Bundle::Business::Shipping::UPS_Offline'</pre>
 <p>USPS_Online only:</p>
 <pre>
- perl -MCPAN -e 'force install XML::DOM'
+ perl -MCPAN -e 'force install XML::Parser'
  perl -MCPAN -e 'install Bundle::Business::Shipping::USPS_Online'</pre>
 <p>
 </p>

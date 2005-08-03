@@ -46,6 +46,7 @@
 		<li><a href="#_obj_init__">$obj-&gt;<code>init()</code></a></li>
 		<li><a href="#_obj_user_error__">$obj-&gt;<code>user_error()</code></a></li>
 		<li><a href="#_obj_validate__">$obj-&gt;<code>validate()</code></a></li>
+		<li><a href="#_self_get_grouped_attrs___attribute_name__">$self-&gt;get_grouped_attrs( $attribute_name )</a></li>
 		<li><a href="#_obj_rate_request__">$obj-&gt;<code>rate_request()</code></a></li>
 		<li><a href="#business__shipping_log_level__">Business::Shipping-&gt;<code>log_level()</code></a></li>
 	</ul>
@@ -69,7 +70,7 @@
 </p>
 <hr />
 <h1><a name="version">VERSION</a></h1>
-<p>Version 1.90</p>
+<p>Version 1.92</p>
 <p>
 </p>
 <hr />
@@ -206,11 +207,10 @@ provider that you will use.</p>
 <h2><a name="ups_offline__for_united_parcel_service__ups__offline_rate_requests">UPS_Offline: For United Parcel Service (UPS) offline rate requests</a></h2>
 <p>No signup required.  <code>Business::Shipping::DataFiles</code> has all of rate tables, 
 which are usually updated only once per year.</p>
-<p>We recommend that you run the following program to update your fuel surcharge
+<p>We recommend that you run the following script to update your fuel surcharge
 every first monday of the month.</p>
 <pre>
- Business-Shipping-UPS_Offline-update-fuel-surcharge.pl</pre>
-<p>See bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl</p>
+ bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl</pre>
 <p>
 </p>
 <h2><a name="ups_online__for_united_parcel_service__ups__online_xml__free_signup">UPS_Online: For United Parcel Service (UPS) Online XML: Free signup</a></h2>
@@ -294,6 +294,9 @@ when preloading is advantagous.  For example:</pre>
 <p>Confirms that the object is valid.  Checks that required attributes are set.</p>
 <p>
 </p>
+<h2><a name="_self_get_grouped_attrs___attribute_name__">$self-&gt;get_grouped_attrs( $attribute_name )</a></h2>
+<p>
+</p>
 <h2><a name="_obj_rate_request__">$obj-&gt;<code>rate_request()</code></a></h2>
 <p>This method is used to request shipping rate information from online providers
 or offline tables.  A hash is accepted as input.  The acceptable values are 
@@ -359,7 +362,9 @@ for all Business::Shipping objects.</p>
         (optional)</a></strong><br />
 </li>
 </ul>
-<p>Other Perl modules that are simliar to Business::Shipping:</p>
+<p>Other Perl modules that are simliar to Business::Shipping:
+
+</p>
 <ul>
 <li><strong><a name="item_business_3a_3ashipping_3a_3aups_xml__2d_online_cos">Business::Shipping::UPS_XML - Online cost estimation module that has 
 very few prerequisites.  Supports shipments that originate in USA and Canada.</a></strong><br />

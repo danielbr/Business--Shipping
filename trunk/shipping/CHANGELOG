@@ -26,6 +26,9 @@ Revision history for Business::Shipping
     * Misc code clarity cleanups.
     
     * META cleanup.
+    
+    * Move doc/* files back into root so that CPAN will index them.  Too bad
+      about the clutter.
   
   UPS_Online
     

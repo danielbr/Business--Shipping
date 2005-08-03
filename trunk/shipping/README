@@ -2,7 +2,7 @@ NAME
     Business::Shipping - Rates and tracking for UPS and USPS
 
 VERSION
-    Version 1.90
+    Version 1.92
 
 SYNOPSIS
   Rate request example
@@ -116,12 +116,10 @@ GETTING STARTED
     No signup required. "Business::Shipping::DataFiles" has all of rate
     tables, which are usually updated only once per year.
 
-    We recommend that you run the following program to update your fuel
+    We recommend that you run the following script to update your fuel
     surcharge every first monday of the month.
 
-     Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
-
-    See bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
+     bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
 
   UPS_Online: For United Parcel Service (UPS) Online XML: Free signup
     * Read the legal terms and conditions:
@@ -179,6 +177,7 @@ METHODS
     Confirms that the object is valid. Checks that required attributes are
     set.
 
+  $self->get_grouped_attrs( $attribute_name )
   $obj->rate_request()
     This method is used to request shipping rate information from online
     providers or offline tables. A hash is accepted as input. The acceptable
