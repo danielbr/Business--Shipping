@@ -1,9 +1,20 @@
 Revision history for Business::Shipping::DataFiles
 =================================================
 
+1.00
+
+ * Testing warrants a stable designation.
+ 
+ * Installation bug fixed: data/data directory created, thanks to a report by
+   Mike Heins <mike@perusion.com>
+   
+ * [Fixed] The maximum values for many records are off by one.  
+   - Zip codes such as 970*, for example, were miscalculated.
+
 0.90
 
- * Converted to new data format (Storable), which is much faster and allows much cleaner code.
+ * Converted to new data format (Storable), which is much faster and allows much
+   cleaner code.
 
 0.01  Sep 14 2004
 

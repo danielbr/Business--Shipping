@@ -9,11 +9,11 @@ Business::Shipping::DataFiles - Offline rate tables for Business::Shipping
 
 =head1 VERSION
 
-Version 0.90
+Version 1.00
 
 =cut
 
-our $VERSION = '0.90';
+our $VERSION = '1.00';
 
 1;
 

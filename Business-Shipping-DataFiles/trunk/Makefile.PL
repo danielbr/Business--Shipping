@@ -3,7 +3,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %my_globals = (
-	SUPPORT_FILES_DIR	=> '/usr/local/B_Shipping/data'
+	DATA_DIR	=> '/usr/local/B_Shipping/data'
 );
 
 WriteMakefile(
@@ -42,9 +42,9 @@ docs :
 	find lib -name '*.pm' -or -name '*.pod' -exec podchecker -nowarnings {} \\;
 	
 support_files_install :
-	\@echo "Installing data files to $my_globals{SUPPORT_FILES_DIR}/data"
-	\@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/data
-	\@\$(CP) --recursive --force data/*   $my_globals{SUPPORT_FILES_DIR}/data/
+	\@echo "Installing data files to $my_globals{DATA_DIR}"
+	\@\$(MKPATH) $my_globals{DATA_DIR}
+	\@\$(CP) --recursive --force data/*   $my_globals{DATA_DIR}/
 };  #/qq
 }
 
@@ -74,13 +74,13 @@ sub extra_WriteMakefile_options {
   
 $module data directory:);
 
-        $my_globals{ SUPPORT_FILES_DIR } = prompt( 
+        $my_globals{ DATA_DIR } = prompt( 
             $question, 
-            $my_globals{ SUPPORT_FILES_DIR },
+            $my_globals{ DATA_DIR },
         );
     
-	$my_globals{ SUPPORT_FILES_DIR } =~ s:[\\/]\s*$::;
-	$my_globals{ SUPPORT_FILES_DIR } =~ s:^\s*::;
+	$my_globals{ DATA_DIR } =~ s:[\\/]\s*$::;
+	$my_globals{ DATA_DIR } =~ s:^\s*::;
 
 	my %EXTRA_CONFIG_OPTIONS;
     #$EXTRA_CONFIG_OPTIONS{ } 
