@@ -46,9 +46,6 @@ use Class::MethodMaker 2.0
     [ 
       new    => [ qw/ -hash new / ],
       scalar => [ 'weight', 'id', 'charges' ],
-      scalar => [ { -static => 1, -default => ''            }, 'Required' ],
-      scalar => [ { -static => 1, -default => 'id, charges' }, 'Optional' ],
-      scalar => [ { -static => 1, -default => 'weight'      }, 'Unique'   ]
     ];
 
 1;

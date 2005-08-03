@@ -46,36 +46,17 @@ use Class::MethodMaker 2.0
       array =>  [ { -type    => 'Business::Shipping::USPS_Online::Package',
                     -default_ctor => 'default_new' }, 'packages' ],
       scalar => [ 'service' ],
-      scalar => [ { -static  => 1, 
-                    -default => 'packages=>Business::Shipping::USPS_Online::Package' 
-                  }, 
-                  'Has_a' 
-                ],
       scalar => [ { -default => 70 }, 'max_weight' ],
 ];
 
 sub _this_init
 {
-    $_[ 0 ]->from_country( 'US'   );
+    $_[ 0 ]->from_country( 'US' );
     return;
 }
 
 foreach my $attribute ( 'pounds', 'ounces', 'weight', 'container', 'size', 'machinable', 'mail_type' ) {
     eval "sub $attribute { shift->package0->$attribute( \@_ ); }";
-}
-
-
-=head2 Required()
-
-International USPS does not require the service or from_zip parameters, but 
-domestic does. 
-
-=cut
-
-sub Required
-{
-    return 'service, from_zip' if $_[ 0 ]->domestic;
-    return '';
 }
 
 

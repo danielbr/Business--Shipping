@@ -24,11 +24,13 @@ use Cache::FileCache;
 use Class::MethodMaker 2.0
     [
       new    => [ { -hash => 1 }, 'new' ],
-      scalar => [ 'test_mode', 'user_id', 'password' ],
-      scalar => [ { -static => 1, -default => 'user_id, password' }, 'Required' ],
-      scalar => [ { -static => 1, -default => 'prod_url, test_url' }, 'Optional' ],
-      scalar => [ 'response' ],
+      scalar => [ 'test_mode', 'user_id', 'password', 'response' ],
     ];
+    
+sub Required { return ( $_[ 0 ]->SUPER::Required, qw/ user_id password / ); }
+sub Optional { return ( $_[ 0 ]->SUPER::Optional, qw/ prod_url test_url / ); }
+#sub Unique   { return ( $_[ 0 ]->SUPER::Unique,   qw/  / ); }
+
 
 =head2 perform_action()
 

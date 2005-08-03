@@ -40,25 +40,9 @@ use Class::MethodMaker 2.0
       scalar => [ { -default => 150 }, 'max_weight' ],
       scalar => [ 'disable_hundredweight' ],
       scalar => [ { -default => '10' }, 'hundredweight_margin' ],
-      scalar => [ { -static => 1, -default => 'to_residential' }, 'Optional' ],
-      scalar => [ { -static => 1, -default => 'to_residential' }, 'Unique' ],
       array  => [ { -type => 'Business::Shipping::UPS_Offline::Package',
                     -default_ctor => 'new' }, 'packages' ],      
-      scalar => [ { -static => 1, -default => 'packages=>Business::Shipping::UPS_Offline::Package' }, 'Has_a' ],
     ];
-
-=item * Required()
-
-from_state only required for Offline international orders.
-
-=cut
-
-sub Required
-{
-    return 'service, from_state'           if $_[ 0 ]->to_canada;
-    return 'service, from_zip, from_state' if $_[ 0 ]->intl;
-    return 'service, from_zip';
-}
 
 sub use_hundred_weight
 {

@@ -115,16 +115,15 @@ use Class::MethodMaker 2.0
                    },
                    'shipment'
                  ],
-      scalar => [ { -static => 1, 
-                    -default => "shipment=>Business::Shipping::Shipment" 
-                  }, 
-                  'Has_a' 
-                ],
-      scalar => [ { -static => 1, -default => 'shipper' }, 'Required' ],
-      scalar => [ { -static => 1, -default => 'shipper' }, 'Unique'   ],
       array  => [ 'error_details' ],
     ];
 
+sub Required { return ( $_[ 0 ]->SUPER::Required, qw/ shipper weight / ); } # weight can be required even though some use pounds.
+sub Optional { return ( $_[ 0 ]->SUPER::Optional, qw/ to_residential from_country to_country to_zip from_city
+                                                      to_city        / ); }
+sub Unique   { return ( $_[ 0 ]->SUPER::Unique,   qw/ shipper service from_zip from_country to_zip from_city
+                                                      to_city weight / ); }    
+    
 =head2 $rate_request->execute()
 
 This method sets some values (optional), executes the request, then parses the
@@ -241,8 +240,9 @@ sub execute
     my $results = $self->results();
     debug2 'results = ' . Dumper( $results );
     
-    # Only cache if there weren't any errors.
-    if ( $handle_response_success and $self->cache() ) {    
+    # Only cache if there weren't any errors and we only have one package.  The Unique() subs are not
+    # built (currently) to generate cache keys for multiple packages.  It's all done at the shipment level.
+    if ( $handle_response_success and $self->cache() and @{ $self->shipment->packages } == 1 ) {    
         trace( 'cache enabled, saving results.' );
         #
         # TODO: Allow setting of cache properties (time limit, enable/disable, etc.)

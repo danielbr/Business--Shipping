@@ -34,11 +34,8 @@ use Class::MethodMaker 2.0
       # We need this offline boolean to know if from_state is required.
 
       scalar => [ 'offline' ],
-      scalar => [ { -static => 1, -default => 'to_residential' }, 'Optional' ],
-      scalar => [ { -static => 1, -default => 'to_residential' }, 'Unique' ],
       array  => [ { -type => 'Business::Shipping::Package', 
                     -default_ctor => 'new' }, 'packages' ],      
-      scalar => [ { -static => 1, -default => 'packages=>Business::Shipping::Package' }, 'Has_a' ],
     ];
 
 =head2 packaging()

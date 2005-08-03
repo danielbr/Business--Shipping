@@ -238,12 +238,11 @@ use warnings;
 use Carp;
 use Business::Shipping::Logging;
 use Business::Shipping::Util 'unique';
-use Business::Shipping::ClassAttribs;
+#use Business::Shipping::ClassAttribs;
 use Class::MethodMaker 2.0
     [ 
       new    => [ qw/ -hash new /                                     ],
       scalar => [ 'tx_type', 'shipper', '_user_error_msg'             ],
-      scalar => [ { -static => 1, -default => 'tx_type' }, 'Optional' ],
     ];
 
 $Business::Shipping::RuntimeLoad = 1;
@@ -388,6 +387,24 @@ sub validate
     else {
         return 1;
     }
+}
+
+=head2 $self->get_grouped_attrs( $attribute_name )
+
+=cut
+
+sub get_grouped_attrs
+{
+    my ( $self, $attr_name ) = @_;
+    
+    # attr_name = Attribute Name.
+    
+    my @results = $self->$attr_name();
+    
+    #debug "get_grouped_attrs: " . join( ', ', @results );
+    print "get_grouped_attrs( $attr_name ): " . join( ', ', @results ) . "\n";
+    
+    return @results;
 }
 
 =head2 $obj->rate_request()
@@ -555,6 +572,10 @@ sub event_handlers
     
     return;
 }
+
+sub Optional { return qw/ tx_type /; }
+sub Required { return (); }
+sub Unique   { return (); }
 
 1;
 

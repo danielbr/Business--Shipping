@@ -125,16 +125,38 @@ use Class::MethodMaker 2.0
                    },
                    'shipment'
                  ],
-      scalar => [ { -static => 1, 
-                    -default => "shipment=>Business::Shipping::Shipment::UPS" 
-                  }, 
-                  'Has_a' 
-               ],
-      scalar => [ { -static => 1, -default => 'zone_file, zone_name' }, 'Optional' ],
       scalar => [ { -static => 1 }, 'Zones' ], # Zones is depreciated, remove it.
       scalar => [ { -static => 1, -default => {} }, 'Data' ],
     ];
 
+=item * Required()
+
+from_state only required for Offline international orders.
+
+=cut
+
+sub Required
+{
+    my ( $self ) = @_;
+    
+    my @required;
+    
+    if ( $self->to_canada ) {
+        @required = qw/ service from_state          /;
+    }
+    elsif ( $self->intl ) {
+        @required = qw/ service from_zip from_state /;
+    }
+    else {
+        @required = qw/ service from_zip            /;
+    }
+    
+    return ( $self->SUPER::Required, @required );
+}
+
+sub Optional { return ( $_[ 0 ]->SUPER::Optional, qw/ to_residential / ); }
+sub Unique   { return ( $_[ 0 ]->SUPER::Unique,   qw/ to_residential / ); }
+    
 sub to_residential { return shift->shipment->to_residential( @_ ); }
 sub is_from_east_coast { return not shift->is_from_west_coast(); }
 

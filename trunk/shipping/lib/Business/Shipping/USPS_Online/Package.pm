@@ -53,46 +53,8 @@ use Class::MethodMaker 2.0
       scalar => [ { -default => 'Package' }, 'mail_type'  ],
       scalar => [ { -default => '0.00'    }, 'ounces'     ],
       scalar => [ { -default => '0.00'    }, 'pounds'     ],
-      scalar => [ 
-                  { 
-                    -static => 1, 
-                    -default => 'container, size, machinable, mail_type, pounds, '
-                              . 'ounces'  
-                  }, 
-                  'Optional' 
-                ], 
-      # Note that we use 'weight' as the unique value (specified in Parent), 
-      # which should convert automatically from pounds/ounces during uniqueness
-      # calculations.
-      scalar => [ 
-                  { 
-                    -static => 1, 
-                    -default => 'container, size, machinable, mail_type' 
-                  }, 
-                  'Unique' 
-                ]
     ];
     
-=head2 Required()
-
-We use a hand-written "Required()" method for this class, because we require one
-of the following: pounds, ounces, or weight.  It doesn't matter which one it is,
-but if none of them are defined, then we pick 'weight' to Require.
-
-=cut
-
-sub Required
-{
-    my ( $self ) = @_;
-    
-    for ( qw( weight pounds ounces ) ) {
-        if ( $self->$_ ) {
-            return '';
-        }
-    }
-    
-    return 'weight';
-}
 
 =head2 weight
 

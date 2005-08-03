@@ -9,6 +9,14 @@ Revision history for Business::Shipping
     * We need a little more testing before we bump the version to 2.0, 1.91 was
       not released.
       
+    * Replace the ClassAttribs/ClassInfo system with a simpler one. 
+      - This resolves the incompatibility with mod_perl and other frameworks,
+        since we no longer 'use' ficticious and non-existant modules.
+      - The cache feature should be thoroughly tested with the new code.
+      - The cache will no longer distinguish between multi-package shipments,
+        therefore, multipackage shipments disable the cache.
+      - Two new tests.
+    
     * POD::Coverage tests did not have a plan.
     
     * Disable POD::Coverage unless the user *really* wants to run it.

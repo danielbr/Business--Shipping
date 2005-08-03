@@ -112,8 +112,6 @@ use Class::MethodMaker 2.0
     [
       new => [ qw/ -hash new / ], 
       scalar => [ 'access_key' ], 
-      scalar => [ { -static => 1,  -default => 'access_key' },  'Required' ], 
-      scalar => [ { -static => 1,  -default => 'test_server,  no_ssl,  to_city' },  'Optional' ], 
       scalar => [ { -default => 'https://www.ups.com/ups.app/xml/Rate' },  'prod_url' ], 
       scalar => [ { -default => 'https://wwwcie.ups.com/ups.app/xml/Rate' },  'test_url' ],       
       scalar => [ { -type    => 'Business::Shipping::UPS_Online::Shipment', 
@@ -146,13 +144,14 @@ use Class::MethodMaker 2.0
                    }, 
                    'shipment'
                  ], 
-      scalar => [ { -static => 1,  
-                    -default => "shipment=>Business::Shipping::UPS_Online::Shipment" 
-                  },  
-                  'Has_a' 
-               ], 
     ];
 
+sub Required { return ( $_[ 0 ]->SUPER::Required, qw/ access_key / ); }
+sub Optional { return ( $_[ 0 ]->SUPER::Optional, qw/ test_server no_ssl to_city packaging signature_type 
+                                                      insured_currency_type insured_value / ); }
+sub Unique   { return ( $_[ 0 ]->SUPER::Unique,   qw/ packaging / ); }    
+
+    
 =head2 from_state()
 
 Ignored.  For compatibility with UPS_Offline only.
