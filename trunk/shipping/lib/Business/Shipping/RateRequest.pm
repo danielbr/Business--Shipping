@@ -239,7 +239,7 @@ sub execute
     $handle_response_success = $self->_handle_response();
     
     my $results = $self->results();
-    debug 'results = ' . Dumper( $results );
+    debug2 'results = ' . Dumper( $results );
     
     # Only cache if there weren't any errors.
     if ( $handle_response_success and $self->cache() ) {    
@@ -436,10 +436,9 @@ sub rate
     
     foreach my $shipper ( @{ $self->results } ) {
         # Just return the amount for the first one.
-        
+        #debug "Shipper: $shipper\n";
         return $shipper->{ rates }->[ 0 ]->{ split_shipment_sum_rate } 
-            if $shipper->{ rates }->[ 0 ]->{ split_shipment_sum_rate };
-        return $shipper->{ rates }->[ 0 ]->{ charges };
+            || $shipper->{ rates }->[ 0 ]->{ charges };
     }
     
     return;

@@ -326,7 +326,12 @@ sub calc_delivery_area_surcharge
 {
     my ( $self ) = @_;
     
+    # Does not apply to hundredweight service.
+    return 0.00 if ( $self->service_name eq 'Ground Hundredweight Service' );
+    
     if ( $self->domestic ) {
+        
+        # Need to actually figure this out.
         return 1.75 if $self->to_residential;
         return 1.00;
     }
@@ -390,15 +395,17 @@ sub calc_fuel_surcharge
     #/;
     #return 0 if grep /$ups_service_name/i, @exempt_services;
     
-    my @ground_services = qw/
-        Ground Commercial
-        Ground Residential
-        Ground Hundredweight Service
-        Standard
-    /;
-    my $is_ground_svc = 0;
-    $is_ground_svc = 1 if grep /$ups_service_name/i, @ground_services;
+    my @ground_services = (
+        'Ground Commercial',
+        'Ground Residential',
+        'Ground Hundredweight Service',
+        'Standard',
+    );
     
+    debug "ups_service_name = '$ups_service_name'";
+    my $is_ground_svc = 0;
+    $is_ground_svc = 1 if grep /${ups_service_name}/i, @ground_services;
+    debug "is_ground_svc = $is_ground_svc";
     my $fuel_surcharge_filename = Business::Shipping::Config::config_dir . '/fuel_surcharge.txt';
     
     my $fuel_surcharge_contents = readfile( $fuel_surcharge_filename );

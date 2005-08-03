@@ -1,6 +1,6 @@
 package Business::Shipping::UPS_Online::RateRequest;
 
-use constant UPS_ONLINE_DISABLED => '1';
+use constant UPS_ONLINE_DISABLED => '0';
 #use constant UPS_ONLINE_DISABLED => '~_~UPS_ONLINE_DISABLED~_~';
 
 =head1 NAME
@@ -442,7 +442,7 @@ sub _handle_response
     }
     
     use Data::Dumper;
-    debug "ups_results = " . Dumper( $ups_results ); 
+    debug2 "ups_results = " . Dumper( $ups_results ); 
     foreach my $ups_rate_info ( @$ups_results ) {
         
         my $service_code = $ups_rate_info->{ Service }->{ Code };
