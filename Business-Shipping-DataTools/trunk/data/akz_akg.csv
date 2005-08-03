@@ -1,0 +1,52 @@
+Domestic Services,,
+Ground Services Zone Determination for Intra-Alaska Ground,,
+
+Alaska Ground Service Areas,,
+
+Location,ZIP Code,Area
+Anchor Point,99556,C
+Anchorage,99501-04,A
+,99507-24,A
+Chugiak,99567,A
+Clam Gulch,99568,C
+Cooper Landing,99572,C
+Eagle River,99577,A
+Eielson AFB,99702,B
+Elmendorf AFB,99506,A
+Fairbanks,99701,B
+,99706-12,B
+,99775,B
+Fort Richardson,99505,A
+Fort Wainwright,99703,B
+Girdwood,99587,A
+Homer,99603,C
+Hope,99605,C
+Indian,99540,A
+Kasilof,99610,C
+Kenai,99611,C
+Moose Pass,99631,C
+Nikiski,99635,C
+Nikolaevsk,99556,C
+Ninilchik,99639,C
+North Pole,99705,B
+Palmer,99645,A
+Seward,99664,C
+Soldotna,99669,C
+Sterling,99672,C
+Wasilla,99654,A
+,99687,A
+
+
+Intra-Alaska Ground:,,
+Match the origin and destination areas ,,
+in the Intra-Alaska Ground Zone Chart ,,
+to determine your zone.,,
+
+Intra-Alaska Ground Zone Chart,,
+Origin,,Destination
+Area,,Area
+
+,A,B,C
+A,2,2,2
+B,2,2,3
+C,2,3,2
