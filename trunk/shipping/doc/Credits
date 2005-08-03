@@ -1,12 +1,13 @@
 We greatly appreciate the assistance that all of the following individuals have 
 contributed.
 
- * The Ruberubenstein Technology Group, Ed Zborowski<ed@rubensteintech.com>,
-   Martin H. Beauchamp <martin@rubensteintech.com>, and Jaron Rubenstein 
-   <jaron@rubensteintech.com> have contributed patches for the following: 
-   - Many bug fixes
-   - Several new features
-   - See changelog for 1.57.
+ * The Rubenstein Technology Group (http://www.rubensteintech.com/), 
+   Ed Zborowski<ed@rubensteintech.com>, Martin H. Beauchamp 
+   <martin@rubensteintech.com>, and Jaron Rubenstein <jaron@rubensteintech.com>
+   have contributed patches for the following: 
+   - Many bug fixes and new features: see changelog for 1.57.
+   - 1.92 UPS_Online: Added signature_type, insured_value, and 
+     insured_currency_type
 
  * Rusty Conover <rconover@infogears.com> contributed the following modules:
    - Tracking
@@ -15,7 +16,9 @@ contributed.
  
  * Mike Heins <mike@perusion.com> wrote a complete offline UPS and USPS cost
    estimation system for the Interchange project.  They were adapted for use 
-   with Business::Shipping.
+   in older versions of Business::Shipping.  But as of 1.90 the UPS part was
+   completely rewritten for performance, clarity, and a new design.  Mike has 
+   also contributed bug reports.
  
  * Selena Brewington <computers@chrisking.com> contributed:
    - The 'Shop' service for UPS_Online that retrieves all the rates in one 
@@ -36,6 +39,7 @@ contributed.
    - Richard Hornsby <rhornsby@io.osuedc.org>
    - Micah Gersten <micah@davka.com>
    - Chris Ochs <chris@paymentonline.com>
+   - Mike Heins <mike@perusion.com>
  
  * Individuals who have contributed feature suggestions:
    - Mark <MpoloN7@netscape.net>

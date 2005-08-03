@@ -25,14 +25,38 @@ use base ( 'Business::Shipping::Package' );
 
 UPS_Online-only attribute.
 
+=item * signature_type
+
+  UPS_Online-only attrbute.
+
+  If not set, then DeliveryConfirmation/DCISType will not be sent to UPS.
+
+  Possible values:
+
+  1 - No signature required.
+  2 - Signature required.
+  3 - Adult signature required.
+
+  Only valid for US domestic shipments.
+
+=item * insured_currency_type
+
+  UPS_Online-only attribute
+  
+  Used in conjunction with insured_value.
+
+=item * insured_value
+  
+  UPS_Online-only attribute
+ 
 =cut
  
 use Class::MethodMaker 2.0
     [ 
       new    => [ qw/ new / ],
       new    => [ qw/ default_new / ],
-      scalar => [ 'packaging' ],
-      scalar => [ { -static => 1, -default => 'packaging' }, 'Optional' ],
+      scalar => [ 'packaging', 'signature_type', 'insured_currency_type', 'insured_value' ],
+      scalar => [ { -static => 1, -default => 'packaging, signature_type, insured_currency_type, insured_value' }, 'Optional' ],
       scalar => [ { -static => 1, -default => 'packaging' }, 'Unique' ]      
     ];
 

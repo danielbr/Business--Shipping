@@ -45,10 +45,19 @@ use Class::MethodMaker 2.0
 
 =head2 weight()
 
+=head2 signature_type()
+
+=head2 insured_currency_type()
+
+=head2 insured_value()
+
 =cut
 
 sub packaging { shift->package0->packaging( @_ ) }
 #sub weight    { shift->package0->weight( @_ )    }  # UPS uses the Shipping::Shipment::weight() method.
+sub signature_type { shift->package0->signature_type( @_ ) }
+sub insured_currency_type { shift->package0->insured_currency_type( @_ ) }
+sub insured_value { shift->package0->insured_value( @_ ) }
 
 =head2 massage_values()
 

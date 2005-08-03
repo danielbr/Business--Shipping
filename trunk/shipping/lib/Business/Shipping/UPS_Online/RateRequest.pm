@@ -77,6 +77,9 @@ UPS_ACCESS_KEY
     event_handlers
     from_city
     to_city
+    signature_type
+    insured_currency_type
+    insured_value
 
 =head1 METHODS
 
@@ -137,6 +140,8 @@ use Class::MethodMaker 2.0
                                   'packaging', 
                                   'to_residential',
                                   'cod', 'cod_funds_code', 'cod_value',
+                                  'signature_type',
+                                  'insured_currency_type', 'insured_value',
                                 ], 
                    }, 
                    'shipment'
@@ -269,6 +274,32 @@ sub _gen_request_xml
                 } ],
             );
         }
+        
+        ### If signature_type was defined and origin = dest = US
+        if( defined($package->signature_type()) && 
+            (!defined($self->to_country_abbrev()) || $self->to_country_abbrev() eq 'US') &&
+            (!defined($self->from_country_abbrev()) || $self->from_country_abbrev() eq 'US') )
+        {
+            if( !exists($package_service_options{PackageServiceOptions}) )
+            {
+                $package_service_options{PackageServiceOptions} = [ { } ];
+            }
+            
+            $package_service_options{PackageServiceOptions}[0]{DeliveryConfirmation} =  [ { DCISType => [ $package->signature_type() ] } ];
+        } # if signature
+        
+        ### If insured_value was defined
+        if( defined($package->insured_value()) )
+        {
+            if( !exists($package_service_options{PackageServiceOptions}) )
+            {
+                $package_service_options{PackageServiceOptions} = [ { } ];
+            }
+            
+            my $currCode = (defined($package->insured_currency_type())) ? $package->insured_currency_type() : 'USD';
+            $package_service_options{PackageServiceOptions}[0]{InsuredValue} =  [ { CurrencyCode => [ $currCode ],
+                                                                                    MonetaryValue => [ $package->insured_value() ], } ];
+        } # if signature
         
         push( @packages, {
 
