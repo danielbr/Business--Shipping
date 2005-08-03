@@ -357,6 +357,36 @@ sub _handle_response
             }
         }
     }
+    elsif( defined($self->service()) && lc($self->service()) eq 'all' )
+    {
+        #
+        # International *does* tell you the price of all services for each package
+        # If caller asked for All services, then lets give them All services.  Will
+        # pass back service name as-is.  Let caller try to distinguish it.
+        #
+
+        # Set charges to returned services, since charges needs to be set to something
+        $charges = $response_tree->{ IntlRateResponse }->{ Package }->{ Service };
+        
+        if( defined($charges) )
+        {
+            $charges = [ $charges ] if( ref $charges ne 'ARRAY' );
+            foreach my $service ( @$charges )
+            {
+                my $service_hash = {
+                    code       => undef,
+                    nick       => undef,
+                    name       => $service->{ SvcDescription },
+                    deliv_days => undef,
+                    deliv_date => undef,
+                    charges    => $service->{ Postage },
+                    charges_formatted    => Business::Shipping::Util::currency( {}, $service->{ Postage }, ),
+                    deliv_date_formatted => undef,
+                };
+                push( @services_results, $service_hash );
+            } # foreach service
+        } # if services defined
+    }
     else {
         #
         # International *does* tell you the price of all services for each package

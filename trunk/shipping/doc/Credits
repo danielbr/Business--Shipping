@@ -5,9 +5,10 @@ contributed.
    Ed Zborowski<ed@rubensteintech.com>, Martin H. Beauchamp 
    <martin@rubensteintech.com>, and Jaron Rubenstein <jaron@rubensteintech.com>
    have contributed patches for the following: 
-   - Many bug fixes and new features: see changelog for 1.57.
-   - 1.92 UPS_Online: Added signature_type, insured_value, and 
-     insured_currency_type
+   - 1.57: Many bug fixes and new features: see ChangeLog.
+   - 1.92: UPS_Online: Added signature_type, insured_value, and 
+     insured_currency_type.
+     USPS_Online: Added 'all' service type to get all rates in one request.
 
  * Rusty Conover <rconover@infogears.com> contributed the following modules:
    - Tracking

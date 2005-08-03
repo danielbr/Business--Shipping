@@ -19,6 +19,16 @@ Revision history for Business::Shipping
     
     * META cleanup.
   
+  UPS_Online
+    
+    * Added signature_type, insured_value, and insured_currency_type.  Patch by
+      Ed Zborowski <ed@rubensteintech.com> of the Rubenstein Technology Group.
+    
+  USPS_Online
+  
+    * Added 'all' service type to get all rates in one request.  Patch by
+      Ed Zborowski <ed@rubensteintech.com> of the Rubenstein Technology Group.
+
   UPS_Offline
   
     * Fix major bug in zone finder.  
@@ -51,14 +61,6 @@ Revision history for Business::Shipping
       - Requires DataFiles 1.00+
       - Uses new config.ini section: [ups_das]
     
-  UPS_Online
-    
-    * Added signature_type, insured_value, and insured_currency_type.  Patch by
-      Ed Zborowski <ed@rubensteintech.com> of the Rubenstein Technology Group).
-      Thanks!
-      
-    * Test updates.
-       
   UserTag
   
     * Expose split-shipment max_weight functionality through new variable:
