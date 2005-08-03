@@ -39,6 +39,11 @@ use Business::Shipping::DataTools;
 my $dt = Business::Shipping::DataTools->new( update => 1 );
 $dt->do_update;
 
+=head1 REQUIRED MODULES
+
+ Archive::Zip
+ Text::CSV::Simple
+
 =cut
 
 use Class::MethodMaker 2.0 
@@ -257,6 +262,9 @@ sub convert_ups_rate_file
 {
     trace "( $_[0] )";
     
+    # aoa = Array of Arrays.  This is the "table" object.
+    # meta = Information about the aoa.  This is the "meta" object.
+    # These objects are stored after processing each input file in a Storable output file.    
     my $aoa = [];
     my $meta = {};
     
@@ -289,7 +297,6 @@ sub convert_ups_rate_file
     my $next_record_should_be_minimums;
     my $next_line_is_header;
     my $file_basename = File::Basename::basename( $file );
-    
     my $zone_file = $opt->{ zone_file } ? 1 : 0;
     
     debug "zone_file = $zone_file"; #, opt->zone_File = $opt->{zone_file}";
@@ -313,6 +320,7 @@ sub convert_ups_rate_file
         next if not $record;
         next if not @$record;
         next if not ( join( "", @$record ) );
+        
         
         # Skip the line if it is empty, all spaces, or just has commas.
         #next if $line =~ /^\s+$/; 
@@ -455,6 +463,20 @@ sub convert_ups_rate_file
         # "35" 
         elsif ( $key =~ /^\d+$/ ) {
             debug "Regular single numeric value";
+            
+            if ( $file_basename eq 'xarea.tmp' ) {
+                # xarea is just a list of zip codes, one per line.  
+                # Must add leading zeros to zip codes less than digits.
+                # It is so simple to parse that we can do it manually here.
+                debug "Special handling for xarea file";
+                my $zip = $key;
+                while ( length( $zip ) < 5 ) {
+                    $zip = '0' . $zip;
+                }
+                push @$aoa, $zip;
+                next;
+            }
+            
             # Set the previous record's maximum using this record's minimum.
             if ( $set_max_in_next_record ) {
                 $aoa->[ $row_num - 1 ][ MAX ] = $key - 1 if $row_num > 0;
@@ -582,7 +604,7 @@ sub convert_ups_rate_file
         #debug Dumper( $aoa );        
     }
     
-    if ( $aoa->[ $row_num - 1 ] and $aoa->[ $row_num  - 1 ][ 0 ] =~ /^\d+$/ ) {
+    if ( ref( $aoa->[ $row_num - 1 ] ) eq 'ARRAY' and $aoa->[ $row_num - 1 ] and $aoa->[ $row_num  - 1 ][ 0 ] =~ /^\d+$/ ) {
         debug "Setting the max on the last record: $row_num  minus one";
         # The last record in the table is the minimum plus one.
         $aoa->[ $row_num  - 1 ][ 1 ] ||= $aoa->[ $row_num  - 1 ][ 0 ] + ADD_TO_LAST_RECORD; 
@@ -842,8 +864,9 @@ sub do_convert_data
     my $zone_files = dtcfg()->{ ups_information }->{ us_origin_zones_filenames_individual };
     
     # Testing: override the files list if you only want to process some files.
-    #$rate_files = [];
+    #$rate_files = [ 'xarea.csv' ];
     #$zone_files = [ '986.csv' ];
+    #$zone_files = [  ];
     
     for ( @$rate_files ) {
         $self->process_file( $_, { zone_file => 0 } );
