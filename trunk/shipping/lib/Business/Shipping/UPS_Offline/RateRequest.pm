@@ -330,10 +330,23 @@ sub calc_delivery_area_surcharge
     return 0.00 if ( $self->service_name eq 'Ground Hundredweight Service' );
     
     if ( $self->domestic ) {
+        my $table = 'xarea';
+        $self->load_table( $table );
+        my $zip_codes = $self->Data->{ $table }->{ table };
         
-        # Need to actually figure this out.
-        return 1.75 if $self->to_residential;
-        return 1.00;
+        my $is_das;
+        my $to_zip = $self->to_zip;
+        foreach my $das_zip ( @$zip_codes ) {
+            $is_das = 1 if $das_zip == $to_zip;
+        }
+        if ( $is_das ) {
+            if ( $self->to_residential ) {
+                return cfg()->{ ups_das }->{ domestic_res } || 2.00;
+            }
+            else {
+                return cfg()->{ ups_das }->{ domestic_com } || 1.25;
+            }
+        }
     }
     
     return 0.00;
@@ -542,7 +555,7 @@ sub load_table
         if ( ! -f $filename ) {
             return error "file does not exist: $filename";
         }
-        $self->Data->{ $table } = retrieve( $filename );
+        $self->Data->{ $table } = Storable::retrieve( $filename );
     }
 
     return;
