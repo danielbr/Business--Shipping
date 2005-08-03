@@ -45,7 +45,7 @@ use Class::MethodMaker 2.0
     [
         new    => [ qw/ -hash new / ],
         scalar => [ qw/ update download unzip convert create_bin / ],
-        scalar => [ qw/ pause / ], # Pause after every event, if enabled.
+        scalar => [ qw/ pause data_dir / ], # Pause after every event, if enabled.
     ];
 
 =item * do_update
@@ -56,13 +56,17 @@ sub do_update
 {
     my ( $self ) = @_;
     
+    if ( not $self->data_dir ) {
+        $self->data_dir( Business::Shipping::Config::data_dir() );
+    }
+    
     if ( $self->update ) {
         $self->download( 1 );
         $self->unzip( 1 );
         $self->convert( 1 );
     }
     
-    debug "data_dir = " . Business::Shipping::Config::data_dir();
+    debug "data_dir = " . $self->data_dir();
     
     if ( $self->download ) {
         print "Downloading, please wait...\n";
@@ -296,7 +300,6 @@ sub convert_ups_rate_file
     
     my $parser = Text::CSV::Simple->new;
     my @all_records = $parser->read_file( $file );
-        
     foreach my $record ( @all_records ) {
         last if ++$c > $LIMIT;
         if ( $PAUSE ) {
@@ -316,7 +319,6 @@ sub convert_ups_rate_file
         #next if $line =~ /^(,| )+$/;
         
         # Convert thousands into numeric.  "$1,076.59" => 1076.59
-        #"$1,076.59"
         foreach my $c4 ( 0 .. $num_elements ) {
             $record->[ $c4 ] =~ s/(\d+),(\d+)/$1$2/;  # Remove the comma from thousands.
             $record->[ $c4 ] =~ s/\$//; # Remove Dollar signs
@@ -452,9 +454,10 @@ sub convert_ups_rate_file
         }
         # "35" 
         elsif ( $key =~ /^\d+$/ ) {
+            debug "Regular single numeric value";
             # Set the previous record's maximum using this record's minimum.
             if ( $set_max_in_next_record ) {
-                $aoa->[ $row_num - 1 ][ MAX ] = $key if $row_num > 0;
+                $aoa->[ $row_num - 1 ][ MAX ] = $key - 1 if $row_num > 0;
                 $set_max_in_next_record = 0;
             }
             
@@ -494,7 +497,7 @@ sub convert_ups_rate_file
             
             # Set the previous record's maximum using this record's minimum.
             if ( $set_max_in_next_record ) {
-                $aoa->[ $row_num - 1 ][ 1 ] = $min if $row_num > 0;
+                $aoa->[ $row_num - 1 ][ 1 ] = $min - 1 if $row_num > 0;
                 $set_max_in_next_record = 0;
             }
             
@@ -516,7 +519,7 @@ sub convert_ups_rate_file
             # $max = cnv( $max, 36, 10 );
             
             if ( $set_max_in_next_record ) {
-                $aoa->[ $row_num - 1 ][ 1 ] = $min if $row_num > 0;
+                $aoa->[ $row_num - 1 ][ 1 ] = $min - 1 if $row_num > 0;
                 $set_max_in_next_record = 0;
             }
             
@@ -607,7 +610,7 @@ sub convert_ups_rate_file
     
     my $new_filename = remove_extension( $file ) . ".dat";
     #debug "going to store to $new_filename";
-    Storable::nstore $root_object, $new_filename or die $@;
+    Storable::nstore( $root_object, $new_filename ) or die $@;
 
     
     return;
@@ -623,7 +626,7 @@ sub do_download
 {
     my ( $self ) = @_;
     
-    my $data_dir = Business::Shipping::Config::data_dir();
+    my $data_dir = $self->data_dir;
     
     my $us_origin_rates_url = dtcfg()->{ ups_information }->{ us_origin_rates_url };
     my $us_origin_zones_url = dtcfg()->{ ups_information }->{ us_origin_zones_url };
@@ -659,7 +662,7 @@ sub do_unzip
         # Remove any leading spaces.
         #
         s/^\s//g;
-        my $data_dir = Business::Shipping::Config::data_dir();
+        my $data_dir = $self->data_dir;
 
         # TODO: unzip different types of files into different directories.
         my $src  = "$data_dir/$_";
@@ -731,7 +734,7 @@ sub get_files_to_process
     };
     
     # TODO: subroutine references, how to pass $opt to find_rates_files_sub?
-    my $dir = Business::Shipping::Config::data_dir();
+    my $dir = $self->data_dir;
     debug "calling find with dir $dir";
     
     #File::Find::find( $find_rates_files_sub->( $opt ), $dir );
@@ -744,7 +747,7 @@ sub get_files_to_process
     my @cannot_convert_at_this_time;
     for ( @$cannot_convert_at_this_time ) {
         s/^\s+//g;
-        $_ = Business::Shipping::Config::data_dir() . "/$_";
+        $_ = $self->data_dir . "/$_";
         push @cannot_convert_at_this_time, $_;
     }
     
@@ -837,6 +840,11 @@ sub do_convert_data
     
     my $rate_files = dtcfg()->{ ups_information }->{ us_origin_rates_filenames_individual };
     my $zone_files = dtcfg()->{ ups_information }->{ us_origin_zones_filenames_individual };
+    
+    # Testing: override the files list if you only want to process some files.
+    #$rate_files = [];
+    #$zone_files = [ '986.csv' ];
+    
     for ( @$rate_files ) {
         $self->process_file( $_, { zone_file => 0 } );
     }
@@ -850,7 +858,7 @@ sub process_file
 {
     my ( $self, $file, $opt ) = @_;
     
-    $file = Business::Shipping::Config::data_dir() . '/' . $file;
+    $file = $self->data_dir . '/' . $file;
     print "Processing $file...";
     if ( $self->pause ) {
         print ", press enter to continue...";
