@@ -615,13 +615,16 @@ while ( defined( my $data = <DATA> ) ) {
         my @values = split( "\t", $line );
         
         # exp_price = Expected price
-        my ( $exp_price, $service, $weight, $from_zip, $to_zip ) = @values;
+        my ( $exp_price, $service, $weight, $from_zip, $to_zip, $to_city ) = @values;
+        
+        # to_city is not currently used.
         
         %test = (
                 service =>              $service,
                 from_zip =>             $from_zip,
                 to_zip =>               $to_zip,
                 weight =>               $weight,
+                to_residential =>       1,
         );
         $this_test_desc = "UPS Offline: Autotest " . $autotest_count . " is close enough to $exp_price.";
         $rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
@@ -632,6 +635,8 @@ while ( defined( my $data = <DATA> ) ) {
     }
 	
 }
+# Price, Service, Weight, from_zip, to_zip, to_city
 __DATA__
-8.15	GNDRES	1	98682	85028
-18.07	1DA	1	98682	97015
+5.85	GNDRES	1	98682	85028	Phoenix
+16.15	1DA	1	98682	97015	Clackamas
+39.82	GNDRES	65	98682	36330	Enterprise
