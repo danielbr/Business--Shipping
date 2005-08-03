@@ -2,6 +2,9 @@
 ##  General TODO
 ################################################################################
 
+    * Move the doc/ files back into the root directory so they will be indexed
+      by CPAN again.  Sigh.
+
     * Remove t/manual/test-data... what is it?
 
     * Add multiple source zips to the testing for offline ups: e.g. 33124
@@ -421,8 +424,6 @@
       -  If optimized for speed, then it will read the representation off the 
 	 disk and keep it in memory.
 
- * [Bug] Delivery Area Surcharge: check xarea table instead of always applying.
-   
  * [Bug] Serbia: see t/manual/offline_ups_intl_other.pl
 
  * [Enh] http://perlmonks.org/index.pl?node_id=366587

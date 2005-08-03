@@ -26,6 +26,8 @@ Revision history for Business::Shipping
       - Zip codes like 850* should start working again.
       - Add a test for this zip code.
       
+    * [Fixed] Fuel surcharge uses air rates for ground services.
+      
     * Update fuel surcharge
 
     * New testing system: makes it easier to test lots of queries.
@@ -41,6 +43,13 @@ Revision history for Business::Shipping
     * Fix 3 Day Select
     
     * Update copyright.
+    
+    * No delivery area surcharge for Hundredweight.
+    
+    * [Done] Delivery Area Surcharge: check xarea table instead of always 
+      applying.
+      - Requires DataFiles 1.00+
+      - Uses new config.ini section: [ups_das]
     
   UPS_Online
     
