@@ -526,8 +526,11 @@ SKIP: {
     my $rr_on = Business::Shipping->rate_request( shipper => 'Online::UPS', %r1, %user );
     $rr_on->submit or die $rr_on->user_error();
     
-    ok( close_enough( $rr_off->total_charges(), $rr_on->total_charges() ),
-        'UPS Offline and Online are close enough for GNDRES, light, far' 
+    my $rr_off_rate = $rr_off->rate;
+    my $rr_on_rate  = $rr_on->rate;
+    
+    ok( close_enough( $rr_off_rate, $rr_on_rate ),
+        "UPS Offline ($rr_on_rate) and Online ($rr_off_rate) are close enough for GNDRES, light, far" 
       );
 }
 
