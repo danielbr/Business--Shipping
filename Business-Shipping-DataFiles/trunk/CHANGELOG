@@ -10,6 +10,8 @@ Revision history for Business::Shipping::DataFiles
    
  * [Fixed] The maximum values for many records are off by one.  
    - Zip codes such as 970*, for example, were miscalculated.
+   
+ * Add Delivery Area Surcharge (xarea)
 
 0.90
 
