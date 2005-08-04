@@ -401,8 +401,7 @@ sub get_grouped_attrs
     
     my @results = $self->$attr_name();
     
-    #debug "get_grouped_attrs: " . join( ', ', @results );
-    print "get_grouped_attrs( $attr_name ): " . join( ', ', @results ) . "\n";
+    #print "get_grouped_attrs( $attr_name ): " . join( ', ', @results ) . "\n";
     
     return @results;
 }
