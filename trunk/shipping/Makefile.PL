@@ -60,7 +60,8 @@ WriteMakefile(
     },
     EXE_FILES       => [
         'bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl',
-    ]
+    ],
+    NO_META         => 1,
 );
 
 # Override the standard "install" target, so that it calls "support_files_install"
