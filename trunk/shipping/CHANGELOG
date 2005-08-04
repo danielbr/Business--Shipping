@@ -1,7 +1,16 @@
 Revision history for Business::Shipping
 =======================================
 
-1.92  
+
+?
+
+
+  General
+  
+    * Remove get_grouped_attrs() debug print.
+
+
+1.92  Aug 03 2005
 
 
   General
