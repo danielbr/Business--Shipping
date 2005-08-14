@@ -229,8 +229,10 @@ sub execute
                
                 $self->shipment->add_package( weight => $current_weight );
             }
-            use Data::Dumper;
-            debug "done handling overweight.  shipment now: " . Dumper( $self->shipment );
+            
+            debug "done handling overweight.";
+            #use Data::Dumper;
+            #debug2 "shipment now: " . Dumper( $self->shipment );
         }
     }
     

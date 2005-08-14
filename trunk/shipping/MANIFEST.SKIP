@@ -1,6 +1,8 @@
 # My stuff
 
 ^todo/
+^t/manual
+^t/old
 
 # Version control files and dirs.
 

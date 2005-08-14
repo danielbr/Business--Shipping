@@ -615,7 +615,7 @@ while ( defined( my $data = <DATA> ) ) {
         my @values = split( "\t", $line );
         
         # exp_price = Expected price
-        my ( $exp_price, $service, $weight, $from_zip, $to_zip, $to_city ) = @values;
+        my ( $exp_price, $service, $weight, $from_zip, $to_zip, $to_city, $to_residential ) = @values;
         
         # to_city is not currently used.
         
@@ -624,7 +624,7 @@ while ( defined( my $data = <DATA> ) ) {
                 from_zip =>             $from_zip,
                 to_zip =>               $to_zip,
                 weight =>               $weight,
-                to_residential =>       1,
+                to_residential =>       $to_residential,
         );
         $this_test_desc = "UPS Offline: Autotest " . $autotest_count . " is close enough to $exp_price.";
         $rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
@@ -637,6 +637,10 @@ while ( defined( my $data = <DATA> ) ) {
 }
 # Price, Service, Weight, from_zip, to_zip, to_city
 __DATA__
-5.85	GNDRES	1	98682	85028	Phoenix
-16.15	1DA	1	98682	97015	Clackamas
-39.82	GNDRES	65	98682	36330	Enterprise
+5.85	GNDRES	1	98682	85028	Phoenix	1
+18.07	1DA	1	98682	97015	Clackamas	1
+39.82	GNDRES	65	98682	36330	Enterprise	1
+5.00	Ground Commercial	0.8	98682	98532	Chehalis	0
+7.32	Ground Residential	0.8	98682	98532	Chehalis	1
+17.52	Next Day Air	0.8	98682	98532	Chehalis	0
+20.26	Next Day Air	0.8	98682	98532	Chehalis	1

@@ -632,9 +632,11 @@ author and/or on their website or in their application.
 
 =head1 WEBSITE
 
-L<http://www.kavod.com/Business-Shipping>
+L<http://www.kavod.com/Business-Shipping/>
 
-Also see L<http://search.cpan.org/~dbrowning/Business-Shipping>
+CPAN web site: L<http://search.cpan.org/~dbrowning/Business-Shipping/>
+
+Backpan (old releases): L<http://backpan.cpan.org/authors/id/D/DB/DBROWNING/>
 
 =head1 SUPPORT
 

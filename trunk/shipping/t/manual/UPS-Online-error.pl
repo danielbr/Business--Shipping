@@ -31,4 +31,5 @@ my $results = $rate_request->submit(
 use Data::Dumper;
 print "UPS_Online: " . $rate_request->total_charges() . "\n";
 
-# Should be 6.51 for non-residential.
+# Should be 7.32 for non-residential.
+

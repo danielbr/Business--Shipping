@@ -2,13 +2,36 @@ Revision history for Business::Shipping
 =======================================
 
 
-?
+2.00
 
 
   General
   
     * Remove get_grouped_attrs() debug print.
+    
+    * Remove old tests.
+    
+    * Remove dependancy on Scalar::Util
 
+  UPS_Offline
+  
+    * Fix Delivery Area Surcharge for zip codes over 46000.
+      - Caused by truncated data table.
+      
+    * Use a binary search for the Delivery Area Surcharge for speed.
+
+    * Fix Residential surcharge (differential).
+      - Only apply to the correct services
+      - Do not apply twice for Ground Residential.
+      
+    * Add a residential indicator to the automatic tests.
+    
+    * Fix incorrect usage of gndres/gndcomm for hundredweight.
+    
+    * Make residential differential configurable in config.ini
+    
+    * New method for determining if a shipment is via ground or air.
+  
 
 1.92  Aug 03 2005
 
@@ -25,6 +48,9 @@ Revision history for Business::Shipping
       - The cache will no longer distinguish between multi-package shipments,
         therefore, multipackage shipments disable the cache.
       - Two new tests.
+      - Can remove dependancy on Scalar::Util after this is complete (since
+        we'll no longer need the 'blessed' function).      
+      
     
     * POD::Coverage tests did not have a plan.
     

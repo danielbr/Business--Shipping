@@ -82,13 +82,35 @@ sub use_hundred_weight
     return;
 }
 
+sub is_ground
+{
+    my ( $self ) = @_;
+
+    my $is_ground_svc = 0;
+
+    my @ground_services = (
+        'Ground Commercial',
+        'Ground Residential',
+        'Ground Hundredweight Service',
+        'Standard',
+    );
+    
+
+    my $ups_service_name = $self->service_name;
+    debug "ups_service_name = '$ups_service_name'";
+    $is_ground_svc = 1 if grep /${ups_service_name}/i, @ground_services;
+    debug "is_ground_svc = $is_ground_svc";
+    
+    return $is_ground_svc;    
+}
+
 sub get_hundredweight_table
 {
     my ( $self, $table ) = @_;
     
     # TODO: Need to map the remaining tables.
     my %table_map = qw/
-        gndcom gndcwt
+        gndcomm gndcwt
         gndres gndcwt  
         1da 1dacwt
         2da 2dacwt

@@ -234,6 +234,11 @@ sub _handle_response
             description => 'Delivery Area Surcharge',
         },
         {
+            component   => 'residential_surcharge',
+            description => 'Ground Residential Differential',
+            #residential_surcharge AKA "Ground Residential Differential"
+        },
+        {
             component   => 'fuel_surcharge',
             description => 'Fuel Surcharge',
         }
@@ -348,19 +353,20 @@ sub calc_delivery_area_surcharge
 {
     my ( $self ) = @_;
     
+    debug2 "Checking delivery area surcharge...";
+    
     # Does not apply to hundredweight service.
     return 0.00 if ( $self->service_name eq 'Ground Hundredweight Service' );
     
     if ( $self->domestic ) {
+        #debug "is domestic...";
         my $table = 'xarea';
         $self->load_table( $table );
         my $zip_codes = $self->Data->{ $table }->{ table };
         
-        my $is_das;
         my $to_zip = $self->to_zip;
-        foreach my $das_zip ( @$zip_codes ) {
-            $is_das = 1 if $das_zip == $to_zip;
-        }
+        my $is_das = binary_numeric_exact_match( $zip_codes, $to_zip );
+
         if ( $is_das ) {
             if ( $self->to_residential ) {
                 return cfg()->{ ups_das }->{ domestic_res } || 2.00;
@@ -376,32 +382,27 @@ sub calc_delivery_area_surcharge
 
 =head2 $self->calc_residential_surcharge()
 
-Note that this is different than the delivery area surcharge
-sub calc_residential_surcharge.  It is listed as "Residential Differential"
-in the accessorials.csv file.
-
-Currently $1.40.
+Note that this is different than the delivery area surcharge.
+It is listed as "Residential Differential" in the accessorials.csv file.
 
 =cut
 
 sub calc_residential_surcharge
 {
     my ( $self ) = @_;
-    
-    # I think the services that are excluded from this calculation are the 
-    # following.
-    # TODO: Residential surcharge: confirm that all the right services are 
-    # included/excluded
 
     my $ups_service_name = $self->service_name;
     my @exempt_services = qw/
-        Ground Commercial
-        Ground Residential
         Ground Hundredweight Service
-        Standard
-    /;    
+    /;
     
-    return 1.40 if $self->to_residential;
+    my $ground_residential_differential = cfg()->{ ups_das }->{ ground_residential_differential } || 1.50;
+    my $air_residential_differential    = cfg()->{ ups_das }->{ air_residential_differential    } || 1.50;
+    my $residential_differential = $self->shipment->is_ground ? $ground_residential_differential : $air_residential_differential;
+    
+    return 0 if $self->intl;
+    return 0 if grep /^${ups_service_name}$/, @exempt_services;
+    return $residential_differential if $self->to_residential;
     return 0;
 }
     
@@ -418,8 +419,6 @@ sub calc_fuel_surcharge
     # charges except UPS Ground Commercial, UPS Ground Residential, UPS Ground
     # Hundredweight Service, and UPS Standard to Canada.
     
-    my $ups_service_name = $self->service_name;
-    
     # There are no exempt services as of Jan 3, 2005: everything has a fuel 
     # surcharge.
     #my @exempt_services = qw/
@@ -430,17 +429,6 @@ sub calc_fuel_surcharge
     #/;
     #return 0 if grep /$ups_service_name/i, @exempt_services;
     
-    my @ground_services = (
-        'Ground Commercial',
-        'Ground Residential',
-        'Ground Hundredweight Service',
-        'Standard',
-    );
-    
-    debug "ups_service_name = '$ups_service_name'";
-    my $is_ground_svc = 0;
-    $is_ground_svc = 1 if grep /${ups_service_name}/i, @ground_services;
-    debug "is_ground_svc = $is_ground_svc";
     my $fuel_surcharge_filename = Business::Shipping::Config::config_dir . '/fuel_surcharge.txt';
     
     my $fuel_surcharge_contents = readfile( $fuel_surcharge_filename );
@@ -448,13 +436,17 @@ sub calc_fuel_surcharge
     my ( undef, $g_fuel_surcharge ) = split( ': ', $line1 );
     my ( undef, $a_fuel_surcharge ) = split( ': ', $line3 );
     my $fuel_surcharge;
-    if ( $is_ground_svc ) 
+    if ( $self->shipment->is_ground ) 
         { $fuel_surcharge = $g_fuel_surcharge; }
     else 
         { $fuel_surcharge = $a_fuel_surcharge; }
     
     $fuel_surcharge ||= 0;
     $fuel_surcharge  *= .01;
+    
+    # Currently, we apply the fuel surcharge to everything.  But in actuality, not all 
+    # fees are applicable.  Just the basic "rate cost" and delivery area surcharges.
+    # Eventually, we'll need to use something else besides _total_charges.
     $fuel_surcharge  *= $self->_total_charges;
     
     return $fuel_surcharge;
@@ -479,7 +471,9 @@ sub ups_name_to_table
     
     if ( $translate_map->{ $ups_name } ) {
         my $name = $translate_map->{ $ups_name };
-        if ( $name eq 'gndres' and ! $self->to_residential ) {
+        
+        if ( $name eq 'gndres' ) {
+            $self->to_residential( 1 );
             return 'gndcomm';
         }
         return $name;
@@ -804,7 +798,7 @@ sub get_cost
 
     #my $row = seq_scan( $table_data, $weight );
     my $row = binary_numeric( $table_data, $weight );
-    
+    debug "searching for weight $weight";
     # Calculate cost from row.
     if ( not defined $row ) { 
         error "Could not find cost in rate table, no matching records.";
@@ -848,6 +842,50 @@ sub seq_scan
     return;
 }    
 
+=head2 binary_numeric_exact_match
+
+=cut
+
+sub binary_numeric_exact_match
+{
+    my ( $array, $target ) = @_;
+    
+    # $low is first element that is not too low;
+    # $high is the first that is too high
+    my ( $low, $high ) = ( 0, scalar( @$array ) );
+    
+    # Keep trying as long as there are elements that might work.
+    while ( $low < $high ) {
+        # Try the middle element.
+        
+        use integer;
+        my $cur = ( $low + $high ) / 2;
+        
+        my $this_value = $array->[ $cur ];
+        
+        #print STDERR "Row $cur:low = $low, high = $high, target = $target, min = $min, max = $max\n";
+        
+        if ( $target < $this_value ) { 
+            # Too high, try lower
+            $high = $cur;
+        }
+        elsif ( $target > $this_value ) {
+            # Too low, try higher
+            $low  = $cur + 1;
+        }
+        elsif ( $target == $this_value ) {
+            # Just right.  Return matching row.
+            return $this_value;
+        }
+        else {
+            # This can never happen.
+            error( "Bug in binary search (numeric exact match)" );
+        }
+    }
+    
+    # Didn't find the record
+    return;
+}
 
 =head2 binary_numeric( $array, $target )
 
