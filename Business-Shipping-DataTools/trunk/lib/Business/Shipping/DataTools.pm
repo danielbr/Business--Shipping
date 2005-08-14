@@ -290,7 +290,7 @@ sub convert_ups_rate_file
 
     my $c = -1;
     my $row_num = 0;
-    my $LIMIT = 9999;
+    my $LIMIT = 99999;
     my $PAUSE = 0;
     my %next_record;
     my $set_max_in_next_record;
