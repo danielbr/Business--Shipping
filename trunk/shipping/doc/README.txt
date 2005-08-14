@@ -2,7 +2,7 @@ NAME
     Business::Shipping - Rates and tracking for UPS and USPS
 
 VERSION
-    Version 1.92
+    Version 2.00
 
 SYNOPSIS
   Rate request example
@@ -256,9 +256,12 @@ Use of this software
     perl ..."
 
 WEBSITE
-    <http://www.kavod.com/Business-Shipping>
+    <http://www.kavod.com/Business-Shipping/>
 
-    Also see <http://search.cpan.org/~dbrowning/Business-Shipping>
+    CPAN web site: <http://search.cpan.org/~dbrowning/Business-Shipping/>
+
+    Backpan (old releases):
+    <http://backpan.cpan.org/authors/id/D/DB/DBROWNING/>
 
 SUPPORT
     This module is supported by the author. Please report any bugs or

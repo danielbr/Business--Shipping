@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:         Business-Shipping
-version:      1.92
+version:      2.00
 version_from: lib/Business/Shipping.pm
 installdirs:  site
 author:       Daniel Browning <db@kavod.com>
@@ -9,7 +9,6 @@ license:      perl
 requires:
     Class::MethodMaker::Engine:    0
     Log::Log4perl:                 0
-    Scalar::Util:                  0
     Test::More:                    0.4
 recommends:
     Cache::FileCache               0
