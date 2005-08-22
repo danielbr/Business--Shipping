@@ -129,7 +129,7 @@ use Class::MethodMaker 2.0
       scalar => [ { -static => 1, -default => {} }, 'Data' ],
     ];
 
-=item * Required()
+=head2 * Required()
 
 from_state only required for Offline international orders.
 
