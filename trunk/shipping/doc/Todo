@@ -2,11 +2,11 @@
 ##  General TODO
 ################################################################################
 
+    * Consider inside-out OO.
+    
     * How many releases should I leave on CPAN?  
 
-    * Remove t/manual/test-data... what is it?
-
-    * Add multiple source zips to the testing for offline ups: e.g. 33124
+    * Add multiple source zips to the testing for offline ups: e.g. 
 
     * Use Pod::Readme
     
@@ -25,8 +25,6 @@
 
     * Checkout CPAN tests.  It appears that t/16 is failing because it lacks a
       plan.
-
-
 	
     * Remove old versions from CPAN (up to 1.06) to ease the requirements of 
       mirrors.  Backpan will still carry the old versions.

@@ -1,6 +1,18 @@
 Revision history for Business::Shipping
 =======================================
 
+2.01  
+
+
+  UPS_Offline
+  
+    * [Fixed] 331 origination zip codes cannot find zone file.
+
+  Misc
+  
+    * Minor POD fix.  Found by CPAN Tester Josts Smokehouse 
+      <Jost.Krieger+smokeback[at]ruhr-uni-bochum.de>.  
+
 
 2.00  Aug 14 2005
 
