@@ -1,6 +1,6 @@
 package Business::Shipping::UPS_Online::RateRequest;
 
-use constant UPS_ONLINE_DISABLED => '1';
+use constant UPS_ONLINE_DISABLED => '0';
 #use constant UPS_ONLINE_DISABLED => '~_~UPS_ONLINE_DISABLED~_~';
 
 =head1 NAME
