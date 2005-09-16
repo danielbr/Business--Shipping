@@ -11,7 +11,7 @@ my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
 my %req = (
         service =>              '1da',
-        from_zip =>             '98682',
+        from_zip =>             '33124',
         to_zip =>               '97015',
         weight =>               1,
         to_residential => 1,

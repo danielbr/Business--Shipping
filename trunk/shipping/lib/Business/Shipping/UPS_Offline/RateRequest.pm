@@ -1049,11 +1049,12 @@ sub calc_zone_info
     # Only apply if the zone is purly numeric.
 
     if ( Business::Shipping::Util::looks_like_number( $zone ) ) {
-        for ( my $c = 10; $c >= 1; $c-- ) {
+        for my $c ( 1 .. 10 ) {
             if ( ! -f $zone_file_with_path ) {
-                debug( "zone_file $zone_file doesn't exist, trying others nearby..." );
-                $zone--;
-                $zone_file_with_path = "$data_dir/$zone";
+                debug3( "Zone file '$zone_file_with_path' doesn't exist, trying others nearby ($zone)..." );
+                my $zone = $zone - $c;
+                $zone_file = $zone;
+                $zone_file_with_path = "$data_dir/$zone.dat";
             }
         }
     }

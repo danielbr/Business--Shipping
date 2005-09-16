@@ -644,3 +644,4 @@ __DATA__
 7.32	Ground Residential	0.8	98682	98532	Chehalis	1
 17.52	Next Day Air	0.8	98682	98532	Chehalis	0
 20.26	Next Day Air	0.8	98682	98532	Chehalis	1
+6.02	GNDRES	1	33124	85028	Phoenix	1
