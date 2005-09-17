@@ -5,7 +5,7 @@ use warnings;
 
 use Business::Shipping;
 
-Business::Shipping->log_level( 'debug' );
+#Business::Shipping->log_level( 'debug' );
 
 my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
@@ -19,8 +19,8 @@ my %req = (
 
 $rate_request->submit( %req ) or die $rate_request->user_error();
 
-use Data::Dumper;
-print Dumper( $rate_request );
+#use Data::Dumper;
+#print Dumper( $rate_request );
 
 print "offline = " . $rate_request->total_charges() . "\n";
 
