@@ -183,9 +183,9 @@ sub set_fuel_surcharge
     my ( undef, $through_date ) = split( ': ', $lines[ 1 ] );
     my ( undef, $air_through_fuel_surcharge ) = split( ': ', $lines[ 2 ] );
     # line 4 skipped.
-    my ( undef, $ground_effective_fuel_surcharge ) = split( ': ', $lines[ 4 ] );
-    my ( undef, $effective_date ) = split( ': ', $lines[ 5 ] );
-    my ( undef, $air_effective_fuel_surcharge ) = split( ': ', $lines[ 6 ] );
+    my ( undef, $ground_effective_fuel_surcharge ) = split( ': ', $lines[ 4 ] || '' );
+    my ( undef, $effective_date ) = split( ': ', $lines[ 5 ] || '' );
+    my ( undef, $air_effective_fuel_surcharge ) = split( ': ', $lines[ 6 ] || '' );
     # line 8 skipped.
     
     my $g_fuel_surcharge;
