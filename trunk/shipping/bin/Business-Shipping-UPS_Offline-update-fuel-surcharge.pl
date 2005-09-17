@@ -21,6 +21,9 @@ is one that will update your Business::Shipping::DataFiles:
 
  01 4 * * 1 perl -MCPAN -e 'install Business::Shipping::DataFiles'
 
+ 
+ http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html
+    
 =head1 REQUIRED MODULES
 
 LWP::UserAgent
@@ -32,8 +35,11 @@ LWP::UserAgent
 use strict;
 use warnings;
 use Business::Shipping;
-use POSIX ( 'strftime' );
+use Business::Shipping::Logging;
+#use POSIX ( 'strftime' );
 use LWP::UserAgent;
+
+#Business::Shipping->log_level( 'debug' );
 
 &check_for_updates;
 
@@ -49,27 +55,27 @@ sub check_for_updates
     
     # Check last updated date, and see if the first monday of the next month has passed.
     
-    my $fuel_surcharge_filename = Business::Shipping::Config::support_files 
-        . '/config/fuel_surcharge.txt';
+    my $fuel_surcharge_filename = Business::Shipping::Config::config_dir()
+        . '/fuel_surcharge.txt';
     
-    my $fuel_surcharge_contents = readfile( $fuel_surcharge_filename );
-    
-    my ( undef, $line2 ) = split( "\n", $fuel_surcharge_contents );
-    my ( undef, $g_good_through_date ) = split( ': ', $line2 );
-    
+    # UPS usually releases a new file three weeks after the effective date, but
+    # we should check anyways, so just always do the update.
+    # 
+    # my $fuel_surcharge_contents = readfile( $fuel_surcharge_filename );
+    # 
+    #print( $fuel_surcharge_contents );
+    # 
+    # my ( undef, $line2 ) = split( "\n", $fuel_surcharge_contents );
+    # my ( undef, $gt_good_through_date ) = split( ': ', $line2 );
     # Determine today's date, and see if it is past the $good_through_date.  
-    
-    my $today = strftime "%Y%m%d", localtime( time );
-    
-    my $get_new_update;
-    
-    if ( $today <= $g_good_through_date ) {
-        print "Update not necessary\n";
-        exit;
-    }
-    else {
-        print "Update is necessary.  Requesting new rates from the UPS website...\n";
-    }
+    # my $today = strftime "%Y%m%d", localtime( time );
+    #if ( $today <= $gt_good_through_date ) {
+    #    print "Update not necessary\n";
+    #    exit;
+    #}
+    #else {
+    #    print "Update is recommended.  Requesting new rates from the UPS website...\n";
+    #}
     
     my $ua = LWP::UserAgent->new;
     $ua->timeout( 10 );
@@ -78,60 +84,89 @@ sub check_for_updates
     my $response = $ua->get( $request_param );
     die "Could not update fuel surchage: could not access ups fuel_surcharge page" unless $response->is_success;
     
-    my $content = $response->content;
+    my $content = $response->content;    
+    my @lines = split( "\n", $content );
+    my $rates = { ground => {}, air => {} };
+    my %type_regex = ( 
+        #'ground' => '^<STRONG>Ground<BR></STRONG>Through (\w+) (\d+), (\d+): (\d+\.?\d?\d?)%',
+        'ground' => '^<STRONG>Ground<BR></STRONG>Through (\w+) (\d+), (\d+): (\d+\.?\d?\d?)%<BR>Effective (\w+) (\d+), (\d+): (\d+\.?\d?\d?)%',
+        'air'    => '^<STRONG>Air and International<BR></STRONG>Through (\w+) (\d+), (\d+): (\d+\.?\d?\d?)%<BR>Effective (\w+) (\d+), (\d+): (\d+\.?\d?\d?)%',
+    );
     
-    #<strong>Current Fuel Surcharge Rate:</strong><br><br><strong>Ground<br></strong>
-    #Through&nbsp;January 2, 2005: 0.00%.<br>Effective&nbsp;January 3, 2005: 2.00%.<br>
-    #<br><strong>Air and International<br></strong>Through&nbsp;January 2, 2005: 13.00%.<br>
-    #Effective&nbsp;January 3, 2005: 9.50%.<br>    
+    #print "content = $content\n";
+    # New HTML style (2005-09-16)
+    # <STRONG>Current Fuel Surcharge Rate:</STRONG><br><br>
+    # <STRONG>Ground<BR></STRONG>Through September 4, 2005: 2.75%<BR>Effective September 5, 2005: 3.00%<br><br>
+    # <STRONG>Air and International<BR></STRONG>Through September 4, 2005: 9.50%<BR>Effective September 5, 2005: 9.50%<br><br>
     
-    # First get the Ground value.
-    $content =~ m|Ground<br></strong>Through\&nbsp\;(\w+) (\d+), (\d+): (\d+)|;
-    my ( $g_month, $g_day, $g_year, $g_rate ) = ( $1, $2, $3, $4 );
+    foreach my $line ( @lines ) {
+        while ( my ( $service_type, $regex ) = each %type_regex ) {
+            if ( $line =~ m|$regex| ) {
+                #print "Match!  line = $line";
+                my %through;
+                my %effective;
+                @through{   qw| month day year rate | } = ( $1, $2, $3, $4 );
+                @effective{ qw| month day year rate | } = ( $5, $6, $7, $8 );
+                $rates->{ $service_type }->{ through } = \%through;
+                $rates->{ $service_type }->{ effective } = \%effective;
+            }
+        }
+    }
 
-    # Then get the Air and International value.
-    $content =~ m|Air and International<br></strong>Through\&nbsp\;(\w+) (\d+), (\d+): (\d+)|;
-    my ( $a_month, $a_day, $a_year, $a_rate ) = ( $1, $2, $3, $4 );
-
-    print "INFO: $g_month, $g_day, $g_year, $g_rate\n$a_month, $a_day, $a_year, $a_rate\n\n";
+    #print "INFO: $gt_month, $gt_day, $gt_year, $gt_rate\n$at_month, $at_day, $at_year, $at_rate\n\n";
     
-    die "Could not determine the date and rate from the UPS fuel surcharge page" 
-        unless $g_month and $g_day and $g_year and defined $g_rate
-           and $a_month and $a_day and $a_year and defined $a_rate;
+    use Data::Dumper;
+    print Dumper( $rates );
     
     # convert month names ('December') to the number
-    
     my @month_names = qw( 
         January February March April May June July 
         August October September November December 
     );
     
-    my $count = 1;
-    for ( @month_names ) {
-        if ( $g_month eq $_ ) {
-            $g_month = $count;
+    foreach my $service_type ( 'ground', 'air' ) {
+        foreach my $date_type ( 'through', 'effective' ) {
+            
+            # cur = current date and rate hash.
+            my %cur = %{ $rates->{ $service_type }{ $date_type } };
+            
+            my $found_month;
+            for my $c ( 1 .. @month_names ) {
+                if ( $cur{ month } eq $month_names[ $c ] ) {
+                    $cur{ month } = $c;
+                    $found_month = 1;
+                    last;
+                }
+            }
+            die "Could not convert month name ($cur{month}) into the month number." unless $found_month;
+            
+            # Add leading zeros to month and day:
+            $cur{ month } = "0" . $cur{ month } if length $cur{ month } == 1;
+            $cur{ day } = "0" . $cur{ day } if length $cur{ day } == 1;
+            
+            $rates->{ $service_type }{ $date_type } = \%cur;    
         }
-        if ( $a_month eq $_ ) {
-            $a_month = $count;
-        }
-        $count++;
     }
     
-    die "Could not convert month name ($g_month and $a_month) into the month number." 
-        if $g_month !~ /\d+/ or $a_month !~ /\d+/;
-    
-    # Add leading zeros to month and day:
-    
-    $g_month = "0$g_month" if length $g_month == 1;
-    $a_month = "0$a_month" if length $a_month == 1;
-    $g_day   = "0$g_day"   if length $g_day   == 1;
-    $a_day   = "0$a_day"   if length $a_day   == 1;
+    my $ground_through_date   = join( '', @{ $rates->{ ground }{ through } }{ qw| year month day | } );
+    my $ground_through_rate   = $rates->{ ground }{ through }{ rate };
+    my $ground_effective_date = join( '', @{ $rates->{ ground }{ effective } }{ qw| year month day | } );
+    my $ground_effective_rate = $rates->{ ground }{ effective }{ rate };
+    my $air_through_date   = join( '', @{ $rates->{ air }{ through } }{ qw| year month day | } );
+    my $air_through_rate   = $rates->{ air }{ through }{ rate };
+    my $air_effective_date = join( '', @{ $rates->{ air }{ effective } }{ qw| year month day | } );
+    my $air_effective_rate = $rates->{ air }{ effective }{ rate };
     
     my $new_rate_file = 
-          "Ground Fuel Surcharge: $g_rate\n"
-        . "Ground Good Through Date: $g_year$g_month$g_day\n"
-        . "Air and International Fuel Surcharge: $a_rate\n"
-        . "Air and International Good Through Date: $a_year$a_month$a_day\n";
+          "Ground Fuel Surcharge: $ground_through_rate\n"
+        . "Ground Good Through Date: $ground_through_date\n"
+        . "Air and International Fuel Surcharge: $air_through_rate\n"
+        . "Air and International Good Through Date: $air_through_date\n"
+        . "Ground Effective Fuel Surcharge: $ground_effective_rate\n"
+        . "Ground Effective Date: $ground_effective_date\n"
+        . "Air and International Effective Fuel Surcharge: $air_effective_rate\n"
+        . "Air and International Effective Date: $air_effective_date\n"
+    ;
     
     print "Going to write new values:\n";
     print "==========================\n$new_rate_file==========================\n";

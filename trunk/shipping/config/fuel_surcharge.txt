@@ -1,4 +1,8 @@
 Ground Fuel Surcharge: 2.75
-Ground Good Through Date: 20050901
-Air and International Fuel Surcharge: 9.5
-Air and International Good Through Date: 20050901
+Ground Good Through Date: 20050904
+Air and International Fuel Surcharge: 9.50
+Air and International Good Through Date: 20050904
+Ground Effective Fuel Surcharge: 3.00
+Ground Effective Date: 20050905
+Air and International Effective Fuel Surcharge: 9.50
+Air and International Effective Date: 20050905

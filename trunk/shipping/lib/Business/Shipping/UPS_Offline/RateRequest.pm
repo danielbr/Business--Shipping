@@ -37,7 +37,7 @@ use Business::Shipping::Logging;
 use Business::Shipping::Data;
 use Business::Shipping::Util;
 use Business::Shipping::Config;
-use POSIX ( 'ceil' );
+use POSIX qw{ ceil strftime };
 #use Fcntl ':flock';
 #use File::Find;
 #use File::Copy;
@@ -86,7 +86,7 @@ Hash.  Format:
 
 use Class::MethodMaker 2.0
     [ 
-      new    => [ 'new' ],
+    new    => [ { -init => '_init' }, 'new' ],
       scalar => [
                   'update',
                   'download',
@@ -127,7 +127,14 @@ use Class::MethodMaker 2.0
                  ],
       scalar => [ { -static => 1 }, 'Zones' ], # Zones is depreciated, remove it.
       scalar => [ { -static => 1, -default => {} }, 'Data' ],
+      scalar => [ { -static => 1 }, 'Fuel_surcharge_ground' ],
+      scalar => [ { -static => 1 }, 'Fuel_surcharge_air' ],
     ];
+
+sub _init
+{
+    $_[ 0 ]->set_fuel_surcharge(); 
+}
 
 =head2 * Required()
 
@@ -159,6 +166,47 @@ sub Unique   { return ( $_[ 0 ]->SUPER::Unique,   qw/ to_residential / ); }
     
 sub to_residential { return shift->shipment->to_residential( @_ ); }
 sub is_from_east_coast { return not shift->is_from_west_coast(); }
+
+sub set_fuel_surcharge
+{
+    my ( $self ) = @_;
+    # See bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
+    
+    my $fuel_surcharge_filename = Business::Shipping::Config::config_dir . '/fuel_surcharge.txt';
+    
+    my $fuel_surcharge_contents = readfile( $fuel_surcharge_filename );
+    my ( @lines ) = split( "\n", $fuel_surcharge_contents );
+    
+    #debug( "lines = " . join( "\n", @lines ) . "\n\n\n" );
+    
+    my ( undef, $ground_through_fuel_surcharge ) = split( ': ', $lines[ 0 ] );
+    my ( undef, $through_date ) = split( ': ', $lines[ 1 ] );
+    my ( undef, $air_through_fuel_surcharge ) = split( ': ', $lines[ 2 ] );
+    # line 4 skipped.
+    my ( undef, $ground_effective_fuel_surcharge ) = split( ': ', $lines[ 4 ] );
+    my ( undef, $effective_date ) = split( ': ', $lines[ 5 ] );
+    my ( undef, $air_effective_fuel_surcharge ) = split( ': ', $lines[ 6 ] );
+    # line 8 skipped.
+    
+    my $g_fuel_surcharge;
+    my $a_fuel_surcharge;
+    
+    # Determine today's date, and see if it is past the $good_through_date.  
+    my $today = strftime( "%Y%m%d", localtime( time ) );
+    if ( $today <= $through_date ) {
+        $g_fuel_surcharge = $ground_through_fuel_surcharge;
+        $a_fuel_surcharge = $air_through_fuel_surcharge;
+    }
+    else {
+        $g_fuel_surcharge = $ground_effective_fuel_surcharge;
+        $a_fuel_surcharge = $air_effective_fuel_surcharge;
+    }    
+    
+    $self->Fuel_surcharge_ground( $g_fuel_surcharge );
+    $self->Fuel_surcharge_air( $a_fuel_surcharge );
+        
+    return;
+}
 
 =head2 validate
 
@@ -414,32 +462,11 @@ sub calc_fuel_surcharge
 {
     my ( $self ) = @_;
     
-    # http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html
-    # The surcharge applies to all domestic and International transportation 
-    # charges except UPS Ground Commercial, UPS Ground Residential, UPS Ground
-    # Hundredweight Service, and UPS Standard to Canada.
-    
-    # There are no exempt services as of Jan 3, 2005: everything has a fuel 
-    # surcharge.
-    #my @exempt_services = qw/
-    #    Ground Commercial
-    #    Ground Residential
-    #    Ground Hundredweight Service
-    #    Standard
-    #/;
-    #return 0 if grep /$ups_service_name/i, @exempt_services;
-    
-    my $fuel_surcharge_filename = Business::Shipping::Config::config_dir . '/fuel_surcharge.txt';
-    
-    my $fuel_surcharge_contents = readfile( $fuel_surcharge_filename );
-    my ( $line1, undef, $line3 ) = split( "\n", $fuel_surcharge_contents );
-    my ( undef, $g_fuel_surcharge ) = split( ': ', $line1 );
-    my ( undef, $a_fuel_surcharge ) = split( ': ', $line3 );
     my $fuel_surcharge;
     if ( $self->shipment->is_ground ) 
-        { $fuel_surcharge = $g_fuel_surcharge; }
+        { $fuel_surcharge = $self->Fuel_surcharge_ground; }
     else 
-        { $fuel_surcharge = $a_fuel_surcharge; }
+        { $fuel_surcharge = $self->Fuel_surcharge_air; }
     
     $fuel_surcharge ||= 0;
     $fuel_surcharge  *= .01;

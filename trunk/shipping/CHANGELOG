@@ -8,6 +8,12 @@ Revision history for Business::Shipping
   
     * [Fixed] 331 origination zip codes cannot find zone file.
 
+    * Fuel surcharge enhancements
+      - Major rewrite of update script.
+      - Update script now stores effective date.
+      - Calculation now occurs only once at load time
+      - Automatically use the "effective" rate if applicable. 
+
   Misc
   
     * Minor POD fix.  Found by CPAN Tester Josts Smokehouse 

@@ -2,12 +2,10 @@
 ##  General TODO
 ################################################################################
 
-    * Consider inside-out OO.
-    
     * How many releases should I leave on CPAN?  
 
-    * Add multiple source zips to the testing for offline ups: e.g. 
-
+    * Consider inside-out OO.
+    
     * Use Pod::Readme
     
     * Use Test::Spelling
@@ -516,7 +514,8 @@
 ################################################################################
  
     * [Bug] Return error message if trying to ship to military americas:
-      - USP does not ship to APO or FPO addresses.
+      - USP does not ship to APO or FPO addresses.  (Online or Offline), suggest
+        USPS instead.      
    
     * [Bug] Be able to handle "mal-formed XML doc" error return from UPS.  
       - Right now, it still tries to parse as an XML doc.

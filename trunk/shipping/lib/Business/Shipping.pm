@@ -46,7 +46,8 @@ Business::Shipping currently supports three shippers:
 
 =over 4
 
-=item * Shipment rate estimation using offline tables.
+=item * Shipment rate estimation using offline tables.  New tables are released whenever UPS updates them, and
+a script is available for automatically updating the fuel surcharge every month.
 
 =back
 
