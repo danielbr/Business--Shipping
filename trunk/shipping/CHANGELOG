@@ -6,13 +6,16 @@ Revision history for Business::Shipping
 
   UPS_Offline
   
-    * [Fixed] 331 origination zip codes cannot find zone file.
+    * [Fixed] Many originating zip codes broken
+      - Buggy "find nearby zone files" code.
 
     * Fuel surcharge enhancements
       - Major rewrite of update script.
       - Update script now stores effective date.
-      - Calculation now occurs only once at load time
+      - Calculation now occurs only once at load time.
       - Automatically use the "effective" rate if applicable. 
+      - New code is backwards-compatible with old rate files, and new rate files
+        are backwards-compatible with old code.
 
   Misc
   
@@ -68,7 +71,6 @@ Revision history for Business::Shipping
       - Two new tests.
       - Can remove dependancy on Scalar::Util after this is complete (since
         we'll no longer need the 'blessed' function).      
-      
     
     * POD::Coverage tests did not have a plan.
     

@@ -2,7 +2,7 @@ NAME
     Business::Shipping - Rates and tracking for UPS and USPS
 
 VERSION
-    Version 2.00
+    Version 2.01
 
 SYNOPSIS
   Rate request example
@@ -24,7 +24,9 @@ FEATURES
     Business::Shipping currently supports three shippers:
 
   UPS_Offline: United Parcel Service
-    * Shipment rate estimation using offline tables.
+    * Shipment rate estimation using offline tables. New tables are released
+    whenever UPS updates them, and a script is available for automatically
+    updating the fuel surcharge every month.
 
   UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)
     * Disabled as of version 1.90, see doc/UPS_Online_disabled.txt.
