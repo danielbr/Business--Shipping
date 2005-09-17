@@ -1,6 +1,9 @@
 # My stuff
 
-^todo/
+^data/.*.csv
+^data/.*.tmp
+^data/.*.dat
+
 
 # Version control files and dirs.
 

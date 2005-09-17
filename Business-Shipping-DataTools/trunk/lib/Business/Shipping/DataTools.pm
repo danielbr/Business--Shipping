@@ -22,27 +22,34 @@ Business::Shipping::DataTools - Convert tables from original format into usable 
 
 =head1 VERSION
 
-Version 0.91
+Version 1.00
 
 =cut
 
-our $VERSION = '0.91';
+our $VERSION = '1.00';
 
 =head1 SYNOPSIS
 
+ bin/update.pl
+
 This is an optional module.  It is used to update Business::Shipping::DataFiles.
 These tools convert the original source data obtained from shippers into a 
-format that Business::Shipping can use.
-
-use Business::Shipping::DataTools;
-
-my $dt = Business::Shipping::DataTools->new( update => 1 );
-$dt->do_update;
+format that Business::Shipping can use.  It is normally run only once per year
+when UPS releases new tables (which explains the poor quality of the source 
+code).
+ 
+It will unzip the data UPS data files and create .dat files.  These .dat files
+are used by Business::Shipping, you can copy them to the data directory.
 
 =head1 REQUIRED MODULES
 
  Archive::Zip
  Text::CSV::Simple
+
+=head1 INSTALLATION
+
+All that is necessary to begin using this module is to untar it.  You do not
+need to 'perl Makefile.PL' or make or anything else.
 
 =cut
 

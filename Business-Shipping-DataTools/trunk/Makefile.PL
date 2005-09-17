@@ -3,7 +3,7 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 my %my_globals = (
-	SUPPORT_FILES_DIR	=> '/var/perl/Business-Shipping'
+	SUPPORT_FILES_DIR	=> '/usr/local/B_Shipping_DataTools'
 );
 
 WriteMakefile(
@@ -13,6 +13,10 @@ WriteMakefile(
     ABSTRACT_FROM       => 'lib/Business/Shipping/DataTools.pm',
     CONFIGURE		    => \&extra_WriteMakefile_options,
     PL_FILES            => {},
+    EXE_FILES           => [
+        'bin/analyze.pl',
+        'bin/update.pl',
+    ],
     PREREQ_PM => {
         'Test::More' => 0,
     },
@@ -42,34 +46,23 @@ docs :
 	find lib -name '*.pm' -or -name '*.pod' -exec podchecker -nowarnings {} \\;
 	
 support_files_install :
-	\@echo "Installing data files to $my_globals{SUPPORT_FILES_DIR}/srcdata"
-	\@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/srcdata
-	\@\$(CP) --recursive --force srcdata/*   $my_globals{SUPPORT_FILES_DIR}/srcdata/
+	\@echo "Installing data files to $my_globals{SUPPORT_FILES_DIR}/data"
+	\@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/data
+	\@\$(CP) --recursive --force data/*   $my_globals{SUPPORT_FILES_DIR}/data/
+	\@echo "Installing config files to $my_globals{SUPPORT_FILES_DIR}/config"
+	\@\$(MKPATH) $my_globals{SUPPORT_FILES_DIR}/config
+	\@\$(CP) --recursive --force config/*   $my_globals{SUPPORT_FILES_DIR}/config/
 };  #/qq
 }
 
 sub extra_WriteMakefile_options {
     my $module = "Business::Shipping::DataTools";
     
-    # TODO: Try to determine the directory by using 
-    # Business::Shipping::Config::support_files()
-    
-    
-    eval {
-        use Business::Shipping;
-        my $support_files_installed = Business::Shipping::Config::support_files();
-        if ( $support_files_installed ) {
-            $my_globals{ SUPPORT_FILES_DIR } = $support_files_installed;
-        }
-    };
-    
-    # ignore errors.  If Business::Shipping isn't installed, don't make
-    # a big deal about it.
-    
-    $@ = ''; 
-    
-    
     my $question = qq(
+    
+Note: Installation is not recommended.  You may use the module without make
+or make install.
+    
              ---  $module Support files directory  ---
   
 $module module comes with various support files for configuration, database, 
