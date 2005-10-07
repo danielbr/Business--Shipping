@@ -115,8 +115,7 @@ sub check_for_updates
 
     #print "INFO: $gt_month, $gt_day, $gt_year, $gt_rate\n$at_month, $at_day, $at_year, $at_rate\n\n";
     
-    use Data::Dumper;
-    print Dumper( $rates );
+    #print Dumper( $rates );
     
     # convert month names ('December') to the number
     my @month_names = qw( 
@@ -124,6 +123,7 @@ sub check_for_updates
         August October September November December 
     );
     
+    #print "ground through month = $rates->{ground}{through}{month}\n";
     foreach my $service_type ( 'ground', 'air' ) {
         foreach my $date_type ( 'through', 'effective' ) {
             
@@ -131,9 +131,10 @@ sub check_for_updates
             my %cur = %{ $rates->{ $service_type }{ $date_type } };
             
             my $found_month;
-            for my $c ( 1 .. @month_names ) {
+            for my $c ( 0 .. $#month_names ) {
                 if ( $cur{ month } eq $month_names[ $c ] ) {
-                    $cur{ month } = $c;
+                    #print "cur month ('$cur{month}') eq month_names[c] ('$month_names[$c]')\n";
+                    $cur{ month } = $c + 1;  # Add one because we don't count months from 0 in real life.
                     $found_month = 1;
                     last;
                 }
@@ -147,6 +148,7 @@ sub check_for_updates
             $rates->{ $service_type }{ $date_type } = \%cur;    
         }
     }
+    #print Dumper( $rates );
     
     my $ground_through_date   = join( '', @{ $rates->{ ground }{ through } }{ qw| year month day | } );
     my $ground_through_rate   = $rates->{ ground }{ through }{ rate };
