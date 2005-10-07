@@ -186,7 +186,7 @@ sub execute
             debug 'calculating multiple shipments due to overweight...';
             debug "original weight: $original_weight, max_weight_per_package: $max_weight_per_package";
             
-            my $MAX_NUM_PACKAGES = 10;
+            my $MAX_NUM_PACKAGES = 100;
             
             my $number_of_packages = $original_weight / $max_weight_per_package;
             if ( $number_of_packages != int $number_of_packages ) {
