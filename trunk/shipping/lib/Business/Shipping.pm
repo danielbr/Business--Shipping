@@ -248,6 +248,11 @@ use Class::MethodMaker 2.0
 
 $Business::Shipping::RuntimeLoad = 1;
 
+# test numbers:
+# UPS  test tracking number: 1ZA723W80340522160
+# USPS test tracking number: EJ958083578US
+
+
 sub import 
 {
     my ( $class_name, $record ) = @_;
