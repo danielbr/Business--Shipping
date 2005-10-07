@@ -44,6 +44,7 @@ use POSIX qw{ ceil strftime };
 #use Math::BaseCnv;
 #use Data::Dumper;
 use Storable;
+use Cwd;
 
 =head2 update
 
@@ -596,7 +597,13 @@ sub load_table
         my $filename = Business::Shipping::Config::data_dir . "/$table.dat";
         debug "loading filename $filename";
         if ( ! -f $filename ) {
-            return error "file does not exist: $filename";
+            # Current working directory is useful to know if the $filename is not an absolute path.
+            my $error_append = '';
+            if ( $filename !~ m|^/| ) {
+                my $cur_working_dir = Cwd::cwd();
+                $error_append = " (current working dir: $cur_working_dir)";
+            }
+            return error "file does not exist: ${filename}${$error_append}";
         }
         $self->Data->{ $table } = Storable::retrieve( $filename );
     }
