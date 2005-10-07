@@ -2,6 +2,21 @@
 ##  General TODO
 ################################################################################
 
+    * Fuel surcharge is not updated correctly.
+    
+    * Idea: try out Test::Class
+    
+    * Fix Meta error:
+    
+META.yml: META.yml found but error encountered while loading: --- !perl/YAML::Error
+code: YAML_PARSE_ERR_NO_SEPARATOR
+msg: Expected separator '---'
+line: 14
+document: 2
+..
+ at /home/k/PAUSE/cron/mldistwatch line 1599
+
+ 
     * How many releases should I leave on CPAN?  
 
     * Consider inside-out OO.

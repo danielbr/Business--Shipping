@@ -1,7 +1,20 @@
 Revision history for Business::Shipping
 =======================================
 
-2.01  
+2.02  Oct 7 2005
+
+
+  UPS_Offline
+  
+    * [Fixed] Fuel surcharge update script mis-records dates.
+    
+    * Increase the number-of-packages limit, which increases the maximum weight.
+    
+    * Could not find data error now reports current working directory to help
+      find the problem.
+
+
+2.01  Sep 16 2005
 
 
   UPS_Offline
