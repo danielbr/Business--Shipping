@@ -122,6 +122,7 @@ use Class::MethodMaker 2.0
                                     'from_ak_or_hi',
                                     'from_state',
                                     'from_state_abbrev',
+                                    'tier',
                                 ],
                    },
                    'shipment'
@@ -393,10 +394,9 @@ services, for example).
 
 =cut
 
-# TODO: Instead of always applying this, only apply it if the zip is found
-# in xarea.
-
 # TODO: Calculate the delivery area surcharge amount from the accessorials.csv
+
+# TODO: Handle international too.
 
 sub calc_delivery_area_surcharge
 {
@@ -603,7 +603,7 @@ sub load_table
                 my $cur_working_dir = Cwd::cwd();
                 $error_append = " (current working dir: $cur_working_dir)";
             }
-            return error "file does not exist: ${filename}${$error_append}";
+            return error "file does not exist: ${filename}${error_append}";
         }
         $self->Data->{ $table } = Storable::retrieve( $filename );
     }
@@ -761,7 +761,6 @@ sub calc_cost
     # Requires that it be multi-package, over a certain total weight, and only certain services.
     # 100 pounds for airborn services, 200 pounds for ground (Ground, 3DS)
     my $cost;
-    
     if ( $self->shipment->use_hundred_weight ) {
         my $weight = $self->shipment->weight;
         
@@ -773,18 +772,28 @@ sub calc_cost
         debug "Using hundredweight with table $h_table";
         
         my $rate_val = $self->get_cost( $h_table, $self->zone, $weight );
+        
+        if ( ! $rate_val and $self->tier ) {
+            # Many tier tables are not implemented yet.  
+            # TODO: remove this after all the tier levels are implemented for all the services.
+            debug "No rate for tier '" . $self->tier . "'.  Try removing tier.";
+            $h_table =~ s/\d$//;
+            $rate_val = $self->get_cost( $h_table, $self->zone, $weight );
+        }
+        
         if (    $self->shipment->cwt_is_per eq 'hundredweight' ) {
             my $number_of_hundred_pounds = $weight * 0.01;
             my $rate_per_hundred_pounds = $rate_val;
             $cost = $number_of_hundred_pounds * $rate_per_hundred_pounds;
+            debug "cwt is per hundredweight, num of hundredpounds ($number_of_hundred_pounds) * rate_per_hund ($rate_per_hundred_pounds) = cost ($cost)";
         }
         elsif ( $self->shipment->cwt_is_per eq 'pound' ) {
             $cost = $rate_val * $weight;
+            debug "cwt is per pound, rate val ($rate_val) * weight ($weight ) = cost ($cost)";
         }
         else {
             error "unknown is_per type";
         }
-        
     }
     else {
         my $running_sum_cost;
@@ -930,6 +939,8 @@ From Mastering Algorithms in Perl, modified to handle rows and my own matching s
 sub binary_numeric
 {
     my ( $array, $target ) = @_;
+    
+    return unless ref $array eq 'ARRAY';
     
     # $low is first element that is not too low;
     # $high is the first that is too high

@@ -8,6 +8,11 @@ Revision history for Business::Shipping
   
     * [Fixed] Fuel surcharge update script mis-records dates.
     
+    * Add support for tiered hundredweight pricing.
+      - Tier 3 for Ground setup.
+      - If data is not available, fall back to non-tiered pricing.
+      - Tests.
+    
     * Increase the number-of-packages limit, which increases the maximum weight.
     
     * Could not find data error now reports current working directory to help

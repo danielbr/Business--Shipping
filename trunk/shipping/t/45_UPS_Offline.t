@@ -589,6 +589,25 @@ ok( $rr->total_charges(), $this_test_desc );
 print $this_test_desc . $rr->total_charges() . "\n";
 
 ########################################################################
+## Hundredweight with tiers
+########################################################################
+%test = (
+    service    => 'gndcom',
+    weight     => '330',
+    from_zip   => '98682',
+    to_zip     => '87110',
+    to_city    => 'Albuquerque',
+    tier       => 3,
+    to_residential => 0,
+);
+$this_test_desc = "UPS Offline: Hundredweight: tier 3:  ";
+$rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
+$rr->init( %test );
+$rr->execute or die $rr->user_error;
+ok(  close_enough( 127.06, $rr->total_charges() ), $this_test_desc );
+print $this_test_desc . $rr->total_charges() . "\n";
+
+########################################################################
 ## Named services
 ########################################################################
 %test = (
@@ -603,8 +622,6 @@ $rr->init( %test );
 $rr->execute or die $rr->user_error;
 ok( $rr->total_charges(), $this_test_desc );
 print $this_test_desc . $rr->total_charges() . "\n";
-
-
 
 while ( defined( my $data = <DATA> ) ) {
 	my $autotest_count = 0;
@@ -635,7 +652,7 @@ while ( defined( my $data = <DATA> ) ) {
     }
 	
 }
-# Price, Service, Weight, from_zip, to_zip, to_city
+# Price, Service, Weight, from_zip, to_zip, to_city, to_residential
 __DATA__
 5.85	GNDRES	1	98682	85028	Phoenix	1
 18.07	1DA	1	98682	97015	Clackamas	1
@@ -647,3 +664,5 @@ __DATA__
 6.02	GNDRES	1	33124	85028	Phoenix	1
 5.85	GNDRES	1	97015	85028	Phoenix	1
 5.26	GNDRES	1	98682	97015	Clackamas	1
+35.44	Next Day Air	1	98683	96826	Honolulu	1
+35.44	Next Day Air	1	98683	00906	San Juan	1

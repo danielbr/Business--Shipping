@@ -39,6 +39,7 @@ use Class::MethodMaker 2.0
       scalar => [ 'from_state' ],
       scalar => [ { -default => 150 }, 'max_weight' ],
       scalar => [ 'disable_hundredweight' ],
+      scalar => [ 'tier' ],                            # TODO: Only allow 1-8
       scalar => [ { -default => '10' }, 'hundredweight_margin' ],
       array  => [ { -type => 'Business::Shipping::UPS_Offline::Package',
                     -default_ctor => 'new' }, 'packages' ],      
@@ -117,7 +118,12 @@ sub get_hundredweight_table
         3ds 3dscwt
     /;
     
-    return $table_map{ $table } || $table;
+    my $suffix = '';
+    if ( $self->tier and $self->tier >= 1 and $self->tier <= 7 ) {
+        $suffix = $self->tier;
+    }
+    
+    return ( $table_map{ $table } || $table ) . $suffix;
 }
 
 sub cwt_is_per

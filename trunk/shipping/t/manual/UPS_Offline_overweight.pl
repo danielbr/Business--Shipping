@@ -4,7 +4,7 @@ use warnings;
 use Business::Shipping;
 use Data::Dumper;
 
-#Business::Shipping->log_level( 'debug' );
+Business::Shipping->log_level( 'debug' );
 
 my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
@@ -12,12 +12,17 @@ my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 
 $rate_request->init(
     service    => 'gndres', #gndres
-    weight     => '175',
+    weight     => '330',
     from_zip   => '98682',
-    to_zip     => '98270',
+    to_zip     => '87110',
+    to_city    => 'Albuquerque',
+    tier       => 3,
 );
 
 my $results = $rate_request->submit() or die $rate_request->user_error();
-#print Dumper( $rate_request );
-print "UPS_Offline One Day Air Hundredweight = " . $rate_request->total_charges() . "\n";
+
+
+print "use_hundred_weight = " . $rate_request->shipment->use_hundred_weight . "\n";
+print Dumper( $rate_request );
+print "UPS_Offline Ground Hundredweight = " . $rate_request->total_charges() . "\n";
 
