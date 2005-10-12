@@ -2,10 +2,13 @@
 ##  General TODO
 ################################################################################
 
-    * Fuel surcharge is not updated correctly.
+    * Document the new 'tier' option.
     
-    * Idea: try out Test::Class
-    
+    * Data entry: all tiers in Excel, then export to CSV.
+
+    * UPS_Offline: 
+      - weight of 330 to 87110 was overpriced ($189.21 instead of actual $127.51)
+
     * Fix Meta error:
     
 META.yml: META.yml found but error encountered while loading: --- !perl/YAML::Error
@@ -16,33 +19,14 @@ document: 2
 ..
  at /home/k/PAUSE/cron/mldistwatch line 1599
 
- 
     * How many releases should I leave on CPAN?  
+      - Some users are still using 1.07.
 
     * Consider inside-out OO.
     
     * Use Pod::Readme
     
     * Use Test::Spelling
-    
-    * UPS_Offline: Zone finder doesn't get correct zone record for 97015 zip.
-    
-    * UPS_Offline: In the tests, check to see if support for UPS_Online has been
-      disabled.  If so, don't run tests that use it.  (Then again, for most 
-      users, those tests wont be run anyway because they haven't setup the 
-      credentials).
-
-    * UPS_Offline: add a "adder_margin" to hundredweight shipments.  
-      Increases the price by x% percent (10% default) as a safety against the
-      very low default rates.
-
-    * Checkout CPAN tests.  It appears that t/16 is failing because it lacks a
-      plan.
-	
-    * Remove old versions from CPAN (up to 1.06) to ease the requirements of 
-      mirrors.  Backpan will still carry the old versions.
-      
-    * UPS_Offline: Extended Area Surcharges: International and Domestic
 
     * Makefile.PL: Automatically determine if the user has write permissions
       for /usr/local.  If so, default to that directory.  Otherwise, default
@@ -52,35 +36,9 @@ document: 2
     * Look for a way to move MANIFEST and Meta.yml to doc/ or etc/ so that the
       root directory can be less cluttered.
 
-    * DataTools: Remove the data from the "unknown" section since it is unused.
-    
-    * Remove files that we don't use from the DataFiles distribution
-
-    * DataTools: wweas.csv has two difficult characters:
-      - Causes CSV module to "fail" on those lines.
-      grep 'Colombia,,COV' data/*.csv
-      grep 'Colombia,,SAL' data/*.csv
-    
-    * DataTools: Excel documents
-      The following files are actually MS Excel documents.  Put a note in 
-      the docs somewhere that specifies they must be manually converted.
-      
-      akz_48.csv akz_air.csv hiz_48pr.csv hiz_ak.csv hiz_hi.csv
-      
     * Interchange Usertag: Store rate_request objects of like types between
       requests.  So that, for example, two requests that are run from the same
       Prefork'ed daemon will not have to load the Storable objects seperately.
-    
-    * UPS_Offline: Don't convert letter to 0, because letter means it is
-      enclosed in an envelope which may actually weigh more (for WW express, not
-      sure about other methods).
-      
-    * UPS_Offline: canstnd doesn't convert exactly right.
-      (500+, and the many 'Min' sections).
-      
-    * UPS_Offline: residential surcharge
-      - Is the 1.75 surcharge added per-shipment or per-package?  I think it may 
-        be per-package, but is currently calculated per-shipment.
 
     * Catch up on POD coverage.
     
@@ -375,6 +333,43 @@ document: 2
 ################################################################################
 ##  UPS_Offline TODO
 ################################################################################
+    
+    * UPS_Offline: Don't convert letter to 0, because letter means it is
+      enclosed in an envelope which may actually weigh more (for WW express, not
+      sure about other methods).
+      
+    * UPS_Offline: canstnd doesn't convert exactly right.
+      (500+, and the many 'Min' sections).
+      
+    * UPS_Offline: residential surcharge
+      - Is the 1.75 surcharge added per-shipment or per-package?  I think it may 
+        be per-package, but is currently calculated per-shipment.
+
+    * UPS_Offline: add a "adder_margin" to hundredweight shipments.  
+      Increases the price by x% percent (10% default) as a safety against the
+      very low default rates.
+      
+    * UPS_Offline: Extended Area Surcharges: Handle International too 
+      - Domestic works great. 
+    
+    * Calculate the delivery area surcharge amount from the accessorials.csv
+
+    * DataTools: Remove the data from the "unknown" section since it is unused.
+    
+    * Remove files that we don't use from the DataFiles distribution
+
+    * DataTools: wweas.csv has two difficult characters:
+      - Causes CSV module to "fail" on those lines.
+      grep 'Colombia,,COV' data/*.csv
+      grep 'Colombia,,SAL' data/*.csv
+    
+    * DataTools: Excel documents
+      The following files are actually MS Excel documents.  Put a note in 
+      the docs somewhere that specifies they must be manually converted.
+      
+      akz_48.csv akz_air.csv hiz_48pr.csv hiz_ak.csv hiz_hi.csv
+      
+
     * Implement the following logic:
     
 	- For UPS GND and 3DS, to determine the rate for multi-pacakge shipments weight 
