@@ -2,9 +2,10 @@
 ##  General TODO
 ################################################################################
 
+    * Data entry: all tiers in Excel, then export to CSV and split into multiple
+      files.
+
     * Document the new 'tier' option.
-    
-    * Data entry: all tiers in Excel, then export to CSV.
 
     * UPS_Offline: 
       - weight of 330 to 87110 was overpriced ($189.21 instead of actual $127.51)
@@ -20,13 +21,7 @@ document: 2
  at /home/k/PAUSE/cron/mldistwatch line 1599
 
     * How many releases should I leave on CPAN?  
-      - Some users are still using 1.07.
-
-    * Consider inside-out OO.
-    
-    * Use Pod::Readme
-    
-    * Use Test::Spelling
+      - Some users are still using 1.07 and 1.5x
 
     * Makefile.PL: Automatically determine if the user has write permissions
       for /usr/local.  If so, default to that directory.  Otherwise, default
@@ -96,19 +91,19 @@ document: 2
     * [Enh] Look into Params::Validate and/or Class::Contract
  
     * [Enh] Add Test::Inline tests
+    
+    * Consider inside-out OO.
+    
+    * Use Pod::Readme
+    
+    * Use Test::Spelling
 
     * [Enh] Consider using Locale::Country (5.8.x+) & Locale::SubCountry (CPAN),
       or Geography::States & Geography::Countries.
 
     * Module::Build
-      - use create_makefile_pl => 'traditional' (because of this post:)
+      - use create_makefile_pl => 'traditional'
       - http://perlmonks.org/?node_id=458282
-
-    * Bundle::Business::Shipping requires DataFiles, but DataFiles requires 
-      Business::Shipping during installation... so it recurses.  
-      - Just let it pick the directory instead of requiring Business::Shipping,
-        because it seems that requiring the module is enough to send CPAN off 
-        looking.
 
     * [P3] Build a test that will state with modules are missing at the 
       beginning, then the rest of the tests can be quiet.
@@ -273,6 +268,8 @@ document: 2
     * [Enh] Add First-Class Mail
       - http://www.usps.com/consumers/domestic.htm#first
       - Can be done via an off-line calculation.
+      
+    * Extra intl rates from HTML::TableExtract
 
 ################################################################################
 ##  USPS_Online TODO
