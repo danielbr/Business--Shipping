@@ -80,6 +80,8 @@ Here is a general outline for installing [business-shipping] in Interchange.
    Note that "BSHIPPING" is used to denote fields that can be used for any 
    Business::Shipping shipper.  Note that there should be one tab separating
    each of the three columns below.
+   
+   UPS_TIER is the pricing tier.
 
  BSHIPPING_LOG_INVALID_REQUESTS	1	Shipping
  BSHIPPING_DEBUG	0	Shipping
@@ -95,6 +97,7 @@ Here is a general outline for installing [business-shipping] in Interchange.
  UPS_USER_ID	userid	Shipping
  UPS_PASSWORD	mypassword	Shipping
  UPS_PICKUP_TYPE	Daily Pickup	Shipping
+ UPS_TIER	8	Shipping
  USPS_USER_ID	123456ABCDE7890	Shipping
  USPS_PASSWORD	abcd1234d5	Shipping
     
@@ -190,6 +193,12 @@ sub business_shipping_tag {
             'cache'             => 0,
         },
     };
+    
+    if ( my $tier = $Variable->{ UPS_TIER } ) {
+        if ( $tier >= 1 and $tier <= 7 ) {
+            $defaults->{UPS_Offline}{tier} = $tier;
+        }
+    }
     
     # Apply all of the above defaults.  Sorting the hash keys causes 'all' to
     # be applied first, which allows each shipper to override the default.
