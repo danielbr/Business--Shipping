@@ -14,11 +14,11 @@ Business::Shipping - Rates and tracking for UPS and USPS
 
 =head1 VERSION
 
-Version 2.01
+Version 2.02
 
 =cut
 
-$VERSION = '2.01';
+$VERSION = '2.02';
 
 =head1 SYNOPSIS
 
