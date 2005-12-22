@@ -2,6 +2,19 @@
 ##  General TODO
 ################################################################################
 
+    * Bathsheba Grossman: For instance, when you initially communicate with the USPS server, you're required to do so in a test mode. That's supported, which is good, but the switch doesn't seem to be documented outside the code itself, so it took me a while to find it.
+
+    * Make log4perl optional.
+
+    * UPS_Online: doesn't error out on the following invalid query:
+      # This rate request is invalid because 3DS is not available, though all
+      # the other services are available.
+        'from_zip'       => '16059',     # Valencia, PA
+        'service'        => '3DS', 
+        'to_residential' => '1',
+        'to_zip'         => '14534',     # Pittsford, NY
+        weight           =>  1.00,
+
     * Data entry: all tiers in Excel, then export to CSV and split into multiple
       files.
 
@@ -92,7 +105,7 @@ document: 2
  
     * [Enh] Add Test::Inline tests
     
-    * Consider inside-out OO.
+    * Consider inside-out OO (Object::InsideOut, etc.)
     
     * Use Pod::Readme
     
