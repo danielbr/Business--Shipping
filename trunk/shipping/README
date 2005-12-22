@@ -2,7 +2,7 @@ NAME
     Business::Shipping - Rates and tracking for UPS and USPS
 
 VERSION
-    Version 2.01
+    Version 2.03
 
 SYNOPSIS
   Rate request example
@@ -241,12 +241,13 @@ SEE ALSO
     * Business::UPS - Online cost estimation module that uses the UPS web
     form instead of the UPS Online Tools. For shipments that originate in
     the USA only.
+    * Net::UPS - Implementation of UPS Online Tools API in Perl
     * http://www.halofree.com/lib/public/code/Ship/UPS.pm
     * http://www.halofree.com/lib/public/code/Ship/USPS.pm
 
 Use of this software
     It is appreciated when users mention their use of Business::Shipping to
-    the author and/or on their website or in their application.
+    the author and/or in their web site/application.
 
     * Interchange e-commerce system ( <http://www.icdevgroup.org> ). See
     "UserTag/business-shipping.tag".
