@@ -471,8 +471,9 @@ sub _handle_response
         $ups_results = [ $response_tree->{ RatedShipment } ];
     }
     
-    use Data::Dumper;
-    debug2 "ups_results = " . Dumper( $ups_results ); 
+    #use Data::Dumper;
+    #debug2 "ups_results = " . Dumper( $ups_results );
+    
     foreach my $ups_rate_info ( @$ups_results ) {
         
         my $service_code = $ups_rate_info->{ Service }->{ Code };
