@@ -609,6 +609,8 @@ very few prerequisites.  Supports shipments that originate in USA and Canada.
 =item * Business::UPS - Online cost estimation module that uses the UPS web form
 instead of the UPS Online Tools.  For shipments that originate in the USA only.
 
+=item * Net::UPS - Implementation of UPS Online Tools API in Perl
+
 =item * http://www.halofree.com/lib/public/code/Ship/UPS.pm
 
 =item * http://www.halofree.com/lib/public/code/Ship/USPS.pm
@@ -618,7 +620,7 @@ instead of the UPS Online Tools.  For shipments that originate in the USA only.
 =head1 Use of this software
 
 It is appreciated when users mention their use of Business::Shipping to the 
-author and/or on their website or in their application.
+author and/or in their web site/application.
 
 =over 4
 
