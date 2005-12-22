@@ -1,8 +1,13 @@
 Revision history for Business::Shipping
 =======================================
 
-2.02  Oct 7 2005
+2.02  Dec 22 2005
 
+
+  General
+  
+    * Default logging configuration is now to suppress everything except fatal 
+      errors.
 
   UPS_Offline
   
