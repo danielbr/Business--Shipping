@@ -1,6 +1,10 @@
 Revision history for Business::Shipping::DataTools
 =================================================
 
+0.02  
+
+ * Add tier 3 for ground hundredweight. 
+
 0.01  Sep 14 2004
 
  * Initial revision
