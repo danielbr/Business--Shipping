@@ -1,8 +1,8 @@
 bin/analyze.pl
+bin/find_chars.pl
 bin/update.pl
 CHANGELOG
 config/DataTools.ini
-data/canrates.zip
 data/canzones.zip
 data/usrates.zip
 data/uszones.zip
