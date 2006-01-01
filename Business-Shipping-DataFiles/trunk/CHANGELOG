@@ -1,9 +1,13 @@
 Revision history for Business::Shipping::DataFiles
 =================================================
 
+1.02
+
+ * Add tier 3 pricing for ground hundredweight.
+
 1.01  Aug 14 2005
 
- * Fix xarea table, which was being truncated due to table length limit
+ * Fix xarea table, which was being truncated due to table length limit.
 
 1.00  Aug 03 2005
 
