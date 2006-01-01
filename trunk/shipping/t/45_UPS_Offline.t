@@ -33,7 +33,7 @@ sub test
         cache      => 0,
     );
     
-    $shipment->submit( %args ) or die $shipment->user_error();
+    $shipment->submit( %args ) or print STDERR $shipment->user_error();
     return $shipment;
 }
 
@@ -46,7 +46,7 @@ sub test_online
         %user
     );
     
-    $shipment->submit( %args ) or die $shipment->user_error();
+    $shipment->submit( %args ) or print STDERR $shipment->user_error();
     return $shipment;
 }
 
@@ -315,7 +315,7 @@ $rr2->submit(
     from_state    => 'Washington',
     to_zip        => '96826',
     
-) or die $rr2->user_error();
+) or print STDERR $rr2->user_error();
 
 print "Hawaii 2DA (alternate calling method):" . $rr2->total_charges() . "\n";
 ok( $rr2->total_charges, "Hawaii 2DA (alternate calling method):" );
@@ -521,10 +521,10 @@ SKIP: {
     );
     
     my $rr_off = Business::Shipping->rate_request( shipper => 'Offline::UPS', %r1 );
-    $rr_off->submit or die $rr_off->user_error();
+    $rr_off->submit or print STDERR $rr_off->user_error();
     
     my $rr_on = Business::Shipping->rate_request( shipper => 'Online::UPS', %r1, %user );
-    $rr_on->submit or die $rr_on->user_error();
+    $rr_on->submit or print STDERR $rr_on->user_error();
     
     my $rr_off_rate = $rr_off->rate;
     my $rr_on_rate  = $rr_on->rate;
