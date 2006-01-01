@@ -2,7 +2,16 @@
 ##  General TODO
 ################################################################################
 
+    * Don't die on any of the testing errors, let it continue to the next test.
+    
+    * Hundredweight tests only work with the latest versions of DataFiles. 
+
     * Data Tools: allow the user to select "current rates" or "new rates"
+    
+    * Data Tools: UPS now does " / country code" in ewwzone.csv
+    
+    * Data Tools: Fix the build errors.
+      http://cpantesters.perl.org/show/Business-Shipping-DataTools.html#Business-Shipping-DataTools-1.00
 
     * Bathsheba Grossman: For instance, when you initially communicate with the USPS server, you're required to do so in a test mode. That's supported, which is good, but the switch doesn't seem to be documented outside the code itself, so it took me a while to find it.
 
