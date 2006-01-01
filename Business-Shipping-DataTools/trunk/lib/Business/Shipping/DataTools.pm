@@ -242,9 +242,6 @@ sub scrub_file
 {
     my ( $file ) = @_;
     
-    # TODO: Convert ISO-8859 into ASCII text.
-    # Text::iconv()?
-    
     #print "writing to >$file.new";
     open(  RATE_FILE, $file ) or logdie $!;
     open(  NEW_FILE,  ">$file.new" ) or logdie $!;
@@ -254,8 +251,12 @@ sub scrub_file
     while ( defined( my $line = <RATE_FILE> ) ) {
         next unless $line and $line !~ /^\s+$/;
         next if $line =~ /^,+$/;
-        #$line =~ s/!([a-z][A-Z]\s\w
-        # TODO: Converts  ISO-8859 text to regular text.  (like the (R) at the top of 1da.csv)
+       
+        # Convert ISO-8859 text (like the (R) at the top of 1da.csv) to ASCII text.  iconv couldn't seem to
+        # do it, no matter which encoding I selected, so Text::iconv() probably wouldn't work either.
+        # I used bin/find_chars.pl to determine the valid character range.
+        $line =~ s|[^ "\#\$\%\&'\(\)\*\+\,-\.\/0-9\:a-z\[\]A-Z\t\n]||g;
+
         print NEW_FILE $line if $line and $line 
     }
     close( RATE_FILE );
@@ -385,7 +386,7 @@ sub convert_ups_rate_file
           or $next_line_is_header 
           or $key eq 'Dest. ZIP'       # 986.csv
           or $key eq 'Postal Range'    # wash.csv 
-          or $key eq 'Country'         # ewwzone.csv 
+          or $key eq 'Country / Country Code'         # ewwzone.csv 
            )  
         {
             
@@ -559,7 +560,11 @@ sub convert_ups_rate_file
             # Name of country (the only country not caught by the regex below is 
             # "Ponape (Federated States of Micronesia+A193)", so we have the length too.
             # $key =~ /^[ a-zA-Z\'\.\(\)\-\+]+$/ or length( $key ) > 35
-        
+            
+            # Remove the ' / country code' component of the country key.
+            # TODO: store the country code in a separate column instead of deleting it, and use it for 
+            # lookups.
+            $key =~ s| / [A-Z]+$||g;
             push @{ $aoa->[ $row_num++ ] }, ( $key, @cols );
             #die "stopping" if $c > 100;
         }
