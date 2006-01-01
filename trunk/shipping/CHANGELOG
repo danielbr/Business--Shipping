@@ -1,12 +1,13 @@
 Revision history for Business::Shipping
 =======================================
 
-2.03  
+2.03  Dec 31 2005
 
 
-  General
+  USPS_Online
   
-    * 
+    * Fix weight calculation error and support shipments less than one pound.  
+      Patch by Mike Wexler <mwexler@tias.com>.
   
   
 2.02  Dec 22 2005
