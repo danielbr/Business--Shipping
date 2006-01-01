@@ -20,7 +20,7 @@ WriteMakefile(
     PREREQ_PM => {
         'Test::More' => 0,
         'Config::IniFiles' => 0,
-        'Archive::Zips' => 0,
+        'Archive::Zip' => 0,
         'Storable' => 0,
         'Text::CSV::Simple' => 0,
         'Business::Shipping' => 1.92,
