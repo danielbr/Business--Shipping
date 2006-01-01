@@ -19,6 +19,12 @@ WriteMakefile(
     ],
     PREREQ_PM => {
         'Test::More' => 0,
+        'Config::IniFiles' => 0,
+        'Archive::Zips' => 0,
+        'Storable' => 0,
+        'Text::CSV::Simple' => 0,
+        'Business::Shipping' => 1.92,
+        'Business::Shipping::DataFiles' => 1.00,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Business-Shipping-DataTools-*' },
