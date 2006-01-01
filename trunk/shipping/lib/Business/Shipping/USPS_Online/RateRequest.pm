@@ -260,13 +260,6 @@ sub _massage_values
     
     $self->_domestic_or_intl();
     
-    # Round up if United States... international can have less than 1 pound.
-    if ( $self->to_country() and $self->to_country() =~ /(USA?)|(United States)/ ) {
-        foreach my $package ( @{ $self->shipment->packages() } ) {
-            $package->weight( 1 ) if ( $package->weight and $package->weight < 1 );
-        }
-    }
-    
     return;
 }
 

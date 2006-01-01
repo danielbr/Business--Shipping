@@ -69,12 +69,6 @@ sub weight
     trace( '(' . uneval( \@_ ) . ')' );
     
     if ( $in_weight ) {
-        
-        if ( $in_weight < 1.00 ) {
-            # Minimum one pound for USPS.
-            $in_weight = 1.00;
-        }
-        
         $self->set_lbs_oz( $in_weight );
     }
     # Convert back to 'weight' (i.e. one number) when returning.
@@ -96,10 +90,10 @@ sub set_lbs_oz
     my $pounds = 0;
     my $ounces = 0;
     
-    $pounds = $self->_round_up( $in_weight );
-    my $remainder = $pounds - $in_weight;
+    $pounds = int $in_weight ;
+    my $remainder = $in_weight - $pounds;
     # For some weights (e.g. 2.4), this is necessary.
-    $remainder = -$remainder if $remainder < 0;
+    $remainder = 0 if $remainder < 0;
     if ( $remainder ) {
         $ounces = $remainder * 16;
         $ounces = sprintf( "%1.0f", $ounces );
@@ -124,23 +118,10 @@ sub lbs_oz_to_weight
     
     my $pounds = $self->pounds || 0;
     my $ounces = $self->ounces || 0;
-    my $fractional_pounds = $ounces ? sprintf( "%1.0f", $ounces / 16 ) : 0;
+    my $fractional_pounds = $ounces ? ($ounces / 16 ) : 0;
     my $weight = ( $pounds + $fractional_pounds );
     
     return $weight;
-}
-
-=head2 _round_up
-
-=cut
-
-sub _round_up
-{
-    my ( $self, $f ) = @_;
-    
-    return undef unless defined $f;
-    
-    return sprintf( "%1.0f", $f );
 }
 
 1;
