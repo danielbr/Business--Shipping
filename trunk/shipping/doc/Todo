@@ -2,6 +2,8 @@
 ##  General TODO
 ################################################################################
 
+    * Data Tools: allow the user to select "current rates" or "new rates"
+
     * Bathsheba Grossman: For instance, when you initially communicate with the USPS server, you're required to do so in a test mode. That's supported, which is good, but the switch doesn't seem to be documented outside the code itself, so it took me a while to find it.
 
     * Make log4perl optional.
@@ -373,13 +375,6 @@ document: 2
       grep 'Colombia,,COV' data/*.csv
       grep 'Colombia,,SAL' data/*.csv
     
-    * DataTools: Excel documents
-      The following files are actually MS Excel documents.  Put a note in 
-      the docs somewhere that specifies they must be manually converted.
-      
-      akz_48.csv akz_air.csv hiz_48pr.csv hiz_ak.csv hiz_hi.csv
-      
-
     * Implement the following logic:
     
 	- For UPS GND and 3DS, to determine the rate for multi-pacakge shipments weight 
