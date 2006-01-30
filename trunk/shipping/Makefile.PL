@@ -95,7 +95,7 @@ support_files_install :
 	\@echo "Installing configuration files to $my_globals{CONFIG_DIR}"
 	\@\$(MKPATH) $my_globals{LOG_DIR}
 	\@\$(MKPATH) $my_globals{CONFIG_DIR}
-	\@\$(CP) --recursive --force config/* $my_globals{CONFIG_DIR}/
+	\@\$(CP) -R -f config/* $my_globals{CONFIG_DIR}/
 };  #/qq
 }
 
