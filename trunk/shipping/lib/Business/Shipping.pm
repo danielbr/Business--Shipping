@@ -2,7 +2,7 @@
 #
 # $Id$
 #
-# Copyright (c) 2003-2005 Daniel Browning <db@kavod.com>. All rights reserved.
+# Copyright (c) 2003-2006 Daniel Browning <db@kavod.com>. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See doc/License for more info.
 
@@ -659,7 +659,7 @@ Daniel Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavo
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright (c) 2003-2005 Daniel Browning E<lt>F<db@kavod.com>E<gt>. All rights 
+Copyright (c) 2003-2006 Daniel Browning E<lt>F<db@kavod.com>E<gt>. All rights 
 reserved.  This program is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.  See C<doc/License> for more info.
 
