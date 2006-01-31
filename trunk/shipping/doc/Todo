@@ -2,6 +2,20 @@
 ##  General TODO
 ################################################################################
 
+    * Preload => 'All' doesn't work for UPS_Online requests
+
+    * Backup any existing config/* files before copying new ones during
+      installation (Makefile.PL).
+      
+    * Mandrake build failure
+      + "Failed test 'UPS Offline: Hundredweight: tier 3:  '"
+        http://nntp.x.perl.org/group/perl.cpan.testers/281673
+      + Idea: The system has old data files, and that test only works with
+        the most recent data files (1.02).
+      
+    * DataTools doesn't pass any build tests.
+      http://testers.cpan.org/author/DBROWNING.html
+      
     * Don't die on any of the testing errors, let it continue to the next test.
     
     * Hundredweight tests only work with the latest versions of DataFiles. 

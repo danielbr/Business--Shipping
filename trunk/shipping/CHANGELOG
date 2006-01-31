@@ -1,6 +1,19 @@
 Revision history for Business::Shipping
 =======================================
 
+
+2.04
+
+
+  General
+  
+    * [Fixed] Installation uses GNU-style long-name command line arguments, 
+      which aren't supported under FreeBSD.  Reported by Todd Anderson 
+      <ahqmed@hotmail.com>.
+      
+    * Removed some unused code.
+
+
 2.03  Dec 31 2005
 
 
