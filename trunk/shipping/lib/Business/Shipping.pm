@@ -282,20 +282,12 @@ sub import
                     
             my @to_load;
                 
-            if ( lc $val eq 'all' ) {
-                for ( keys %$module_list ) {
-                    my $aryref = $module_list->{ $_ };
-                    push @to_load, @$aryref;
-                }
-            }
-            else {
-                while ( my ( $shipper, $mod_list ) = each %$module_list ) {
-                    if ( lc $val eq lc $shipper ) {
-                        push @to_load, ( 
-                            @$mod_list, 
-                            'Business::Shipping::' . $shipper . '::RateRequest',
-                        );
-                    }
+            while ( my ( $shipper, $mod_list ) = each %$module_list ) {
+                if ( lc $val eq lc $shipper or lc $val eq 'all' ) {
+                    push @to_load, ( 
+                        @$mod_list, 
+                        'Business::Shipping::' . $shipper . '::RateRequest',
+                    );
                 }
             }
             
