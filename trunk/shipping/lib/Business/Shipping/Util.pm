@@ -70,6 +70,7 @@ sub unique
 =head2 * looks_like_number( $scalar )
 
 Shamelessly stolen from Scalar::Util 1.10 in order to reduce dependancies.
+Not part of the normal copyright.
 
 =cut
 
