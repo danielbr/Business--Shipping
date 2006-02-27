@@ -175,7 +175,7 @@ sub set_fuel_surcharge
     # See bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
     
     my $fuel_surcharge_filename = Business::Shipping::Config::config_dir . '/fuel_surcharge.txt';
-    
+    #error( "fuel_surcharge_filename = $fuel_surcharge_filename, current dir = " . Cwd::cwd() );
     my $fuel_surcharge_contents = readfile( $fuel_surcharge_filename );
     my ( @lines ) = split( "\n", $fuel_surcharge_contents );
     
@@ -527,38 +527,37 @@ Returns ( $key, $raw_key )
 
 =cut
 
-sub determine_keys
+sub determine_key
 {
     my ( $self ) = @_;
     
+    # The raw key isn't used any more.
+    #my $raw_key;
     my $key;
-    my $raw_key;
+    
     if ( $self->domestic_or_ca ) {
-        #
         # Domestic and Canada - by ZIP code
-        #
-        
         if ( ! $self->to_zip ) {
             $self->user_error( "Need to_zip." );
+            $self->invalid( 1 );
             return;
         }
         
-        $raw_key = $self->to_zip;
+        #$raw_key = $self->to_zip;
         $key = $self->to_zip;
         $key = substr($key, 0, 3);
         $key =~ s/\W+//g;
         $key = uc $key;
     }
     elsif ( $self->intl ) {
-        #
         # International - by country name 
-        #
         $key = $self->to_country;
-        $raw_key = $key;
+        #$raw_key = $key;
     }
     
-    return ( $key, $raw_key );
+    return $key;
 }
+
 
 =head2 rate_table_exceptions
 
@@ -634,10 +633,7 @@ sub calc_zone
     
     my $type      = $self->shipment->service_nick2;  # The column name we're looking for.
     
-    my ( $key, $raw_key ) = $self->determine_keys; 
-    
-    #die "zone_file = $zone_file";
-    
+    my $key = $self->determine_key || return error "Could not determine key.";
     
     my $obj = $self->Data->{ $zone_file };
     #die "woot";
@@ -664,7 +660,7 @@ sub calc_zone
     
     foreach my $record ( @$table_data ) {
         my ( $min, $max ) = @$record[ 0, 1 ];
-        debug3 "checking if $key >= $min and $key <= $max";
+        #debug3 "checking if $key >= $min and $key <= $max";
         # TODO: detect if the zone name is numeric, then use numeric comparisons?
         if ( $self->shipment->to_canada ) {
             #
