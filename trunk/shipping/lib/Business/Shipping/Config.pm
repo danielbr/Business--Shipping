@@ -74,8 +74,7 @@ if ( ! -f $Business::Shipping::Config::main_config_file ) {
     die "Could not open main configuration file: $Business::Shipping::Config::main_config_file: $!";
 }
 
-# See Online.pm
-
+# Number of times to try for online requrests.  See Online.pm.
 $Business::Shipping::Config::Try_Limit = 2;
 
 tie my %cfg, 'Config::IniFiles', (      -file => $Business::Shipping::Config::main_config_file );
