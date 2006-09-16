@@ -13,7 +13,7 @@ if ( $ENV{ VERBOSE_TESTS } ) {
 
     use Log::Log4perl qw( :easy );
     
-    Log::Log4perl->easy_init($INFO);
+    Log::Log4perl->easy_init($Log::Log4perl::INFO);
     
     drink();
     drink("Soda");
