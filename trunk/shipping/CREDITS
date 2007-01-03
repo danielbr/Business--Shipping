@@ -27,6 +27,8 @@ contributed.
    - C.O.D. (Cash On Delivery) for UPS_Online (ver 1.55).
    - Various minor patches.
  
+ * Ron Phipps <ron@endpoint.com> fixed the fuel surcharge updater.
+   
  * Kevin Old <kold@carolina.rr.com> got the USPS XML generator working.
  
  * sauoq on PerlMonks.org provided valuable commentary and ideas.

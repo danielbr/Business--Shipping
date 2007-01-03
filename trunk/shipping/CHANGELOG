@@ -12,6 +12,8 @@ Revision history for Business::Shipping
       <ahqmed@hotmail.com>.
       
     * Removed some unused code.
+    
+    * Fix fuel surcharge updater. Contributed by Ron Phipps <ron@endpoint.com>.
 
 
 2.03  Dec 31 2005
