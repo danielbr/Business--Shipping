@@ -2,6 +2,105 @@
 ##  General TODO
 ################################################################################
 
+* USPS_Online requires password even for a test transaction, when it shouldn't.
+  Reported by Jan Gerene <jan@gerene.be>.
+
+* Instructions on signing up for USPS are not complete:
+  - they need to specify how to run a test transaction to get the password
+    for live transactions.
+  - t/manual/USPS_Online-test-mode.pl has an example.
+
+From http://ups.com/content/us/en/resources/find/cost/fuel_surcharge.html:
+"UPS uses an index-based surcharge that is adjusted monthly. Changes to the surcharge will be effective the first Monday of each month and posted approximately two weeks prior to the effective date."
+
+* Some users are using old versions of Storable, so they get:
+> Storable binary image v2.7 more recent than I am (v2.6) at
+> ../../lib/Storable.pm (autosplit into
+> ../../lib/auto/Storable/_retrieve.al) line 323, at
+> /usr/lib/perl5/site_perl/5.8.1
+> /Business/Shipping/UPS_Offline/RateRequest.pm line 608
+
+(e.g. using perl 5.8.1 from Sep 2003)
+
+This is because DataFiles is built with a newer version of Storable.
+
+Maybe try to write more compatible versions with:
+$Storable::interwork_56_64bit ?
+(Or some other format switch?)
+
+At a minimum, find out which version of Storable I *really* require, and
+add that to the prerequisites.
+
+t/61_Log4perl................Global symbol "$INFO" requires explicit package name at t/61_Log4perl.t line 16.
+Execution of t/61_Log4perl.t aborted due to compilation errors.
+
+Caused by:
+
+   use Log::Log4perl qw( :easy );
+
+Which is straight out of the docs (http://search.cpan.org/~mschilli/Log-Log4perl-1.06/lib/Log/Log4perl.pm#Easy_Mode)
+... Maybe Log4Perl stopped exporting $INFO?
+
+
+* Switch USPS to SSL-only, non-SSL will be disabled Sep 30, 2006.
+
+* Build an ActiveState PPM module.
+  - ActiveState will automatically build the module if it passes the tests:
+    http://ppm-ia.activestate.com/BuildStatus/5.8-A.html
+  - Currently, Class::MethodMaker doesn't build on Windows, so...
+     http://ppm-ia.activestate.com/BuildStatus/5.8-windows/windows-5.8/Class-MethodMaker-2.08.txt
+  - See "How do I make a PPM package?" in 
+    http://aspn.activestate.com/ASPN/docs/ActivePerl/5.8/faq/ActivePerl-faq2.html  
+  - Get the PPM module on the ActiveState Package Repository... how?
+  
+  
+
+* Integrate dont_split_packages() patch by Mike Wexler <mwexler@tias.com>.
+
+*** RateRequest.pm      2006/04/21 22:44:02     1.1
+--- RateRequest.pm      2006/04/21 22:49:35
+***************
+*** 87,92 ****
+--- 87,93 ----
+  use Class::MethodMaker 2.0
+      [ new => [ qw/ -hash new / ],
+        scalar        => [ 'is_success', 'cache', 'invalid' ],
++       scalar      => [ 'dont_split_packages' ],
+        scalar        => [ 'shipper' ],
+        scalar        => [ 'results' ],
+        scalar        => [ '_total_charges' ],
+***************
+*** 182,188 ****
+          
+          my $original_weight = $package->weight;
+          
+!         if ( $max_weight_per_package and ( $original_weight > $max_weight_per_package ) ) {
+              debug 'calculating multiple shipments due to overweight...';
+              debug "original weight: $original_weight, max_weight_per_package: $max_weight_per_package";
+              
+--- 183,191 ----
+          
+          my $original_weight = $package->weight;
+          
+!       if ( $self->{dont_split_packages} ) {
+!           ;
+!         } elsif ( $max_weight_per_package and ( $original_weight > $max_weight_per_package ) ) {
+              debug 'calculating multiple shipments due to overweight...';
+              debug "original weight: $original_weight, max_weight_per_package: $max_weight_per_package";
+             
+
+* When packages are split, the 'machinable' flag is not copied to the split
+  packages.  Reported by Mike Wexler <mwexler@tias.com>.
+  - Check for other flags that may not be copied to the split packages, too.
+
+
+t/61_Log4perl................ok 1/0Global symbol "$INFO" requires explicit package name at t/61_Log4perl.t line 16.
+	Execution of t/61_Log4perl.t aborted due to compilation errors.
+	# Looks like your test died just after 2.
+	t/61_Log4perl................dubious
+
+	
+	
     * Preload => 'All' doesn't work for UPS_Online requests
 
     * Backup any existing config/* files before copying new ones during

@@ -14,11 +14,11 @@ Business::Shipping - Rates and tracking for UPS and USPS
 
 =head1 VERSION
 
-Version 2.03
+Version 2.04
 
 =cut
 
-$VERSION = '2.03';
+$VERSION = '2.04';
 
 =head1 SYNOPSIS
 
@@ -651,7 +651,7 @@ See the C<doc/Todo> file for a comprehensive list of known bugs.
 
 =head1 CREDITS
 
-Many people have contributed to this module, please see the C<doc/Credits> file. 
+Many people have contributed to this module, please see the C<CREDITS> file. 
 
 =head1 AUTHOR
 
@@ -661,6 +661,6 @@ Daniel Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavo
 
 Copyright (c) 2003-2006 Daniel Browning E<lt>F<db@kavod.com>E<gt>. All rights 
 reserved.  This program is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.  See C<doc/License> for more info.
+it under the same terms as Perl itself.  See C<LICENSE> for more info.
 
 =cut

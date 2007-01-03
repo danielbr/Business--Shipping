@@ -218,6 +218,9 @@ sub business_shipping_tag {
         }
     }
     
+    # Short-circuit for the common case.
+    return unless $opt{ to_zip } or $opt{ to_country }; 
+    
     my $rate_request;
     eval { $rate_request = Business::Shipping->rate_request( 'shipper' => $shipper ); };
     if ( ! defined $rate_request or $@ ) {

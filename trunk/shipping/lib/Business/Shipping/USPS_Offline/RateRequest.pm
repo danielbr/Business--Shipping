@@ -68,6 +68,8 @@ Business::Shipping::USPS_Offline::RateRequest
 
 =head1 DESCRIPTION
 
+This is a stub, it needs a lot of work to be completed.
+
 Looks up a service zone by country in the C<usps> table, then looks in
 the appropriate rate table for a price by that zone.
 
