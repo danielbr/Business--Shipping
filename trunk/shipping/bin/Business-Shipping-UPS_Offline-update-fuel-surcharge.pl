@@ -88,16 +88,15 @@ sub check_for_updates
     my @lines = split( "\n", $content );
     my $rates = { ground => {}, air => {} };
     my %type_regex = ( 
-        #'ground' => '^<STRONG>Ground<BR></STRONG>Through (\w+) (\d+), (\d+): (\d+\.?\d?\d?)%',
-        'ground' => '^<STRONG>Ground<BR></STRONG>Through (\w+) (\d+), (\d+): (\d+\.?\d?\d?)%<BR>Effective (\w+) (\d+), (\d+): (\d+\.?\d?\d?)%',
-        'air'    => '^<STRONG>Air and International<BR></STRONG>Through (\w+) (\d+), (\d+): (\d+\.?\d?\d?)%<BR>Effective (\w+) (\d+), (\d+): (\d+\.?\d?\d?)%',
+        'ground' => '^<STRONG>Ground<BR></STRONG>Through&nbsp;(\w+) (\d+), (\d+): (\d+\.?\d?\d?)%<BR>Effective&nbsp;(\w+) (\d+), (\d+): (\d+\.?\d?\d?)%',
+        'air'    => '^<STRONG>Air and International<BR></STRONG>Through&nbsp;(\w+) (\d+), (\d+): (\d+\.?\d?\d?)%<BR>Effective&nbsp;(\w+) (\d+), (\d+): (\d+\.?\d?\d?)%',
     );
     
     #print "content = $content\n";
-    # New HTML style (2005-09-16)
+    # New HTML style (2006-10-25)
     # <STRONG>Current Fuel Surcharge Rate:</STRONG><br><br>
-    # <STRONG>Ground<BR></STRONG>Through September 4, 2005: 2.75%<BR>Effective September 5, 2005: 3.00%<br><br>
-    # <STRONG>Air and International<BR></STRONG>Through September 4, 2005: 9.50%<BR>Effective September 5, 2005: 9.50%<br><br>
+    # <STRONG>Ground<BR></STRONG>Through&nbsp;November 5, 2006: 5.25%<BR>Effective&nbsp;November 6, 2006: 4.50%<br><br>
+    # <STRONG>Air and International<BR></STRONG>Through&nbsp;November 5, 2006: 16.50%<BR>Effective&nbsp;November 6, 2006: 12.50%<BR><br>    
     
     foreach my $line ( @lines ) {
         while ( my ( $service_type, $regex ) = each %type_regex ) {
