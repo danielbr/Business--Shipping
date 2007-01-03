@@ -13,7 +13,7 @@ BEGIN {
         }
     }
     
-    # Make sure that enough modules are install for at least ONE shipper
+    # Make sure that enough modules are installed for at least ONE shipper
     my @installed_shippers = Business::Shipping::Config::calc_req_mod();
     if ( not @installed_shippers ) {
         ok( 0, "Required modules are not installed.  See INSTALL file." );
