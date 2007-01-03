@@ -9,22 +9,25 @@ use Business::Shipping;
 
 my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Online' );
 
-my $FROM_ZIP = '01351'; # Montague, MA
-my $to_zip = '94110';   # San Francisco, CA
-my $package_weight = 5;
+my $FROM_ZIP = '98682'; # Montague, MA
+my $to_zip = '50000';   # San Francisco, CA
+my $package_weight = 2.0;
+
+#calculated at $53.65 for Worldwide Expedited and the actual price was $75.14.
 
 my $results = $rate_request->submit(
                 shipper         => 'UPS_Online',
-                service         => 'GNDCOM', 
+                service         => 'XPR', 
                 from_zip        => $FROM_ZIP,
                 to_zip          => $to_zip,
                 weight          => $package_weight,
                 user_id         => $ENV{ UPS_USER_ID },
                 password        => $ENV{ UPS_PASSWORD },
                 access_key      => $ENV{ UPS_ACCESS_KEY },
-                pickup_type     =>  'daily',
+                pickup_type     => 'daily',
                 from_country    => 'US',
-                to_country      => 'US',
+                to_country      => 'MX',
+                to_city         => 'Toluca',
                 to_residential  => 1,
 ) or die $rate_request->user_error();
 

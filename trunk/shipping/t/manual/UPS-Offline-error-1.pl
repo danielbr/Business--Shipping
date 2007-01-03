@@ -10,21 +10,35 @@ use Business::Shipping;
 my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Offline' );                              
 
 my %req = (
-        service =>              'UPSSTD',
-        from_zip =>             '98683',
-        to_zip =>               'H3T1H9',
-        from_state =>           'WA',
-        to_country =>           'CA',
-        weight =>               38,
-        to_residential => 1,
+    'from_country' => "US",
+'from_state' => "WA",
+'to_country' => "US",
+'service' => "GNDRES",
+'to_city' => "test",
+'tier' => "3",
+'weight' => "80",
+'from_zip' => "98682",
+'to_zip' => "98682",
+'cache' => "1",
+
+        #service =>              'GNDRES',
+        #from_zip =>             '98682',
+        #to_zip =>               '95134',
+        #weight =>               80,
+        #tier   =>               3,
+        #to_residential => 1,
 );
+
+$rate_request->shipment->max_weight( 64 );
 
 $rate_request->submit( %req ) or die $rate_request->user_error();
 
-#use Data::Dumper;
-#print Dumper( $rate_request );
+use Data::Dumper;
+print Dumper( $rate_request );
 
 print "offline = " . $rate_request->total_charges() . "\n";
+
+exit;
 
 Business::Shipping->log_level( 'fatal' );
 
