@@ -291,8 +291,11 @@ sub _handle_response
         ForceArray => 0, 
         KeepRoot => 1 
     );
-    ### But discard the root element if it is RateV2Response
+    ### Discard the root element if it is RateV2Response
     $response_tree = $response_tree->{RateV2Response} if( exists($response_tree->{RateV2Response}) );
+
+    ### Discard the root element if it is IntlRateResponse
+    $response_tree = $response_tree->{IntlRateResponse} if( exists($response_tree->{IntlRateResponse}) );
     
     # Handle errors
     ### Get all errors
@@ -398,7 +401,7 @@ sub _handle_response
         #
 
         # Set charges to returned services, since charges needs to be set to something
-        $charges = $response_tree->{ IntlRateResponse }->{ Package }->{ Service };
+        $charges = $response_tree->{ Package }->{ Service };
         
         if( defined($charges) )
         {
@@ -424,7 +427,7 @@ sub _handle_response
         # International *does* tell you the price of all services for each package
         #
         
-        foreach my $service ( @{ $response_tree->{ IntlRateResponse }->{ Package }->{ Service } } ) {
+        foreach my $service ( @{ $response_tree->{ Package }->{ Service } } ) {
             debug( "Trying to find a matching service by service description (" . $service->{ SvcDescription } . ")..." );
             debug( "Charges for $service->{SvcDescription} service = " . $service->{Postage} );
             # BUG: you can't check if the service descriptions match, because many countries use
