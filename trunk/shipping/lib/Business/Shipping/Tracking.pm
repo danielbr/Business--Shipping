@@ -2,7 +2,7 @@
 # 
 # $Id$
 # 
-# Copyright (c) 2004 Infogears Inc.  All rights reserved.
+# Copyright (c) 2004-2007 Infogears Inc.  All rights reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights 
 # reserved. 
 # This program is free software; you may redistribute it and/or modify it under
@@ -19,17 +19,15 @@ Business::Shipping::Tracking
 
 =head2 Example tracking request for USPS:
 
-use Business::Shipping::Tracking::USPS;
+use Business::Shipping::USPS_Online::Tracking;
 
-my $tracker = Business::Shipping::Tracking::USPS->new();
+my $tracker = Business::Shipping::USPS_Online::Tracking->new();
 
 $tracker->init(
-
 test_mode => 1,
-
-tracking_ids => ['EJ958083578US', 'EJ958083578US'],
-
 );
+
+$tracker->tracking_ids('EJ958083578US', 'EJ958083578US');
 
 $tracker->submit() || logdie $tracker->user_error();
 my $hash = $tracker->results();
@@ -107,12 +105,12 @@ sub _delete_undefined_keys($) {
 
 =head1 SEE ALSO
 
-L<Business::Shipping::Tracking::UPS>
-L<Business::Shipping::Tracking::USPS>
+L<Business::Shipping::UPS_Online::Tracking>
+L<Business::Shipping::USPS_Online::Tracking>
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright (c) 2004 InfoGears Inc. L<http://www.infogears.com>  All rights reserved.
+Copyright (c) 2004-2007 InfoGears Inc. L<http://www.infogears.com>  All rights reserved.
 
 Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 
@@ -133,10 +131,12 @@ sub submit
 
     
      my $cache = Cache::FileCache->new() if $self->cache();
+
+    my $cache_results;
      if ( $self->cache() ) {
       trace( 'cache enabled' );    
       
-      my $cache_results;
+
 
       foreach my $id (@{$self->tracking_ids}) {
         my $key = $self->gen_unique_key($id);
@@ -147,10 +147,11 @@ sub submit
         if(defined($cache_result)) {
           $cache_results->{$id} = $cache_result;
         } else {
-          trace( 'Cache miss on id $id, running request manually, then add to cache.' );
+          trace( "Cache miss on id $id, running request manually, then add to cache." );
         }
-        $self->results($cache_results);
       }
+      # Save the results that we have.
+      $self->results(%$cache_results);
     } else {
       trace( 'cache disabled' );
     }
@@ -160,7 +161,6 @@ sub submit
 
 
     my @requests = $self->_gen_request();
-    
     while(my $request = shift @requests) {
       trace( 'Please wait while we get a response from the server...' );
       $self->response( $self->_get_response( $request ) );
@@ -193,14 +193,18 @@ sub submit
     if ($self->cache() ) {    
       trace( 'cache enabled, saving results.' );
       #TODO: Allow setting of cache properties (time limit, enable/disable, etc.)
-      
       my $new_cache = Cache::FileCache->new();
+      
       
       foreach my $id ($self->results_keys) {
         my $key = $self->gen_unique_key($id);
         
-        my $value = $self->results($id);
-        
+	# Don't overwrite the result if it was pulled from the cache, otherwise the cache 
+	# would never expire.
+	if(exists($cache_results->{$id})) {
+	  next;
+	}
+        my $value = $self->results_index($id);
         $new_cache->set( $key, $value, ($self->cache_time() || "12 hours"));
       }
     }

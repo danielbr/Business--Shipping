@@ -12,8 +12,8 @@ requires:
     Test::More:                    0.4
 recommends:
     Cache::FileCache               0
-    Clone                          0
     Crypt::SSLeay                  0
     LWP::UserAgent                 0
     XML::DOM                       0
     XML::Simple                    0
+    Date::Parse                    0

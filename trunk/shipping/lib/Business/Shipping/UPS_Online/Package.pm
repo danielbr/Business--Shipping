@@ -55,7 +55,8 @@ use Class::MethodMaker 2.0
     [ 
       new    => [ qw/ new / ],
       new    => [ qw/ default_new / ],
-      scalar => [ 'packaging', 'signature_type', 'insured_currency_type', 'insured_value' ],
+      scalar => [ { -default => '02' }, 'packaging' ],
+      scalar => [ 'signature_type', 'insured_currency_type', 'insured_value' ],
     ];
 
 1;

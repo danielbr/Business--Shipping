@@ -1,6 +1,6 @@
-package Business::Shipping::Tracking::UPS;
+package Business::Shipping::UPS_Online::Tracking;
 
-use constant UPS_ONLINE_DISABLED => '1';
+use constant UPS_ONLINE_DISABLED => undef;
 #use constant UPS_ONLINE_DISABLED => '~_~UPS_ONLINE_DISABLED~_~';
 
 # Business::Shipping::UPS_Online::Tracking - Abstract class for tracking shipments
@@ -77,7 +77,7 @@ my $results = $tracker->results();
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright (c) 2004 InfoGears Inc. L<http://www.infogears.com>  All rights reserved.
+Copyright (c) 2004-2007 InfoGears Inc. L<http://www.infogears.com>  All rights reserved.
 
 Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 
@@ -97,7 +97,6 @@ use XML::DOM;
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
-use Clone;
 use Class::MethodMaker 2.0
     [ 
       new    => [qw/ -hash new / ],
@@ -348,11 +347,8 @@ sub _handle_response
       push @{$result_hash->{activity}}, $activity_info;
     }
 
-    # If there is more then one activity we should take the first one as the summary so we're consistent with USPS.pm
-    # Have to use Clone::clone here due to caching and making references simple
-
     if(defined(scalar(@{$result_hash->{activity}}) > 0)) {
-      $result_hash->{summary} = Clone::clone($result_hash->{activity}->[0]);
+      $result_hash->{summary} = $result_hash->{activity}->[0];
     }
 
     Business::Shipping::Tracking::_delete_undefined_keys($result_hash);

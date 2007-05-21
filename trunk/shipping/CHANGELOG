@@ -7,14 +7,37 @@ Revision history for Business::Shipping
 
   General
   
-    * [Fixed] Installation uses GNU-style long-name command line arguments, 
-      which aren't supported under FreeBSD.  Reported by Todd Anderson 
+    * [Fixed] Change GNU-style long-name command line arguments to more widely-
+      compatible one-letter arguments. Reported by Todd Anderson 
       <ahqmed@hotmail.com>.
       
     * Removed some unused code.
     
     * Fix fuel surcharge updater. Contributed by Ron Phipps <ron@endpoint.com>.
 
+  USPS_Online:
+  
+    * 
+    
+  Online shipping:
+
+    * Rename tracking modules so they match the path, 
+      Business::Shipping::UPS_Online::Tracking and Business::Shipping::USPS_Online::Tracking.
+
+    * Fix tracking so it works with multiple tracking its, Class::MethodMaker 2.0 
+      is a little tricky about this, you can't pass an arrayref on the init for 
+      the tracking object, you need to pass it in a second call.  Update example code.
+
+    * Fix caching for tracking so it actually works, rather then failing with an error 
+      on Class::MethodMaker 2.x.
+
+    * Fix caching for tracking so it doesn't overwrite cached versions of results on 
+      every retrieval, causing the cache entries to never expire.
+
+    * Cleanup date parsing code in Business::Shipping::USPS_Online::Tracking and to 
+      no longer need Clone.
+
+      Patch by Rusty Conover <rconover@infogears.com>
 
 2.03  Dec 31 2005
 

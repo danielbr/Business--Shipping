@@ -46,8 +46,13 @@ Business::Shipping currently supports three shippers:
 
 =over 4
 
-=item * Shipment rate estimation using offline tables.  New tables are released whenever UPS updates them, and
-a script is available for automatically updating the fuel surcharge every month.
+=item * Shipment rate estimation using offline tables. 
+
+As of January, 2007, 
+UPS has only released the data tables in binary Excel format. These have not 
+been converted to the text files necessary for use in this module. A script is
+distributed with the module for automatically updating the fuel surcharge 
+every month.
 
 =back
 

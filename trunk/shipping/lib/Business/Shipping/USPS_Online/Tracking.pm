@@ -59,7 +59,7 @@ the same terms as Perl itself. See LICENSE for more info.
 
 =cut
 
-package Business::Shipping::Tracking::USPS;
+package Business::Shipping::USPS_Online::Tracking;
 
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
@@ -72,7 +72,8 @@ use XML::DOM;
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
-use Clone;
+use Date::Parse;
+use POSIX;
 use Class::MethodMaker 2.0 
     [ 
       new	=> [ { -hash => 1, -init => 'this_init' }, 'new' ],
@@ -94,11 +95,16 @@ sub _gen_request_xml
     trace '()';
     my $self = shift;
     
+    
     if(!grep { !$self->results_exists($_) } @{$self->tracking_ids}) {
       # All results were found in the cache
       return;
     }
 
+    my @results;
+
+	
+    foreach my $id (@{$self->tracking_ids()}) {
     # Note: The XML::Simple hash-tree-based generation method wont work with USPS,
     # because they enforce the order of their parameters (unlike UPS).
     #
@@ -131,8 +137,10 @@ sub _gen_request_xml
     #
     debug3( XML::Simple::XMLout( $request_xml_tree, KeepRoot => 1 ) );
     #
+      push @results, $request_xml;
+    }
     
-    return ( $request_xml );
+    return @results;
 }
 
 sub _gen_url
@@ -149,10 +157,8 @@ sub _gen_request
     my ( $self ) = shift;
     trace( 'called' );
 
-    my $request_xml = $self->_gen_request_xml();
-    if(!$request_xml) {
-      return undef;
-    }
+    my @reqs;
+    foreach my $request_xml ($self->_gen_request_xml()) {
     my $request = HTTP::Request->new('POST', $self->_gen_url());
 
     $request->header( 'content-type' => 'application/x-www-form-urlencoded' );
@@ -167,7 +173,10 @@ sub _gen_request
     #
     debug( 'HTTP Request: ' . $request->as_string() );
     #
-    return ( $request );
+
+      push @reqs, $request;
+    }
+    return @reqs;
 }
 
 
@@ -242,24 +251,18 @@ sub _handle_response
         }
         
         my $i = 1;
+
         my %month_name_hash = map { ($_ => sprintf("%0.2d", $i++)) } qw(January February March April May June July August September October November December);
         
         my @activity_entries;
 
-        foreach my $activity (@activity_array) {
-          my $date = $activity->{EventDate};
+        foreach my $activity (grep { defined($_) } @activity_array) {
           
-          $date =~ s/([A-z]+)\s+(\d+),\s+(\d+)/$3 . $month_name_hash{$1} . sprintf("%0.2d", $2)/e;
-          
+	  my $activity_time = Date::Parse::str2time($activity->{EventDate} . " " . $activity->{EventTime});
 
-          my $time = $activity->{EventTime};
-          
-          $time =~ s/(\d+):(\d+)\s+(am|pm)/
-        my $h = $1;
-        if($3 eq 'pm') {
-          $h += 12;
-        }
-          sprintf("%0.2d", $h) . $2 . "00"/e;
+	  my @lt = localtime($activity_time);
+	  my $date = POSIX::strftime("%Y%m%d", @lt);
+	  my $time = POSIX::strftime("%H%M00", @lt);
 
           my $activity_hash = {
                    address => {
@@ -282,7 +285,7 @@ sub _handle_response
 
         my $summary;
         if(scalar(@activity_entries) > 0) {
-          $summary = Clone::clone($activity_entries[0]);
+          $summary = $activity_entries[0]; 
         }
 
         my $result = {
@@ -292,9 +295,6 @@ sub _handle_response
 
 
         Business::Shipping::Tracking::_delete_undefined_keys($result);
-
-        
-        
         $self->results($id => $result);
       }
     }

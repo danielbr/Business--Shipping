@@ -73,6 +73,7 @@ sub _gen_request
     
     my $request_xml = $self->_gen_request_xml();
     #debug3( $request_xml );
+    debug( "gen_url = " . $self->_gen_url() );
     my $request = HTTP::Request->new( 'POST', $self->_gen_url() );
     $request->header( 'content-type' => 'application/x-www-form-urlencoded' );
     $request->header( 'content-length' => length( $request_xml ) );

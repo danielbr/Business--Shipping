@@ -369,20 +369,21 @@ sub _handle_response
     #trace '()';
     my ( $self ) = @_;
     
-    debug3( "response = " . $self->response()->content() );
+    #debug3( "response = " . $self->response()->content() );
     
     my $response_tree = XML::Simple::XMLin( 
         $self->response()->content(),  
         ForceArray => 0,  
         KeepRoot => 0,  
     );
+    use Data::Dumper;
+    #debug("response = " . Dumper($response_tree));
     
     my $status_code = $response_tree->{Response}->{ResponseStatusCode};
     my $status_description = $response_tree->{Response}->{ResponseStatusDescription};
     
     ### If there is an error
-    if( exists($response_tree->{Response}->{Error}) )
-    {
+    if( exists($response_tree->{Response}->{Error}) ) {
 	### Lets work on an array, since there could be more than one
 	my $errors = (ref( $response_tree->{Response}->{Error} ) eq 'ARRAY') 
 	              ? $response_tree->{Response}->{Error} 
@@ -391,8 +392,7 @@ sub _handle_response
 	### Loop through the errors, gathering the details and 
 	### create a simple error message string
 	my (@errorDetails, $errorMsg);
-	foreach my $errorHash (@$errors)
-	{
+	foreach my $errorHash (@$errors) {
 	    ### Get some of the error details
 	    my $severity = $errorHash->{ErrorSeverity};
 	    my $code = $errorHash->{ErrorCode};
@@ -402,33 +402,32 @@ sub _handle_response
 	    my @err_contents = ();
 	    my $err_location = '';
 	    
+        # If it's a warning, ignore.
+        next if $severity eq 'Warning';
+        
 	    ### Check if the error location was given
-	    if( exists($errorHash->{ErrorLocation}) )
-	    {
-		### There could be more than one
-		my $locations = (ref $errorHash->{ErrorLocation} eq 'ARRAY')
+	    if( exists($errorHash->{ErrorLocation}) ) {
+            ### There could be more than one
+            my $locations = (ref $errorHash->{ErrorLocation} eq 'ARRAY')
 		                 ? $errorHash->{ErrorLocation}
 		                 : [ $errorHash->{ErrorLocation} ];
-		foreach my $location (@$locations)
-		{
-		    my ($elem, $attrib) = ($location->{ErrorLocationElementName},
-					   $location->{ErrorLocationAttributeName},);
-		    $err_location = $elem if( !defined($err_location) || $err_location eq '' );
-		    push( @err_locations, { element => $elem, attribute => $attrib } );
-		}
+            foreach my $location (@$locations) {
+                my ($elem, $attrib) = ($location->{ErrorLocationElementName},
+                           $location->{ErrorLocationAttributeName},);
+                $err_location = $elem if( !defined($err_location) || $err_location eq '' );
+                push( @err_locations, { element => $elem, attribute => $attrib } );
+            }
 	    }
 
 	    ### Check if the contents of the element in error was given
-	    if( exists($errorHash->{ErrorDigest}) )
-	    {
-		### There could be more than one
-		my $digests = (ref $errorHash->{ErrorDigest} eq 'ARRAY')
-		               ? $errorHash->{ErrorDigest}
-		               : [ $errorHash->{ErrorDigest} ];
-		foreach my $digest (@$digests)
-		{
-		    push( @err_contents, $digest );
-		}
+	    if( exists($errorHash->{ErrorDigest}) ) {
+            ### There could be more than one
+            my $digests = (ref $errorHash->{ErrorDigest} eq 'ARRAY')
+                           ? $errorHash->{ErrorDigest}
+                           : [ $errorHash->{ErrorDigest} ];
+            foreach my $digest (@$digests) {
+                push( @err_contents, $digest );
+            }
 	    }
 
 	    push( @errorDetails, { error_code => $code,
@@ -438,11 +437,10 @@ sub _handle_response
 				   locations => \@err_locations,
 				   error_data => \@err_contents } );
 	    
-	    if ( !defined($errorMsg) && $error and $error !~ /Success/ ) 
-	    {
-		my $combined_error_msg = "$status_description ($status_code): $error @ $err_location"; 
-		$combined_error_msg =~ s/\s{3, }/ /g;
-		$errorMsg = $combined_error_msg;
+	    if ( !defined($errorMsg) && $error and $error !~ /Success/ ) {
+            my $combined_error_msg = "$status_description ($status_code): $error @ $err_location"; 
+            $combined_error_msg =~ s/\s{3, }/ /g;
+            $errorMsg = $combined_error_msg;
 	    }
 	} # foreach error
 

@@ -20,6 +20,7 @@ $Rev$
 
 =head2 International
  
+
  Global Express Guaranteed Document Service
  Global Express Guaranteed Non-Document Service
  Global Express Mail (EMS)
@@ -141,8 +142,11 @@ sub _gen_request_xml
         $self->domestic() ? 'RateV2Request' : 'IntlRateRequest' 
     );
     
-    $rateReqEl->setAttribute('USERID', $self->user_id() ); 
-    $rateReqEl->setAttribute('PASSWORD', $self->password() ); 
+    #if ( ! $self->test_mode ) {
+        $rateReqEl->setAttribute('USERID', $self->user_id() ); 
+        $rateReqEl->setAttribute('PASSWORD', $self->password() );
+    #}
+    
     $rateReqDoc->appendChild($rateReqEl);
     
     my $package_count = 0;
