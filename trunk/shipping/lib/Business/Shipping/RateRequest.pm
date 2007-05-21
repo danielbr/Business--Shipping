@@ -87,6 +87,7 @@ Additional keys may be added by the shipper class.
 use Class::MethodMaker 2.0
     [ new => [ qw/ -hash new / ],
       scalar        => [ 'is_success', 'cache', 'invalid' ],
+      scalar	    => [ 'dont_split_packages' ],
       scalar        => [ 'shipper' ],
       scalar        => [ 'results' ],
       scalar        => [ '_total_charges' ],
@@ -182,58 +183,59 @@ sub execute
         
         my $original_weight = $package->weight;
         
-        if ( $max_weight_per_package and ( $original_weight > $max_weight_per_package ) ) {
-            debug 'calculating multiple shipments due to overweight...';
-            debug "original weight: $original_weight, max_weight_per_package: $max_weight_per_package";
-            
-            my $MAX_NUM_PACKAGES = 100;
-            
-            my $number_of_packages = $original_weight / $max_weight_per_package;
-            if ( $number_of_packages != int $number_of_packages ) {
-                # 1 for the remainder, this will be the usual case
-                $number_of_packages = int $number_of_packages + 1; 
-            }
-            
-            debug 'number of packages = ' . $number_of_packages;
-            
-            if ( $number_of_packages > $MAX_NUM_PACKAGES ) {
-                $self->user_error( "Too heavy." );
-                return $self->is_success( 0 );
-            }
-            
-            
-            
-            # Set the current violating package to the maximum amount, then add packages until the remaining
-            # amount runs out.
-            
-            my $running_weight = $original_weight;
-            my $running_total_cost;
-            my $sum_rate = 0;
-            my $last_charges = 0;
-            
-            
-            $self->shipment->packages_index( $p_idx )->weight( $max_weight_per_package );
-            $running_weight -= $max_weight_per_package;
-            
-            for ( my $c = 1; $c <= $number_of_packages; $c++ ) {
-                debug "splitting out package #$c";
-                
-                my $current_weight = $running_weight > $max_weight_per_package ? 
-                    $max_weight_per_package # Common path
-                    :
-                    $running_weight; # Last shipment, unless it divided evenly.
-                    
-                $running_weight -= $current_weight;
-                debug "setting weight to $current_weight";
-                last if $current_weight <= 0;
-               
-                $self->shipment->add_package( weight => $current_weight );
-            }
-            
-            debug "done handling overweight.";
-            #use Data::Dumper;
-            #debug2 "shipment now: " . Dumper( $self->shipment );
+        next if $self->dont_split_packages();
+        next unless ( $max_weight_per_package and ( $original_weight > $max_weight_per_package ) );
+    
+        debug 'calculating multiple shipments due to overweight...';
+        debug "original weight: $original_weight, max_weight_per_package: $max_weight_per_package";
+        
+        my $MAX_NUM_PACKAGES = 100;
+        
+        my $number_of_packages = $original_weight / $max_weight_per_package;
+        if ( $number_of_packages != int $number_of_packages ) {
+            # 1 for the remainder, this will be the usual case
+            $number_of_packages = int $number_of_packages + 1; 
         }
+        
+        debug 'number of packages = ' . $number_of_packages;
+        
+        if ( $number_of_packages > $MAX_NUM_PACKAGES ) {
+            $self->user_error( "Too heavy." );
+            return $self->is_success( 0 );
+        }
+        
+        
+        
+        # Set the current violating package to the maximum amount, then add packages until the remaining
+        # amount runs out.
+        
+        my $running_weight = $original_weight;
+        my $running_total_cost;
+        my $sum_rate = 0;
+        my $last_charges = 0;
+        
+        
+        $self->shipment->packages_index( $p_idx )->weight( $max_weight_per_package );
+        $running_weight -= $max_weight_per_package;
+        
+        for ( my $c = 1; $c <= $number_of_packages; $c++ ) {
+            debug "splitting out package #$c";
+            
+            my $current_weight = $running_weight > $max_weight_per_package ? 
+                $max_weight_per_package # Common path
+                :
+                $running_weight; # Last shipment, unless it divided evenly.
+                
+            $running_weight -= $current_weight;
+            debug "setting weight to $current_weight";
+            last if $current_weight <= 0;
+           
+            $self->shipment->add_package( weight => $current_weight );
+        }
+        
+        debug "done handling overweight.";
+        #use Data::Dumper;
+        #debug2 "shipment now: " . Dumper( $self->shipment );
     }
     
     $self->perform_action();

@@ -5,21 +5,7 @@ Revision history for Business::Shipping
 2.04
 
 
-  General
-  
-    * [Fixed] Change GNU-style long-name command line arguments to more widely-
-      compatible one-letter arguments. Reported by Todd Anderson 
-      <ahqmed@hotmail.com>.
-      
-    * Removed some unused code.
-    
-    * Fix fuel surcharge updater. Contributed by Ron Phipps <ron@endpoint.com>.
-
-  USPS_Online:
-  
-    * 
-    
-  Online shipping:
+  USPS_Online and UPS_Online changes by Rusty Conover <rconover@infogears.com>:
 
     * Rename tracking modules so they match the path, 
       Business::Shipping::UPS_Online::Tracking and Business::Shipping::USPS_Online::Tracking.
@@ -36,15 +22,31 @@ Revision history for Business::Shipping
 
     * Cleanup date parsing code in Business::Shipping::USPS_Online::Tracking and to 
       no longer need Clone.
+  
+  USPS_Online changes by Mike Wexler <mwexler@tias.com>:
+  
+    * Fix error messages on International requests.
+    
+    * Add option to disable automatic package splitting.
+     
+  General
+  
+    * [Fixed] Change GNU-style long-name command line arguments to more widely-
+      compatible one-letter arguments. Reported by Todd Anderson 
+      <ahqmed@hotmail.com>.
+      
+    * Removed some unused code.
+    
+    * Fix fuel surcharge updater. Contributed by Ron Phipps <ron@endpoint.com>.
 
-      Patch by Rusty Conover <rconover@infogears.com>
+
 
 2.03  Dec 31 2005
 
 
   USPS_Online
   
-    * Fix weight calculation error and support shipments less than one pound.  
+    * Fix weight calculation error and support shipments less than one pound.
       Patch by Mike Wexler <mwexler@tias.com>.
   
   
