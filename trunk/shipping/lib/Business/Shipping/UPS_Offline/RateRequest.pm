@@ -34,7 +34,6 @@ use base ( 'Business::Shipping::RateRequest::Offline' );
 use Business::Shipping::UPS_Offline::Shipment;
 use Business::Shipping::UPS_Offline::Package;
 use Business::Shipping::Logging;
-use Business::Shipping::Data;
 use Business::Shipping::Util;
 use Business::Shipping::Config;
 use POSIX qw{ ceil strftime };
