@@ -306,14 +306,15 @@ SKIP: {
     #    weight            => 5.5,
     #);
     
-    simple_test(
-        %std_opts,
-        service            => 'XPR',
-        to_country        => 'AU',
-        to_city            => 'Bicton',
-        to_zip            => '6157',
-        weight            => 5.5,
-    );
+    # XPD not available?
+    #simple_test(
+    #    %std_opts,
+    #    service            => 'XPD',
+    #    to_country        => 'AU',
+    #    to_city            => 'Bicton',
+    #    to_zip            => '6157',
+    #    weight            => 5.5,
+    #);
     
     ###########################################################################
     ##  Standard to Canada

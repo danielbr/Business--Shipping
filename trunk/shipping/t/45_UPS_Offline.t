@@ -451,12 +451,12 @@ $shipment = test( %test );
 ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
-SKIP: {
-    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
-
-    $shipment_online = test_online( %test );
-    ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );    
-}
+#SKIP: {
+#    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
+#
+#    $shipment_online = test_online( %test );
+#    ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );    
+#}
 
 ###################
 ##  UPS Standard to Canada
