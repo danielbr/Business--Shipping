@@ -126,9 +126,9 @@ the same terms as Perl itself. See LICENSE for more info.
 EOD
 
 UserTag  business-shipping  Routine <<EOR
-use Business::Shipping 1.90;
+use Business::Shipping 2.05; # For 'all/shop' support.
 
-sub business_shipping_tag {
+sub tag_business_shipping {
     my ( $shipper, $opt ) = @_;
     
     my $debug = delete $opt->{ debug } || $Variable->{ BSHIPPING_DEBUG } || 0;
@@ -247,23 +247,32 @@ sub business_shipping_tag {
     my $submit_results;
 
     eval { $submit_results = $rate_request->go( %opt ); };
-    if ( not $submit_results or $@ ) { 
+    if ( not $submit_results or $@ ) {
+        # An invalid request is something like to_zip => 'Mars'.
+        # It is expected that invalid requests will result in errors, so we 
+        # don't normally log them. (Normal requests that result in errors are
+        # the ones that we log.) This code skips any errors that are invalid
+        # unless configured otherwise.
         
-        if ( 
-             ( not $rate_request->invalid ) 
-             or
-             ( $rate_request->invalid and $Variable->{ BSHIPPING_LOG_INVALID_REQUESTS } )
-           )
-        {
-            Log( "[business-shipping] Error: " . ( $rate_request->user_error() || 'no user_error returned, perl error: ' . $@ ) );
+        my $log_invalid_requests = $Variable->{BSHIPPING_LOG_INVALID_REQUESTS};
+        if ( not $rate_request->invalid or $log_invalid_requests) {
+            my $error = $rate_request->user_error()
+                || 'no user_error returned, perl error: ' . $@;
+                
+            Log("[business-shipping] Error: $error");
         }
         
-        # Prevent 500 error on some systems?
         $@ = '';
         
         return;
     }
-        
+    
+    #die Dumper($rate_request);
+     
+    if ($opt{service} =~ /^(all|shop)$/i) {
+        return template_results($rate_request, $opt{template}, $opt{services_to_skip});
+    }
+    
     my $charges;
     
     # get_charges() should be implemented for all shippers in the future.
@@ -328,7 +337,76 @@ sub business_shipping_tag {
     return $charges;
 }
 
-\&business_shipping_tag;
+# TODO: Error-checking.
+sub template_results {
+    my ($rate_request, $template, $services_to_skip) = @_;
+    
+    #print "template_results() services_to_skip = " . Dumper($services_to_skip);
+    $template ||= qq|<option value="{SHIPPER_NAME}_{SERVICE_NICK}">{SERVICE_NAME} ({CHARGES_FORMATTED})\n|;
+    
+    my $results = $rate_request->results();
+    
+    return unless ref $results eq 'ARRAY';
+    
+    my $shipper = $results->[0];
+    my $shipper_name = $shipper->{name};
+    $shipper_name = 'UPS' if $shipper_name =~ /UPS/;
+    $shipper_name = 'USPS' if $shipper_name =~ /USPS/;
+    
+    my %vars;
+    $vars{SHIPPER_NAME} = $shipper_name;
+    
+    #print STDERR Dumper($results);
+    my $out;
+    
+    my @services_to_skip = @$services_to_skip if $services_to_skip;
+    RATE: foreach my $rate ( @{ $shipper->{ rates } } ) {
+        my $service_name = $rate->{name};
+        next unless $service_name;
+        
+        for my $service_to_skip (@services_to_skip) {
+            next RATE if $service_name =~ /$service_to_skip/i;
+        }
+        
+        my $service_nick = $rate->{nick} || $service_name;
+        $service_nick =~ s/[- ]/_/g;
+
+        my $shipping_key = $shipper_name . '_' . $service_nick;
+        
+        # Unformatted for math.
+        $Session->{shipping}{$shipping_key} = $rate->{charges};
+            
+        @vars{qw/SERVICE_NICK SERVICE_NAME CHARGES_FORMATTED/}
+            = ($service_nick, $service_name, $rate->{charges_formatted});
+        
+        
+        $out .= interpolate_template($template, \%vars);
+    
+        # "Charges formatted: $rate->{charges_formatted}\n";
+        # Delivery: $rate->{deliv_date_formatted} 
+    }
+    
+    return $out;
+}
+
+# Copied from Interchange (GPL).
+sub interpolate_template {
+    my ( $template, $sub ) = @_;
+    
+    my %sub = %$sub;
+    #Debug( "before interpolate, template = $template, sub = " . uneval( \%sub ) );
+    
+    # Strip the {TAG?} {/TAG?} pairs if nothing there
+    $template =~ s#{([A-Z_]+)\??}(.*?){/\1\??}#$sub{$1} ? $2: '' #ges;
+    
+    # Insert the TAG
+    $template =~ s/{([A-Z_]+)}/$sub{$1}/g;
+    
+    #Debug( "after interpolate, template = $template" );
+    return $template;
+}
+
+\&tag_business_shipping;
 
 EOR
 Message ...done.

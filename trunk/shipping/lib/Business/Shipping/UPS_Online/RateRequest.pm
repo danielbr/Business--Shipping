@@ -369,15 +369,17 @@ sub _handle_response
     #trace '()';
     my ( $self ) = @_;
     
-    #debug3( "response = " . $self->response()->content() );
+    if ( UPS_ONLINE_DISABLED ) {
+        die "Support for UPS_Online has been disabled, see doc/UPS_Online_disabled.txt";
+    }
     
     my $response_tree = XML::Simple::XMLin( 
         $self->response()->content(),  
         ForceArray => 0,  
         KeepRoot => 0,  
     );
-    use Data::Dumper;
-    #debug("response = " . Dumper($response_tree));
+    
+    #use Data::Dumper; debug3("response = " . Dumper($response_tree));
     
     my $status_code = $response_tree->{Response}->{ResponseStatusCode};
     my $status_description = $response_tree->{Response}->{ResponseStatusDescription};
@@ -528,12 +530,8 @@ sub _handle_response
             rates => \@services_results, 
         }
     ];
-    debug3 'results = ' . uneval(  $results );
+    #debug3 'results = ' . uneval(  $results );
     $self->results( $results );
-    
-    if ( UPS_ONLINE_DISABLED ) {
-        die "Support for UPS_Online has been disabled, see doc/UPS_Online_disabled.txt";
-    }
     
     return $self->is_success( 1 );
 }

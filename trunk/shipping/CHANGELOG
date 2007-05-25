@@ -1,7 +1,13 @@
 Revision history for Business::Shipping
 =======================================
 
+
 2.05  
+
+
+  Upgrade Notes
+  
+    * Clear the cache (typically /tmp/FileCache).
 
   USPS_Online
   
@@ -33,10 +39,12 @@ Revision history for Business::Shipping
   Interchange UserTag
   
     * New feature to display all shipping options with prices at once.
-      
-    * Templatable for <select> list or any other design.
+      - Templatable for <select> list or any other design.
+      - Store prices in $Session->{shipping}{$nickname} (where nickname is, 
+        for example, UPS_GNDRES, UPS_1DA, USPS_PRIORITY, USPS_EXPRESS, etc.). 
+      - Tests for the new feature.
     
-    * Tests for the new feature.
+    * Refactor error handling and other components.
 
 
 2.04  Unreleased

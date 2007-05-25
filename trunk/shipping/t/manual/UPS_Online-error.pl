@@ -11,16 +11,14 @@ my $rate_request = Business::Shipping->rate_request( shipper => 'UPS_Online' );
 
 my $results = $rate_request->submit(
                 shipper         => 'UPS_Online',
-                service         => 'GNDCOM', 
+                service         => 'GNDRES', 
                 from_zip        => 44114, #Cleveland
-                to_zip          => 34050, #FPO AA
+                to_zip          => 98683, #FPO AA
                 weight          => 5,
                 user_id         => $ENV{ UPS_USER_ID },
                 password        => $ENV{ UPS_PASSWORD },
                 access_key      => $ENV{ UPS_ACCESS_KEY },
                 pickup_type     =>  'daily',
-                from_country    => 'US',
-                to_country      => 'US',
                 to_residential  => 1,
 ) or die $rate_request->user_error();
 

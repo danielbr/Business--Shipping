@@ -393,7 +393,7 @@ sub _handle_response
                 next if( ref $chg ne 'HASH' );
                 my $service_hash = {
                     code       => undef,
-                    nick       => undef,
+                    nick       => service_to_nick($chg->{MailService}),
                     name       => $chg->{MailService},
                     deliv_days => undef,
                     deliv_date => undef,
@@ -405,12 +405,12 @@ sub _handle_response
             }
         }
     }
+    # International with service 'all'
     elsif( defined($self->service()) && lc($self->service()) eq 'all' ) {
-        #
+        
         # International *does* tell you the price of all services for each package
         # If caller asked for All services, then lets give them All services.  Will
         # pass back service name as-is.  Let caller try to distinguish it.
-        #
 
         # Set charges to returned services, since charges needs to be set to something
         $charges = $response_tree->{ Package }->{ Service };
@@ -420,7 +420,7 @@ sub _handle_response
             foreach my $service ( @$charges ) {
                 my $service_hash = {
                     code       => undef,
-                    nick       => undef,
+                    nick       => service_to_nick($service->{SvcDescription}),
                     name       => $service->{ SvcDescription },
                     deliv_days => undef,
                     deliv_date => undef,
@@ -432,11 +432,12 @@ sub _handle_response
             } # foreach service
         } # if services defined
     }
+    # International with one specific service.
     else {
         #
         # International *does* tell you the price of all services for each package
         #
-        
+        my $service_description;
         foreach my $service ( @{ $response_tree->{ Package }->{ Service } } ) {
             debug( "Trying to find a matching service by service description (" . $service->{ SvcDescription } . ")..." );
             debug( "Charges for $service->{SvcDescription} service = " . $service->{Postage} );
@@ -473,6 +474,7 @@ sub _handle_response
 
             if ( $self->service() and $self->service() =~ $service->{ SvcDescription } ) {
                 $charges = $service->{ 'Postage' };
+                $service_description = $service->{SvcDescription};
             }
         }
         if ( ! $charges ) {
@@ -496,7 +498,7 @@ sub _handle_response
         if( defined($charges) ) {
             my $service_hash = {
                 code       => undef,
-                nick       => undef,
+                nick       => service_to_nick($service_description),
                 name       => undef,
                 deliv_days => undef,
                 deliv_date => undef,
@@ -525,6 +527,19 @@ sub _handle_response
     
     trace 'returning success';
     return $self->is_success( 1 );
+}
+
+sub service_to_nick {
+    my ($service_description) = @_;
+    return $service_description unless $service_description;
+    my %services_codes = (
+        'Express Mail' => 'EXPRESS',
+        'Priority Mail' => 'PRIORITY',
+        'Express Mail International (EMS)' => 'EXPRESS',
+        'Priority Mail International' => 'PRIORITY',
+    );
+    
+    return $services_codes{$service_description} || $service_description;
 }
 
 =head2 _domestic_or_intl

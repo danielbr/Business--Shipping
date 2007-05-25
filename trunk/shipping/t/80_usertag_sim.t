@@ -47,6 +47,7 @@ plan 'no_plan';
 use Data::Dumper;
 our $Values = {};
 our $Variable = {};
+our $Session = {};
 $Variable->{ BSHIPPING_MAX_WEIGHT } = 75;
 
 package Nothing;
@@ -186,23 +187,28 @@ sub tag_business_shipping {
     my $submit_results;
 
     eval { $submit_results = $rate_request->go( %opt ); };
-    if ( not $submit_results or $@ ) { 
+    if ( not $submit_results or $@ ) {
+        # An invalid request is something like to_zip => 'Mars'.
+        # It is expected that invalid requests will result in errors, so we 
+        # don't normally log them. (Normal requests that result in errors are
+        # the ones that we log.) This code skips any errors that are invalid
+        # unless configured otherwise.
         
-        if ( 
-             ( not $rate_request->invalid ) 
-             or
-             ( $rate_request->invalid and $Variable->{ BSHIPPING_LOG_INVALID_REQUESTS } )
-           )
-        {
-            Log( "[business-shipping] Error: " . ( $rate_request->user_error() || 'no user_error returned, perl error: ' . $@ ) );
+        my $log_invalid_requests = $Variable->{BSHIPPING_LOG_INVALID_REQUESTS};
+        if ( not $rate_request->invalid or $log_invalid_requests) {
+            my $error = $rate_request->user_error()
+                || 'no user_error returned, perl error: ' . $@;
+                
+            Log("[business-shipping] Error: $error");
         }
         
-        # Prevent 500 error on some systems?
         $@ = '';
         
         return;
     }
     
+    #die Dumper($rate_request);
+     
     if ($opt{service} =~ /^(all|shop)$/i) {
         return template_results($rate_request, $opt{template}, $opt{services_to_skip});
     }
@@ -276,7 +282,7 @@ sub template_results {
     my ($rate_request, $template, $services_to_skip) = @_;
     
     #print "template_results() services_to_skip = " . Dumper($services_to_skip);
-    $template ||= qq|<option value="{SERVICE_CODE}">{SERVICE_NAME} ({CHARGES_FORMATTED})\n|;
+    $template ||= qq|<option value="{SHIPPER_NAME}_{SERVICE_NICK}">{SERVICE_NAME} ({CHARGES_FORMATTED})\n|;
     
     my $results = $rate_request->results();
     
@@ -284,20 +290,35 @@ sub template_results {
     
     my $shipper = $results->[0];
     my $shipper_name = $shipper->{name};
+    $shipper_name = 'UPS' if $shipper_name =~ /UPS/;
+    $shipper_name = 'USPS' if $shipper_name =~ /USPS/;
     
-        
+    my %vars;
+    $vars{SHIPPER_NAME} = $shipper_name;
+    
+    #print STDERR Dumper($results);
     my $out;
     
     my @services_to_skip = @$services_to_skip if $services_to_skip;
     RATE: foreach my $rate ( @{ $shipper->{ rates } } ) {
+        my $service_name = $rate->{name};
+        next unless $service_name;
         
         for my $service_to_skip (@services_to_skip) {
-            next RATE if $rate->{name} =~ /$service_to_skip/i;
+            next RATE if $service_name =~ /$service_to_skip/i;
         }
         
-        my %vars;
-        @vars{qw/SERVICE_CODE SERVICE_NAME CHARGES_FORMATTED/}
-            = @$rate{'name', 'name', 'charges_formatted'};
+        my $service_nick = $rate->{nick} || $service_name;
+        $service_nick =~ s/[- ]/_/g;
+
+        my $shipping_key = $shipper_name . '_' . $service_nick;
+        
+        # Unformatted for math.
+        $Session->{shipping}{$shipping_key} = $rate->{charges};
+            
+        @vars{qw/SERVICE_NICK SERVICE_NAME CHARGES_FORMATTED/}
+            = ($service_nick, $service_name, $rate->{charges_formatted});
+        
         
         $out .= interpolate_template($template, \%vars);
     
@@ -344,7 +365,7 @@ $opt = {
     'weight'    => 10,
     'from_zip'    => '20770',
     'to_zip'    => '20852',
-    #cache => 1,
+    cache => 1,
     
 };
 
@@ -352,22 +373,45 @@ $opt = {
 $opt->{service} = 'all';
 $opt->{services_to_skip} = [
     'Envelope', 
-    'Flat-Rate',
+    'Flat[- ]Rate',
     'PO to PO',
     'Parcel Post',
     'Bound Printed Matter',
     'Media Mail',
     'Library Mail',
     'Global Express Guaranteed',
+    'Saver',
+    'A.M.',
 ];
 
 my $option_list;
 $option_list = tag_business_shipping('USPS_Online', $opt);
 #print $option_list;
-ok($option_list =~ /<option/, "USPS_Online all services lists options");
+ok($option_list =~ /<option/, "USPS_Online domestic all services lists options");
+my $shipping = $Session->{shipping};
+my $num_shipping_keys = scalar(keys %$shipping);
+ok($num_shipping_keys >= 2, "\$Session->{shipping} is populated with at least two entries.");
 
-# TODO: Now try USPS International;
+# Now try USPS International;
+$opt->{to_country} = 'Great Britain';
+delete $opt->{to_zip};
+$option_list = tag_business_shipping('USPS_Online', $opt);
+#print $option_list;
+ok($option_list =~ /<option/, "USPS_Online international all services lists options");
 
+# UPS International 
+$opt->{access_key} = $ENV{UPS_ACCESS_KEY};
+$opt->{service} = 'shop';
+$option_list = tag_business_shipping('UPS_Online', $opt);
+#print $option_list;
+ok($option_list =~ /<option/, "UPS_Online international all services lists options");
+
+# UPS Domestic
+delete $opt->{to_country};
+$opt->{to_zip} = '98270';
+$option_list = tag_business_shipping('UPS_Online', $opt);
+#print $option_list;
+ok($option_list =~ /<option/, "UPS_Online domestic all services lists options");
 
 $opt->{service} = "Priority";
 delete $opt->{services_to_skip};
