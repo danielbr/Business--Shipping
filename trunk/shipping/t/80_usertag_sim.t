@@ -65,7 +65,7 @@ sub uneval { return Dumper( @_ ); };
 ##  Begin contents of business-shipping.tag 
 ###############################################################################
 
-use Business::Shipping 2.03;
+use Business::Shipping 2.05; # For 'all/shop' support.
 
 sub tag_business_shipping {
     my ( $shipper, $opt ) = @_;
@@ -202,7 +202,11 @@ sub tag_business_shipping {
         
         return;
     }
-        
+    
+    if ($opt{service} =~ /^(all|shop)$/i) {
+        return template_results($rate_request, $opt{template}, $opt{services_to_skip});
+    }
+    
     my $charges;
     
     # get_charges() should be implemented for all shippers in the future.
@@ -267,13 +271,65 @@ sub tag_business_shipping {
     return $charges;
 }
 
+# TODO: Error-checking.
+sub template_results {
+    my ($rate_request, $template, $services_to_skip) = @_;
+    
+    #print "template_results() services_to_skip = " . Dumper($services_to_skip);
+    $template ||= qq|<option value="{SERVICE_CODE}">{SERVICE_NAME} ({CHARGES_FORMATTED})\n|;
+    
+    my $results = $rate_request->results();
+    
+    return unless ref $results eq 'ARRAY';
+    
+    my $shipper = $results->[0];
+    my $shipper_name = $shipper->{name};
+    
+        
+    my $out;
+    
+    my @services_to_skip = @$services_to_skip if $services_to_skip;
+    RATE: foreach my $rate ( @{ $shipper->{ rates } } ) {
+        
+        for my $service_to_skip (@services_to_skip) {
+            next RATE if $rate->{name} =~ /$service_to_skip/i;
+        }
+        
+        my %vars;
+        @vars{qw/SERVICE_CODE SERVICE_NAME CHARGES_FORMATTED/}
+            = @$rate{'name', 'name', 'charges_formatted'};
+        
+        $out .= interpolate_template($template, \%vars);
+    
+        # "Charges formatted: $rate->{charges_formatted}\n";
+        # Delivery: $rate->{deliv_date_formatted} 
+    }
+    
+    return $out;
+}
+
+# Copied from Interchange (GPL).
+sub interpolate_template {
+    my ( $template, $sub ) = @_;
+    
+    my %sub = %$sub;
+    #Debug( "before interpolate, template = $template, sub = " . uneval( \%sub ) );
+    
+    # Strip the {TAG?} {/TAG?} pairs if nothing there
+    $template =~ s#{([A-Z_]+)\??}(.*?){/\1\??}#$sub{$1} ? $2: '' #ges;
+    
+    # Insert the TAG
+    $template =~ s/{([A-Z_]+)}/$sub{$1}/g;
+    
+    #Debug( "after interpolate, template = $template" );
+    return $template;
+}
+
 
 ###############################################################################
 ##  End contents of business-shipping.tag
 ##   - be sure to exclude the final line: \&business_shipping_tag;
 ###############################################################################
-
-sub business_shipping_sim { return tag_business_shipping( @_ ); }
 
 #Business::Shipping->log_level( 'debug' );
 
@@ -284,18 +340,42 @@ $opt = {
     'user_id'    => $ENV{ USPS_USER_ID },
     'password' => $ENV{ USPS_PASSWORD },
     'reparse' => "1",
-    'service' => "Priority",
     'mode' => "USPS",
     'weight'    => 10,
     'from_zip'    => '20770',
     'to_zip'    => '20852',
     #cache => 1,
+    
 };
 
-$charges = business_shipping_sim( 'Online::USPS', $opt );
+# TODO: Only skip envelope if weight is over a pound.
+$opt->{service} = 'all';
+$opt->{services_to_skip} = [
+    'Envelope', 
+    'Flat-Rate',
+    'PO to PO',
+    'Parcel Post',
+    'Bound Printed Matter',
+    'Media Mail',
+    'Library Mail',
+    'Global Express Guaranteed',
+];
+
+my $option_list;
+$option_list = tag_business_shipping('USPS_Online', $opt);
+#print $option_list;
+ok($option_list =~ /<option/, "USPS_Online all services lists options");
+
+# TODO: Now try USPS International;
+
+
+$opt->{service} = "Priority";
+delete $opt->{services_to_skip};
+
+$charges = tag_business_shipping( 'Online::USPS', $opt );
 ok( $charges, "USPS_Online OK: $charges" );
 
-$charges = business_shipping_sim( 'USPS', $opt );
+$charges = tag_business_shipping( 'USPS', $opt );
 ok( $charges, "USPS again OK: $charges" );
 
 $opt = {
@@ -311,12 +391,12 @@ $opt = {
     #cache => 0,
 };
 
-$charges = business_shipping_sim( 'UPS_Offline', $opt );
+$charges = tag_business_shipping( 'UPS_Offline', $opt );
 ok( $charges, "UPS_Offline: $charges" );
 
-$charges = business_shipping_sim( 'UPS', $opt );
+$charges = tag_business_shipping( 'UPS', $opt );
 ok( $charges, "UPS OK: " . ( $charges || 'charges not found' ) );
 
 $opt->{ weight } = 175;
-$charges = business_shipping_sim( 'UPS_Offline', $opt );
+$charges = tag_business_shipping( 'UPS_Offline', $opt );
 ok( $charges, "UPS_Offline: $charges" );

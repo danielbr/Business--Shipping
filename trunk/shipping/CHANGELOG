@@ -29,6 +29,14 @@ Revision history for Business::Shipping
   UPS_Online
   
     * Disable a few tests until they can be fixed.
+    
+  Interchange UserTag
+  
+    * New feature to display all shipping options with prices at once.
+      
+    * Templatable for <select> list or any other design.
+    
+    * Tests for the new feature.
 
 
 2.04  Unreleased
