@@ -104,11 +104,11 @@ OPTIONAL MODULES
     See doc/INSTALL.
 
      Cache::FileCache (any)
-     Clone (any)
      Crypt::SSLeay (any)
      LWP::UserAgent (any)
      XML::DOM (any)
      XML::Simple (2.05)
+     Date::Parse (any)
  
 GETTING STARTED
     Be careful to read, understand, and comply with the terms of use for the

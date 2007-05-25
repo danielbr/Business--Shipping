@@ -37,9 +37,12 @@ contributed.
  
  * Mark Stosberg <mark@stosberg.com> contributed documentation patches.
  
- * Mike Wexler <mwexler@tias.com> contributed USPS_Online changes (2.03):
+ * Mike Wexler <mwexler@tias.com> contributed USPS_Online changes (2.03+):
    - Fix weight calculation error and support shipments less than one pound.  
-
+   - Fix error messages on International requests.
+   - Add option to disable automatic package splitting.
+   - Add width, height, length, and girth.
+   
  * Individuals who have contributed bug reports:
    - Mike Castle <dalgoda@ix.netcom.com>
    - Richard Hornsby <rhornsby@io.osuedc.org>

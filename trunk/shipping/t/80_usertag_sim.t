@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/local/perl/bin/perl
 
 =head1 NAME
 
@@ -65,9 +65,9 @@ sub uneval { return Dumper( @_ ); };
 ##  Begin contents of business-shipping.tag 
 ###############################################################################
 
-use Business::Shipping 1.90;
+use Business::Shipping 2.03;
 
-sub business_shipping_tag {
+sub tag_business_shipping {
     my ( $shipper, $opt ) = @_;
     
     my $debug = delete $opt->{ debug } || $Variable->{ BSHIPPING_DEBUG } || 0;
@@ -273,7 +273,7 @@ sub business_shipping_tag {
 ##   - be sure to exclude the final line: \&business_shipping_tag;
 ###############################################################################
 
-sub business_shipping_sim { return business_shipping_tag( @_ ); }
+sub business_shipping_sim { return tag_business_shipping( @_ ); }
 
 #Business::Shipping->log_level( 'debug' );
 

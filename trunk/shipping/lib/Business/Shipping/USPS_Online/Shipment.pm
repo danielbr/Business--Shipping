@@ -26,6 +26,14 @@ See Business::Shipping POD for usage information.
 
 =head2 mail_type
 
+=head2 width
+
+=head2 height
+
+=head2 length
+
+=head2 girth
+
 =cut
 
 package Business::Shipping::USPS_Online::Shipment;
@@ -55,7 +63,22 @@ sub _this_init
     return;
 }
 
-foreach my $attribute ( 'pounds', 'ounces', 'weight', 'container', 'size', 'machinable', 'mail_type' ) {
+foreach my $attribute (
+        qw/
+        pounds
+        ounces
+        weight
+        container
+        size
+        machinable
+        mail_type
+        width
+        height
+        length
+        girth
+        /
+    ) 
+{
     eval "sub $attribute { shift->package0->$attribute( \@_ ); }";
 }
 

@@ -53,6 +53,10 @@ use Class::MethodMaker 2.0
       scalar => [ { -default => 'Package' }, 'mail_type'  ],
       scalar => [ { -default => '0.00'    }, 'ounces'     ],
       scalar => [ { -default => '0.00'    }, 'pounds'     ],
+      scalar => [ { -default => ''        }, 'width'      ],
+      scalar => [ { -default => ''        }, 'height'     ],
+      scalar => [ { -default => ''        }, 'length'     ],
+      scalar => [ { -default => ''        }, 'girth'      ],      
     ];
     
 

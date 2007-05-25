@@ -20,17 +20,15 @@ $Rev$
 
 =head2 International
  
-
- Global Express Guaranteed Document Service
- Global Express Guaranteed Non-Document Service
- Global Express Mail (EMS)
- Global Priority Mail - Flat-rate Envelope (Large)
- Global Priority Mail - Flat-rate Envelope (Small)
- Global Priority Mail - Variable Weight (Single)
- Airmail Letter-post
- Airmail Parcel Post
- Economy (Surface) Letter-post
- Economy (Surface) Parcel Post
+Global Express Guaranteed
+Global Express Guaranteed Non-Document Rectangular
+Global Express Guaranteed Non-Document Non-Rectangular
+Express Mail International (EMS)
+Express Mail International (EMS) Flat Rate Envelope
+Priority Mail International
+Priority Mail International Flat Rate Box
+Priority Mail International Flat Rate Envelope
+First Class Mail International
 
 =head1 METHODS
 
@@ -75,6 +73,10 @@ use Class::MethodMaker 2.0
                                   'machinable',
                                   'mail_type',
                                   'shipper',
+                                  'width',
+                                  'length',
+                                  'height',
+                                  'girth',                                  
                                 ],
                    },
                    'shipment'
@@ -139,7 +141,7 @@ sub _gen_request_xml
     #
     my $rateReqDoc = XML::DOM::Document->new(); 
     my $rateReqEl = $rateReqDoc->createElement( 
-        $self->domestic() ? 'RateV2Request' : 'IntlRateRequest' 
+        $self->domestic() ? 'RateV3Request' : 'IntlRateRequest' 
     );
     
     #if ( ! $self->test_mode ) {
@@ -200,9 +202,32 @@ sub _gen_request_xml
             my $oversizeText = $rateReqDoc->createTextNode( $package->size() ); 
             $oversizeEl->appendChild($oversizeText); 
             $packageEl->appendChild($oversizeEl); 
+            
+            my $widthEl = $rateReqDoc->createElement('Width');
+            my $widthText = $rateReqDoc->createTextNode( $package->width() );
+            $widthEl->appendChild($widthText);
+            $packageEl->appendChild($widthEl);
+ 
+            my $lengthEl = $rateReqDoc->createElement('Length');
+            my $lengthText = $rateReqDoc->createTextNode( $package->length() );
+            $lengthEl->appendChild($lengthText);
+            $packageEl->appendChild($lengthEl);
+ 
+            my $heightEl = $rateReqDoc->createElement('Height');
+            my $heightText = $rateReqDoc->createTextNode( $package->height() );
+            $heightEl->appendChild($heightText);
+            $packageEl->appendChild($heightEl);
+ 
+            my $girthEl = $rateReqDoc->createElement('Girth');
+            my $girthText = $rateReqDoc->createTextNode( $package->girth() );
+            $girthEl->appendChild($girthText);
+            $packageEl->appendChild($girthEl);
         
-            if( defined( $package->machinable() ) )
-            {
+            if ($self->service() =~ /all/i and not defined $package->machinable()) {
+                $package->machinable('False');
+            }
+            
+            if( defined( $package->machinable() ) ) {
                 my $machineEl = $rateReqDoc->createElement('Machinable'); 
                 my $machineText = $rateReqDoc->createTextNode( $package->machinable() ); 
                 $machineEl->appendChild($machineText); 
@@ -244,9 +269,9 @@ sub _gen_request
     
     my $request = $self->SUPER::_gen_request();
     # This is how USPS slightly varies from Business::Shipping
-    my $new_content = 'API=' . ( $self->domestic() ? 'RateV2' : 'IntlRate' ) . '&XML=' . $request->content();
+    my $new_content = 'API=' . ( $self->domestic() ? 'RateV3' : 'IntlRate' ) . '&XML=' . $request->content();
     $request->content( $new_content );
-    $request->header( 'content-length' => length( $request->content() ) );
+    $request->header( 'content-length' => CORE::length( $request->content() ) );
 
     # Large debug
     debug3( 'HTTP Request: ' . $request->as_string() );
@@ -291,109 +316,96 @@ sub _handle_response
         ForceArray => 0, 
         KeepRoot => 1 
     );
-    ### Discard the root element if it is RateV2Response
+    ### Discard the root element if it is RateV3Response
     $response_tree = $response_tree->{RateV2Response} if( exists($response_tree->{RateV2Response}) );
-
+    $response_tree = $response_tree->{RateV3Response} if( exists($response_tree->{RateV3Response}) );
+    
     ### Discard the root element if it is IntlRateResponse
     $response_tree = $response_tree->{IntlRateResponse} if( exists($response_tree->{IntlRateResponse}) );
+    
+    #use Data::Dumper; debug3(Dumper($response_tree));
     
     # Handle errors
     ### Get all errors
     my $errors = [];
     push( @$errors, $response_tree->{Error} ) if( exists($response_tree->{Error}) );
-    if( ref $response_tree->{Package} eq 'HASH' )
-    {
-	if( exists($response_tree->{Package}{Error}) )
-	{
-	    push( @$errors, $response_tree->{Package}{Error} );
-	    $errors->[$#{$errors}]{PackageID} = $response_tree->{Package}{ID};
-	}
+    if( ref $response_tree->{Package} eq 'HASH' ) {
+        if( exists($response_tree->{Package}{Error}) ) {
+            push( @$errors, $response_tree->{Package}{Error} );
+            $errors->[$#{$errors}]{PackageID} = $response_tree->{Package}{ID};
+        }
     }
-    elsif( ref $response_tree->{Package} eq 'ARRAY' )
-    {
-	foreach my $pkg (@{$response_tree->{Package}})
-	{
-	    if( exists($pkg->{Error}) )
-	    {
-		push( @$errors, $pkg->{Error} );
-		$errors->[$#{$errors}]{PackageID} = $pkg->{ID};
-	    }	    
-	}
+    elsif( ref $response_tree->{Package} eq 'ARRAY' ) {
+        foreach my $pkg (@{$response_tree->{Package}}) {
+            if( exists($pkg->{Error}) ) {
+                push( @$errors, $pkg->{Error} );
+                $errors->[$#{$errors}]{PackageID} = $pkg->{ID};
+            }	    
+        }
     }
-    if( @$errors > 0 )
-    {
-	### Loop through the errors, gathering the details and
-	### create a simple error message string
-	my (@errorDetails, $errorMsg);
-	foreach my $errorHash (@$errors)
-	{
-	    ### Get some of the error details
-	    my $code = $errorHash->{Number};
-	    my $error = $errorHash->{Description};
-	    my $source = $errorHash->{Source};
-	    my $pkg_src = $errorHash->{PackageID};
-	    
-	    push( @errorDetails, { error_code => $code,
-				   error_msg => $error,
-				   package_id => $pkg_src,
-				   error_source => $source } );
-	    if( !defined($errorMsg) && $error )
-	    {
-		$errorMsg = "$source: $error ($code)";
-	    }
-	} # foreach error
-
-	$self->user_error( $errorMsg );
-	$self->error_details( @errorDetails );
-	
-	return $self->is_success(0);
+    if( @$errors > 0 ) {
+        ### Loop through the errors, gathering the details and
+        ### create a simple error message string
+        my (@errorDetails, $errorMsg);
+        foreach my $errorHash (@$errors) {
+            ### Get some of the error details
+            my $code = $errorHash->{Number};
+            my $error = $errorHash->{Description};
+            my $source = $errorHash->{Source};
+            my $pkg_src = $errorHash->{PackageID};
+            
+            push( @errorDetails, { error_code => $code,
+                       error_msg => $error,
+                       package_id => $pkg_src,
+                       error_source => $source } );
+            if( !defined($errorMsg) && $error ) {
+                $errorMsg = "$source: $error ($code)";
+            }
+        } # foreach error
+    
+        $self->user_error( $errorMsg );
+        $self->error_details( @errorDetails );
+        
+        return $self->is_success(0);
     } # if errors
     
-    #
     # This is a "large" debug.
-    #
     debug3( 'response = ' . $self->response->content );
     #
     
     my $charges;
     my @services_results = ();    
     
-    #
     # TODO: Get the pricing routines to work for multi-packages (not just
     # the default_package()
     #
+    # Domestic *does* tell you the price of all services if you ask for service "ALL"
+    # If you ask for a specific service, it still might send more then one price.  
+    # For example if you ask for "Flat Rate Box" service, it will send you two prices,
+    # one for 'Priority Mail Flat Rate Box (11.25" x 8.75" x 6")' and the other for
+    # 'Priority Mail Flat Rate Box (14" x 12" x 3.5")'
     if ( $self->domestic() ) {
-        #
-        # Domestic *does* tell you the price of all services if you ask for service "ALL"
-        # If you ask for a specific service, it still might send more then one price.  
-        # For example if you ask for "Flat Rate Box" service, it will send you two prices,
-        # one for 'Priority Mail Flat Rate Box (11.25" x 8.75" x 6")' and the other for
-        # 'Priority Mail Flat Rate Box (14" x 12" x 3.5")'
-        #
-        
         $charges = $response_tree->{ Package }->{ Postage };
-        if( defined($charges) )
-        {
+        #debug('response_tree = ' . Dumper($response_tree));
+        if( defined($charges) ) {
             $charges = [ $charges ] if( ref $charges ne 'ARRAY' );
-            foreach my $chg (@$charges)
-            {
-            next if( ref $chg ne 'HASH' );
-            my $service_hash = {
-                code       => undef,
-                nick       => undef,
-                name       => $chg->{MailService},
-                deliv_days => undef,
-                deliv_date => undef,
-                charges    => $chg->{Rate},
-                charges_formatted    => Business::Shipping::Util::currency( {}, $chg->{Rate} ),
-                deliv_date_formatted => undef,
-            };
-            push( @services_results, $service_hash );
+            foreach my $chg (@$charges) {
+                next if( ref $chg ne 'HASH' );
+                my $service_hash = {
+                    code       => undef,
+                    nick       => undef,
+                    name       => $chg->{MailService},
+                    deliv_days => undef,
+                    deliv_date => undef,
+                    charges    => $chg->{Rate},
+                    charges_formatted    => Business::Shipping::Util::currency( {}, $chg->{Rate} ),
+                    deliv_date_formatted => undef,
+                };
+                push( @services_results, $service_hash );
             }
         }
     }
-    elsif( defined($self->service()) && lc($self->service()) eq 'all' )
-    {
+    elsif( defined($self->service()) && lc($self->service()) eq 'all' ) {
         #
         # International *does* tell you the price of all services for each package
         # If caller asked for All services, then lets give them All services.  Will
@@ -403,11 +415,9 @@ sub _handle_response
         # Set charges to returned services, since charges needs to be set to something
         $charges = $response_tree->{ Package }->{ Service };
         
-        if( defined($charges) )
-        {
+        if( defined($charges) ) {
             $charges = [ $charges ] if( ref $charges ne 'ARRAY' );
-            foreach my $service ( @$charges )
-            {
+            foreach my $service ( @$charges ) {
                 my $service_hash = {
                     code       => undef,
                     nick       => undef,
@@ -442,6 +452,25 @@ sub _handle_response
             # so that whichever service has "Air" in the description will be used first.
             #
             
+            # USPS introduced new service types on May 14, 2007. Convert old service types to the new.
+            
+            # A service translation would have to take 'letter' and 'flat rate' into account, it's probably
+            # better to leave the user to change their service.
+            #my %services_old_to_new = (
+            #    'Global Express Mail'       => 'Express Mail International',
+            #    'EMS'                       => 'Express Mail International',
+            #    'Global Priority Mail'
+            #    'Airmail( Parcel[- ]Post)?' => 'Priority Mail International',
+            #    'Economy( Parcel[- ]Post)?' => 'First Class Mail International',
+            #);
+            #
+            #while (my($old, $new) = each %services_old_to_new) {
+            #    if ($service =~ /$old/i) {
+            #        #print "Changing old service ($service) into new ($new)\n";
+            #        $service = $new;
+            #    }
+            #}
+
             if ( $self->service() and $self->service() =~ $service->{ SvcDescription } ) {
                 $charges = $service->{ 'Postage' };
             }
@@ -464,20 +493,19 @@ sub _handle_response
             }
         }
 	
-	if( defined($charges) )
-	{
-	    my $service_hash = {
-		    code       => undef,
-		    nick       => undef,
-		    name       => undef,
-		    deliv_days => undef,
-		    deliv_date => undef,
-		    charges    => $charges,
-		    charges_formatted    => Business::Shipping::Util::currency( {}, $charges ),
-		    deliv_date_formatted => undef,
-		};
-	    push( @services_results, $service_hash );
-	}
+        if( defined($charges) ) {
+            my $service_hash = {
+                code       => undef,
+                nick       => undef,
+                name       => undef,
+                deliv_days => undef,
+                deliv_date => undef,
+                charges    => $charges,
+                charges_formatted    => Business::Shipping::Util::currency( {}, $charges ),
+                deliv_date_formatted => undef,
+            };
+            push( @services_results, $service_hash );
+        }
     }
     
     if ( ! $charges ) { 

@@ -30,7 +30,7 @@ sub test
         # 
         #},
     );
-    $shipment->submit( %args ) or die $shipment->user_error();
+    $shipment->submit( %args ) or croak $shipment->user_error();
     return $shipment;
 }
 
@@ -76,8 +76,8 @@ if ( 0 ) {
 
 }
 
-# V2 tes requests
-if ( 1 ) {
+# TODO: Update with V3 rate requests, these V2 no longer work.
+if (0) {
     $shipment = test(
         'test_mode'  => 1,
         'service'    => 'PRIORITY',
@@ -249,12 +249,11 @@ ok( ! $found_duplicate, 'USPS different zip codes give different prices (caching
 #    weight        => 5,
 #);
 
-#
 # This tries to test to make sure that the shipping matches up right
 #  - So that Airmail parcel post goes to Airmail parcel post, etc.
 #
 $shipment = test(
-    service         => 'Airmail Parcel Post',
+    service         => 'Priority Mail International Flat Rate Box',
     
     from_zip        => '98682',
     user_id         => $ENV{ USPS_USER_ID },        
@@ -270,7 +269,7 @@ ok( $airmail_parcel_post_to_AU,        'USPS australia' );
 
 # Test the letter service.
 $shipment = test(
-    service         => 'Airmail Letter-post',
+    service         => 'Priority Mail International Flat Rate Envelope',
     
     from_zip        => '98682',
     user_id         => $ENV{ USPS_USER_ID },        

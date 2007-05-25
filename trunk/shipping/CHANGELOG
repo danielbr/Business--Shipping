@@ -1,8 +1,33 @@
 Revision history for Business::Shipping
 =======================================
 
+2.05  
 
-2.04
+  USPS_Online
+  
+    * Change to protocol V3, with backwards-compatibility for version-2 
+      responses. 
+    
+    * Document new International sevice names:
+        Global Express Guaranteed
+        Express Mail International (EMS)
+        Express Mail International (EMS) Flat Rate Envelope
+        Priority Mail International
+        Priority Mail International Flat Rate Box
+        Priority Mail International Flat Rate Envelope
+        First Class Mail International
+        	
+    * Perl style changes
+    
+    * Improve error reporting in tests. Disable protocol V2 tests now that V3
+      is in use. Update the letter service test.
+      
+    * Fix several occurences of: Use of uninitialized value in concatenation (.)
+      or string at .../lib/site_perl/5.8.8/XML/DOM.pm line 483. There are 
+      several more that need to be fixed.
+
+
+2.04  Unreleased
 
 
   USPS_Online and UPS_Online changes by Rusty Conover <rconover@infogears.com>:
@@ -28,6 +53,8 @@ Revision history for Business::Shipping
     * Fix error messages on International requests.
     
     * Add option to disable automatic package splitting.
+    
+    * Add width, height, length, and girth.
      
   General
   
