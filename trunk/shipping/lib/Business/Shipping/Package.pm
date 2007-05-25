@@ -45,7 +45,7 @@ Package ID (for unique identification in a list of packages).
 use Class::MethodMaker 2.0
     [ 
       new    => [ qw/ -hash new / ],
-      scalar => [ 'weight', 'id', 'charges' ],
+      scalar => [ 'weight', 'id', 'charges', 'dimensional_weight' ],
     ];
 
 1;
