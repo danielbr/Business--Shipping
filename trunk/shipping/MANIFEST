@@ -12,13 +12,10 @@ doc/INSTALL.pod
 doc/INSTALL.txt
 doc/README.html
 doc/README.txt
-doc/Todo
 doc/UPS_Online_disabled.txt
 INSTALL
 lib/Business/Shipping.pm
 lib/Business/Shipping/Config.pm
-lib/Business/Shipping/Data.pm
-lib/Business/Shipping/Debug.pm
 lib/Business/Shipping/KLogging.pm
 lib/Business/Shipping/Logging.pm
 lib/Business/Shipping/Package.pm

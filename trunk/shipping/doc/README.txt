@@ -2,7 +2,7 @@ NAME
     Business::Shipping - Rates and tracking for UPS and USPS
 
 VERSION
-    Version 2.03
+    Version 2.05
 
 SYNOPSIS
   Rate request example
@@ -24,9 +24,11 @@ FEATURES
     Business::Shipping currently supports three shippers:
 
   UPS_Offline: United Parcel Service
-    * Shipment rate estimation using offline tables. New tables are released
-    whenever UPS updates them, and a script is available for automatically
-    updating the fuel surcharge every month.
+    * Shipment rate estimation using offline tables.
+        As of January, 2007, UPS has only released the data tables in binary
+        Excel format. These have not been converted to the text files
+        necessary for use in this module. A script is distributed with the
+        module for automatically updating the fuel surcharge every month.
 
   UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)
     * Disabled as of version 1.90, see doc/UPS_Online_disabled.txt.
@@ -277,16 +279,16 @@ KNOWN BUGS
     See the "doc/Todo" file for a comprehensive list of known bugs.
 
 CREDITS
-    Many people have contributed to this module, please see the
-    "doc/Credits" file.
+    Many people have contributed to this module, please see the "CREDITS"
+    file.
 
 AUTHOR
     Daniel Browning <db@kavod.com>, Kavod Technologies,
     <http://www.kavod.com>.
 
 COPYRIGHT AND LICENCE
-    Copyright (c) 2003-2005 Daniel Browning <db@kavod.com>. All rights
+    Copyright (c) 2003-2006 Daniel Browning <db@kavod.com>. All rights
     reserved. This program is free software; you can redistribute it and/or
-    modify it under the same terms as Perl itself. See "doc/License" for
-    more info.
+    modify it under the same terms as Perl itself. See "LICENSE" for more
+    info.
 
