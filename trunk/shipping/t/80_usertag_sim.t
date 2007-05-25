@@ -133,6 +133,12 @@ sub business_shipping_tag {
         },
     };
     
+    if ( my $tier = $Variable->{ UPS_TIER } ) {
+        if ( $tier >= 1 and $tier <= 7 ) {
+            $defaults->{UPS_Offline}{tier} = $tier;
+        }
+    }
+    
     # Apply all of the above defaults.  Sorting the hash keys causes 'all' to
     # be applied first, which allows each shipper to override the default.
     # For example, USPS_Online overrides the to_country method.
@@ -150,6 +156,9 @@ sub business_shipping_tag {
             }
         }
     }
+    
+    # Short-circuit for the common case.
+    return unless $opt{ to_zip } or $opt{ to_country }; 
     
     my $rate_request;
     eval { $rate_request = Business::Shipping->rate_request( 'shipper' => $shipper ); };
@@ -257,7 +266,6 @@ sub business_shipping_tag {
     
     return $charges;
 }
-
 
 
 ###############################################################################
