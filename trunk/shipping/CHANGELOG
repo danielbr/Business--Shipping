@@ -25,6 +25,10 @@ Revision history for Business::Shipping
     * Fix several occurences of: Use of uninitialized value in concatenation (.)
       or string at .../lib/site_perl/5.8.8/XML/DOM.pm line 483. There are 
       several more that need to be fixed.
+      
+  UPS_Online
+  
+    * Disable a few tests until they can be fixed.
 
 
 2.04  Unreleased
