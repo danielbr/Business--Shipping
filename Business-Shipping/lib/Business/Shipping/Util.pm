@@ -4,11 +4,11 @@ Business::Shipping::Util - Miscellaneous functions
 
 =head1 VERSION
 
-$Rev$
+$Rev: 352 $
 
 =head1 DESCRIPTION
 
-Misc functions, some others.
+Misc functions.
 
 =head1 METHODS
 
@@ -16,7 +16,7 @@ Misc functions, some others.
 
 package Business::Shipping::Util;
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+$VERSION = do { my $r = q$Rev: 352 $; $r =~ /\d+/; $&; };
 @EXPORT_OK = qw( looks_like_number unique );
 
 use strict;
