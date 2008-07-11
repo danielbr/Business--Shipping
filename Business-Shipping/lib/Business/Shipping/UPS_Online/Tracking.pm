@@ -5,7 +5,7 @@ use constant UPS_ONLINE_DISABLED => undef;
 
 # Business::Shipping::UPS_Online::Tracking - Abstract class for tracking shipments
 # 
-# $Id$
+# $Id: Tracking.pm 365 2007-05-21 04:45:06Z db-ship $
 # 
 # Copyright (c) 2004 InfoGears Inc.  All Rights Reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
@@ -86,7 +86,7 @@ the same terms as Perl itself. See LICENSE for more info.
 
 =cut
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+$VERSION = do { my $r = q$Rev: 365 $; $r =~ /\d+/; $&; };
 
 use strict;
 use warnings;
@@ -267,21 +267,10 @@ sub _handle_response
       return ( undef );
     }
     
-    
-    
-    #
-    # This is a "large" debug.
-    #
+    # This is a large debug.
     debug3( 'response = ' . $self->response->content );
-    #
 
     my $shipment_id = $response_tree->{Shipment}->{ShipmentIdentificationNumber};
-
-    
-    
-
-
-    
     my $result_hash;
 
     $result_hash->{pickup_date} = $response_tree->{Shipment}->{PickupDate};
@@ -290,7 +279,6 @@ sub _handle_response
 
     $result_hash->{rescheduled_delivery_date} = $response_tree->{Shipment}->{RescheduledDeliveryDate};
     $result_hash->{rescheduled_delivery_time} = $response_tree->{Shipment}->{RescheduledDeliveryTime};
-
 
     my $shipper = $response_tree->{Shipment}->{Shipper};
     if($shipper) {
@@ -373,4 +361,3 @@ sub gen_unique_key {
 
 
 1;
-
