@@ -9,11 +9,11 @@ Business::Shipping::UPS_Online::RateRequest
 
 =head1 VERSION
 
-Version $Rev$
+Version $Rev: 377 $
 
 =cut
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+$VERSION = do { my $r = q$Rev: 377 $; $r =~ /\d+/; $&; };
 
 =head1 REQUIRED FIELDS
 
@@ -32,15 +32,15 @@ UPS_ACCESS_KEY
 
 =head2 Domestic
 
-    1DM        
-    1DML    
-    1DA        One Day Air
-    1DAL    
-    2DM    
-    2DA        Two Day Air
-    2DML    
-    2DAL    
-    3DS        Three Day Select    
+    1DM       
+    1DML      
+    1DA       One Day Air
+    1DAL      
+    2DM       
+    2DA       Two Day Air
+    2DML      
+    2DAL      
+    3DS       Three Day Select
     GNDCOM    Ground Commercial
     GNDRES    Ground Residential
     
@@ -48,9 +48,9 @@ UPS_ACCESS_KEY
  
     XPR        UPS Worldwide Express
     XDM        UPS Worldwide Express Plus
-    UPSSTD    UPS Standard
-    XPRL    UPS Worldwide Express Letter
-    XDML    UPS Worldwide Express Plus Letter
+    UPSSTD     UPS Standard
+    XPRL       UPS Worldwide Express Letter
+    XDML       UPS Worldwide Express Plus Letter
     XPD        UPS Worldwide Expedited
 
 =head1 ARGUMENTS
