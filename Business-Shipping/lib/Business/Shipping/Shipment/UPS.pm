@@ -6,13 +6,13 @@ Business::Shipping::Shipment::UPS
 
 =head1 VERSION
 
-$Rev$
+$Rev: 280 $
 
 =head1 METHODS
 
 =cut
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+$VERSION = do { my $r = q$Rev: 280 $; $r =~ /\d+/; $&; };
 
 use strict;
 use warnings;
@@ -42,6 +42,8 @@ use Class::MethodMaker 2.0
 
 =head2 weight()
 
+# Uses the standard Shipment::weight().
+
 =head2 signature_type()
 
 =head2 insured_currency_type()
@@ -51,7 +53,6 @@ use Class::MethodMaker 2.0
 =cut
 
 sub packaging { shift->package0->packaging( @_ ) }
-#sub weight    { shift->package0->weight( @_ )    }  # UPS uses the Shipping::Shipment::weight() method.
 sub signature_type { shift->package0->signature_type( @_ ) }
 sub insured_currency_type { shift->package0->insured_currency_type( @_ ) }
 sub insured_value { shift->package0->insured_value( @_ ) }
@@ -67,9 +68,8 @@ sub massage_values
 {
     my ( $self ) = @_;
 
-
     # Check each package for a package type and assign one if none given.
-    my %default_package_map = (
+    my %services_default_packaging_codes = (
         qw/
         1DM    02
         1DML   01
@@ -92,15 +92,19 @@ sub massage_values
         /
     );
 
-    foreach my $package ( $self->packages ) {
-        if ( not $package->packaging ) {
-            $package->packaging( '02' );
-            if ( $self->service_nick ) {
-                my $default_package_code = $default_package_map{ $self->service_nick };
-                if ( $default_package_code ) {
-                    $package->packaging( $default_package_code );
-                }
-            }
+    # Set default packaging code based on the service.
+    foreach my $package ($self->packages()) {
+        next if $package->packaging();
+        
+        my $dflt_pkg_code_for_svc;
+        if (my $service_nick = $self->service_nick()) {
+            $dflt_pkg_code_for_svc = $services_default_packaging_codes{$service_nick};
+        }
+        if ($dflt_pkg_code_for_svc) {
+            $package->packaging($dflt_pkg_code_for_svc);
+        }
+        else {
+            $package->packaging('02');
         }
     }
     
@@ -160,12 +164,8 @@ Alaska and Hawaii are treated differently by many shippers.
 sub from_ak_or_hi
 {
     my ( $self ) = @_;
-    
-    return unless $self->from_state;
-    if ( $self->from_state =~ /^(AK|HI)$/i ) {
-        return 1;
-    }
-    
+    return unless $self->from_state();
+    return 1 if $self->from_state() =~ /^(AK|HI)$/i;
     return 0;
 }
 
@@ -206,11 +206,9 @@ sub service
             
             # Record whatever the user passed in.  If we need a certain format,
             # we can always use the sibling methods.
-            
             $self->{ service } = $service;
             
             # Setup the sibling method data 
-            
             $self->service_code( $service_map->{ code } );
             $self->service_nick( $service_map->{ nick } );
             $self->service_name( $service_map->{ name } );
@@ -242,8 +240,8 @@ sub service
 
 =cut
 
-sub service_code_to_nick { return $_[ 0 ]->service_info( $_[ 1 ], 'nick' ); }
-sub service_code_to_name { return $_[ 0 ]->service_info( $_[ 1 ], 'name' ); }
+sub service_code_to_nick { return $_[0]->service_info($_[1], 'nick'); }
+sub service_code_to_name { return $_[0]->service_info($_[1], 'name'); }
 
 =head2 service_info
 
@@ -259,7 +257,6 @@ sub service_info
     
     return { name => 'Shop', code => 999, nick => 'SHOP', nick2 => 'Shop' } 
         if $service eq 'shop' and $type eq 'get_map';
-        
     
     my $service_info_cfg = cfg()->{ ups_service_info };
     my $service_info;
@@ -292,6 +289,7 @@ sub service_info
             elsif ( lc $service eq lc $service_map->{ name } ) {
                 $match = 1;
             }
+            
             if ( $match ) {
                 return $service_map;
             }
