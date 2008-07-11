@@ -97,11 +97,9 @@ support_files_install :
 	\@\$(MKPATH) $my_globals{CONFIG_DIR}
 	\@\$(CP) -R -f config/* $my_globals{CONFIG_DIR}/
 };  #/qq
-}
+}   #/sub MY::postamble
 
 sub extra_WriteMakefile_options {
-    
-    
     if ( not $::UseDefaults ) {
         my $module = 'Business::Shipping';
         
@@ -111,7 +109,6 @@ sub extra_WriteMakefile_options {
 What directory should be used for storing configuration files, logging files, and data?
 
 $module support files directory:);
-
     
         $my_globals{ PREFIX_DIR } = prompt( 
             $question, 
@@ -128,7 +125,6 @@ $module support files directory:);
     
     # Now we are going to substitute the support files directory in 
     # lib/Business/Shipping/Config.pm
-    
     subst( 
         variables => {
             DEFAULT_CONFIG_DIR  => $my_globals{ CONFIG_DIR },
@@ -162,8 +158,6 @@ $module support files directory:);
 
 =head1 METHODS
 
-
-
 =head2 subst( files => [ ], variables => { } )
 
 Converts variables, like so:
@@ -177,7 +171,6 @@ into
 =cut
 
 # TODO: Make this Windows compatible
-
 sub subst
 {
     my ( %opt ) = @_;
@@ -185,7 +178,6 @@ sub subst
     return unless $opt{ files } and $opt{ variables };
     
     my $base_path = '.';
-    
     foreach my $file ( @{ $opt{ files } } ) {
         $file = "$base_path/$file";
         
@@ -195,7 +187,6 @@ sub subst
         
         # Read in the entire file for speed.
         # This regex taken from Interchange (http://www.icdevgroup.org).
-        
         undef $INPUT_RECORD_SEPARATOR;
         $_ = <OLD>;
         s{.*\n(#(.*)~_~(\w+)~_~(.*))}{$2 . $opt{ variables }->{ $3 } . "$4\n$1"}eg;
@@ -203,7 +194,6 @@ sub subst
         
         close NEW;
         close OLD;
-        
         unlink "$file.tmp" or die "Delete failed: $OS_ERROR";
     }
     
