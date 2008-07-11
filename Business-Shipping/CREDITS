@@ -36,7 +36,10 @@ contributed.
  * bbfu on PerlMonks.org got Class::MethodMaker working with SUPER.
  
  * Mark Stosberg <mark@stosberg.com> contributed documentation patches.
- 
+  
+ * Chris Ochs <chris@paymentonline.com> contributed information about running
+   under mod_perl.
+
  * Mike Wexler <mwexler@tias.com> contributed USPS_Online changes (2.03+):
    - Fix weight calculation error and support shipments less than one pound.  
    - Fix error messages on International requests.
