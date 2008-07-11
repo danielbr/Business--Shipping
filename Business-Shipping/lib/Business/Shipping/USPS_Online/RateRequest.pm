@@ -4,7 +4,7 @@ Business::Shipping::USPS_Online::RateRequest
 
 =head1 VERSION
 
-$Rev$
+$Rev: 377 $
 
 =head1 SERVICE TYPES
 
@@ -36,7 +36,7 @@ First Class Mail International
 
 package Business::Shipping::USPS_Online::RateRequest;
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+$VERSION = do { my $r = q$Rev: 377 $; $r =~ /\d+/; $&; };
 
 use strict;
 use warnings;
@@ -138,24 +138,19 @@ sub _gen_request_xml
     
     # Note: The XML::Simple hash-tree-based generation method wont work with USPS,
     # because they enforce the order of their parameters (unlike UPS).
-    #
     my $rateReqDoc = XML::DOM::Document->new(); 
     my $rateReqEl = $rateReqDoc->createElement( 
         $self->domestic() ? 'RateV3Request' : 'IntlRateRequest' 
     );
     
-    #if ( ! $self->test_mode ) {
-        $rateReqEl->setAttribute('USERID', $self->user_id() ); 
-        $rateReqEl->setAttribute('PASSWORD', $self->password() );
-    #}
-    
+    # Note that these are required even for test mode transactions.
+    $rateReqEl->setAttribute('USERID', $self->user_id() ); 
+    $rateReqEl->setAttribute('PASSWORD', $self->password() );
     $rateReqDoc->appendChild($rateReqEl);
     
     my $package_count = 0;
-    
     logdie "No packages defined internally." unless ref $self->shipment->packages();
     foreach my $package ( @{ $self->shipment->packages() } ) {
-
         my $id;
         $id = $package->id();
         $id = $package_count++ unless $id;
