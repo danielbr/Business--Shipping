@@ -223,9 +223,8 @@ when preloading is advantagous.  For example:
 
 =over 4
 
-=item * For mod_perl, to load the modules only once at startup instead of at 
- startup and then additional modules later on.  (Thanks to Chris Ochs 
- <chris@paymentonline.com> for contributing to this information).
+=item * For mod_perl, to load the modules only once at startup to reduce memory
+utilization.
 
 =item * For compatibilty with some security modules (e.g. Safe).
 
@@ -244,7 +243,6 @@ use warnings;
 use Carp;
 use Business::Shipping::Logging;
 use Business::Shipping::Util 'unique';
-#use Business::Shipping::ClassAttribs;
 use Class::MethodMaker 2.0
     [ 
       new    => [ qw/ -hash new /                                     ],
@@ -252,11 +250,6 @@ use Class::MethodMaker 2.0
     ];
 
 $Business::Shipping::RuntimeLoad = 1;
-
-# test numbers:
-# UPS  test tracking number: 1ZA723W80340522160
-# USPS test tracking number: EJ958083578US
-
 
 sub import 
 {
@@ -266,14 +259,12 @@ sub import
     
     while ( my ( $key, $val ) = each %$record ) {
         if ( lc $key eq 'preload' ) {
-            
             # Required modules lists
             # ======================
             # Each of these modules does a compile-time require of all 
             # the modules that it needs.  If, in the future, any of these
             # modules switch to a run-time require, then update this list with
             # the modules that may be run-time required.
-            
             my $module_list = {
                 'USPS_Online' => [
                     'Business::Shipping::USPS_Online::Tracking',
@@ -286,7 +277,6 @@ sub import
             };
                     
             my @to_load;
-                
             while ( my ( $shipper, $mod_list ) = each %$module_list ) {
                 if ( lc $val eq lc $shipper or lc $val eq 'all' ) {
                     push @to_load, ( 
@@ -341,15 +331,14 @@ sub user_error
         
         # Make it look like I'm calling error() from the caller, instead of this
         # function.
-
         my ( $package, $filename, $line, $sub ) = caller( 1 );
         error( 
             { 
-                caller_package  => '',
-                caller_filename => $filename,
-                caller_line     => $line,
-                caller_sub      => $sub,
-                caller_depth_modifier => 1,
+                'caller_package'  => '',
+                'caller_filename' => $filename,
+                'caller_line'     => $line,
+                'caller_sub'      => $sub,
+                'caller_depth_modifier' => 1,
             }, 
             $msg
         );
@@ -395,17 +384,12 @@ sub validate
 =head2 $self->get_grouped_attrs( $attribute_name )
 
 =cut
-
+# attr_name = Attribute Name.
 sub get_grouped_attrs
 {
     my ( $self, $attr_name ) = @_;
-    
-    # attr_name = Attribute Name.
-    
     my @results = $self->$attr_name();
-    
     #print "get_grouped_attrs( $attr_name ): " . join( ', ', @results ) . "\n";
-    
     return @results;
 }
 
@@ -475,10 +459,28 @@ sub rate_request
     
     Carp::croak 'shipper required' unless $opt{ shipper };
 
-    # COMPAT: shipper compatibility
-    # 1. Really old: "UPS" or "USPS" (assumes Online::)
-    # 2. Semi-old:   "Online::UPS", "Offline::UPS", or "Online::USPS"
-    # 3. Current:    "UPS_Online", "UPS_Offline", or "USPS_Online"
+    $shipper = _compat_shipper_name($shipper);
+
+    my $rr = Business::Shipping->_new_subclass( $shipper . '::RateRequest' );
+    logdie "New $shipper::RateRequest object was undefined." if not defined $rr;
+    
+    $rr->init( %opt );
+   
+    return $rr;
+}
+
+=head2 _compat_shipper_name
+
+Shipper name backwards-compatibility
+
+1. Really old: "UPS" or "USPS" (assumes Online::)
+2. Semi-old:   "Online::UPS", "Offline::UPS", or "Online::USPS"
+3. Current:    "UPS_Online", "UPS_Offline", or "USPS_Online"
+
+=cut
+
+sub _compat_shipper_name {
+    my ($shipper) = @_;
     
     my %old_to_new = (
         'Online::UPS'  => 'UPS_Online',
@@ -487,19 +489,11 @@ sub rate_request
         'UPS'  => 'UPS_Online',
         'USPS' => 'USPS_Online'
     );
-    
     $shipper = $old_to_new{ $shipper } if $old_to_new{ $shipper };
     
-    # /COMPAT    
-    
-    
-    my $rr = Business::Shipping->_new_subclass( $shipper . '::RateRequest' );
-    logdie "New $shipper::RateRequest object was undefined." if not defined $rr;
-    
-    $rr->init( %opt );
-   
-    return $rr;
+    return $shipper;
 }
+
 
 =head2 Business::Shipping->log_level()
 
@@ -526,29 +520,36 @@ sub _new_subclass
 {
     my ( $class, $subclass, %opt ) = @_;
     
-    Carp::croak( "Error before _new_subclass was called: $@" ) if $@;
+    croak( "Error before _new_subclass was called: $@" ) if $@;
     
     my $new_class = $class . '::' . $subclass;
     
     if ( $Business::Shipping::RuntimeLoad )
         { eval "use $new_class"; }
         
-    Carp::croak( "Error when trying to use $new_class: \n\t$@" ) if $@;
+    croak( "Error when trying to use $new_class: \n\t$@" ) if $@;
     
     my $new_sub_object = eval "$new_class->new()";
-    Carp::croak( "Failed to create new $new_class object.  Error: $@" ) if $@;
+    croak( "Failed to create new $new_class object.  Error: $@" ) if $@;
     
     return $new_sub_object;    
 }
 
 # COMPAT: event_handlers()
-
 #=head2 $obj->event_handlers()
 #
 #For backwards compatibility with 1.06 and prior only.
 #
 #=cut
+#
+# We ignore the value of the key (whether STDERR, STDOUT, etc.),
+# because it would be a lot of work to set it up correctly, and 
+# if a user is going to use the debug system, they would probably
+# be willing to upgrade to the most recent version.
 
+# The levels are in order from least to greatest, so as soon as 
+# we get a match, we need to stop, because the lowest level (DEBUG)
+# will automatically include all of the greater levels.
 sub event_handlers
 {
     my ( $self, $event_handlers_hash ) = @_;
@@ -557,15 +558,6 @@ sub event_handlers
         $key = uc $key;
         foreach my $Log_Level ( @Business::Shipping::KLogging::Levels ) {
             if ( $key eq $Log_Level ) {
-                # We ignore the value of the key (whether STDERR, STDOUT, etc.),
-                # because it would be a lot of work to set it up correctly, and 
-                # if a user is going to use the debug system, they would probably
-                # be willing to upgrade to the most recent version.
-                
-                # The levels are in order from least to greatest, so as soon as 
-                # we get a match, we need to stop, because the lowest level (DEBUG)
-                # will automatically include all of the greater levels.
-                
                 Business::Shipping->log_level( $Log_Level );
                 last KEY;
             }
@@ -591,8 +583,7 @@ Important modules that are related to Business::Shipping:
 
 =item * Business::Shipping::DataFiles - Required for offline cost estimation
 
-=item * Business::Shipping::DataTools - Tools that generate DataFiles 
-        (optional)
+=item * Business::Shipping::DataTools - Tools that generate DataFiles (optional)
 
 =back
 
