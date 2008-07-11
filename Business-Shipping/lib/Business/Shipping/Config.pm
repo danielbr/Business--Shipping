@@ -6,7 +6,7 @@ Business::Shipping::Config - Configuration functions
 
 =head1 VERSION
 
-$Rev$
+$Rev: 370 $
 
 =head1 DESCRIPTION
 
@@ -24,7 +24,7 @@ use constant DEFAULT_DATA_DIR => '/usr/local/B_Shipping/data';
 #use constant DEFAULT_DATA_DIR => '~_~DEFAULT_DATA_DIR~_~';
 
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+$VERSION = do { my $r = q$Rev: 370 $; $r =~ /\d+/; $&; };
 @EXPORT = qw/ cfg cfg_obj config_to_hash config_to_ary_of_hashes /;
 
 use strict;
@@ -152,12 +152,13 @@ Returns this:
 
  [ 
      {
+         service    => 'XDM',
          to_country => 'Canada',
-         service    => 'XDM'
+	 reason     => 'Not available.',
      },
      {
+         service    => 'XDM',
          to_country => 'Brazil',
-         service    => 'XDM'
      },
  ]
 
@@ -169,19 +170,14 @@ sub config_to_ary_of_hashes
         
     my @ary;
     foreach my $line ( @$cfg ) {
-
-        # Convert multiple tabs into one tab.
-        # Remove the leading tab.
-        # split on the tabs to get key=val pairs.
-        # split on the '='.
-
+        # Convert multiple tabs into one tab, remove the leading tab.
+        # Split on the tabs to get key=val pairs, then split on the '='.
         $line =~ s/\t+/\t/g;
         $line =~ s/^\t//;
         my @key_val_pairs = split( "\t", $line );
         next unless @key_val_pairs;
 
         # Each line becomes a hash.
-
         my $hash = {};
         foreach my $key_val_pair ( @key_val_pairs ) {
             my ( $key, $val ) = split( '=', $key_val_pair );
@@ -312,12 +308,6 @@ sub calc_req_mod
         }
         if ( ! $@ ) {
             push @avail, $shipper;
-            foreach my $module ( @to_load ) {
-                #if ( $to_load_ver ) 
-                #    { use_ok( $to_load_mod => $to_load_ver ); }
-                #else 
-                #    { use_ok( $to_load_mod ); }
-            }
         }
     }
     if ( $one_shipper ) {
