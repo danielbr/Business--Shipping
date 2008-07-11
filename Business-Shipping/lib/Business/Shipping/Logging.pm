@@ -24,7 +24,7 @@ use Business::Shipping::KLogging;
 use Business::Shipping::Config;
 
 @EXPORT = Business::Shipping::KLogging::subs;
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+$VERSION = do { my $r = q$Rev: 244 $; $r =~ /\d+/; $&; };
 
 foreach my $_sub ( Business::Shipping::KLogging::subs ) {
     eval "\*$_sub = \*Business::Shipping::KLogging::$_sub";
@@ -36,6 +36,8 @@ my $file         = Business::Shipping::Config::config_dir . '/log4perl.conf';
 my $caller_depth = 2;
 
 bs_init();
+
+1;
 
 =head2 bs_init()
 
@@ -75,8 +77,6 @@ sub log_level
     
     return $log_level;
 }
-
-1;
 
 __END__
 
