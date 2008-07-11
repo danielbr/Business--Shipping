@@ -6,13 +6,13 @@ Business::Shipping::RateRequest::Online - Abstract rates class
 
 =head1 VERSION
 
-$Rev$
+$Rev: 365 $
 
 =head1 METHODS
 
 =cut
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+$VERSION = do { my $r = q$Rev: 365 $; $r =~ /\d+/; $&; };
 
 use strict;
 use warnings;
@@ -29,8 +29,6 @@ use Class::MethodMaker 2.0
     
 sub Required { return ( $_[ 0 ]->SUPER::Required, qw/ user_id password / ); }
 sub Optional { return ( $_[ 0 ]->SUPER::Optional, qw/ prod_url test_url / ); }
-#sub Unique   { return ( $_[ 0 ]->SUPER::Unique,   qw/  / ); }
-
 
 =head2 perform_action()
 
@@ -52,8 +50,7 @@ sub perform_action
                         "Content: " . $self->response->content() 
                     ); 
     }
-    use Data::Dumper;
-    #debug3 "self->response = " . Dumper( $self->response() );
+    #use Data::Dumper; debug3 "self->response = " . Dumper( $self->response() );
     
     return ( undef );
 }
