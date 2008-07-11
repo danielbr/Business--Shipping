@@ -10,7 +10,7 @@ Business::Shipping::RateRequest - Abstract class
 
 =head1 VERSION
 
-$Rev$
+$Rev: 369 $
 
 =head1 DESCRIPTION
 
@@ -22,7 +22,7 @@ Represents a request for shipping cost estimation.
 
 =cut
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+$VERSION = do { my $r = q$Rev: 369 $; $r =~ /\d+/; $&; };
 
 use strict;
 use warnings;
@@ -242,7 +242,7 @@ sub execute
     $handle_response_success = $self->_handle_response();
     
     my $results = $self->results();
-    debug2 'results = ' . Dumper( $results );
+    #use Data::Dumper; debug2 'results = ' . Dumper( $results );
     
     # Only cache if there weren't any errors and we only have one package.  The Unique() subs are not
     # built (currently) to generate cache keys for multiple packages.  It's all done at the shipment level.
