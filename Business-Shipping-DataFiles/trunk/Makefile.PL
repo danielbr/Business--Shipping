@@ -44,7 +44,7 @@ docs :
 support_files_install :
 	\@echo "Installing data files to $my_globals{DATA_DIR}"
 	\@\$(MKPATH) $my_globals{DATA_DIR}
-	\@\$(CP) --recursive --force data/*   $my_globals{DATA_DIR}/
+	\@\$(CP) -R -f data/*   $my_globals{DATA_DIR}/
 };  #/qq
 }
 
