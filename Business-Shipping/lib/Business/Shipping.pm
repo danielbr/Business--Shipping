@@ -1,10 +1,6 @@
-# Business::Shipping - Rates and tracking for UPS and USPS
-#
-# $Id$
-#
-# Copyright (c) 2003-2006 Daniel Browning <db@kavod.com>. All rights reserved.
+# Copyright (c) 2003-2008 Daniel Browning <db@kavod.com>. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See doc/License for more info.
+# the same terms as Perl itself. See LICENSE for more info.
 
 package Business::Shipping;
 
@@ -56,11 +52,9 @@ every month.
 
 =back
 
-=head2 UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)
+=head2 UPS_Online: United Parcel Service using UPS OnLine Tools
 
 =over 4
-
-=item * Disabled as of version 1.90, see doc/UPS_Online_disabled.txt.
 
 =item * Shipment rate estimation
 
