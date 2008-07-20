@@ -28,9 +28,8 @@ implementation.
 
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
-use strict;
-use warnings;
-use base ( 'Business::Shipping' );
+use Moose;
+extends 'Business::Shipping';
 
 =head2 $package->weight()
 
@@ -42,11 +41,10 @@ Package ID (for unique identification in a list of packages).
 
 =cut
 
-use Class::MethodMaker 2.0
-    [ 
-      new    => [ qw/ -hash new / ],
-      scalar => [ 'weight', 'id', 'charges', 'dimensional_weight' ],
-    ];
+has 'weight' => (is => 'rw');
+has 'id' => (is => 'rw');
+has 'charges' => (is => 'rw');
+has 'dimensional_weight' => (is => 'rw');
 
 1;
 

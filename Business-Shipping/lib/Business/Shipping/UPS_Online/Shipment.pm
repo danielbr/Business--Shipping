@@ -14,20 +14,22 @@ $Rev: 158 $      $Date: 2004-09-09 15:58:17 -0700 (Thu, 09 Sep 2004) $
 
 $VERSION = do { my $r = q$Rev: 158 $; $r =~ /\d+/; $&; };
 
-use strict;
-use warnings;
-use base( 'Business::Shipping::Shipment::UPS' );
+use Moose;
 use Business::Shipping::Config;
 use Business::Shipping::Logging;
 
-use Class::MethodMaker 2.0
-    [ 
-      new    => 'new',
-      scalar => [ { -default => 150 }, 'max_weight' ],
-      scalar => [ 'cod', 'cod_funds_code', 'cod_value' ],
-      array  => [ { -type => 'Business::Shipping::UPS_Online::Package',
-                    -default_ctor => 'default_new', }, 'packages' ],      
-    ];
+extends 'Business::Shipping::Shipment::UPS';
+# of 'Business::Shipping::UPS_Online::Package' objects
+has 'packages' => (
+    is => 'rw',
+    isa => 'ArrayRef[Business::Shipping::UPS_Online::Package]',
+    default => sub { [ Business::Shipping::UPS_Online::Package->new() ] },
+    auto_deref => 1
+);
+has 'max_weight' => (is => 'rw', default => 150);
+has 'cod' => (is => 'rw');
+has 'cod_funds_code' => (is => 'rw');
+has 'cod_value' => (is => 'rw');
 
 1;
 

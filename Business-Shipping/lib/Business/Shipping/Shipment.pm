@@ -22,9 +22,8 @@ Shipments have a source, a destination, packages, and other attributes.
 
 =cut
 
-use strict;
-use warnings;
-use base ( 'Business::Shipping' );
+use Moose;
+extends 'Business::Shipping';
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Util;
@@ -47,14 +46,15 @@ use Business::Shipping::Util;
 
 =cut
 
-use Class::MethodMaker 2.0
-    [
-      new    => [ { -hash => 1 }, 'new' ],
-      scalar => [ qw/ current_package_index from_zip from_city to_zip to_city 
-                      shipment_num / 
-                ],
-      array  => [ { -type => 'Business::Shipping::Package' }, 'packages' ],
-    ];
+# of Business::Shipping::Package objects.
+has 'packages' => (is => 'rw', isa => 'ArrayRef'); 
+has 'current_package_index' => (is => 'rw');
+has 'from_zip' => (is => 'rw');
+has 'from_city' => (is => 'rw');
+has 'to_city' => (is => 'rw');
+has 'to_zip' => (is => 'rw');
+has 'shipment_num' => (is => 'rw');
+
 
 =head2 weight
 
@@ -90,7 +90,7 @@ Alias for default_package.
 
 =cut
 
-sub package0 { $_[ 0 ]->packages_index( 0 ) }
+sub package0 { $_[0]->packages->[0] }
 *default_package = *package0;
 *dflt_pkg        = *package0;
 

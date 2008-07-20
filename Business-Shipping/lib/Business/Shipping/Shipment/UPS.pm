@@ -14,9 +14,7 @@ $Rev: 280 $
 
 $VERSION = do { my $r = q$Rev: 280 $; $r =~ /\d+/; $&; };
 
-use strict;
-use warnings;
-use base( 'Business::Shipping::Shipment' );
+use Moose;
 use Business::Shipping::Config;
 
 =head2 to_residential()
@@ -25,18 +23,18 @@ Defaults to true.
 
 =cut
 
-use Class::MethodMaker 2.0
-    [ 
-      new    => [ { -hash => 1 },  'new' ],
-      scalar => [ { default => 1 }, 'to_residential' ],
-      scalar => [ '_service', 'service_code', 'service_nick', 'service_name', 'service_nick2' ],
+extends 'Business::Shipping::Shipment';
+has 'to_residential' => (is => 'rw', default => 1);
+has '_service' => (is => 'rw');
+has 'service_code' => (is => 'rw');
+has 'service_nick' => (is => 'rw');
+has 'service_name' => (is => 'rw');
+has 'service_nick2' => (is => 'rw');
+# We need this offline boolean to know if from_state is required.
+has 'offline' => (is => 'rw');
 
-      # We need this offline boolean to know if from_state is required.
-
-      scalar => [ 'offline' ],
-      array  => [ { -type => 'Business::Shipping::Package', 
-                    -default_ctor => 'new' }, 'packages' ],      
-    ];
+#type => 'Business::Shipping::Package
+#has 'packages' => (is => 'rw', isa => 'ArrayRef');
 
 =head2 packaging()
 
@@ -91,8 +89,9 @@ sub massage_values
         XPD    02
         /
     );
-
+    #use Data::Dumper; die "packages = " . Dumper($self->packages());
     # Set default packaging code based on the service.
+    
     foreach my $package ($self->packages()) {
         next if $package->packaging();
         
@@ -193,12 +192,11 @@ data files.
 
 =cut
 
-sub service
-{
+sub service {
     my ( $self, $service ) = @_;
     
     if ( defined $service ) {
-        $self->{ service } = $service;
+        $self->_service($service);
         
         my $service_map = $self->service_info( $service, 'get_map' );
         
@@ -206,7 +204,7 @@ sub service
             
             # Record whatever the user passed in.  If we need a certain format,
             # we can always use the sibling methods.
-            $self->{ service } = $service;
+            $self->_service($service);
             
             # Setup the sibling method data 
             $self->service_code( $service_map->{ code } );
@@ -231,7 +229,7 @@ sub service
         
     }
     
-    return $self->{ service };
+    return $self->_service();
 }
 
 =head2 service_code_to_nick

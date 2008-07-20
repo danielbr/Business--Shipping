@@ -24,9 +24,8 @@ Represents a request for shipping cost estimation.
 
 $VERSION = do { my $r = q$Rev: 369 $; $r =~ /\d+/; $&; };
 
-use strict;
-use warnings;
-use base ( 'Business::Shipping' );
+use Moose;
+extends 'Business::Shipping';
 use Data::Dumper;
 use Business::Shipping::Util;
 use Business::Shipping::Logging;
@@ -84,46 +83,43 @@ Additional keys may be added by the shipper class.
 
 =cut
 
-use Class::MethodMaker 2.0
-    [ new => [ qw/ -hash new / ],
-      scalar        => [ 'is_success', 'cache', 'invalid' ],
-      scalar	    => [ 'dont_split_packages' ],
-      scalar        => [ 'shipper' ],
-      scalar        => [ 'results' ],
-      scalar        => [ '_total_charges' ],
-      scalar        => [ 'price_components' ],
-      scalar => [ { -type    => 'Business::Shipping::Shipment',
-                    -forward => [ 
-                                    'service', 
-                                    'service_code', 'service_nick', 'service_name', 'service_nick2',
-                                    'from_country',
-                                    'from_country_abbrev',
-                                    'to_country',
-                                    'to_country_abbrev',
-                                    'to_ak_or_hi',
-                                    'from_zip',
-                                    'to_zip',
-                                    'packages',
-                                    'weight',
-                                    'shipper',
-                                    'domestic',
-                                    'intl',
-                                    'domestic_or_ca',
-                                    'from_canada',
-                                    'to_canada',
-                                    'from_ak_or_hi',
-                                ],
-                   },
-                   'shipment'
-                 ],
-      array  => [ 'error_details' ],
-    ];
+has 'cache'               => (is => 'rw', isa => 'Str');
+has 'invalid'             => (is => 'rw', isa => 'Str');
+has 'shipper'             => (is => 'rw', isa => 'Str');
+has 'results'             => (is => 'rw', isa => 'ArrayRef');
+has 'is_success'          => (is => 'rw', isa => 'Str');
+has '_total_charges'      => (is => 'rw', isa => 'Str');
+has 'price_components'    => (is => 'rw', isa => 'Str');
+has 'dont_split_packages' => (is => 'rw', isa => 'Str');
+has 'error_details'       => (is => 'rw', isa => 'HashRef');
 
-sub Required { return ( $_[ 0 ]->SUPER::Required, qw/ shipper weight / ); } # weight can be required even though some use pounds.
-sub Optional { return ( $_[ 0 ]->SUPER::Optional, qw/ to_residential from_country to_country to_zip from_city
-                                                      to_city        / ); }
-sub Unique   { return ( $_[ 0 ]->SUPER::Unique,   qw/ shipper service from_zip from_country to_zip from_city
-                                                      to_city weight / ); }    
+# weight can be required even though some use pounds.
+sub Required { return ( $_[ 0 ]->SUPER::Required, qw/ shipper weight / ); } 
+sub Optional {
+    my @optional = qw/
+        to_residential 
+        from_country 
+        to_country 
+        to_zip
+        from_city
+        to_city
+    /;
+    return ($_[ 0 ]->SUPER::Optional, @optional); 
+}
+sub Unique {
+    my @unique = qw/
+        shipper 
+        service
+        from_zip
+        from_country
+        to_zip
+        from_city
+        to_city
+        weight 
+    /; 
+    
+    return ( $_[ 0 ]->SUPER::Unique, @unique ); 
+}    
     
 =head2 $rate_request->execute()
 
@@ -174,7 +170,7 @@ sub execute
     
     #debug3 "before we start, all packages = " . Dumper( $self->shipment->packages );
     foreach my $p_idx ( 0 .. @{ $self->shipment->packages } - 1 ) {
-        my $package = $self->shipment->packages_index( $p_idx );
+        my $package = $self->shipment->packages->[$p_idx];
         
         if ( ! $package->weight ) {
             error "package weight not found for package idx: $p_idx"; #, object = " . Dumper( $package );

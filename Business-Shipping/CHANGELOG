@@ -1,8 +1,16 @@
 Revision history for Business::Shipping
 =======================================
 
+2.2.0
 
-2.05  
+  General
+    
+    * Changed from Subversion to Git.
+    
+    * Upgraded from Class::MethodMaker to Moose.
+
+
+2.05 Limited beta release  
 
 
   Upgrade Notes
@@ -47,7 +55,7 @@ Revision history for Business::Shipping
     * Refactor error handling and other components.
 
 
-2.04  Unreleased
+2.04  Limited beta release
 
 
   USPS_Online and UPS_Online changes by Rusty Conover <rconover@infogears.com>:

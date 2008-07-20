@@ -238,16 +238,14 @@ utilization.
 
 =cut
 
-use strict;
-use warnings;
+use Moose;
 use Carp;
 use Business::Shipping::Logging;
 use Business::Shipping::Util 'unique';
-use Class::MethodMaker 2.0
-    [ 
-      new    => [ qw/ -hash new /                                     ],
-      scalar => [ 'tx_type', 'shipper', '_user_error_msg'             ],
-    ];
+
+has 'tx_type'         => (is => 'rw', isa => 'Str');
+has 'shipper'         => (is => 'rw', isa => 'Str');
+has '_user_error_msg' => (is => 'rw', isa => 'Str');
 
 $Business::Shipping::RuntimeLoad = 1;
 

@@ -85,9 +85,9 @@ UPS_ACCESS_KEY
 
 =cut
 
-use strict;
-use warnings;
-use base ( 'Business::Shipping::RateRequest::Online' );
+use Moose;
+extends 'Business::Shipping::RateRequest::Online';
+
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::UPS_Online::Package;
@@ -98,53 +98,64 @@ use Cache::FileCache;
 use LWP::UserAgent;
 use POSIX ( 'strftime' );
 
+has 'shipment' => (
+    is => 'rw',
+    isa => 'Business::Shipping::UPS_Online::Shipment',
+    default   => sub { Business::Shipping::UPS_Online::Shipment->new() },
+    handles => [
+        'from_city',
+        'to_city', 
+        'from_country', 
+        'from_country_abbrev', 
+        'to_country', 
+        'to_ak_or_hi', 
+        'from_zip', 
+        'to_zip', 
+        'packages', 
+        'weight', 
+        'shipper', 
+        'domestic', 
+        'intl', 
+        'domestic_or_ca', 
+        'from_canada', 
+        'to_canada', 
+        'from_ak_or_hi', 
+        'packaging', 
+        'to_residential',
+        'cod', 'cod_funds_code', 'cod_value',
+        'signature_type',
+        'insured_currency_type', 'insured_value',
+        'service_code',
+        'service',
+        'service_name',
+    ]
+);
+
+=head1
+
+=cut
+
 =head2 access_key
 
 =head2 test_server
 
 =head2 no_ssl
 
-=head2 to_city
-
 =cut
 
-use Class::MethodMaker 2.0
-    [
-      new => [ qw/ -hash new / ], 
-      scalar => [ 'access_key' ], 
-      scalar => [ { -default => 'https://www.ups.com/ups.app/xml/Rate' },  'prod_url' ], 
-      scalar => [ { -default => 'https://wwwcie.ups.com/ups.app/xml/Rate' },  'test_url' ],       
-      scalar => [ { -type    => 'Business::Shipping::UPS_Online::Shipment', 
-                    -default_ctor => 'new', 
-                    -forward => [ 
-                                  'from_city', 
-                                  'to_city', 
-                                  'from_country', 
-                                  'from_country_abbrev', 
-                                  'to_country', 
-                                  'to_country_abbrev', 
-                                  'to_ak_or_hi', 
-                                  'from_zip', 
-                                  'to_zip', 
-                                  'packages', 
-                                  'weight', 
-                                  'shipper', 
-                                  'domestic', 
-                                  'intl', 
-                                  'domestic_or_ca', 
-                                  'from_canada', 
-                                  'to_canada', 
-                                  'from_ak_or_hi', 
-                                  'packaging', 
-                                  'to_residential',
-                                  'cod', 'cod_funds_code', 'cod_value',
-                                  'signature_type',
-                                  'insured_currency_type', 'insured_value',
-                                ], 
-                   }, 
-                   'shipment'
-                 ], 
-    ];
+has 'prod_url' => (
+    is => 'rw', 
+    isa => 'Str',
+    default => 'https://www.ups.com/ups.app/xml/Rate'
+);
+
+has 'test_url' => (
+    is => 'rw', 
+    isa => 'Str',
+    default => 'https://wwwcie.ups.com/ups.app/xml/Rate'
+);
+
+has 'access_key' => (is => 'rw');
 
 sub Required { return ( $_[ 0 ]->SUPER::Required, qw/ access_key / ); }
 sub Optional { return ( $_[ 0 ]->SUPER::Optional, qw/ test_server no_ssl to_city packaging signature_type 
@@ -229,6 +240,9 @@ sub _gen_request_xml
         ]
     };
     
+    my $service = $self->shipment->service() || '';
+    my $service_code = $self->shipment->service_code()
+        or logdie "Could not get service_code for service '$service'";
     # 'Shipment' will be embedded in the $request_tree
     # It was broken out to reduce nesting.
     my %shipment_tree = (
@@ -247,7 +261,7 @@ sub _gen_request_xml
             } ], 
         } ], 
         'Service' => [ {
-            'Code' => [ $self->service_code ], 
+            'Code' => [ $service_code ], 
         } ], 
         'ShipmentServiceSelfOptions' => { }, 
     );
@@ -344,7 +358,7 @@ sub _gen_request_xml
     my $request_xml = $access_xml . "\n" . '<?xml version="1.0"?>' . "\n"
         . XML::Simple::XMLout( $request_tree,  KeepRoot => 1 );
     
-    debug3( $request_xml );
+    debug( $request_xml );
     
     return ( $request_xml );
 }
@@ -536,8 +550,6 @@ sub _handle_response
     return $self->is_success( 1 );
 }
 
-no warnings 'redefine';
-
 =head2 to_country_abbrev()
 
 We have to override the to_country_abbrev function becuase UPS_Online
@@ -557,12 +569,10 @@ sub to_country_abbrev
     
     my $online_ups_country_to_abbrev = cfg()->{ ups_information }->{ online_ups_country_to_abbrev };
     my $countries = config_to_hash( $online_ups_country_to_abbrev );
-    my $to_country_abbrev = $countries->{ $self->to_country } || $self->SUPER::to_country_abbrev();
+    my $to_country_abbrev = $countries->{ $self->to_country } || $self->shipment->to_country_abbrev();
     
     return $to_country_abbrev || $self->to_country;
 }
-
-use warnings; # end redefine
 
 1;
 

@@ -17,9 +17,9 @@ $Date: 2004-07-09 14:25:49 -0700 (Fri, 09 Jul 2004) $
 
 $VERSION = do { my $r = q$Rev: 157 $; $r =~ /\d+/; $&; };
 
-use strict;
-use warnings;
-use base ( 'Business::Shipping::Package' );
+use Moose;
+use Business::Shipping::Package;
+extends 'Business::Shipping::Package';
 
 =item * packaging
 
@@ -51,13 +51,15 @@ UPS_Online-only attribute.
  
 =cut
  
-use Class::MethodMaker 2.0
-    [ 
-      new    => [ qw/ new / ],
-      new    => [ qw/ default_new / ],
-      scalar => [ { -default => '02' }, 'packaging' ],
-      scalar => [ 'signature_type', 'insured_currency_type', 'insured_value' ],
-    ];
+has 'packaging' => (
+    is => 'rw',
+    isa => 'Str',
+    default => '02',
+);
+    
+has 'signature_type' => (is => 'rw');
+has 'insured_currency_type' => (is => 'rw');
+has 'insured_value' => (is => 'rw');
 
 1;
 

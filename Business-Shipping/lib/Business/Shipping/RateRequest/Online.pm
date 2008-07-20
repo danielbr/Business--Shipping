@@ -14,19 +14,19 @@ $Rev: 365 $
 
 $VERSION = do { my $r = q$Rev: 365 $; $r =~ /\d+/; $&; };
 
-use strict;
-use warnings;
-use base ( 'Business::Shipping::RateRequest' );
+use Moose;
+extends 'Business::Shipping::RateRequest';
+
 use Business::Shipping::Logging;
 use XML::Simple;
 use LWP::UserAgent;
 use Cache::FileCache;
-use Class::MethodMaker 2.0
-    [
-      new    => [ { -hash => 1 }, 'new' ],
-      scalar => [ 'test_mode', 'user_id', 'password', 'response' ],
-    ];
-    
+
+has 'test_mode' => (is => 'rw');
+has 'user_id' => (is => 'rw');
+has 'password' => (is => 'rw');
+has 'response' => (is => 'rw');
+
 sub Required { return ( $_[ 0 ]->SUPER::Required, qw/ user_id password / ); }
 sub Optional { return ( $_[ 0 ]->SUPER::Optional, qw/ prod_url test_url / ); }
 

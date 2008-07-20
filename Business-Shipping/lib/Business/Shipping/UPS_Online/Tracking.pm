@@ -1,6 +1,6 @@
 package Business::Shipping::UPS_Online::Tracking;
 
-use constant UPS_ONLINE_DISABLED => undef;
+use constant UPS_ONLINE_DISABLED => '1';
 #use constant UPS_ONLINE_DISABLED => '~_~UPS_ONLINE_DISABLED~_~';
 
 # Business::Shipping::UPS_Online::Tracking - Abstract class for tracking shipments
