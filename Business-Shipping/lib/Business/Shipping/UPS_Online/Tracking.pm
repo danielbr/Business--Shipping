@@ -1,8 +1,5 @@
 package Business::Shipping::UPS_Online::Tracking;
 
-use constant UPS_ONLINE_DISABLED => '1';
-#use constant UPS_ONLINE_DISABLED => '~_~UPS_ONLINE_DISABLED~_~';
-
 # Business::Shipping::UPS_Online::Tracking - Abstract class for tracking shipments
 # 
 # $Id: Tracking.pm 365 2007-05-21 04:45:06Z db-ship $
@@ -343,10 +340,6 @@ sub _handle_response
 
     $self->results($shipment_id => $result_hash);
     
-    if ( UPS_ONLINE_DISABLED ) {
-        die "Support for UPS_Online has been disabled, see doc/UPS_Online_disabled.txt";
-    }
-
     trace 'returning success';
     return $self->is_success( 1 );
 }

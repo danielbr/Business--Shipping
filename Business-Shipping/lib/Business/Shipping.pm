@@ -56,11 +56,9 @@ every month.
 
 =back
 
-=head2 UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)
+=head2 UPS_Online: United Parcel Service using UPS OnLine Tools
 
 =over 4
-
-=item * Disabled as of version 1.90, see doc/UPS_Online_disabled.txt.
 
 =item * Shipment rate estimation
 

@@ -1,8 +1,5 @@
 package Business::Shipping::UPS_Online::RateRequest;
 
-use constant UPS_ONLINE_DISABLED => '0';
-#use constant UPS_ONLINE_DISABLED => '~_~UPS_ONLINE_DISABLED~_~';
-
 =head1 NAME
 
 Business::Shipping::UPS_Online::RateRequest
@@ -382,10 +379,6 @@ sub _handle_response
 {
     #trace '()';
     my ( $self ) = @_;
-    
-    if ( UPS_ONLINE_DISABLED ) {
-        die "Support for UPS_Online has been disabled, see doc/UPS_Online_disabled.txt";
-    }
     
     my $response_tree = XML::Simple::XMLin( 
         $self->response()->content(),  
