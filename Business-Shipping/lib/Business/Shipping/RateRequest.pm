@@ -92,6 +92,20 @@ has '_total_charges'      => (is => 'rw', isa => 'Str');
 has 'price_components'    => (is => 'rw', isa => 'Str');
 has 'dont_split_packages' => (is => 'rw', isa => 'Str');
 has 'error_details'       => (is => 'rw', isa => 'HashRef');
+has 'shipment' => (
+    is => 'rw',
+    isa => 'Business::Shipping::USPS_Online::Shipment',
+    default   => sub { Business::Shipping::Shipment->new() },
+    handles => [
+        'from_zip',
+        'to_zip',
+        'from_city',
+        'to_city',
+        'from_country',
+        'to_country',
+    ]
+);
+
 
 # weight can be required even though some use pounds.
 sub Required { return ( $_[ 0 ]->SUPER::Required, qw/ shipper weight / ); } 
