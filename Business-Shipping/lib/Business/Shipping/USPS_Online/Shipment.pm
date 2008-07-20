@@ -40,28 +40,30 @@ package Business::Shipping::USPS_Online::Shipment;
 
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
-use strict;
-use warnings;
-use base ( 'Business::Shipping::Shipment' );
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Util;
 use Business::Shipping::USPS_Online::Package;
-use Class::MethodMaker 2.0 
-    [ 
-      new   =>  [ { -hash    => 1, -init => '_this_init' }, 'new' ],
-      new   =>  [ { -init    => '_this_init', }, 'default_new' ],
-      array =>  [ { -type    => 'Business::Shipping::USPS_Online::Package',
-                    -default_ctor => 'default_new' }, 'packages' ],
-      scalar => [ 'service' ],
-      scalar => [ { -default => 70 }, 'max_weight' ],
-];
+use Moose;
+extends 'Business::Shipping::Shipment';
 
-sub _this_init
-{
-    $_[ 0 ]->from_country( 'US' );
+has 'packages' => (
+    is => 'rw',
+    isa => 'ArrayRef[Business::Shipping::USPS_Online::Package]',
+    default => sub { [Business::Shipping::USPS_Online::Package->new()] },
+    auto_deref => 1,
+);
+
+has 'max_weight'  => (is => 'rw', default => 70);
+has 'service'     => (is => 'rw');
+has '_to_country' => (is => 'rw');
+sub BUILD {
+    $_[0]->from_country('US');
     return;
 }
+
+# Can't use 'handles', because the ArrayRef itself doesn't actually handle
+# anything, it's the objects inside it that do.
 
 foreach my $attribute (
         qw/
@@ -79,7 +81,7 @@ foreach my $attribute (
         /
     ) 
 {
-    eval "sub $attribute { shift->package0->$attribute( \@_ ); }";
+    eval "sub $attribute { return shift->package0->$attribute( \@_ ); }";
 }
 
 
@@ -114,11 +116,11 @@ sub to_country
         $to_country = $countries->{ $to_country } || $to_country; 
         
         debug3( "setting to_country to \'$to_country\'" );
-        $self->{ to_country } = $to_country;
+        $self->_to_country($to_country);
     } 
     debug3( "SUPER::to_country now is " . ( $self->SUPER::to_country() || '' ) );
     
-    return $self->{ to_country };
+    return $self->_to_country();
 }
 
 1;

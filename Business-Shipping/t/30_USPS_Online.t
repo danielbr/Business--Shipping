@@ -4,19 +4,62 @@ use warnings;
 use Test::More;
 use Carp;
 use Business::Shipping;
-
-plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'USPS_Online' );
+use Scalar::Util qw(blessed);
+#plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'USPS_Online' );
 plan skip_all => 'No credentials' unless $ENV{ USPS_USER_ID } and $ENV{ USPS_PASSWORD };
 plan 'no_plan';
 
-my $standard_method = new Business::Shipping->rate_request( shipper => 'Online::USPS' );
-ok( defined $standard_method,    'USPS standard object construction' );
+#goto TEST;
+{
+    my $standard_method = new Business::Shipping->rate_request( shipper => 'Online::USPS' );
+    ok( defined $standard_method,    'USPS standard object construction' );
+    
+    my $other_method = new Business::Shipping::USPS_Online::RateRequest;
+    ok( defined $other_method,        'USPS alternate object construction' );
+    
+    my $package = new Business::Shipping::USPS_Online::Package;
+    ok( defined $package,            'USPS package object construction' );
+}
 
-my $other_method = new Business::Shipping::USPS_Online::RateRequest;
-ok( defined $other_method,        'USPS alternate object construction' );
+{
+    my $shipment = Business::Shipping::USPS_Online::Shipment->new();
+    is(blessed($shipment), 'Business::Shipping::USPS_Online::Shipment',
+        'Business::Shipping::USPS_Online::Shipment created successfully');
+    
+    $shipment->to_zip('98683');
+    is($shipment->to_zip(), '98683', 'Shipment: set and get zip code.');
+}
 
-my $package = new Business::Shipping::USPS_Online::Package;
-ok( defined $package,            'USPS package object construction' );
+{
+    my $rate_request = Business::Shipping->rate_request(
+        shipper   => 'USPS_Online',
+        service   => 'Priority',
+        from_zip  => '98683',
+        to_zip    => '98270',
+        weight    =>  5.00,
+    );
+    
+    is($rate_request->to_zip(), '98270', 
+        'rate_request() to set, then get zip code.'); 
+}
+
+{
+    my $rate_request = Business::Shipping->rate_request(
+        shipper => 'USPS_Online',
+        'service'         => 'Parcel',
+        'weight'        => 1,
+        'ounces'        => 0,
+        'mail_type'        => 'Package',
+        'to_country'    => 'Great Britain',
+        'from_zip'     => '98682',
+    );
+    
+    #is($rate_request->to_country(), 'Great Britain', 
+    #    'rate_request() to set, then get to_country.');
+    ok(1, 'do nothing');
+}
+
+
 
 sub test
 {
@@ -50,9 +93,8 @@ sub simple_test
 }
 
 
-my $shipment;
-
 if ( 0 ) {
+    my $shipment;
     $shipment = test(
         'test_mode'  => 1,
         'service'    => 'EXPRESS',
@@ -78,6 +120,7 @@ if ( 0 ) {
 
 # TODO: Update with V3 rate requests, these V2 no longer work.
 if (0) {
+    my $shipment;
     $shipment = test(
         'test_mode'  => 1,
         'service'    => 'PRIORITY',
@@ -85,7 +128,7 @@ if (0) {
         'to_zip'     => '20008',
         'pounds'     => 10,
         'ounces'     => 5,
-        'container'  => 'Flat Rate Box',
+        'container'  => 'Flat-Rate Box',
         'size'       => 'REGULAR',
     );
     ok( $shipment->total_charges(),     'USPS domestic test total_charges > 0' );
@@ -104,9 +147,8 @@ if (0) {
     ok( $shipment->total_charges(),     'USPS domestic all services test total_charges > 0' );
 
 }
-
-
-$shipment = test(
+{
+    my $shipment = test(
     'test_mode'        => 0,
     'from_zip'         => '98682',
     'to_country'     => 'United States',
@@ -114,11 +156,13 @@ $shipment = test(
     'to_zip'        => '96826',
     'from_country'     => 'US',
     'pounds'        => '2',
-); 
-ok( $shipment->total_charges(),        'USPS domestic production total_charges > 0' );
+    );
+    ok( $shipment->total_charges(),        'USPS domestic production total_charges > 0' );
+}
 
 
 if ( 0 ) {
+    my $shipment;
     # These are just more domestic production tests for "Priority Mail"
     $shipment = test(
         'from_zip'              => '98682',
@@ -140,20 +184,25 @@ if ( 0 ) {
     );
 }
 
-$shipment = test(
-    'test_mode'        => 0,
-    'service'         => 'Airmail Parcel Post',
-    'weight'        => 1,
-    'ounces'        => 0,
-    'mail_type'        => 'Package',
-    'to_country'    => 'Great Britain',
-    'from_zip'     => '98682'
-);
-ok( $shipment->total_charges(),        'USPS intl production total_charges > 0' );
+{
+    #Business::Shipping->log_level('debug');
+    my $shipment = test(
+        'test_mode'        => 0,
+        'service'         => 'Parcel',
+        'weight'        => 1,
+        'ounces'        => 0,
+        'mail_type'        => 'Package',
+        'to_country'    => 'Great Britain',
+        'from_zip'     => '98682',
+        #to_zip => 'SW1A 1AA'
+    );
+    ok( $shipment->total_charges(),        'USPS intl production total_charges > 0' );
+}
 
+{
 # Cache Test
 # - Multiple sequential queries should give *different* results.
-$shipment = test(
+my $shipment = test(
     'cache'    => 1,
     'test_mode'        => 0,
     'service'         => 'Airmail Parcel Post',
@@ -162,10 +211,9 @@ $shipment = test(
     'mail_type'        => 'Package',
     'to_country'    => 'Great Britain',
 );
-
 my $total_charges_1_pound = $shipment->total_charges();
 
-$shipment = test(
+my $shipment2 = test(
     'cache'    => 1,
     'test_mode'        => 0,
     'service'         => 'Airmail Parcel Post',
@@ -175,15 +223,16 @@ $shipment = test(
     'to_country'    => 'Great Britain',
 );
 
-my $total_charges_5_pounds = $shipment->total_charges();
+my $total_charges_5_pounds = $shipment2->total_charges();
 
 ok( $total_charges_1_pound != $total_charges_5_pounds,    'USPS intl cache saves results separately' ); 
-
+}
 ###########################################################################
 ##  High weight should be a high price
 ###########################################################################
 
-$shipment = test(
+{
+my $shipment = test(
     service     => 'Priority',
     weight      => 22.5,
     to_zip      => 27713,
@@ -191,13 +240,13 @@ $shipment = test(
 );
 #print "\ttotal charges = " . $shipment->total_charges() . "\n";
 ok( $shipment->total_charges() > 20.00,        'USPS high weight is high price' );
-
+}
 ###########################################################################
 ##  Zip Code Testing
 ###########################################################################
 
 # This test doesn't work anymore because Priority service always returns
-# "Priority Mail Flat Rate Box (11.25" x 8.75" x 6")'" for $7.70
+# "Priority Mail Flat-Rate Box (11.25" x 8.75" x 6")'" for $7.70
 
 if ( 0 ) {
 
@@ -207,7 +256,7 @@ my %charges;
 
 #Business::Shipping->log_level( 'DEBUG' );
 foreach my $zip ( @several_very_different_zip_codes ) {
-    $shipment = test(
+    my $shipment = test(
         'cache'    => 0,
         'service'         => 'Priority',
         'weight'        => 5,
@@ -252,8 +301,9 @@ ok( ! $found_duplicate, 'USPS different zip codes give different prices (caching
 # This tries to test to make sure that the shipping matches up right
 #  - So that Airmail parcel post goes to Airmail parcel post, etc.
 #
-$shipment = test(
-    service         => 'Priority Mail International Flat Rate Box',
+{
+my $shipment = test(
+    service         => 'Priority Mail International Flat-Rate Box',
     
     from_zip        => '98682',
     user_id         => $ENV{ USPS_USER_ID },        
@@ -266,10 +316,9 @@ $shipment = test(
 my $airmail_parcel_post_to_AU = $shipment->total_charges();
 ok( $airmail_parcel_post_to_AU,        'USPS australia' );
 
-
 # Test the letter service.
-$shipment = test(
-    service         => 'Priority Mail International Flat Rate Envelope',
+my $shipment2 = test(
+    service         => 'Priority Mail International Flat-Rate Envelope',
     
     from_zip        => '98682',
     user_id         => $ENV{ USPS_USER_ID },        
@@ -279,16 +328,18 @@ $shipment = test(
     to_country => 'Australia',
     weight => 0.50,
 );
-my $airmail_letter_post_to_AU = $shipment->total_charges();
-#print "\ttotal charges = $airmail_letter_post_to_AU\n";
+my $airmail_letter_post_to_AU = $shipment2->total_charges();
+#print "airmail letter post to Australia = $airmail_letter_post_to_AU\n";
+#print "airmail parcel post to australia = $airmail_parcel_post_to_AU\n";
+#use Data::Dumper; print Dumper($shipment2->results());
 ok( $airmail_letter_post_to_AU < $airmail_parcel_post_to_AU, 'USPS Letter is cheaper than Parcel' );
+}
 
-
-
+{
 #
 # Letter to Canada:
 #
-$shipment = test(
+my $shipment = test(
     service         => 'Airmail Letter-post',
 
     from_zip        => '98682',
@@ -302,13 +353,14 @@ $shipment = test(
 my $airmail_letter_post_to_CA = $shipment->total_charges();
 #print "\ttotal charges = $airmail_letter_post_to_CA\n";
 ok( $airmail_letter_post_to_CA < 7.50, 'USPS Letter to Canada is under $7.50' );
-
+}
 
 #######################################################################
 ##  Canada Services
 #######################################################################
 
-$shipment = test(
+{
+my $shipment = test(
     service         => 'Airmail Parcel Post',
     
     from_zip        => '98682',
@@ -320,3 +372,4 @@ $shipment = test(
     weight            => 5.5,
 );
 ok( $shipment->total_charges(), 'USPS Parcel Post to Canada' );
+}

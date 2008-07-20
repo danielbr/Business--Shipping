@@ -14,10 +14,7 @@ $Rev$
 
 $VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
 
-use strict;
-use warnings;
 use vars qw( $VERSION );
-use base ( 'Business::Shipping::Package' );
 use Business::Shipping::Logging;
 use Business::Shipping::Util;
 
@@ -43,22 +40,18 @@ Default 'Package'.
 
 =cut
 
-use Class::MethodMaker 2.0
-    [
-      new    => [ { -hash => 1 }, 'new' ],
-      new    => 'default_new',
-      scalar => [ { -default => undef     }, 'container'  ],
-      scalar => [ { -default => 'Regular' }, 'size'       ],
-      scalar => [ { -default => undef     }, 'machinable' ],
-      scalar => [ { -default => 'Package' }, 'mail_type'  ],
-      scalar => [ { -default => '0.00'    }, 'ounces'     ],
-      scalar => [ { -default => '0.00'    }, 'pounds'     ],
-      scalar => [ { -default => ''        }, 'width'      ],
-      scalar => [ { -default => ''        }, 'height'     ],
-      scalar => [ { -default => ''        }, 'length'     ],
-      scalar => [ { -default => ''        }, 'girth'      ],      
-    ];
-    
+use Moose;
+extends 'Business::Shipping::Package';
+has 'container'  => (is => 'rw', default => undef    );
+has 'size'       => (is => 'rw', default => 'Regular');
+has 'machinable' => (is => 'rw', default => undef    );
+has 'mail_type'  => (is => 'rw', default => 'Package');
+has 'ounces'     => (is => 'rw', default => '0.00'   );
+has 'pounds'     => (is => 'rw', default => '0.00'   );
+has 'width'      => (is => 'rw', default => ''       );
+has 'height'     => (is => 'rw', default => ''       );
+has 'length'     => (is => 'rw', default => ''       );
+has 'girth'      => (is => 'rw', default => ''       );
 
 =head2 weight
 
@@ -111,7 +104,7 @@ sub set_lbs_oz
 =head2 lbs_oz_to_weight
 
 Converts pounds + ounces to fractional weight.  Returns weight.
-
+,
 =cut
 
 sub lbs_oz_to_weight

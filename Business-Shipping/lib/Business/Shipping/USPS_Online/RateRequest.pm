@@ -38,9 +38,6 @@ package Business::Shipping::USPS_Online::RateRequest;
 
 $VERSION = do { my $r = q$Rev: 377 $; $r =~ /\d+/; $&; };
 
-use strict;
-use warnings;
-use base( 'Business::Shipping::RateRequest::Online' );
 use Business::Shipping::Logging;
 use Business::Shipping::USPS_Online::Shipment;
 use Business::Shipping::USPS_Online::Package;
@@ -52,36 +49,49 @@ use HTTP::Response;
 
 =head2 domestic
 
+=head2 to_zip
+
+Note that some methods are handled by the parent class:
+
+to_zip, from_zip, to_city, from_city, to_country, from_country.
+
 =cut
 
-use Class::MethodMaker 2.0
-    [
-      new    => [ { -hash => 1 }, 'new' ],
-      scalar => [ { -default => 1 }, 'domestic' ],
-      scalar => [ { -default => 'http://production.shippingapis.com/ShippingAPI.dll'  }, 'prod_url' ],
-      scalar => [ { -default => 'http://testing.shippingapis.com/ShippingAPItest.dll' }, 'test_url' ],
-      scalar => [ { -type    => 'Business::Shipping::USPS_Online::Shipment',
-                    -default_ctor => 'default_new',
-                    -forward => [ 
-                                  'from_city',
-                                  'to_city',
-                                  'ounces',
-                                  'pounds',
-                                  'weight',
-                                  'container',
-                                  'size',
-                                  'machinable',
-                                  'mail_type',
-                                  'shipper',
-                                  'width',
-                                  'length',
-                                  'height',
-                                  'girth',                                  
-                                ],
-                   },
-                   'shipment'
-                 ],
-    ];
+use Moose;
+extends 'Business::Shipping::RateRequest::Online';
+
+has 'domestic' => (is => 'rw', default => 1);
+
+has 'prod_url' => (
+    is => 'rw',
+    default => 'http://production.shippingapis.com/ShippingAPI.dll'
+);
+
+has 'test_url' => (
+    is => 'rw',
+    default => 'http://testing.shippingapis.com/ShippingAPItest.dll',
+);
+
+has 'shipment' => (
+    is => 'rw',
+    isa => 'Business::Shipping::USPS_Online::Shipment',
+    default   => sub { Business::Shipping::USPS_Online::Shipment->new() },
+    handles => [
+        'ounces',
+        'pounds',
+        'weight',
+        'container',
+        'size',
+        'machinable',
+        'mail_type',
+        'shipper',
+        'width',
+        'length',
+        'height',
+        'girth',
+        'service',
+    ]
+);
 
 =head2 Required()
 
@@ -547,7 +557,7 @@ sub _domestic_or_intl
 {
     my $self = shift;
     trace '()';
-    
+    #debug('to_country = ' . $self->shipment->to_country());    
     if ( $self->shipment->to_country() and $self->shipment->to_country() !~ /(US)|(United States)/) {
         $self->domestic( 0 );
     }
