@@ -8,6 +8,13 @@ Revision history for Business::Shipping
     * Changed from Subversion to Git.
     
     * Upgraded from Class::MethodMaker to Moose.
+    
+  Backwards-Compatiblity:
+  
+    * New required module: Moose.
+    
+    * Minor internal API changes:
+      - $rate_request->packages() returns arrayref of Package objects.
 
 
 2.05 Limited beta release  
