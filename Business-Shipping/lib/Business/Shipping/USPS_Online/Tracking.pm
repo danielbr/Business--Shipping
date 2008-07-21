@@ -302,7 +302,7 @@ sub _handle_response {
             };
 
             Business::Shipping::Tracking::_delete_undefined_keys($result);
-            $self->results($id => $result);
+            $self->results({$id => $result});
         }
     }
 

@@ -290,5 +290,18 @@ sub tracking_ids {
     return $self->_tracking_ids();    
 }
 
+=head2 results_exists
+
+Backwards-compat for Class::MethodMaker 1.12-style _exists() method.
+
+=cut
+
+sub results_exists {
+    my ($self, $key) = @_;
+    my $results_hash = $self->results;
+    return 1 if exists $results_hash->{$key};
+    return 0;
+}
+
 1;
 __END__
