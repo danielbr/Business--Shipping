@@ -9,6 +9,10 @@ Revision history for Business::Shipping
     
     * Upgraded from Class::MethodMaker to Moose.
     
+    * New version numbering scheme.
+    
+    * New perl style enforced by perltidy.
+    
   Backwards-Compatiblity:
   
     * New required module: Moose.
