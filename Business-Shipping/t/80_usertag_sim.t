@@ -29,7 +29,7 @@ Eventually, it should run a gamut of tests, for all modules, etc.
 
 =cut
 
-$VERSION = do { my @r=(q$Rev$=~/\d+/g); sprintf "%d."."%03d"x$#r,@r }; 
+use version; our $VERSION = qv('2.2.0'); 
 
 use strict;
 use warnings;
