@@ -174,10 +174,12 @@ sub subst
         open( OLD,   "<$file.tmp" ) or die "Open failed: $OS_ERROR";
         
         # Read in the entire file for speed.
-        # This regex taken from Interchange (http://www.icdevgroup.org).
         undef $INPUT_RECORD_SEPARATOR;
+        
+        # This regex taken from Interchange (http://www.icdevgroup.org) and
+        # modified slightly to work with extra newlines required by perltidy. 
         $_ = <OLD>;
-        s{.*\n(#(.*)~_~(\w+)~_~(.*))}{$2 . $opt{ variables }->{ $3 } . "$4\n$1"}eg;
+        s{.*\n\n?(#(.*)~_~(\w+)~_~(.*))}{$2 . $opt{ variables }->{ $3 } . "$4\n\n$1"}eg;
         print NEW $_;
         
         close NEW;
