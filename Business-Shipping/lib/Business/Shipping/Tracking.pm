@@ -51,6 +51,7 @@ use Data::Dumper;
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Cache::FileCache;
+use Business::Shipping::Package;
 use Moose;
 extends 'Business::Shipping';
 
@@ -64,7 +65,7 @@ has 'cache_time' => (is => 'rw');
 
 # Used to be a static class attribute
 has 'results' => (is => 'rw', isa => 'HashRef');
-has 'tracking_ids' => (is => 'rw', isa => 'ArrayRef');
+has '_tracking_ids' => (is => 'rw', isa => 'ArrayRef');
 has 'packages' => (
     is         => 'rw',
     isa        => 'ArrayRef[Business::Shipping::Package]',
@@ -236,7 +237,7 @@ sub validate {
     my ($self) = @_;
     trace '()';
 
-    if (scalar(@{ $self->{tracking_ids} }) == 0) {
+    if (scalar(@{$self->tracking_ids()}) == 0) {
         $self->invalid(1);
         $self->user_error("No tracking ids passed to track");
         return 0;
@@ -262,6 +263,31 @@ sub validate {
 sub _get_response {
     trace '()';
     return $_[0]->user_agent->request($_[1]);
+}
+
+=head2 tracking_ids
+
+The Class::MethodMaker-based system accepted any number of inputs to assigned
+it to the internal arrayref. As part of moving to Moose, this is changed to
+using a real arrayref at _tracking_ids, and providing this tracking_ids()
+as syntactic sugar.
+
+=cut
+
+sub tracking_ids {
+    my $self = shift;
+    
+    # Check for new Moose-style arrayref syntax.
+    $self->_tracking_ids($_[0]) if (ref($_[0]) eq 'ARRAY');
+    
+    # Old-stay list input
+    $self->_tracking_ids(\@_) if @_;
+    
+    # Read-only usage.
+    return @{$self->_tracking_ids()}
+        if wantarray();
+    
+    return $self->_tracking_ids();    
 }
 
 1;
