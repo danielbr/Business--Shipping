@@ -53,7 +53,7 @@ WriteMakefile(
     AUTHOR		    => 'Dan Browning <db@kavod.com>',
 	CONFIGURE		=> \&extra_WriteMakefile_options,
     PREREQ_PM		=> { 
-        'Class::MethodMaker::Engine' => 0,
+        'Moose'                      => 0,
         'Log::Log4perl'              => 0,
         'Test::More'                 => 0.40,
     },
