@@ -39,7 +39,7 @@ sub test_online
 {
     my ( %args ) = @_;
     my $shipment = Business::Shipping->rate_request( 
-        shipper    => 'Online::UPS',
+        shipper    => 'UPS_Online',
         cache      => 0,
         %user
     );
@@ -218,7 +218,7 @@ SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
     
     my $shipment_online = test_online( %test );
-    ok( $shipment_online->total_charges(),        'UPS intl to gb' );
+    ok( $shipment_online->total_charges(),        'UPS intl XPD to gb' );
     print "Online: intl to gb: " . $shipment_online->total_charges() . "\n";
 }
 }
@@ -241,7 +241,7 @@ SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
     my $shipment_online = test_online( %test );
-    ok( $shipment_online->total_charges(),        'UPS intl to gb' );
+    ok( $shipment_online->total_charges(),        'UPS intl XPR to gb' );
     print "Online: intl to gb: " . $shipment_online->total_charges() . "\n";
 }
 }
