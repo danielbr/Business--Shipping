@@ -1,14 +1,18 @@
+<?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Business::Shipping - Rates and tracking for UPS and USPS</title>
-<link rev="made" href="mailto:root@localhost" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rev="made" href="mailto:db@lx4.kavod.com" />
 </head>
 
 <body style="background-color: white">
 
-<p><a name="__index__"></a></p>
+
 <!-- INDEX BEGIN -->
+<div name="index">
+<p><a name="__index__"></a></p>
 
 <ul>
 
@@ -24,7 +28,7 @@
 	<ul>
 
 		<li><a href="#ups_offline__united_parcel_service">UPS_Offline: United Parcel Service</a></li>
-		<li><a href="#ups_online__united_parcel_service_using_ups_online_tools__disabled_">UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)</a></li>
+		<li><a href="#ups_online__united_parcel_service_using_ups_online_tools">UPS_Online: United Parcel Service using UPS OnLine Tools</a></li>
 		<li><a href="#usps_online__united_states_postal_service">USPS_Online: United States Postal Service</a></li>
 	</ul>
 
@@ -43,12 +47,13 @@
 	<li><a href="#methods">METHODS</a></li>
 	<ul>
 
-		<li><a href="#_obj_init__">$obj-&gt;<code>init()</code></a></li>
-		<li><a href="#_obj_user_error__">$obj-&gt;<code>user_error()</code></a></li>
-		<li><a href="#_obj_validate__">$obj-&gt;<code>validate()</code></a></li>
-		<li><a href="#_self_get_grouped_attrs___attribute_name__">$self-&gt;get_grouped_attrs( $attribute_name )</a></li>
-		<li><a href="#_obj_rate_request__">$obj-&gt;<code>rate_request()</code></a></li>
-		<li><a href="#business__shipping_log_level__">Business::Shipping-&gt;<code>log_level()</code></a></li>
+		<li><a href="#_obj__init__">$obj-&gt;<code>init()</code></a></li>
+		<li><a href="#_obj__user_error__">$obj-&gt;<code>user_error()</code></a></li>
+		<li><a href="#_obj__validate__">$obj-&gt;<code>validate()</code></a></li>
+		<li><a href="#_self__get_grouped_attrs___attribute_name__">$self-&gt;get_grouped_attrs( $attribute_name )</a></li>
+		<li><a href="#_obj__rate_request__">$obj-&gt;<code>rate_request()</code></a></li>
+		<li><a href="#_compat_shipper_name">_compat_shipper_name</a></li>
+		<li><a href="#business__shipping__log_level__">Business::Shipping-&gt;<code>log_level()</code></a></li>
 	</ul>
 
 	<li><a href="#see_also">SEE ALSO</a></li>
@@ -59,9 +64,11 @@
 	<li><a href="#author">AUTHOR</a></li>
 	<li><a href="#copyright_and_licence">COPYRIGHT AND LICENCE</a></li>
 </ul>
+
+<hr name="index" />
+</div>
 <!-- INDEX END -->
 
-<hr />
 <p>
 </p>
 <h1><a name="name">NAME</a></h1>
@@ -70,7 +77,7 @@
 </p>
 <hr />
 <h1><a name="version">VERSION</a></h1>
-<p>Version 2.05</p>
+<p>Version 2.2.0</p>
 <p>
 </p>
 <hr />
@@ -101,27 +108,26 @@
 </p>
 <h2><a name="ups_offline__united_parcel_service">UPS_Offline: United Parcel Service</a></h2>
 <ul>
-<li><strong><a name="item_shipment_rate_estimation_using_offline_tables_2e">Shipment rate estimation using offline tables.</a></strong><br />
-</li>
-As of January, 2007, 
+<li><strong><a name="shipment_rate_estimation_using_offline_tables" class="item">Shipment rate estimation using offline tables.</a></strong>
+
+<p>As of January, 2007, 
 UPS has only released the data tables in binary Excel format. These have not 
 been converted to the text files necessary for use in this module. A script is
 distributed with the module for automatically updating the fuel surcharge 
-every month.
-<p></p></ul>
+every month.</p>
+</li>
+</ul>
 <p>
 </p>
-<h2><a name="ups_online__united_parcel_service_using_ups_online_tools__disabled_">UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)</a></h2>
+<h2><a name="ups_online__united_parcel_service_using_ups_online_tools">UPS_Online: United Parcel Service using UPS OnLine Tools</a></h2>
 <ul>
-<li><strong><a name="item_disabled_as_of_version_1_2e90_2c_see_doc_2fups_onl">Disabled as of version 1.90, see doc/UPS_Online_disabled.txt.</a></strong><br />
-</li>
-<li><strong><a name="item_shipment_rate_estimation">Shipment rate estimation</a></strong><br />
-</li>
-<li><strong><a name="item_shipment_tracking_2e">Shipment tracking.</a></strong><br />
-</li>
-<li><strong><a name="item_rate_shopping_2e">Rate Shopping.</a></strong><br />
-</li>
-Gets rates for all the services in one request:
+<li><strong><a name="shipment_rate_estimation" class="item">Shipment rate estimation</a></strong>
+
+<li><strong><a name="shipment_tracking" class="item">Shipment tracking.</a></strong>
+
+<li><strong><a name="rate_shopping" class="item">Rate Shopping.</a></strong>
+
+<p>Gets rates for all the services in one request:</p>
 <pre>
  my $rr_shop = Business::Shipping-&gt;rate_request( 
      service      =&gt; 'shop',    
@@ -146,17 +152,18 @@ Gets rates for all the services in one request:
          print &quot;\n&quot;;
      }
  }</pre>
-<p></p>
-<li><strong><a name="item_c_2eo_2ed_2e__28cash_on_delivery_29">C.O.D. (Cash On Delivery)</a></strong><br />
 </li>
-Add these options to your rate request for C.O.D.:
+<li><strong><a name="c_o_d_cash_on_delivery" class="item">C.O.D. (Cash On Delivery)</a></strong>
+
+<p>Add these options to your rate request for C.O.D.:</p>
 <p>cod: enable C.O.D.</p>
-<p>cod_funds_code:  The code that indicates the type of funds that will be used for the COD payment.  
-Required if CODCode is 1, 2, or 3.  Valid Values: 0 = All Funds Allowed.  8 = cashier's check or 
-money order, no cash allowed.</p>
-<p>cod_value: The COD value for the package.  Required if COD option is present.  Valid values: 0.01 - 50000.00</p>
-<p>cod_code: The code associated with the type of COD.  Values: 1 = Regular COD, 2 = Express COD, 3 = Tagless COD
-</p>
+<p>cod_funds_code:  The code that indicates the type of funds that will be used for
+the COD payment. Required if CODCode is 1, 2, or 3.  Valid Values: 0 = All Funds
+Allowed.  8 = cashier's check or money order, no cash allowed.</p>
+<p>cod_value: The COD value for the package.  Required if COD option is present. 
+Valid values: 0.01 - 50000.00</p>
+<p>cod_code: The code associated with the type of COD.  Values: 1 = Regular COD, 
+2 = Express COD, 3 = Tagless COD</p>
 <pre>
 
 For example:</pre>
@@ -164,15 +171,16 @@ For example:</pre>
         cod            =&gt; 1,
         cod_value      =&gt; 400.00,
         cod_funds_code =&gt; 0,</pre>
-<p></p></ul>
+</li>
+</ul>
 <p>
 </p>
 <h2><a name="usps_online__united_states_postal_service">USPS_Online: United States Postal Service</a></h2>
 <ul>
-<li><strong><a name="item_shipment_rate_estimation_using_usps_online_webtool">Shipment rate estimation using USPS Online WebTools.</a></strong><br />
-</li>
-<li><strong><a name="item_shipment_tracking">Shipment tracking</a></strong><br />
-</li>
+<li><strong><a name="shipment_rate_estimation_using_usps_online_webtools" class="item">Shipment rate estimation using USPS Online WebTools.</a></strong>
+
+<li><strong><a name="shipment_tracking2" class="item">Shipment tracking</a></strong>
+
 </ul>
 <p>
 </p>
@@ -185,17 +193,19 @@ For example:</pre>
 </p>
 <hr />
 <h1><a name="required_modules">REQUIRED MODULES</a></h1>
-<p>The following modules are required for offline UPS rate estimation.  See doc/INSTALL.</p>
+<p>The following modules are required for offline UPS rate estimation.  See 
+INSTALL.</p>
 <pre>
  Business::Shipping::DataFiles (any)
- Class::MethodMaker::Engine (any)
+ Moose (any)
  Config::IniFiles (any)
  Log::Log4perl (any)</pre>
 <p>
 </p>
 <hr />
 <h1><a name="optional_modules">OPTIONAL MODULES</a></h1>
-<p>The following modules are used by online rate estimation and tracking.  See doc/INSTALL.</p>
+<p>The following modules are used by online rate estimation and tracking.  See 
+INSTALL.</p>
 <pre>
  Cache::FileCache (any)
  Clone (any)
@@ -220,41 +230,42 @@ every first monday of the month.</p>
 </p>
 <h2><a name="ups_online__for_united_parcel_service__ups__online_xml__free_signup">UPS_Online: For United Parcel Service (UPS) Online XML: Free signup</a></h2>
 <ul>
-<li><strong><a name="item_read_the_legal_terms_and_conditions_3a_l_3chttp_3a">Read the legal terms and conditions: 
-<a href="http://www.ups.com/content/us/en/resources/service/terms/index.html">http://www.ups.com/content/us/en/resources/service/terms/index.html</a></a></strong><br />
-</li>
-<li><strong><a name="item_https_3a_2f_2fwww_2eups_2ecom_2fservlet_2fregistra"><a href="https://www.ups.com/servlet/registration">https://www.ups.com/servlet/registration</a></a></strong><br />
-</li>
-<li><strong><a name="item_after_receiving_a_user_id_and_password_from_ups_2c">After receiving a User Id and Password from UPS, login, then select
-        ``Get Access Key'', then ``Get XML Access Key''.</a></strong><br />
-</li>
-<li><strong><a name="item_read_more_about_ups_online_tools_at_http_3a_2f_2fw">Read more about UPS Online Tools at <a href="http://www.ec.ups.com">http://www.ec.ups.com</a></a></strong><br />
-</li>
+<li><strong><a name="read_the_legal_terms_and_conditions_http_www_ups_com_content_us_en_resources_service_terms_index_html" class="item">Read the legal terms and conditions: 
+<a href="http://www.ups.com/content/us/en/resources/service/terms/index.html">http://www.ups.com/content/us/en/resources/service/terms/index.html</a></a></strong>
+
+<li><strong><a name="https_www_ups_com_servlet_registration" class="item"><a href="https://www.ups.com/servlet/registration">https://www.ups.com/servlet/registration</a></a></strong>
+
+<li><strong><a name="after_receiving_a_user_id_and_password_from_ups_login_then_select_get_access_key_then_get_xml_access_key" class="item">After receiving a User Id and Password from UPS, login, then select
+        &quot;Get Access Key&quot;, then &quot;Get XML Access Key&quot;.</a></strong>
+
+<li><strong><a name="read_more_about_ups_online_tools_at_http_www_ec_ups_com" class="item">Read more about UPS Online Tools at <a href="http://www.ec.ups.com">http://www.ec.ups.com</a></a></strong>
+
 </ul>
 <p>
 </p>
 <h2><a name="usps_online__for_united_states_postal_service__usps___free_signup">USPS_Online: For United States Postal Service (USPS): Free signup</a></h2>
 <ul>
-<li><strong><a name="item_http_3a_2f_2fwww_2euspswebtools_2ecom_2fregistrati"><a href="http://www.uspswebtools.com/registration/">http://www.uspswebtools.com/registration/</a></a></strong><br />
-</li>
-<li><strong><a name="item__28more_info_at_http_3a_2f_2fwww_2euspswebtools_2e">(More info at <a href="http://www.uspswebtools.com">http://www.uspswebtools.com</a>)</a></strong><br />
-</li>
-<li><strong><a name="item_account">The online signup will result in a testing-only account (only a small
-        sample of queries will work).</a></strong><br />
-</li>
-<li><strong><a name="item_mail">To activate the ``production'' use of your USPS account, you must follow 
+<li><strong><a name="http_www_uspswebtools_com_registration" class="item"><a href="http://www.uspswebtools.com/registration/">http://www.uspswebtools.com/registration/</a></a></strong>
+
+<li><strong><a name="more_info_at_http_www_uspswebtools_com" class="item">(More info at <a href="http://www.uspswebtools.com">http://www.uspswebtools.com</a>)</a></strong>
+
+<li><strong><a name="account" class="item">The online signup will result in a testing-only account (only a small
+        sample of queries will work).</a></strong>
+
+<li><strong><a name="mail" class="item">To activate the &quot;production&quot; use of your USPS account, you must follow 
         the USPS documentation.  As of Sept 16 2004, that means contacting the 
         USPS Internet Customer Care Center by e-mail 
-        (<code>icustomercare@usps.com</code>) or phone: 1-800-344-7779.</a></strong><br />
-</li>
+        (<code>icustomercare@usps.com</code>) or phone: 1-800-344-7779.</a></strong>
+
 </ul>
 <p>
 </p>
 <hr />
 <h1><a name="error_debug_handling">ERROR/DEBUG HANDLING</a></h1>
-<p>Log4perl is used for logging error, debug, etc. messages.  For simple manipulation of the current log level, 
-use the Business::Shipping-&gt;log_level( $log_level ) class method (below).  For more advanced logging/debugging
-options, see config/log4perl.conf.</p>
+<p>Log4perl is used for logging error, debug, etc. messages. For simple 
+manipulation of the current log level, use the Business::Shipping-&gt;<code>log_level()</code>
+class method (below). For more advanced logging/debugging options, see 
+config/log4perl.conf.</p>
 <p>
 </p>
 <hr />
@@ -270,16 +281,15 @@ Without preloading, some modules will be loaded at runtime.  Normally, runtime
 loading is the best mode of operation.  However, there are some circumstances 
 when preloading is advantagous.  For example:</pre>
 <ul>
-<li><strong><a name="item_for_mod_perl_2c_to_load_the_modules_only_once_at_s">For mod_perl, to load the modules only once at startup instead of at 
- startup and then additional modules later on.  (Thanks to Chris Ochs 
- &lt;<a href="mailto:chris@paymentonline.com">chris@paymentonline.com</a>&gt; for contributing to this information).</a></strong><br />
-</li>
-<li><strong><a name="item_modules">For compatibilty with some security modules (e.g. Safe).</a></strong><br />
-</li>
-<li><strong><a name="item_to_move_the_delay_that_would_normally_occur_with_t">To move the delay that would normally occur with the first request into 
+<li><strong><a name="for_mod_perl_to_load_the_modules_only_once_at_startup_to_reduce_memory_utilization" class="item">For mod_perl, to load the modules only once at startup to reduce memory
+utilization.</a></strong>
+
+<li><strong><a name="modules" class="item">For compatibilty with some security modules (e.g. Safe).</a></strong>
+
+<li><strong><a name="to_move_the_delay_that_would_normally_occur_with_the_first_request_into_startup_time_that_way_it_takes_longer_to_start_up_but_the_first_user_will_not_experience_any_delay" class="item">To move the delay that would normally occur with the first request into 
  startup time.  That way, it takes longer to start up, but the first user
- will not experience any delay.</a></strong><br />
-</li>
+ will not experience any delay.</a></strong>
+
 </ul>
 <p>
 </p>
@@ -287,71 +297,81 @@ when preloading is advantagous.  For example:</pre>
 <h1><a name="methods">METHODS</a></h1>
 <p>
 </p>
-<h2><a name="_obj_init__">$obj-&gt;<code>init()</code></a></h2>
+<h2><a name="_obj__init__">$obj-&gt;<code>init()</code></a></h2>
 <p>Generic attribute setter.</p>
 <p>
 </p>
-<h2><a name="_obj_user_error__">$obj-&gt;<code>user_error()</code></a></h2>
+<h2><a name="_obj__user_error__">$obj-&gt;<code>user_error()</code></a></h2>
 <p>Log and store errors that should be visibile to the user.</p>
 <p>
 </p>
-<h2><a name="_obj_validate__">$obj-&gt;<code>validate()</code></a></h2>
+<h2><a name="_obj__validate__">$obj-&gt;<code>validate()</code></a></h2>
 <p>Confirms that the object is valid.  Checks that required attributes are set.</p>
 <p>
 </p>
-<h2><a name="_self_get_grouped_attrs___attribute_name__">$self-&gt;get_grouped_attrs( $attribute_name )</a></h2>
+<h2><a name="_self__get_grouped_attrs___attribute_name__">$self-&gt;get_grouped_attrs( $attribute_name )</a></h2>
 <p>
 </p>
-<h2><a name="_obj_rate_request__">$obj-&gt;<code>rate_request()</code></a></h2>
+<h2><a name="_obj__rate_request__">$obj-&gt;<code>rate_request()</code></a></h2>
 <p>This method is used to request shipping rate information from online providers
 or offline tables.  A hash is accepted as input.  The acceptable values are 
 determined by the shipper class, but the following are common to all:</p>
 <ul>
-<li><strong><a name="item_shipper">shipper</a></strong><br />
+<li><strong><a name="shipper" class="item">shipper</a></strong>
+
+<p>The name of the shipper to use. Must correspond to a module by the name of:
+<code>Business::Shipping::SHIPPER</code>.  For example, <code>UPS_Online</code>.</p>
 </li>
-The name of the shipper to use. Must correspond to a module by the name of:
-<code>Business::Shipping::SHIPPER</code>.  For example, <code>UPS_Online</code>.
-<p></p>
-<li><strong><a name="item_service">service</a></strong><br />
+<li><strong><a name="service" class="item">service</a></strong>
+
+<p>A valid service name for the provider. See the corresponding module 
+documentation for a list of services compatible with the shipper.</p>
 </li>
-A valid service name for the provider. See the corresponding module 
-documentation for a list of services compatible with the shipper.
-<p></p>
-<li><strong><a name="item_from_zip">from_zip</a></strong><br />
+<li><strong><a name="from_zip" class="item">from_zip</a></strong>
+
+<p>The origin zipcode.</p>
 </li>
-The origin zipcode.
-<p></p>
-<li><strong><a name="item_from_state">from_state</a></strong><br />
+<li><strong><a name="from_state" class="item">from_state</a></strong>
+
+<p>The origin state in two-letter code format or full-name format.  Required for 
+UPS_Offline.</p>
 </li>
-The origin state in two-letter code format or full-name format.  Required for UPS_Offline.
-<p></p>
-<li><strong><a name="item_to_zip">to_zip</a></strong><br />
+<li><strong><a name="to_zip" class="item">to_zip</a></strong>
+
+<p>The destination zipcode.</p>
 </li>
-The destination zipcode.
-<p></p>
-<li><strong><a name="item_to_country">to_country</a></strong><br />
+<li><strong><a name="to_country" class="item">to_country</a></strong>
+
+<p>The destination country.  Required for international shipments only.</p>
 </li>
-The destination country.  Required for international shipments only.
-<p></p>
-<li><strong><a name="item_weight">weight</a></strong><br />
+<li><strong><a name="weight" class="item">weight</a></strong>
+
+<p>Weight of the shipment, in pounds, as a decimal number.</p>
 </li>
-Weight of the shipment, in pounds, as a decimal number.
-<p></p></ul>
+</ul>
 <p>There are some additional common values:</p>
 <ul>
-<li><strong><a name="item_user_id">user_id</a></strong><br />
+<li><strong><a name="user_id" class="item">user_id</a></strong>
+
+<p>A user_id, if required by the provider. USPS_Online and UPS_Online require
+this, while UPS_Offline does not.</p>
 </li>
-A user_id, if required by the provider. USPS_Online and UPS_Online require
-this, while UPS_Offline does not.
-<p></p>
-<li><strong><a name="item_password">password</a></strong><br />
+<li><strong><a name="password" class="item">password</a></strong>
+
+<p>A password,  if required by the provider. USPS_Online and UPS_Online require
+this, while UPS_Offline does not.</p>
 </li>
-A password,  if required by the provider. USPS_Online and UPS_Online require
-this, while UPS_Offline does not.
-<p></p></ul>
+</ul>
 <p>
 </p>
-<h2><a name="business__shipping_log_level__">Business::Shipping-&gt;<code>log_level()</code></a></h2>
+<h2><a name="_compat_shipper_name">_compat_shipper_name</a></h2>
+<p>Shipper name backwards-compatibility</p>
+<p>1. Really old: &quot;UPS&quot; or &quot;USPS&quot; (assumes Online::)
+2. Semi-old:   &quot;Online::UPS&quot;, &quot;Offline::UPS&quot;, or &quot;Online::USPS&quot;
+3. Current:    &quot;UPS_Online&quot;, &quot;UPS_Offline&quot;, or &quot;USPS_Online&quot;</p>
+<p>
+</p>
+<h2><a name="business__shipping__log_level__">Business::Shipping-&gt;<code>log_level()</code></a></h2>
 <p>Simple alternative to editing the config/log4perl.conf file.  Sets the log level
 for all Business::Shipping objects.</p>
 <p>Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.</p>
@@ -361,60 +381,54 @@ for all Business::Shipping objects.</p>
 <h1><a name="see_also">SEE ALSO</a></h1>
 <p>Important modules that are related to Business::Shipping:</p>
 <ul>
-<li><strong><a name="item_business_3a_3ashipping_3a_3adatafiles__2d_required">Business::Shipping::DataFiles - Required for offline cost estimation</a></strong><br />
-</li>
-<li><strong><a name="item_datafiles">Business::Shipping::DataTools - Tools that generate DataFiles 
-        (optional)</a></strong><br />
-</li>
-</ul>
-<p>Other Perl modules that are simliar to Business::Shipping:
+<li><strong><a name="business_shipping_datafiles_required_for_offline_cost_estimation" class="item">Business::Shipping::DataFiles - Required for offline cost estimation</a></strong>
 
-</p>
-<ul>
-<li><strong><a name="item_business_3a_3ashipping_3a_3aups_xml__2d_online_cos">Business::Shipping::UPS_XML - Online cost estimation module that has 
-very few prerequisites.  Supports shipments that originate in USA and Canada.</a></strong><br />
-</li>
-<li><strong><a name="item_business_3a_3aups__2d_online_cost_estimation_modul">Business::UPS - Online cost estimation module that uses the UPS web form
-instead of the UPS Online Tools.  For shipments that originate in the USA only.</a></strong><br />
-</li>
-<li><strong><a name="item_net_3a_3aups__2d_implementation_of_ups_online_tool">Net::UPS - Implementation of UPS Online Tools API in Perl</a></strong><br />
-</li>
-<li><strong><a name="item_http_3a_2f_2fwww_2ehalofree_2ecom_2flib_2fpublic_2"><a href="http://www.halofree.com/lib/public/code/Ship/UPS.pm">http://www.halofree.com/lib/public/code/Ship/UPS.pm</a></a></strong><br />
-</li>
-<li><strong><a href="http://www.halofree.com/lib/public/code/Ship/USPS.pm">http://www.halofree.com/lib/public/code/Ship/USPS.pm</a></strong><br />
-</li>
-</ul>
-<p>It is appreciated when users mention their use of Business::Shipping to the 
-author and/or in their web site/application.
+<li><strong><a name="datafiles" class="item">Business::Shipping::DataTools - Tools that generate DataFiles (optional)</a></strong>
 
-</p>
+</ul>
+<p>Other Perl modules that are simliar to Business::Shipping:</p>
 <ul>
-<li><strong><a name="item_system">Interchange e-commerce system ( <a href="http://www.icdevgroup.org">http://www.icdevgroup.org</a> ).  See 
-    <code>UserTag/business-shipping.tag</code>.</a></strong><br />
-</li>
-<li><strong><a name="item_many_e_2dcommerce_websites_2c_such_as_phatmotorspo">Many E-Commerce websites, such as Phatmotorsports.com.</a></strong><br />
-</li>
-<li><strong><a name="item_paymentonline_2ecom_software_2e">PaymentOnline.com software.</a></strong><br />
-</li>
-<li><strong><a name="item_the__22shopping_cart_22_wobject_for_the_webgui_pro">The ``Shopping Cart'' Wobject for the WebGUI project, by Andy Grundman 
-    <a href="http://www.plainblack.com/shopping_cart_wobject">http://www.plainblack.com/shopping_cart_wobject</a></a></strong><br />
-</li>
-<li><strong><a name="item_mentioned_in_yapc_2004_presentation_3a__22writing_">Mentioned in YAPC 2004 Presentation: ``Writing web applications with perl ...''</a></strong><br />
-</li>
+<li><strong><a name="business_shipping_ups_xml_online_cost_estimation_module_that_has_very_few_prerequisites_supports_shipments_that_originate_in_usa_and_canada" class="item">Business::Shipping::UPS_XML - Online cost estimation module that has 
+very few prerequisites.  Supports shipments that originate in USA and Canada.</a></strong>
+
+<li><strong><a name="business_ups_online_cost_estimation_module_that_uses_the_ups_web_form_instead_of_the_ups_online_tools_for_shipments_that_originate_in_the_usa_only" class="item">Business::UPS - Online cost estimation module that uses the UPS web form
+instead of the UPS Online Tools.  For shipments that originate in the USA only.</a></strong>
+
+<li><strong><a name="net_ups_implementation_of_ups_online_tools_api_in_perl" class="item">Net::UPS - Implementation of UPS Online Tools API in Perl</a></strong>
+
+<li><strong><a name="http_www_halofree_com_lib_public_code_ship_ups_pm" class="item"><a href="http://www.halofree.com/lib/public/code/Ship/UPS.pm">http://www.halofree.com/lib/public/code/Ship/UPS.pm</a></a></strong>
+
+<li><strong><a name="http_www_halofree_com_lib_public_code_ship_usps_pm" class="item"><a href="http://www.halofree.com/lib/public/code/Ship/USPS.pm">http://www.halofree.com/lib/public/code/Ship/USPS.pm</a></a></strong>
+
+</ul>
+<pre>
+
+=head1 Use of this software</pre>
+<p>Please let the author know how you are using Business::Shipping.</p>
+<ul>
+<li><strong><a name="corporation" class="item">Advanced support and integration services are available from End Point 
+    Corporation (<a href="http://www.endpoint.com/">http://www.endpoint.com/</a>).</a></strong>
+
+<li><strong><a name="system" class="item">Interchange e-commerce system ( <a href="http://www.icdevgroup.org">http://www.icdevgroup.org</a> ).  See 
+    <code>UserTag/business-shipping.tag</code>.</a></strong>
+
+<li><strong><a name="many_e_commerce_websites_such_as_phatmotorsports_com" class="item">Many E-Commerce websites, such as Phatmotorsports.com.</a></strong>
+
+<li><strong><a name="paymentonline_com_software" class="item">PaymentOnline.com software.</a></strong>
+
+<li><strong><a name="the_shopping_cart_wobject_for_the_webgui_project_by_andy_grundman_http_www_plainblack_com_shopping_cart_wobject" class="item">The &quot;Shopping Cart&quot; Wobject for the WebGUI project, by Andy Grundman 
+    <a href="http://www.plainblack.com/shopping_cart_wobject">http://www.plainblack.com/shopping_cart_wobject</a></a></strong>
+
+<li><strong><a name="mentioned_in_yapc_2004_writing_web_applications_with_perl" class="item">Mentioned in YAPC 2004: &quot;Writing web applications with perl ...&quot;</a></strong>
+
 </ul>
 <p>
 </p>
 <hr />
 <h1><a name="website">WEBSITE</a></h1>
-<p><a href="http://www.kavod.com/Business-Shipping/">http://www.kavod.com/Business-Shipping/</a>
-
-</p>
-<p>CPAN web site: <a href="http://search.cpan.org/~dbrowning/Business-Shipping/">http://search.cpan.org/~dbrowning/Business-Shipping/</a>
-
-</p>
-<p>Backpan (old releases): <a href="http://backpan.cpan.org/authors/id/D/DB/DBROWNING/">http://backpan.cpan.org/authors/id/D/DB/DBROWNING/</a>
-
-</p>
+<p><a href="http://www.kavod.com/Business-Shipping/">http://www.kavod.com/Business-Shipping/</a></p>
+<p>CPAN web site: <a href="http://search.cpan.org/~dbrowning/Business-Shipping/">http://search.cpan.org/~dbrowning/Business-Shipping/</a></p>
+<p>Backpan (old releases): <a href="http://backpan.cpan.org/authors/id/D/DB/DBROWNING/">http://backpan.cpan.org/authors/id/D/DB/DBROWNING/</a></p>
 <p>
 </p>
 <hr />
@@ -422,39 +436,29 @@ author and/or in their web site/application.
 <p>This module is supported by the author.  Please report any bugs or feature 
 requests to <code>bug-business-shipping@rt.cpan.org</code>, or through the web interface 
 at <a href="http://rt.cpan.org">http://rt.cpan.org</a>.  The author will be notified, and then you'll 
-automatically be notified of progress on your bug as the author makes changes.
-
-</p>
+automatically be notified of progress on your bug as the author makes changes.</p>
 <p>
 </p>
 <hr />
 <h1><a name="known_bugs">KNOWN BUGS</a></h1>
-<p>See the <code>doc/Todo</code> file for a comprehensive list of known bugs.
-
-</p>
+<p>See the <code>doc/Todo</code> file for a comprehensive list of known bugs.</p>
 <p>
 </p>
 <hr />
 <h1><a name="credits">CREDITS</a></h1>
-<p>Many people have contributed to this module, please see the <code>CREDITS</code> file. 
-
-</p>
+<p>Many people have contributed to this software, please see the <code>CREDITS</code> file.</p>
 <p>
 </p>
 <hr />
 <h1><a name="author">AUTHOR</a></h1>
-<p>Daniel Browning &lt;<em><a href="mailto:db@kavod.com">db@kavod.com</a></em>&gt;, Kavod Technologies, <a href="http://www.kavod.com">http://www.kavod.com</a>.
-
-</p>
+<p>Daniel Browning, <a href="mailto:db@kavod.com">db@kavod.com</a></p>
 <p>
 </p>
 <hr />
 <h1><a name="copyright_and_licence">COPYRIGHT AND LICENCE</a></h1>
-<p>Copyright (c) 2003-2006 Daniel Browning &lt;<em><a href="mailto:db@kavod.com">db@kavod.com</a></em>&gt;. All rights 
+<p>Copyright (c) 2003-2006 Daniel Browning &lt;<em class="file"><a href="mailto:db@kavod.com">db@kavod.com</a></em>&gt;. All rights 
 reserved.  This program is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.  See <code>LICENSE</code> for more info.
-
-</p>
+it under the same terms as Perl itself.  See <code>LICENSE</code> for more info.</p>
 
 </body>
 

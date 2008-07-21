@@ -2,39 +2,42 @@ NAME
     Business::Shipping - Rates and tracking for UPS and USPS
 
 VERSION
-    Version 2.05
+    Version 2.2.0
 
 SYNOPSIS
   Rate request example
      use Business::Shipping;
- 
-     my $rate_request = Business::Shipping->rate_request(
+     
+ my $rate_request = Business::Shipping->rate_request(
          shipper   => 'UPS_Offline',
          service   => 'Ground Residential',
          from_zip  => '98683',
          to_zip    => '98270',
          weight    =>  5.00,
      );    
- 
-     $rate_request->execute() or die $rate_request->user_error();
- 
-     print $rate_request->rate();
+     
+ $rate_request->execute() or die $rate_request->user_error();
+     
+ print $rate_request->rate();
 
 FEATURES
     Business::Shipping currently supports three shippers:
 
   UPS_Offline: United Parcel Service
-    * Shipment rate estimation using offline tables.
+    *   Shipment rate estimation using offline tables.
+
         As of January, 2007, UPS has only released the data tables in binary
         Excel format. These have not been converted to the text files
         necessary for use in this module. A script is distributed with the
         module for automatically updating the fuel surcharge every month.
 
-  UPS_Online: United Parcel Service using UPS OnLine Tools (disabled)
-    * Disabled as of version 1.90, see doc/UPS_Online_disabled.txt.
-    * Shipment rate estimation
-    * Shipment tracking.
-    * Rate Shopping.
+  UPS_Online: United Parcel Service using UPS OnLine Tools
+    *   Shipment rate estimation
+
+    *   Shipment tracking.
+
+    *   Rate Shopping.
+
         Gets rates for all the services in one request:
 
          my $rr_shop = Business::Shipping->rate_request( 
@@ -47,10 +50,10 @@ FEATURES
              password     => '',
              access_key   => '',
          );
- 
-         $rr_shop->execute() or die $rr_shop->user_error();
- 
-         foreach my $shipper ( @$results ) {
+         
+ $rr_shop->execute() or die $rr_shop->user_error();
+         
+ foreach my $shipper ( @$results ) {
              print "Shipper: $shipper->{name}\n\n";
              foreach my $rate ( @{ $shipper->{ rates } } ) {
                  print "  Service:  $rate->{name}\n";
@@ -61,7 +64,8 @@ FEATURES
              }
          }
 
-    * C.O.D. (Cash On Delivery)
+    *   C.O.D. (Cash On Delivery)
+
         Add these options to your rate request for C.O.D.:
 
         cod: enable C.O.D.
@@ -84,8 +88,9 @@ FEATURES
                 cod_funds_code => 0,
 
   USPS_Online: United States Postal Service
-    * Shipment rate estimation using USPS Online WebTools.
-    * Shipment tracking
+    *   Shipment rate estimation using USPS Online WebTools.
+
+    *   Shipment tracking
 
 INSTALLATION
      perl -MCPAN -e 'install Bundle::Business::Shipping'
@@ -94,16 +99,16 @@ INSTALLATION
 
 REQUIRED MODULES
     The following modules are required for offline UPS rate estimation. See
-    doc/INSTALL.
+    INSTALL.
 
      Business::Shipping::DataFiles (any)
-     Class::MethodMaker::Engine (any)
+     Moose (any)
      Config::IniFiles (any)
      Log::Log4perl (any)
 
 OPTIONAL MODULES
     The following modules are used by online rate estimation and tracking.
-    See doc/INSTALL.
+    See INSTALL.
 
      Cache::FileCache (any)
      Clone (any)
@@ -111,7 +116,7 @@ OPTIONAL MODULES
      LWP::UserAgent (any)
      XML::DOM (any)
      XML::Simple (2.05)
- 
+
 GETTING STARTED
     Be careful to read, understand, and comply with the terms of use for the
     provider that you will use.
@@ -126,28 +131,35 @@ GETTING STARTED
      bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
 
   UPS_Online: For United Parcel Service (UPS) Online XML: Free signup
-    * Read the legal terms and conditions:
-    <http://www.ups.com/content/us/en/resources/service/terms/index.html>
-    * <https://www.ups.com/servlet/registration>
-    * After receiving a User Id and Password from UPS, login, then select
-    "Get Access Key", then "Get XML Access Key".
-    * Read more about UPS Online Tools at <http://www.ec.ups.com>
+    *   Read the legal terms and conditions:
+        <http://www.ups.com/content/us/en/resources/service/terms/index.html
+        >
+
+    *   <https://www.ups.com/servlet/registration>
+
+    *   After receiving a User Id and Password from UPS, login, then select
+        "Get Access Key", then "Get XML Access Key".
+
+    *   Read more about UPS Online Tools at <http://www.ec.ups.com>
 
   USPS_Online: For United States Postal Service (USPS): Free signup
-    * <http://www.uspswebtools.com/registration/>
-    * (More info at <http://www.uspswebtools.com>)
-    * The online signup will result in a testing-only account (only a small
-    sample of queries will work).
-    * To activate the "production" use of your USPS account, you must follow
-    the USPS documentation. As of Sept 16 2004, that means contacting the
-    USPS Internet Customer Care Center by e-mail ("icustomercare@usps.com")
-    or phone: 1-800-344-7779.
+    *   <http://www.uspswebtools.com/registration/>
+
+    *   (More info at <http://www.uspswebtools.com>)
+
+    *   The online signup will result in a testing-only account (only a
+        small sample of queries will work).
+
+    *   To activate the "production" use of your USPS account, you must
+        follow the USPS documentation. As of Sept 16 2004, that means
+        contacting the USPS Internet Customer Care Center by e-mail
+        ("icustomercare@usps.com") or phone: 1-800-344-7779.
 
 ERROR/DEBUG HANDLING
     Log4perl is used for logging error, debug, etc. messages. For simple
     manipulation of the current log level, use the
-    Business::Shipping->log_level( $log_level ) class method (below). For
-    more advanced logging/debugging options, see config/log4perl.conf.
+    Business::Shipping->log_level() class method (below). For more advanced
+    logging/debugging options, see config/log4perl.conf.
 
 Preloading Modules
     To preload all modules, call Business::Shipping with this syntax:
@@ -157,18 +169,19 @@ Preloading Modules
     To preload the modules for just one shipper:
 
      use Business::Shipping { preload => 'USPS_Online' };
- 
+
     Without preloading, some modules will be loaded at runtime. Normally,
     runtime loading is the best mode of operation. However, there are some
     circumstances when preloading is advantagous. For example:
 
-    * For mod_perl, to load the modules only once at startup instead of at
-    startup and then additional modules later on. (Thanks to Chris Ochs
-    <chris@paymentonline.com> for contributing to this information).
-    * For compatibilty with some security modules (e.g. Safe).
-    * To move the delay that would normally occur with the first request
-    into startup time. That way, it takes longer to start up, but the first
-    user will not experience any delay.
+    *   For mod_perl, to load the modules only once at startup to reduce
+        memory utilization.
+
+    *   For compatibilty with some security modules (e.g. Safe).
+
+    *   To move the delay that would normally occur with the first request
+        into startup time. That way, it takes longer to start up, but the
+        first user will not experience any delay.
 
 METHODS
   $obj->init()
@@ -188,39 +201,55 @@ METHODS
     values are determined by the shipper class, but the following are common
     to all:
 
-    * shipper
+    *   shipper
+
         The name of the shipper to use. Must correspond to a module by the
         name of: "Business::Shipping::SHIPPER". For example, "UPS_Online".
 
-    * service
+    *   service
+
         A valid service name for the provider. See the corresponding module
         documentation for a list of services compatible with the shipper.
 
-    * from_zip
+    *   from_zip
+
         The origin zipcode.
 
-    * from_state
+    *   from_state
+
         The origin state in two-letter code format or full-name format.
         Required for UPS_Offline.
 
-    * to_zip
+    *   to_zip
+
         The destination zipcode.
 
-    * to_country
+    *   to_country
+
         The destination country. Required for international shipments only.
 
-    * weight
+    *   weight
+
         Weight of the shipment, in pounds, as a decimal number.
 
     There are some additional common values:
 
-    * user_id
+    *   user_id
+
         A user_id, if required by the provider. USPS_Online and UPS_Online
         require this, while UPS_Offline does not.
 
-    * password
+    *   password
+
         A password, if required by the provider. USPS_Online and UPS_Online
         require this, while UPS_Offline does not.
+
+  _compat_shipper_name
+    Shipper name backwards-compatibility
+
+    1. Really old: "UPS" or "USPS" (assumes Online::) 2. Semi-old:
+    "Online::UPS", "Offline::UPS", or "Online::USPS" 3. Current:
+    "UPS_Online", "UPS_Offline", or "USPS_Online"
 
   Business::Shipping->log_level()
     Simple alternative to editing the config/log4perl.conf file. Sets the
@@ -231,34 +260,44 @@ METHODS
 SEE ALSO
     Important modules that are related to Business::Shipping:
 
-    * Business::Shipping::DataFiles - Required for offline cost estimation
-    * Business::Shipping::DataTools - Tools that generate DataFiles
-    (optional)
+    *   Business::Shipping::DataFiles - Required for offline cost estimation
+
+    *   Business::Shipping::DataTools - Tools that generate DataFiles
+        (optional)
 
     Other Perl modules that are simliar to Business::Shipping:
 
-    * Business::Shipping::UPS_XML - Online cost estimation module that has
-    very few prerequisites. Supports shipments that originate in USA and
-    Canada.
-    * Business::UPS - Online cost estimation module that uses the UPS web
-    form instead of the UPS Online Tools. For shipments that originate in
-    the USA only.
-    * Net::UPS - Implementation of UPS Online Tools API in Perl
-    * http://www.halofree.com/lib/public/code/Ship/UPS.pm
-    * http://www.halofree.com/lib/public/code/Ship/USPS.pm
+    *   Business::Shipping::UPS_XML - Online cost estimation module that has
+        very few prerequisites. Supports shipments that originate in USA and
+        Canada.
+
+    *   Business::UPS - Online cost estimation module that uses the UPS web
+        form instead of the UPS Online Tools. For shipments that originate
+        in the USA only.
+
+    *   Net::UPS - Implementation of UPS Online Tools API in Perl
+
+    *   http://www.halofree.com/lib/public/code/Ship/UPS.pm
+
+    *   http://www.halofree.com/lib/public/code/Ship/USPS.pm
 
 Use of this software
-    It is appreciated when users mention their use of Business::Shipping to
-    the author and/or in their web site/application.
+    Please let the author know how you are using Business::Shipping.
 
-    * Interchange e-commerce system ( <http://www.icdevgroup.org> ). See
-    "UserTag/business-shipping.tag".
-    * Many E-Commerce websites, such as Phatmotorsports.com.
-    * PaymentOnline.com software.
-    * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman
-    <http://www.plainblack.com/shopping_cart_wobject>
-    * Mentioned in YAPC 2004 Presentation: "Writing web applications with
-    perl ..."
+    *   Advanced support and integration services are available from End
+        Point Corporation (<http://www.endpoint.com/>).
+
+    *   Interchange e-commerce system ( <http://www.icdevgroup.org> ). See
+        "UserTag/business-shipping.tag".
+
+    *   Many E-Commerce websites, such as Phatmotorsports.com.
+
+    *   PaymentOnline.com software.
+
+    *   The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman
+        <http://www.plainblack.com/shopping_cart_wobject>
+
+    *   Mentioned in YAPC 2004: "Writing web applications with perl ..."
 
 WEBSITE
     <http://www.kavod.com/Business-Shipping/>
@@ -279,12 +318,11 @@ KNOWN BUGS
     See the "doc/Todo" file for a comprehensive list of known bugs.
 
 CREDITS
-    Many people have contributed to this module, please see the "CREDITS"
+    Many people have contributed to this software, please see the "CREDITS"
     file.
 
 AUTHOR
-    Daniel Browning <db@kavod.com>, Kavod Technologies,
-    <http://www.kavod.com>.
+    Daniel Browning, db@kavod.com
 
 COPYRIGHT AND LICENCE
     Copyright (c) 2003-2006 Daniel Browning <db@kavod.com>. All rights

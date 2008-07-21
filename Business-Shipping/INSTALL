@@ -12,10 +12,13 @@ NOTES
     "Bundle::Business::Shipping". However, you may opt instead to install
     the required modules for only one shipper:
 
-    * "Bundle::Business::Shipping::UPS_Offline"
-    * "Bundle::Business::Shipping::UPS_Online"
-    * "Bundle::Business::Shipping::USPS_Online"
-    * "Bundle::Business::Shipping"
+    *   "Bundle::Business::Shipping::UPS_Offline"
+
+    *   "Bundle::Business::Shipping::UPS_Online"
+
+    *   "Bundle::Business::Shipping::USPS_Online"
+
+    *   "Bundle::Business::Shipping"
 
 CPAN INSTALLATION
     Note that the XML::DOM uses XML::Parser, and XML::Parser uses Expat.
@@ -56,7 +59,7 @@ All required modules
 
      Business::Shipping::DataFiles (any)
      Cache::FileCache (any)
-     Class::MethodMaker::Engine (any)
+     Moose (any)
      Clone (any)
      Config::IniFiles (any)
      Crypt::SSLeay (any)
