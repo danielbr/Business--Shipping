@@ -137,18 +137,6 @@ $module support files directory:);
         ]
     );
 
-    subst( 
-        variables => {
-            UPS_ONLINE_DISABLED => 1,
-        },
-        files     => [
-            'lib/Business/Shipping/UPS_Online/RateRequest.pm',
-            'lib/Business/Shipping/UPS_Online/Tracking.pm',
-        ]
-    );
-    
-    
-
 	my %EXTRA_CONFIG_OPTIONS;
     #$EXTRA_CONFIG_OPTIONS{ } 
 	#$EXTRA_CONFIG_OPTIONS{ OPTION_NAME } = 'value';
