@@ -63,9 +63,6 @@ the same terms as Perl itself. See LICENSE for more info.
 
 use version; our $VERSION = qv('2.2.0');
 
-use strict;
-use warnings;
-use base('Business::Shipping::Tracking');
 use Business::Shipping::Logging;
 use XML::Simple 2.05;
 use XML::DOM;
@@ -74,17 +71,18 @@ use HTTP::Request;
 use HTTP::Response;
 use Date::Parse;
 use POSIX;
-use Class::MethodMaker 2.0 [
-    new    => [{ -hash => 1, -init => 'this_init' }, 'new'],
-    scalar => ['prod_url'],
-    scalar => ['test_url'],
-];
+use Moose;
+extends 'Business::Shipping::Tracking';
 
-sub this_init {
-    $_[0]->prod_url('http://production.shippingapis.com/ShippingAPI.dll');
-    $_[0]->test_url('http://testing.shippingapis.com/ShippingAPItest.dll');
-    return;
-}
+has 'prod_url' => (
+    is => 'rw',
+    default => 'http://production.shippingapis.com/ShippingAPI.dll'
+);
+
+has 'test_url' => (
+    is => 'rw',
+    default => 'http://testing.shippingapis.com/ShippingAPItest.dll'
+);
 
 # _gen_request_xml()
 # Generate the XML document.
