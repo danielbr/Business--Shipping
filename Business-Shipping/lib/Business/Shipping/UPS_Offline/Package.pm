@@ -16,11 +16,8 @@ Business::Shipping::UPS_Offline::Package
 
 use version; our $VERSION = qv('2.2.0');
 
-use strict;
-use warnings;
-use base ('Business::Shipping::Package');
-
-use Class::MethodMaker 2.0 [new => 'new'];
+use Moose;
+extends 'Business::Shipping::Package';
 
 1;
 

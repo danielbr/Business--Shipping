@@ -27,26 +27,23 @@ for hundredweight rates and a much higher rate than estimated.
 
 use version; our $VERSION = qv('2.2.0');
 
-use strict;
-use warnings;
-use base('Business::Shipping::Shipment::UPS');
 use Business::Shipping::Config;
 use Business::Shipping::Logging;
+use Moose;
+extends 'Business::Shipping::Shipment::UPS';
 
-use Class::MethodMaker 2.0 [
-    new    => 'new',
-    scalar => ['from_state'],
-    scalar => [{ -default => 150 }, 'max_weight'],
-    scalar => ['disable_hundredweight'],
-    scalar => ['tier'],                              # TODO: Only allow 1-8
-    scalar => [{ -default => '10' }, 'hundredweight_margin'],
-    array  => [
-        {   -type         => 'Business::Shipping::UPS_Offline::Package',
-            -default_ctor => 'new'
-        },
-        'packages'
-    ],
-];
+# TODO: Only allow tiers 1-8
+has 'tier' => (is => 'rw');
+has 'from_state' => (is => 'rw');
+has 'max_weight' => (is => 'rw', default=> 150);
+has 'disable_hundredweight' => (is => 'rw');
+has 'hundredweight_margin' => (is => 'rw', default => 10);
+has 'packages' => (
+    is         => 'rw',
+    isa        => 'ArrayRef[Business::Shipping::UPS_Offline::Package]',
+    default    => sub { [Business::Shipping::UPS_Offline::Package->new()] },
+    auto_deref => 1
+);
 
 sub use_hundred_weight {
     my ($self) = @_;

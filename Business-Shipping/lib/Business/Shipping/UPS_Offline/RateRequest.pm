@@ -28,9 +28,6 @@ Business::Shipping::UPS_Offline::RateRequest
 
 use version; our $VERSION = qv('2.2.0');
 
-use strict;
-use warnings;
-use base ('Business::Shipping::RateRequest::Offline');
 use Business::Shipping::UPS_Offline::Shipment;
 use Business::Shipping::UPS_Offline::Package;
 use Business::Shipping::Logging;
@@ -85,21 +82,25 @@ Hash.  Format:
 
 =cut
 
-use Class::MethodMaker 2.0 [
-    new    => [{ -init => '_init' }, 'new'],
-    scalar => [
-        'update',             'download',
-        'unzip',              'convert',
-        'is_from_west_coast', 'zone_file',
-        'zone_name',          'type',
-        'zone',
-    ],
+use Moose;
+entends 'Business::Shipping::RateRequest::Offline';
+has 'update' => (is => 'rw');
+has 'download' => (is => 'rw');
+has 'unzip' => (is => 'rw');
+has 'convert' => (is => 'rw');
+has 'is_from_west_coast' => (is => 'rw');
+has 'zone_file' => (is => 'rw');
+has 'zone_name' => (is => 'rw');
+has 'type' => (is => 'rw');
+has 'zone' => (is => 'rw');
 
-    # The forward is just for a shortcut.
-    scalar => [
-        {   -type         => 'Business::Shipping::UPS_Offline::Shipment',
-            -default_ctor => 'new',
-            -forward      => [
+has '' => (is => 'rw');
+
+has 'shipment' => (
+    is      => 'rw',
+    isa     => 'Business::Shipping::UPS_Offline::Shipment',
+    default => sub { Business::Shipping::UPS_Offline::Shipment->new() },
+    handles => [
                 'from_country',   'from_country_abbrev',
                 'to_country',     'to_country_abbrev',
                 'to_ak_or_hi',    'from_zip',
@@ -110,15 +111,16 @@ use Class::MethodMaker 2.0 [
                 'to_canada',      'from_ak_or_hi',
                 'from_state',     'from_state_abbrev',
                 'tier',
-            ],
-        },
-        'shipment'
-    ],
-    scalar => [{ -static => 1 }, 'Zones'],  # Zones is depreciated, remove it.
-    scalar => [{ -static => 1,   -default => {} }, 'Data'],
-    scalar => [{ -static => 1 }, 'Fuel_surcharge_ground'],
-    scalar => [{ -static => 1 }, 'Fuel_surcharge_air'],
-];
+    ]
+);
+
+use MooseX::ClassAttribute;
+# Zones is deprecated.
+
+class_has 'Zones' => (is => 'rw');
+class_has 'Data' => (is => 'rw', isa => 'HashRef', default => {});
+class_has 'Fuel_surcharge_ground' => (is => 'rw');
+class_has 'Fuel_surcharge_air' => (is => 'rw');
 
 sub _init {
     $_[0]->set_fuel_surcharge();
