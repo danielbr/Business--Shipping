@@ -6,6 +6,7 @@
 
 # Version control files and dirs.
 
+\.gitignore$
 \bRCS\b
 \bCVS\b
 ,v$
@@ -28,6 +29,7 @@
 \.gz$
 \.tar$
 \.tgz$
+^Business-Shipping-
 
 # Temp, old, backup and emacs backup files.
 

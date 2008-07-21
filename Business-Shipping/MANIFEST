@@ -6,13 +6,13 @@ config/log4perl.conf
 configure
 CREDITS
 doc/Artistic
+doc/Development.txt
 doc/GPL
 doc/INSTALL.html
 doc/INSTALL.pod
 doc/INSTALL.txt
 doc/README.html
 doc/README.txt
-doc/UPS_Online_disabled.txt
 INSTALL
 lib/Business/Shipping.pm
 lib/Business/Shipping/Config.pm
@@ -57,7 +57,7 @@ t/31_USPS_Online_Tracking.t
 t/40_UPS_Online.t
 t/41_UPS_Online_Shop.t
 t/42_UPS_Online_COD.t
-t/45_UPS_Offline.t
+t/43_UPS_Online_Package.t
 t/61_Log4perl.t
 t/70_countries.t
 t/80_usertag_sim.t
