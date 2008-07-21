@@ -8,6 +8,7 @@ use Business::Shipping;
 #    unless Business::Shipping::Config::calc_req_mod( 'UPS_Online' );
 plan skip_all => 'No credentials' 
     unless $ENV{ UPS_USER_ID } and $ENV{ UPS_PASSWORD } and $ENV{ UPS_ACCESS_KEY };
+plan skip_all => 'SLOW_TESTS is not set, skipping.' unless $ENV{SLOW_TESTS};
 plan 'no_plan';
 
 $::debug = 0;
@@ -228,7 +229,6 @@ SKIP: {
     my $total_charges_12_pounds = $rr2->total_charges();
     debug( "Cache test. 12 pounds = $total_charges_12_pounds" );
     ok( $total_charges_2_pounds != $total_charges_12_pounds, 'UPS domestic cache, sequential charges are different' );
-    
     
     ###########################################################################
     ##  World Wide Expedited
