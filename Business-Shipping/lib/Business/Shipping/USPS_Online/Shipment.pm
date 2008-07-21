@@ -47,15 +47,16 @@ use Moose;
 extends 'Business::Shipping::Shipment';
 
 has 'packages' => (
-    is => 'rw',
-    isa => 'ArrayRef[Business::Shipping::USPS_Online::Package]',
-    default => sub { [Business::Shipping::USPS_Online::Package->new()] },
+    is         => 'rw',
+    isa        => 'ArrayRef[Business::Shipping::USPS_Online::Package]',
+    default    => sub { [Business::Shipping::USPS_Online::Package->new()] },
     auto_deref => 1,
 );
 
-has 'max_weight'  => (is => 'rw', default => 70);
-has 'service'     => (is => 'rw');
+has 'max_weight' => (is => 'rw', default => 70);
+has 'service' => (is => 'rw');
 has '_to_country' => (is => 'rw');
+
 sub BUILD {
     $_[0]->from_country('US');
     return;
@@ -65,24 +66,23 @@ sub BUILD {
 # anything, it's the objects inside it that do.
 
 foreach my $attribute (
-        qw/
-        pounds
-        ounces
-        weight
-        container
-        size
-        machinable
-        mail_type
-        width
-        height
-        length
-        girth
-        /
-    ) 
+    qw/
+    pounds
+    ounces
+    weight
+    container
+    size
+    machinable
+    mail_type
+    width
+    height
+    length
+    girth
+    /
+    )
 {
     eval "sub $attribute { return shift->package0->$attribute( \@_ ); }";
 }
-
 
 =head2 from_country
 
@@ -99,26 +99,26 @@ own translations.  The former may not be necessary, but the latter is.
 
 =cut
 
-sub to_country
-{
+sub to_country {
+
     #trace '( ' . uneval( \@_ ) . ' )';
-    my ( $self, $to_country ) = @_;    
-    
-    if ( defined $to_country ) {
+    my ($self, $to_country) = @_;
+
+    if (defined $to_country) {
+
         #
         # Apply any Shipping::Shipment conversions, then apply our own.
         #
-        $to_country = $self->SUPER::to_country( $to_country );
+        $to_country = $self->SUPER::to_country($to_country);
         my $countries = config_to_hash(
-            cfg()->{ usps_information }->{ usps_country_name_translations }
-        );
-        $to_country = $countries->{ $to_country } || $to_country; 
-        
-        debug3( "setting to_country to \'$to_country\'" );
+            cfg()->{usps_information}->{usps_country_name_translations});
+        $to_country = $countries->{$to_country} || $to_country;
+
+        debug3("setting to_country to \'$to_country\'");
         $self->_to_country($to_country);
-    } 
-    debug3( "SUPER::to_country now is " . ( $self->SUPER::to_country() || '' ) );
-    
+    }
+    debug3("SUPER::to_country now is " . ($self->SUPER::to_country() || ''));
+
     return $self->_to_country();
 }
 

@@ -247,43 +247,39 @@ $Business::Shipping::RuntimeLoad = 1;
 
 sub import {
     my ($class_name, $record) = @_;
-    
+
     return unless defined $record and ref($record) eq 'HASH';
-    
+
     while (my ($key, $val) = each %$record) {
         if (lc $key eq 'preload') {
+
             # Required modules lists
             # ======================
-            # Each of these modules does a compile-time require of all 
+            # Each of these modules does a compile-time require of all
             # the modules that it needs.  If, in the future, any of these
             # modules switch to a run-time require, then update this list with
             # the modules that may be run-time required.
             my $module_list = {
-                'USPS_Online' => [
-                    'Business::Shipping::USPS_Online::Tracking',
-                ],
-                'UPS_Online' => [
-                    'Business::Shipping::UPS_Online::Tracking',
-                ],
-                'UPS_Offline' => [
-                ],
+                'USPS_Online' =>
+                    ['Business::Shipping::USPS_Online::Tracking',],
+                'UPS_Online' => ['Business::Shipping::UPS_Online::Tracking',],
+                'UPS_Offline' => [],
             };
-                    
+
             my @to_load;
             while (my ($shipper, $mod_list) = each %$module_list) {
                 if (lc $val eq lc $shipper or lc $val eq 'all') {
-                    push @to_load, (
-                        @$mod_list, 
-                        'Business::Shipping::' . $shipper . '::RateRequest',
-                    );
+                    my $rate_req_mod
+                        = 'Business::Shipping::' . $shipper . '::RateRequest';
+                    push @to_load, (@$mod_list, $rate_req_mod);
                 }
             }
-            
-            if (@to_load) { 
-                $Business::Shipping::RuntimeLoad = 0 
-            };
-            
-            foreach my $module (Business::Shipping::Util::unique(@to_load)) {
+
+            if (@to_load) {
+                $Business::Shipping::RuntimeLoad = 0;
+            }
+            my @unique_to_load = Business::Shipping::Util::unique(@to_load);
+            foreach my $module (@unique_to_load) {
                 eval "use $module;";
                 die $@ if $@;
             }
@@ -297,16 +293,15 @@ Generic attribute setter.
 
 =cut
 
-sub init
-{
-    my ( $self, %args ) = @_;
-    
-    foreach my $arg ( keys %args ) {
-        if ( $self->can( $arg ) ) {
-            $self->$arg( $args{ $arg } );
+sub init {
+    my ($self, %args) = @_;
+
+    foreach my $arg (keys %args) {
+        if ($self->can($arg)) {
+            $self->$arg($args{$arg});
         }
     }
-    
+
     return;
 }
 
@@ -316,28 +311,26 @@ Log and store errors that should be visibile to the user.
 
 =cut
 
-sub user_error
-{
-    my ( $self, $msg ) = @_;
-    
-    if ( defined $msg ) {
-        $self->_user_error_msg( $msg );
-        
-        # Make it look like I'm calling error() from the caller, instead of this
-        # function.
-        my ( $package, $filename, $line, $sub ) = caller( 1 );
-        error( 
-            { 
-                'caller_package'  => '',
-                'caller_filename' => $filename,
-                'caller_line'     => $line,
-                'caller_sub'      => $sub,
+sub user_error {
+    my ($self, $msg) = @_;
+
+    if (defined $msg) {
+        $self->_user_error_msg($msg);
+
+      # Make it look like I'm calling error() from the caller, instead of this
+      # function.
+        my ($package, $filename, $line, $sub) = caller(1);
+        error(
+            {   'caller_package'        => '',
+                'caller_filename'       => $filename,
+                'caller_line'           => $line,
+                'caller_sub'            => $sub,
                 'caller_depth_modifier' => 1,
-            }, 
+            },
             $msg
         );
     }
-    
+
     return $self->_user_error_msg;
 }
 
@@ -347,28 +340,28 @@ Confirms that the object is valid.  Checks that required attributes are set.
 
 =cut
 
-sub validate
-{
+sub validate {
     trace '()';
-    my ( $self ) = shift;
-    
-    my @required = $self->get_grouped_attrs( 'Required' );
-    my @optional = $self->get_grouped_attrs( 'Optional' );
-    
-    debug(  "required = " . join (', ', @required ) ); 
-    debug3( "optional = " . join (', ', @optional ) );    
-    
+    my ($self) = shift;
+
+    my @required = $self->get_grouped_attrs('Required');
+    my @optional = $self->get_grouped_attrs('Optional');
+
+    debug("required = " . join(', ', @required));
+    debug3("optional = " . join(', ', @optional));
+
     my @missing;
-    foreach my $required_field ( @required ) {
-        if ( ! $self->$required_field() ) {
+    foreach my $required_field (@required) {
+        if (!$self->$required_field()) {
             push @missing, $required_field;
         }
     }
-    
-    if ( @missing ) {
-        my $user_error = "Missing required argument(s): " . join ", ", @missing;
+
+    if (@missing) {
+        my $user_error = "Missing required argument(s): " . join ", ",
+            @missing;
         $self->user_error($user_error);
-        $self->invalid( 1 );
+        $self->invalid(1);
         return 0;
     }
     else {
@@ -379,12 +372,13 @@ sub validate
 =head2 $self->get_grouped_attrs( $attribute_name )
 
 =cut
+
 # attr_name = Attribute Name.
-sub get_grouped_attrs
-{
-    my ( $self, $attr_name ) = @_;
+sub get_grouped_attrs {
+    my ($self, $attr_name) = @_;
     my @results = $self->$attr_name();
-    #print "get_grouped_attrs( $attr_name ): " . join( ', ', @results ) . "\n";
+
+   #print "get_grouped_attrs( $attr_name ): " . join( ', ', @results ) . "\n";
     return @results;
 }
 
@@ -447,21 +441,21 @@ this, while UPS_Offline does not.
 
 =cut
 
-sub rate_request
-{
-    my $class = shift;
-    my ( %opt ) = @_;
-    my $shipper = $opt{ shipper };
-    
-    Carp::croak 'shipper required' unless $opt{ shipper };
+sub rate_request {
+    my $class   = shift;
+    my (%opt)   = @_;
+    my $shipper = $opt{shipper};
+
+    Carp::croak 'shipper required' unless $opt{shipper};
 
     $shipper = _compat_shipper_name($shipper);
 
-    my $rr = Business::Shipping->_new_subclass( $shipper . '::RateRequest' );
-    logdie "New $shipper::RateRequest object was undefined." if not defined $rr;
-    
-    $rr->init( %opt );
-   
+    my $rr = Business::Shipping->_new_subclass($shipper . '::RateRequest');
+    logdie "New $shipper::RateRequest object was undefined."
+        if not defined $rr;
+
+    $rr->init(%opt);
+
     return $rr;
 }
 
@@ -477,19 +471,18 @@ Shipper name backwards-compatibility
 
 sub _compat_shipper_name {
     my ($shipper) = @_;
-    
+
     my %old_to_new = (
         'Online::UPS'  => 'UPS_Online',
         'Offline::UPS' => 'UPS_Offline',
         'Online::USPS' => 'USPS_Online',
-        'UPS'  => 'UPS_Online',
-        'USPS' => 'USPS_Online'
+        'UPS'          => 'UPS_Online',
+        'USPS'         => 'USPS_Online'
     );
-    $shipper = $old_to_new{ $shipper } if $old_to_new{ $shipper };
-    
+    $shipper = $old_to_new{$shipper} if $old_to_new{$shipper};
+
     return $shipper;
 }
-
 
 =head2 Business::Shipping->log_level()
 
@@ -506,29 +499,27 @@ Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.
 #
 #Private Method.
 #
-#Generates an object of a given subclass dynamically.  Will dynamically 'use' 
-#the corresponding module, unless runtime module loading has been disabled via 
+#Generates an object of a given subclass dynamically.  Will dynamically 'use'
+#the corresponding module, unless runtime module loading has been disabled via
 #the 'preload' option.
 #
 #=cut
 
-sub _new_subclass
-{
-    my ( $class, $subclass, %opt ) = @_;
-    
-    croak( "Error before _new_subclass was called: $@" ) if $@;
-    
+sub _new_subclass {
+    my ($class, $subclass, %opt) = @_;
+
+    croak("Error before _new_subclass was called: $@") if $@;
+
     my $new_class = $class . '::' . $subclass;
-    
-    if ( $Business::Shipping::RuntimeLoad )
-        { eval "use $new_class"; }
-        
-    croak( "Error when trying to use $new_class: \n\t$@" ) if $@;
-    
+
+    if ($Business::Shipping::RuntimeLoad) { eval "use $new_class"; }
+
+    croak("Error when trying to use $new_class: \n\t$@") if $@;
+
     my $new_sub_object = eval "$new_class->new()";
-    croak( "Failed to create new $new_class object.  Error: $@" ) if $@;
-    
-    return $new_sub_object;    
+    croak("Failed to create new $new_class object.  Error: $@") if $@;
+
+    return $new_sub_object;
 }
 
 # COMPAT: event_handlers()
@@ -539,27 +530,26 @@ sub _new_subclass
 #=cut
 #
 # We ignore the value of the key (whether STDERR, STDOUT, etc.),
-# because it would be a lot of work to set it up correctly, and 
+# because it would be a lot of work to set it up correctly, and
 # if a user is going to use the debug system, they would probably
 # be willing to upgrade to the most recent version.
 
-# The levels are in order from least to greatest, so as soon as 
+# The levels are in order from least to greatest, so as soon as
 # we get a match, we need to stop, because the lowest level (DEBUG)
 # will automatically include all of the greater levels.
-sub event_handlers
-{
-    my ( $self, $event_handlers_hash ) = @_;
-    
-    KEY: foreach my $key ( keys %$event_handlers_hash ) {
+sub event_handlers {
+    my ($self, $event_handlers_hash) = @_;
+
+KEY: foreach my $key (keys %$event_handlers_hash) {
         $key = uc $key;
-        foreach my $Log_Level ( @Business::Shipping::KLogging::Levels ) {
-            if ( $key eq $Log_Level ) {
-                Business::Shipping->log_level( $Log_Level );
+        foreach my $Log_Level (@Business::Shipping::KLogging::Levels) {
+            if ($key eq $Log_Level) {
+                Business::Shipping->log_level($Log_Level);
                 last KEY;
             }
         }
     }
-    
+
     return;
 }
 

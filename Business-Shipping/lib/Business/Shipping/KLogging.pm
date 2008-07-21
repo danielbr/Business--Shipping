@@ -27,7 +27,7 @@ use Carp;
 use Log::Log4perl;
 
 $Business::Shipping::KLogging::Current_Level = 'WARN';
-@Business::Shipping::KLogging::Levels = qw( DEBUG INFO WARN ERROR FATAL );
+@Business::Shipping::KLogging::Levels = qw(DEBUG INFO WARN ERROR FATAL);
 
 =head2 debug
 
@@ -54,14 +54,14 @@ config/log4perl.conf.
 =cut
 
 # Creates subs like the following:
-# 
+#
 # sub debug3 { _log( { priority => 'debug', prepend => 'debug3' }, @_ ); }
-BEGIN
-{
-    # Format:     
+BEGIN {
+
+    # Format:
     #   sub_name   priority:prepend_text
-    
-    my %subs = qw( 
+
+    my %subs = qw(
         debug      debug
         debug1     debug
         debug2     debug:debug2
@@ -82,20 +82,19 @@ BEGIN
         logwarn    logwarn
     );
     my @subs = sort keys %subs;
-    
+
 =head2 subs()
 
 Gives the name of all the subs that this module has.
 
 =cut
 
-    sub subs
-    {
-        return ( @subs, 'uneval' );
+    sub subs {
+        return (@subs, 'uneval');
     }
-    
-    while ( my ( $sub_name, $parameters ) = each %subs ) {
-        my ( $priority,$prepend ) = split( ':', $parameters );
+
+    while (my ($sub_name, $parameters) = each %subs) {
+        my ($priority, $prepend) = split(':', $parameters);
         $prepend = $prepend ? $prepend . '::' : '';
         eval "
             sub $sub_name 
@@ -127,7 +126,7 @@ Gives the name of all the subs that this module has.
     }
 }
 
-=head2 init( %opt )
+=head2 init
 
 Arguments:
 
@@ -155,31 +154,27 @@ once:
  
 =cut
 
-sub init
-{
-    my ( %opt ) = @_;
-    
-    my $file         = $opt{ file         };
-    my $caller_depth = $opt{ caller_depth };
-    my $once         = $opt{ once         };
-    
-    if ( not $file ) {
+sub init {
+    my (%opt) = @_;
+
+    my $file         = $opt{file};
+    my $caller_depth = $opt{caller_depth};
+    my $once         = $opt{once};
+
+    if (not $file) {
         carp "file arg required.";
         return;
     }
-    
-    if ( -f $file ) { 
-        if ( $once )
-          { Log::Log4perl::init_once( $file ); }
-        else 
-          { Log::Log4perl::init( $file ); }
+
+    if (-f $file) {
+        if   ($once) { Log::Log4perl::init_once($file); }
+        else         { Log::Log4perl::init($file); }
     }
-    else
-        { croak "Could not get log4perl config file: $file"; }
-        
+    else { croak "Could not get log4perl config file: $file"; }
+
     ${Log::Log4perl::caller_depth} = $caller_depth if $caller_depth;
-    
-    return;    
+
+    return;
 }
 
 =head2 _log
@@ -190,47 +185,48 @@ Automatically uses the package name and subroutine as the log4perl 'category'.
 
 =cut
 
-sub _log
-{
-    my ( $opt ) = shift;
-    
-    $opt->{ priority        } ||= 'debug';
-    $opt->{ prepend         } ||= '';
-    $opt->{ append          } ||= '';
-    $opt->{ call_lev        } ||= 1;
-    
-    if ( $opt->{ caller_depth_modifier } ) {
-        ${Log::Log4perl::caller_depth} += $opt->{ caller_depth_modifier };
-    }
- 
-    my ( $package, $filename, $line, $sub ) = caller( $opt->{ call_lev } );
+sub _log {
+    my ($opt) = shift;
 
-    $opt->{ caller_package  } = $package  if not defined $opt->{ caller_package  };
-    $opt->{ caller_filename } = $filename if not defined $opt->{ caller_filename };
-    $opt->{ caller_line     } = $line     if not defined $opt->{ caller_line     };
-    $opt->{ caller_sub      } = $sub      if not defined $opt->{ caller_sub      };
-    
-    my $category = $opt->{ prepend        } 
-                 . $opt->{ caller_package }
-                 . $opt->{ caller_sub     }
-                 . $opt->{ append         };
-    my $priority = $opt->{ priority       };
-    
-    my $logger   = Log::Log4perl->get_logger( $category );
-    
-    # TODO: Allow overrides.
-    # $logger->disable_all() if $Quiet.   
-    
-    my $return   = $logger->$priority( @_ );
-    
-    if ( $opt->{ caller_depth_modifier } ) {
-        ${Log::Log4perl::caller_depth} -= $opt->{ caller_depth_modifier };
+    $opt->{priority} ||= 'debug';
+    $opt->{prepend}  ||= '';
+    $opt->{append}   ||= '';
+    $opt->{call_lev} ||= 1;
+
+    if ($opt->{caller_depth_modifier}) {
+        ${Log::Log4perl::caller_depth} += $opt->{caller_depth_modifier};
     }
-    
-    return $return; 
+
+    my ($package, $filename, $line, $sub) = caller($opt->{call_lev});
+
+    $opt->{caller_package} = $package if not defined $opt->{caller_package};
+    $opt->{caller_filename} = $filename
+        if not defined $opt->{caller_filename};
+    $opt->{caller_line} = $line if not defined $opt->{caller_line};
+    $opt->{caller_sub}  = $sub  if not defined $opt->{caller_sub};
+
+    my $category
+        = $opt->{prepend}
+        . $opt->{caller_package}
+        . $opt->{caller_sub}
+        . $opt->{append};
+    my $priority = $opt->{priority};
+
+    my $logger = Log::Log4perl->get_logger($category);
+
+    # TODO: Allow overrides.
+    # $logger->disable_all() if $Quiet.
+
+    my $return = $logger->$priority(@_);
+
+    if ($opt->{caller_depth_modifier}) {
+        ${Log::Log4perl::caller_depth} -= $opt->{caller_depth_modifier};
+    }
+
+    return $return;
 }
 
-=head2 uneval( ... )
+=head2 uneval
 
 Takes any built-in object and returns the perl representation of it as a string
 of text.  It was copied from Interchange L<http://www.icdevgroup.org>, written 
@@ -238,18 +234,18 @@ by Mike Heins E<lt>F<mike@perusion.com>E<gt>.
 
 =cut
 
-sub uneval { 
-    my ( $self, $o ) = @_;        # recursive
-    my ( $r, $s, $i, $key, $value );
+sub uneval {
+    my ($self, $o) = @_;    # recursive
+    my ($r, $s, $i, $key, $value);
 
-    local($^W) = 0;
-    no warnings; #supress 'use of unitialized values'
-    
+    local ($^W) = 0;
+    no warnings;            #supress 'use of unitialized values'
+
     $r = ref $o;
     if (!$r) {
         $o =~ s/([\\"\$@])/\\$1/g;
         $s = '"' . $o . '"';
-    } 
+    }
     elsif ($r eq 'ARRAY') {
         $s = "[";
         foreach $i (0 .. $#$o) {
@@ -263,7 +259,7 @@ sub uneval {
             $s .= "'$key' => " . uneval($value) . ",";
         }
         $s .= "}";
-    } 
+    }
     else {
         $s = "'something else'";
     }

@@ -42,16 +42,16 @@ Default 'Package'.
 
 use Moose;
 extends 'Business::Shipping::Package';
-has 'container'  => (is => 'rw', default => undef    );
+has 'container'  => (is => 'rw', default => undef);
 has 'size'       => (is => 'rw', default => 'Regular');
-has 'machinable' => (is => 'rw', default => undef    );
+has 'machinable' => (is => 'rw', default => undef);
 has 'mail_type'  => (is => 'rw', default => 'Package');
-has 'ounces'     => (is => 'rw', default => '0.00'   );
-has 'pounds'     => (is => 'rw', default => '0.00'   );
-has 'width'      => (is => 'rw', default => ''       );
-has 'height'     => (is => 'rw', default => ''       );
-has 'length'     => (is => 'rw', default => ''       );
-has 'girth'      => (is => 'rw', default => ''       );
+has 'ounces'     => (is => 'rw', default => '0.00');
+has 'pounds'     => (is => 'rw', default => '0.00');
+has 'width'      => (is => 'rw', default => '');
+has 'height'     => (is => 'rw', default => '');
+has 'length'     => (is => 'rw', default => '');
+has 'girth'      => (is => 'rw', default => '');
 
 =head2 weight
 
@@ -60,17 +60,17 @@ ounces.
 
 =cut
 
-sub weight
-{
-    my ( $self, $in_weight ) = @_;
-    trace( '(' . uneval( \@_ ) . ')' );
-    
-    if ( $in_weight ) {
-        $self->set_lbs_oz( $in_weight );
+sub weight {
+    my ($self, $in_weight) = @_;
+    trace('(' . uneval(\@_) . ')');
+
+    if ($in_weight) {
+        $self->set_lbs_oz($in_weight);
     }
+
     # Convert back to 'weight' (i.e. one number) when returning.
     my $out_weight = $self->lbs_oz_to_weight;
-    
+
     return $out_weight;
 }
 
@@ -80,24 +80,24 @@ Set pounds and ounces.  Converts from fractional pounds.
 
 =cut
 
-sub set_lbs_oz
-{
-    my ( $self, $in_weight ) = @_;
-    
+sub set_lbs_oz {
+    my ($self, $in_weight) = @_;
+
     my $pounds = 0;
     my $ounces = 0;
-    
-    $pounds = int $in_weight ;
+
+    $pounds = int $in_weight;
     my $remainder = $in_weight - $pounds;
+
     # For some weights (e.g. 2.4), this is necessary.
     $remainder = 0 if $remainder < 0;
-    if ( $remainder ) {
+    if ($remainder) {
         $ounces = $remainder * 16;
-        $ounces = sprintf( "%1.0f", $ounces );
+        $ounces = sprintf("%1.0f", $ounces);
     }
-    $self->pounds( $pounds );
-    $self->ounces( $ounces );
-    
+    $self->pounds($pounds);
+    $self->ounces($ounces);
+
     return;
 }
 
@@ -107,17 +107,16 @@ Converts pounds + ounces to fractional weight.  Returns weight.
 ,
 =cut
 
-sub lbs_oz_to_weight
-{
-    my ( $self ) = @_;
-    
+sub lbs_oz_to_weight {
+    my ($self) = @_;
+
     trace '()';
-    
+
     my $pounds = $self->pounds || 0;
     my $ounces = $self->ounces || 0;
-    my $fractional_pounds = $ounces ? ($ounces / 16 ) : 0;
-    my $weight = ( $pounds + $fractional_pounds );
-    
+    my $fractional_pounds = $ounces ? ($ounces / 16) : 0;
+    my $weight = ($pounds + $fractional_pounds);
+
     return $weight;
 }
 

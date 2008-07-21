@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 Business::Shipping::Template::Shipment
@@ -18,15 +19,20 @@ use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;
-use base( 'Business::Shipping::Shipment' );
+use base('Business::Shipping::Shipment');
 use Business::Shipping::Config;
 
-use Class::MethodMaker 2.0
-    [ 
-      new    => [ { -hash => 1 },  'new' ],
-      array  => [ { -type => 'Business::Shipping::Template::Package' }, 'packages' ],      
-      scalar => [ { -static => 1, -default => 'packages=>Business::Shipping::Template::Package' }, 'Has_a' ],
-    ];
+use Class::MethodMaker 2.0 [
+    new => [{ -hash => 1 }, 'new'],
+    array =>
+        [{ -type => 'Business::Shipping::Template::Package' }, 'packages'],
+    scalar => [
+        {   -static  => 1,
+            -default => 'packages=>Business::Shipping::Template::Package'
+        },
+        'Has_a'
+    ],
+];
 
 1;
 

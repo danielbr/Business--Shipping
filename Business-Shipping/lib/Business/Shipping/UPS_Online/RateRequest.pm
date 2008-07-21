@@ -93,38 +93,27 @@ use Business::Shipping::Util;
 use XML::Simple 2.05;
 use Cache::FileCache;
 use LWP::UserAgent;
-use POSIX ( 'strftime' );
+use POSIX ('strftime');
 
 has 'shipment' => (
-    is => 'rw',
-    isa => 'Business::Shipping::UPS_Online::Shipment',
-    default   => sub { Business::Shipping::UPS_Online::Shipment->new() },
+    is      => 'rw',
+    isa     => 'Business::Shipping::UPS_Online::Shipment',
+    default => sub { Business::Shipping::UPS_Online::Shipment->new() },
     handles => [
-        'from_city',
-        'to_city', 
-        'from_country', 
-        'from_country_abbrev', 
-        'to_country', 
-        'to_ak_or_hi', 
-        'from_zip', 
-        'to_zip', 
-        'packages', 
-        'weight', 
-        'shipper', 
-        'domestic', 
-        'intl', 
-        'domestic_or_ca', 
-        'from_canada', 
-        'to_canada', 
-        'from_ak_or_hi', 
-        'packaging', 
-        'to_residential',
-        'cod', 'cod_funds_code', 'cod_value',
-        'signature_type',
-        'insured_currency_type', 'insured_value',
-        'service_code',
-        'service',
-        'service_name',
+        'from_city',      'to_city',
+        'from_country',   'from_country_abbrev',
+        'to_country',     'to_ak_or_hi',
+        'from_zip',       'to_zip',
+        'packages',       'weight',
+        'shipper',        'domestic',
+        'intl',           'domestic_or_ca',
+        'from_canada',    'to_canada',
+        'from_ak_or_hi',  'packaging',
+        'to_residential', 'cod',
+        'cod_funds_code', 'cod_value',
+        'signature_type', 'insured_currency_type',
+        'insured_value',  'service_code',
+        'service',        'service_name',
     ]
 );
 
@@ -141,70 +130,72 @@ has 'shipment' => (
 =cut
 
 has 'prod_url' => (
-    is => 'rw', 
-    isa => 'Str',
+    is      => 'rw',
+    isa     => 'Str',
     default => 'https://www.ups.com/ups.app/xml/Rate'
 );
 
 has 'test_url' => (
-    is => 'rw', 
-    isa => 'Str',
+    is      => 'rw',
+    isa     => 'Str',
     default => 'https://wwwcie.ups.com/ups.app/xml/Rate'
 );
 
 has 'access_key' => (is => 'rw');
 
-sub Required { return ( $_[ 0 ]->SUPER::Required, qw/ access_key / ); }
-sub Optional { return ( $_[ 0 ]->SUPER::Optional, qw/ test_server no_ssl to_city packaging signature_type 
-                                                      insured_currency_type insured_value / ); }
-sub Unique   { return ( $_[ 0 ]->SUPER::Unique,   qw/ packaging / ); }    
+sub Required { return ($_[0]->SUPER::Required, qw/ access_key /); }
 
-    
+sub Optional {
+    return (
+        $_[0]->SUPER::Optional,
+        qw/ test_server no_ssl to_city packaging signature_type
+            insured_currency_type insured_value /
+    );
+}
+sub Unique { return ($_[0]->SUPER::Unique, qw/ packaging /); }
+
 =head2 from_state()
 
 Ignored.  For compatibility with UPS_Offline only.
 
 =cut
 
-sub from_state {}
+sub from_state { }
 
 =head2 pickup_type
 
 =cut
 
-sub pickup_type
-{
-    my ( $self ) = @_;
-    $self->{ 'pickup_type' } = shift if @_;
-    
+sub pickup_type {
+    my ($self) = @_;
+    $self->{'pickup_type'} = shift if @_;
+
     # Translate alphas to numeric.
-    my $alpha = 1 if ( $self->{ 'pickup_type' } =~ /\w+/ );
-    if ( $alpha ) { 
+    my $alpha = 1 if ($self->{'pickup_type'} =~ /\w+/);
+    if ($alpha) {
         my %pickup_type_map = (
-            'daily pickup'       => '01', 
-            'customer counter'   => '03', 
-            'one time pickup'    => '06',  
-            'on call air'        => '07',  
-            'letter center'      => '19',  
-            'air service center' => '20', 
+            'daily pickup'       => '01',
+            'customer counter'   => '03',
+            'one time pickup'    => '06',
+            'on call air'        => '07',
+            'letter center'      => '19',
+            'air service center' => '20',
         );
-        $self->{ 'pickup_type' } = $pickup_type_map{ $self->{ 'pickup_type' } } 
-            if $pickup_type_map{ $self->{ 'pickup_type' } }
-            or $pickup_type_map{ lc( $self->{ 'pickup_type' } ) };
+        $self->{'pickup_type'} = $pickup_type_map{ $self->{'pickup_type'} }
+            if $pickup_type_map{ $self->{'pickup_type'} }
+                or $pickup_type_map{ lc($self->{'pickup_type'}) };
     }
 
-    return $self->{ 'pickup_type' };
+    return $self->{'pickup_type'};
 }
 
 =head2 _massage_values
 
 =cut
 
-sub _massage_values
-{
-    trace( 'called' );
-    my ( $self ) = @_;
-    
+sub _massage_values {
+    trace('called');
+    my ($self) = @_;
 
     $self->shipment->massage_values;
     return;
@@ -216,148 +207,168 @@ Generate the XML document.
 
 =cut
 
-sub _gen_request_xml
-{
-    debug( 'called' );
-    my ( $self ) = shift;
+sub _gen_request_xml {
+    debug('called');
+    my ($self) = shift;
 
-    logdie "No packages defined internally." unless ref $self->shipment->packages();
-    foreach my $package ( @{$self->shipment->packages()} ) {
+    logdie "No packages defined internally."
+        unless ref $self->shipment->packages();
+    foreach my $package (@{ $self->shipment->packages() }) {
+
         #print "package $package\n";
     }
-        
+
     my $access_tree = {
         'AccessRequest' => [
-            {
-                'xml:lang' => 'en-US', 
-                'AccessLicenseNumber' => [ $self->access_key() ], 
-                'UserId' => [ $self->user_id() ], 
-                'Password' => [ $self->password() ], 
+            {   'xml:lang'            => 'en-US',
+                'AccessLicenseNumber' => [$self->access_key()],
+                'UserId'              => [$self->user_id()],
+                'Password'            => [$self->password()],
             }
         ]
     };
-    
+
     my $service = $self->shipment->service() || '';
     my $service_code = $self->shipment->service_code()
         or logdie "Could not get service_code for service '$service'";
+
     # 'Shipment' will be embedded in the $request_tree
     # It was broken out to reduce nesting.
     my %shipment_tree = (
-        'Shipper' => [ {
-            'Address' => [ {
-                'CountryCode' => [ $self->from_country_abbrev() ], 
-                'PostalCode' => [ $self->from_zip() ], 
-            } ], 
-        } ], 
-        'ShipTo' => [ {
-            'Address' => [ {
-                'ResidentialAddress'     => [ $self->to_residential()     ], 
-                'CountryCode'             => [ $self->to_country_abbrev()    ], 
-                'PostalCode'             => [ $self->to_zip()             ], 
-                'City'                    => [ $self->to_city()             ], 
-            } ], 
-        } ], 
-        'Service' => [ {
-            'Code' => [ $service_code ], 
-        } ], 
-        'ShipmentServiceSelfOptions' => { }, 
+        'Shipper' => [
+            {   'Address' => [
+                    {   'CountryCode' => [$self->from_country_abbrev()],
+                        'PostalCode'  => [$self->from_zip()],
+                    }
+                ],
+            }
+        ],
+        'ShipTo' => [
+            {   'Address' => [
+                    {   'ResidentialAddress' => [$self->to_residential()],
+                        'CountryCode'        => [$self->to_country_abbrev()],
+                        'PostalCode'         => [$self->to_zip()],
+                        'City'               => [$self->to_city()],
+                    }
+                ],
+            }
+        ],
+        'Service'                    => [{ 'Code' => [$service_code], }],
+        'ShipmentServiceSelfOptions' => {},
     );
-    
+
     my $shipment = $self->shipment;
-    
+
     my @packages;
-    foreach my $package ( $shipment->packages() ) {
-        
+    foreach my $package ($shipment->packages()) {
+
         my %package_service_options;
-        
-        if ( $shipment->cod ) {
+
+        if ($shipment->cod) {
             %package_service_options = (
-                'PackageServiceOptions' => [ {
-                    'COD' => [ {
-                        'CODFundsCode' => [ $shipment->cod_funds_code ],
-                        'CODCode' => [ 3 ], # Only valid value is 3
-                        'CODAmount'=> [ {
-                            'CurrencyCode' => [ 'USD' ],
-                            'MonetaryValue' => [ $shipment->cod_value() ],
-                        } ],
-                    }],
-                } ],
+                'PackageServiceOptions' => [
+                    {   'COD' => [
+                            {   'CODFundsCode' => [$shipment->cod_funds_code],
+                                'CODCode'   => [3],    # Only valid value is 3
+                                'CODAmount' => [
+                                    {   'CurrencyCode' => ['USD'],
+                                        'MonetaryValue' =>
+                                            [$shipment->cod_value()],
+                                    }
+                                ],
+                            }
+                        ],
+                    }
+                ],
             );
         }
-        
-        ### If signature_type was defined and origin = dest = US
-        if( defined($package->signature_type()) && 
-            (!defined($self->to_country_abbrev()) || $self->to_country_abbrev() eq 'US') &&
-            (!defined($self->from_country_abbrev()) || $self->from_country_abbrev() eq 'US') )
-        {
-            if( !exists($package_service_options{PackageServiceOptions}) )
-            {
-                $package_service_options{PackageServiceOptions} = [ { } ];
-            }
-            
-            $package_service_options{PackageServiceOptions}[0]{DeliveryConfirmation} =  [ { DCISType => [ $package->signature_type() ] } ];
-        } # if signature
-        
-        ### If insured_value was defined
-        if( defined($package->insured_value()) )
-        {
-            if( !exists($package_service_options{PackageServiceOptions}) )
-            {
-                $package_service_options{PackageServiceOptions} = [ { } ];
-            }
-            
-            my $currCode = (defined($package->insured_currency_type())) ? $package->insured_currency_type() : 'USD';
-            $package_service_options{PackageServiceOptions}[0]{InsuredValue} =  [ { CurrencyCode => [ $currCode ],
-                                                                                    MonetaryValue => [ $package->insured_value() ], } ];
-        } # if signature
-        
-        push( @packages, {
 
-                'PackagingType' => [ {
-                    'Code' => [ $package->packaging() ], 
-                    'Description' => [ 'Package' ], 
-                } ], 
-                
-                'Description' => [ 'Rate Lookup' ], 
-                'PackageWeight' => [ {
-                    'Weight' => [ $package->weight() ], 
-                } ],
-                
+        ### If signature_type was defined and origin = dest = US
+        if (defined($package->signature_type())
+            && (!defined($self->to_country_abbrev())
+                || $self->to_country_abbrev() eq 'US')
+            && (!defined($self->from_country_abbrev())
+                || $self->from_country_abbrev() eq 'US')
+            )
+        {
+            if (!exists($package_service_options{PackageServiceOptions})) {
+                $package_service_options{PackageServiceOptions} = [{}];
+            }
+
+            $package_service_options{PackageServiceOptions}[0]
+                {DeliveryConfirmation}
+                = [{ DCISType => [$package->signature_type()] }];
+        }    # if signature
+
+        ### If insured_value was defined
+        if (defined($package->insured_value())) {
+            if (!exists($package_service_options{PackageServiceOptions})) {
+                $package_service_options{PackageServiceOptions} = [{}];
+            }
+
+            my $currCode
+                = (defined($package->insured_currency_type()))
+                ? $package->insured_currency_type()
+                : 'USD';
+            $package_service_options{PackageServiceOptions}[0]{InsuredValue}
+                = [
+                {   CurrencyCode  => [$currCode],
+                    MonetaryValue => [$package->insured_value()],
+                }
+                ];
+        }    # if signature
+
+        push(
+            @packages,
+            {
+
+                'PackagingType' => [
+                    {   'Code'        => [$package->packaging()],
+                        'Description' => ['Package'],
+                    }
+                ],
+
+                'Description'   => ['Rate Lookup'],
+                'PackageWeight' => [{ 'Weight' => [$package->weight()], }],
+
                 %package_service_options
- 	      }, );
+            },
+        );
     }
-    $shipment_tree{Package} = \@packages if( @packages > 0 );
-    
-    my $req_option = ucfirst $shipment->service if ucfirst $shipment->service eq 'Shop';
-    
+    $shipment_tree{Package} = \@packages if (@packages > 0);
+
+    my $req_option = ucfirst $shipment->service
+        if ucfirst $shipment->service eq 'Shop';
+
     my $request_tree = {
-        'RatingServiceSelectionRequest' => [ { 
-            'Request' => [ {
-                'TransactionReference' => [ {
-                    'CustomerContext' => [ 'Rating and Service' ], 
-                    'XpciVersion' => [ 1.0001 ],   
-                } ], 
-                'RequestAction' => [ 'Rate' ], 
-                'RequestOption' => [ $req_option ], 
-            } ], 
-            'PickupType' => [ {
-                'Code' => [ '01' ]
-            } ], 
-            'Shipment' => [ {
-                %shipment_tree
-            } ]
-        } ]
+        'RatingServiceSelectionRequest' => [
+            {   'Request' => [
+                    {   'TransactionReference' => [
+                            {   'CustomerContext' => ['Rating and Service'],
+                                'XpciVersion'     => [1.0001],
+                            }
+                        ],
+                        'RequestAction' => ['Rate'],
+                        'RequestOption' => [$req_option],
+                    }
+                ],
+                'PickupType' => [{ 'Code' => ['01'] }],
+                'Shipment'   => [{%shipment_tree}]
+            }
+        ]
     };
 
-    my $access_xml = '<?xml version="1.0"?>' . "\n" 
-        . XML::Simple::XMLout( $access_tree,  KeepRoot => 1 );
+    my $access_xml = '<?xml version="1.0"?>' . "\n"
+        . XML::Simple::XMLout($access_tree, KeepRoot => 1);
 
-    my $request_xml = $access_xml . "\n" . '<?xml version="1.0"?>' . "\n"
-        . XML::Simple::XMLout( $request_tree,  KeepRoot => 1 );
-    
-    debug( $request_xml );
-    
-    return ( $request_xml );
+    my $request_xml
+        = $access_xml . "\n"
+        . '<?xml version="1.0"?>' . "\n"
+        . XML::Simple::XMLout($request_tree, KeepRoot => 1);
+
+    debug($request_xml);
+
+    return ($request_xml);
 }
 
 =head2 _handle_response
@@ -375,172 +386,187 @@ Adds the following keys to each error:
 			  
 =cut
 
-sub _handle_response
-{
+sub _handle_response {
+
     #trace '()';
-    my ( $self ) = @_;
-    
-    my $response_tree = XML::Simple::XMLin( 
-        $self->response()->content(),  
-        ForceArray => 0,  
-        KeepRoot => 0,  
+    my ($self) = @_;
+
+    my $response_tree = XML::Simple::XMLin(
+        $self->response()->content(),
+        ForceArray => 0,
+        KeepRoot   => 0,
     );
-    
+
     #use Data::Dumper; debug3("response = " . Dumper($response_tree));
-    
+
     my $status_code = $response_tree->{Response}->{ResponseStatusCode};
-    my $status_description = $response_tree->{Response}->{ResponseStatusDescription};
-    
+    my $status_description
+        = $response_tree->{Response}->{ResponseStatusDescription};
+
     ### If there is an error
-    if( exists($response_tree->{Response}->{Error}) ) {
-	### Lets work on an array, since there could be more than one
-	my $errors = (ref( $response_tree->{Response}->{Error} ) eq 'ARRAY') 
-	              ? $response_tree->{Response}->{Error} 
-	              : [ $response_tree->{Response}->{Error} ];
-	
-	### Loop through the errors, gathering the details and 
-	### create a simple error message string
-	my (@errorDetails, $errorMsg);
-	foreach my $errorHash (@$errors) {
-	    ### Get some of the error details
-	    my $severity = $errorHash->{ErrorSeverity};
-	    my $code = $errorHash->{ErrorCode};
-	    my $error = $errorHash->{ErrorDescription};
-	    my $retry_secs = $errorHash->{MinimumRetrySeconds};
-	    my @err_locations = ();
-	    my @err_contents = ();
-	    my $err_location = '';
-	    
-        # If it's a warning, ignore.
-        next if $severity eq 'Warning';
-        
-	    ### Check if the error location was given
-	    if( exists($errorHash->{ErrorLocation}) ) {
-            ### There could be more than one
-            my $locations = (ref $errorHash->{ErrorLocation} eq 'ARRAY')
-		                 ? $errorHash->{ErrorLocation}
-		                 : [ $errorHash->{ErrorLocation} ];
-            foreach my $location (@$locations) {
-                my ($elem, $attrib) = ($location->{ErrorLocationElementName},
-                           $location->{ErrorLocationAttributeName},);
-                $err_location = $elem if( !defined($err_location) || $err_location eq '' );
-                push( @err_locations, { element => $elem, attribute => $attrib } );
+    if (exists($response_tree->{Response}->{Error})) {
+        ### Lets work on an array, since there could be more than one
+        my $errors
+            = (ref($response_tree->{Response}->{Error}) eq 'ARRAY')
+            ? $response_tree->{Response}->{Error}
+            : [$response_tree->{Response}->{Error}];
+
+        ### Loop through the errors, gathering the details and
+        ### create a simple error message string
+        my (@errorDetails, $errorMsg);
+        foreach my $errorHash (@$errors) {
+            ### Get some of the error details
+            my $severity      = $errorHash->{ErrorSeverity};
+            my $code          = $errorHash->{ErrorCode};
+            my $error         = $errorHash->{ErrorDescription};
+            my $retry_secs    = $errorHash->{MinimumRetrySeconds};
+            my @err_locations = ();
+            my @err_contents  = ();
+            my $err_location  = '';
+
+            # If it's a warning, ignore.
+            next if $severity eq 'Warning';
+
+            ### Check if the error location was given
+            if (exists($errorHash->{ErrorLocation})) {
+                ### There could be more than one
+                my $locations
+                    = (ref $errorHash->{ErrorLocation} eq 'ARRAY')
+                    ? $errorHash->{ErrorLocation}
+                    : [$errorHash->{ErrorLocation}];
+                foreach my $location (@$locations) {
+                    my ($elem, $attrib) = (
+                        $location->{ErrorLocationElementName},
+                        $location->{ErrorLocationAttributeName},
+                    );
+                    $err_location = $elem
+                        if (!defined($err_location) || $err_location eq '');
+                    push(@err_locations,
+                        { element => $elem, attribute => $attrib });
+                }
             }
-	    }
 
-	    ### Check if the contents of the element in error was given
-	    if( exists($errorHash->{ErrorDigest}) ) {
-            ### There could be more than one
-            my $digests = (ref $errorHash->{ErrorDigest} eq 'ARRAY')
-                           ? $errorHash->{ErrorDigest}
-                           : [ $errorHash->{ErrorDigest} ];
-            foreach my $digest (@$digests) {
-                push( @err_contents, $digest );
+            ### Check if the contents of the element in error was given
+            if (exists($errorHash->{ErrorDigest})) {
+                ### There could be more than one
+                my $digests
+                    = (ref $errorHash->{ErrorDigest} eq 'ARRAY')
+                    ? $errorHash->{ErrorDigest}
+                    : [$errorHash->{ErrorDigest}];
+                foreach my $digest (@$digests) {
+                    push(@err_contents, $digest);
+                }
             }
-	    }
 
-	    push( @errorDetails, { error_code => $code,
-				   error_msg => $error,
-				   error_severity => $severity,
-				   minimum_retry_seconds => $retry_secs,
-				   locations => \@err_locations,
-				   error_data => \@err_contents } );
-	    
-	    if ( !defined($errorMsg) && $error and $error !~ /Success/ ) {
-            my $combined_error_msg = "$status_description ($status_code): $error @ $err_location"; 
-            $combined_error_msg =~ s/\s{3, }/ /g;
-            $errorMsg = $combined_error_msg;
-	    }
-	} # foreach error
+            push(
+                @errorDetails,
+                {   error_code            => $code,
+                    error_msg             => $error,
+                    error_severity        => $severity,
+                    minimum_retry_seconds => $retry_secs,
+                    locations             => \@err_locations,
+                    error_data            => \@err_contents
+                }
+            );
 
-	### Store the error message and details in the object
-	$self->user_error( $errorMsg );
-	$self->error_details( @errorDetails );
-	
-	### Status code is 1 on success and 0 on failure.
-	### Return, only if status code is 0
-	return $self->is_success(0) if( !$status_code );
+            if (!defined($errorMsg) && $error and $error !~ /Success/) {
+                my $combined_error_msg
+                    = "$status_description ($status_code): $error @ $err_location";
+                $combined_error_msg =~ s/\s{3, }/ /g;
+                $errorMsg = $combined_error_msg;
+            }
+        }    # foreach error
 
-    } # if there is an error
+        ### Store the error message and details in the object
+        $self->user_error($errorMsg);
+        $self->error_details(@errorDetails);
+
+        ### Status code is 1 on success and 0 on failure.
+        ### Return, only if status code is 0
+        return $self->is_success(0) if (!$status_code);
+
+    }    # if there is an error
 
     my @services_results;
     my $ups_results;
-    
-    if ( $self->service_name and $self->service_name eq 'Shop' ) {
-        if ( ref $response_tree->{ RatedShipment } ne 'ARRAY' ) {
-            $self->user_error( "UPS did not return shopped services" );
-            return $self->clear_is_success(); 
+
+    if ($self->service_name and $self->service_name eq 'Shop') {
+        if (ref $response_tree->{RatedShipment} ne 'ARRAY') {
+            $self->user_error("UPS did not return shopped services");
+            return $self->clear_is_success();
         }
-        $ups_results = $response_tree->{ RatedShipment };
+        $ups_results = $response_tree->{RatedShipment};
     }
     else {
-        # UPS doesn't provide an array for only one shipment,  so lets make one.
-        $ups_results = [ $response_tree->{ RatedShipment } ];
+
+      # UPS doesn't provide an array for only one shipment,  so lets make one.
+        $ups_results = [$response_tree->{RatedShipment}];
     }
-    
+
     #use Data::Dumper;
     #debug2 "ups_results = " . Dumper( $ups_results );
-    
-    foreach my $ups_rate_info ( @$ups_results ) {
-        
-        my $service_code = $ups_rate_info->{ Service }->{ Code };
-        my $charges      = $ups_rate_info->{ TotalCharges }->{ MonetaryValue };
-        my $deliv_days   = $ups_rate_info->{ GuaranteedDaysToDelivery };
-        
+
+    foreach my $ups_rate_info (@$ups_results) {
+
+        my $service_code = $ups_rate_info->{Service}->{Code};
+        my $charges      = $ups_rate_info->{TotalCharges}->{MonetaryValue};
+        my $deliv_days   = $ups_rate_info->{GuaranteedDaysToDelivery};
+
         # When there is no deliv_days,  XML::Simple sets it to an empty hash.
-        
+
         $deliv_days = undef if ref $deliv_days eq 'HASH';
         my $deliv_date;
         my $deliv_date_formatted;
-        
-        if ( $deliv_days ) {
-            
-            # This code is more elegant, but we're reducing the number of required modules.
-            #
-            #use DateTime;
-            #my $dt = DateTime->now;
-            #$dt->add( DateTime::Duration->new( days => $deliv_days ) );
-            #$deliv_date = $dt->ymd;
-            
-            my @deliv_date = localtime( time + ( $deliv_days * 86400 ) );
-            $deliv_date = strftime "%Y-%m-%d", @deliv_date;
+
+        if ($deliv_days) {
+
+# This code is more elegant, but we're reducing the number of required modules.
+#
+#use DateTime;
+#my $dt = DateTime->now;
+#$dt->add( DateTime::Duration->new( days => $deliv_days ) );
+#$deliv_date = $dt->ymd;
+
+            my @deliv_date = localtime(time + ($deliv_days * 86400));
+            $deliv_date           = strftime "%Y-%m-%d",  @deliv_date;
             $deliv_date_formatted = strftime "%a, %b %e", @deliv_date;
         }
-        
+
         my $service_hash = {
-            code       => $service_code, 
-            nick       => $self->shipment->service_code_to_nick( $service_code ), 
-            name       => $self->shipment->service_code_to_name( $service_code ), 
-            deliv_days => $deliv_days, 
-            deliv_date => $deliv_date, 
-            charges    => $charges, 
-            charges_formatted    => Business::Shipping::Util::currency( {},  $charges ),
+            code => $service_code,
+            nick => $self->shipment->service_code_to_nick($service_code),
+            name => $self->shipment->service_code_to_name($service_code),
+            deliv_days => $deliv_days,
+            deliv_date => $deliv_date,
+            charges    => $charges,
+            charges_formatted =>
+                Business::Shipping::Util::currency({}, $charges),
             deliv_date_formatted => $deliv_date_formatted,
         };
-        
-        push @services_results,  $service_hash;
+
+        push @services_results, $service_hash;
     }
-    
-    return $self->clear_is_success() unless ( @services_results );
-    
+
+    return $self->clear_is_success() unless (@services_results);
+
     # Just in case.
-    
-    for ( 'shipper',  'service' ) {
-        if ( ! $self->shipment->$_() ) {
-            $self->shipment->$_( 'Unknown' );
+
+    for ('shipper', 'service') {
+        if (!$self->shipment->$_()) {
+            $self->shipment->$_('Unknown');
         }
     }
-    
+
     my $results = [
-        {
-            name  => $self->shipper(),  
-            rates => \@services_results, 
+        {   name  => $self->shipper(),
+            rates => \@services_results,
         }
     ];
+
     #debug3 'results = ' . uneval(  $results );
-    $self->results( $results );
-    
-    return $self->is_success( 1 );
+    $self->results($results);
+
+    return $self->is_success(1);
 }
 
 =head2 to_country_abbrev()
@@ -552,18 +578,19 @@ Redefines attribute.
 
 =cut
 
-sub to_country_abbrev
-{
-    my ( $self ) = @_;
-    
+sub to_country_abbrev {
+    my ($self) = @_;
+
     return unless $self->to_country;
-    
+
     # Do the UPS translations
-    
-    my $online_ups_country_to_abbrev = cfg()->{ ups_information }->{ online_ups_country_to_abbrev };
-    my $countries = config_to_hash( $online_ups_country_to_abbrev );
-    my $to_country_abbrev = $countries->{ $self->to_country } || $self->shipment->to_country_abbrev();
-    
+
+    my $online_ups_country_to_abbrev
+        = cfg()->{ups_information}->{online_ups_country_to_abbrev};
+    my $countries         = config_to_hash($online_ups_country_to_abbrev);
+    my $to_country_abbrev = $countries->{ $self->to_country }
+        || $self->shipment->to_country_abbrev();
+
     return $to_country_abbrev || $self->to_country;
 }
 

@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 Business::Shipping::Util - Miscellaneous functions
@@ -21,7 +22,7 @@ use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;
-use base ( 'Exporter' );
+use base ('Exporter');
 use Data::Dumper;
 use Business::Shipping::Logging;
 use Carp;
@@ -37,14 +38,13 @@ only locale supported is USD).
 
 =cut
 
-sub currency
-{
-    my ( $opt, $amount ) = @_;
-    
+sub currency {
+    my ($opt, $amount) = @_;
+
     return unless $amount;
-    $amount = sprintf( "%.2f", $amount );
-    $amount = "\$$amount" unless $opt->{ no_format };
-    
+    $amount = sprintf("%.2f", $amount);
+    $amount = "\$$amount" unless $opt->{no_format};
+
     return $amount;
 }
 
@@ -54,16 +54,15 @@ Removes duplicates (but leaves at least one).
 
 =cut
 
-sub unique
-{
-    my ( @ary ) = @_;
-    
+sub unique {
+    my (@ary) = @_;
+
     my %seen;
     my @unique;
-    foreach my $item ( @ary ) {
-        push( @unique, $item ) unless $seen{ $item }++;
+    foreach my $item (@ary) {
+        push(@unique, $item) unless $seen{$item}++;
     }
-    
+
     return @unique;
 }
 
@@ -75,15 +74,18 @@ Not part of the normal copyright.
 =cut
 
 sub looks_like_number {
-  local $_ = shift;
+    local $_ = shift;
 
-  # checks from perlfaq4
-  return $] < 5.009002 unless defined;
-  return 1 if (/^[+-]?\d+$/); # is a +/- integer
-  return 1 if (/^([+-]?)(?=\d|\.\d)\d*(\.\d*)?([Ee]([+-]?\d+))?$/); # a C float
-  return 1 if ($] >= 5.008 and /^(Inf(inity)?|NaN)$/i) or ($] >= 5.006001 and /^Inf$/i);
+    # checks from perlfaq4
+    return $] < 5.009002 unless defined;
+    return 1 if (/^[+-]?\d+$/);    # is a +/- integer
+    return 1
+        if (/^([+-]?)(?=\d|\.\d)\d*(\.\d*)?([Ee]([+-]?\d+))?$/);   # a C float
+    return 1
+        if ($] >= 5.008 and /^(Inf(inity)?|NaN)$/i)
+        or ($] >= 5.006001 and /^Inf$/i);
 
-  0;
+    0;
 }
 
 1;

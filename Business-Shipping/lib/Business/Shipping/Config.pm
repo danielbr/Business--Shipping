@@ -18,30 +18,30 @@ Config::IniFiles module.
 =cut
 
 use constant DEFAULT_CONFIG_DIR => '/usr/local/B_Shipping/config';
+
 #use constant DEFAULT_CONFIG_DIR => '~_~DEFAULT_CONFIG_DIR~_~';
 
 use constant DEFAULT_DATA_DIR => '/usr/local/B_Shipping/data';
-#use constant DEFAULT_DATA_DIR => '~_~DEFAULT_DATA_DIR~_~';
 
+#use constant DEFAULT_DATA_DIR => '~_~DEFAULT_DATA_DIR~_~';
 
 use version; our $VERSION = qv('2.2.0');
 @EXPORT = qw/ cfg cfg_obj config_to_hash config_to_ary_of_hashes /;
 
 use strict;
 use warnings;
-use base ( 'Exporter' );
+use base ('Exporter');
 use Config::IniFiles;
 use Business::Shipping::Logging;
 use Carp;
 use Cwd;
 
-$Business::Shipping::Config::config_dir = '';
-$Business::Shipping::Config::data_dir = '';
-$Business::Shipping::Config::main_config_file = '';
+$Business::Shipping::Config::config_dir             = '';
+$Business::Shipping::Config::data_dir               = '';
+$Business::Shipping::Config::main_config_file       = '';
 $Business::Shipping::Config::data_dir_test_filename = 'this_is_the_data_dir';
 
-sub data_dir_test_filename
-{
+sub data_dir_test_filename {
     return $Business::Shipping::Config::data_dir_test_filename;
 }
 
@@ -53,7 +53,8 @@ if (-f './data/' . data_dir_test_filename()) {
     $Business::Shipping::Config::data_dir = './data';
 }
 elsif (-f '../Business-Shipping-DataFiles/data/' . data_dir_test_filename()) {
-    $Business::Shipping::Config::data_dir = '../Business-Shipping-DataFiles/data/';
+    $Business::Shipping::Config::data_dir
+        = '../Business-Shipping-DataFiles/data/';
 }
 
 # Then try environment variables
@@ -65,15 +66,15 @@ $Business::Shipping::Config::data_dir   ||= DEFAULT_DATA_DIR;
 $Business::Shipping::Config::config_dir ||= DEFAULT_CONFIG_DIR;
 
 my $cwd = Cwd::getcwd;
-die "Config dir could not be found.  Current working dir: $cwd." 
-    if (! -d $Business::Shipping::Config::config_dir);
-die "Data dir could not be found.  Current working dir: $cwd." 
-    if (! -d $Business::Shipping::Config::config_dir);
+die "Config dir could not be found.  Current working dir: $cwd."
+    if (!-d $Business::Shipping::Config::config_dir);
+die "Data dir could not be found.  Current working dir: $cwd."
+    if (!-d $Business::Shipping::Config::config_dir);
 
 $Business::Shipping::Config::main_config_file
     = "$Business::Shipping::Config::config_dir/config.ini";
 
-if (! -f $Business::Shipping::Config::main_config_file) {
+if (!-f $Business::Shipping::Config::main_config_file) {
     die "Could not open main configuration file: "
         . "$Business::Shipping::Config::main_config_file: $!";
 }
@@ -81,12 +82,10 @@ if (! -f $Business::Shipping::Config::main_config_file) {
 # Number of times to try for online requrests.  See Online.pm.
 $Business::Shipping::Config::Try_Limit = 2;
 
-tie my %cfg, 'Config::IniFiles', (
-    -file => $Business::Shipping::Config::main_config_file 
-);
+tie my %cfg, 'Config::IniFiles',
+    (-file => $Business::Shipping::Config::main_config_file);
 my $cfg_obj = Config::IniFiles->new(
-    -file => $Business::Shipping::Config::main_config_file 
-);
+    -file => $Business::Shipping::Config::main_config_file);
 
 =head2 cfg()
 
@@ -102,9 +101,9 @@ Returns the path of the support_files directory.
 
 =cut
 
-sub cfg        { return \%cfg;                 }
-sub cfg_obj    { return $cfg_obj;              }
-sub data_dir   { return $Business::Shipping::Config::data_dir   }
+sub cfg        { return \%cfg; }
+sub cfg_obj    { return $cfg_obj; }
+sub data_dir   { return $Business::Shipping::Config::data_dir }
 sub config_dir { return $Business::Shipping::Config::config_dir }
 
 =head2 config_to_hash( $ary, $del )
@@ -123,16 +122,16 @@ Builds a hash from an array of lines containing key / value pairs, like so:
 sub config_to_hash {
     my ($ary, $delimiter) = @_;
     return unless $ary and ref($ary) eq 'ARRAY';
-    
+
     $delimiter ||= "\t";
     my $hash = {};
-    
+
     foreach my $line (@$ary) {
         my ($key, $val) = split($delimiter, $line);
         $hash->{$key} = $val;
     }
-    
-    return $hash;    
+
+    return $hash;
 }
 
 =head2 config_to_ary_of_hashes( 'configuration_parameter' )
@@ -171,23 +170,24 @@ Returns this:
 =cut
 
 sub config_to_ary_of_hashes {
-    my ( $cfg ) = @_;
-        
+    my ($cfg) = @_;
+
     my @ary;
     foreach my $line (@$cfg) {
+
         # Convert multiple tabs into one tab, remove the leading tab.
         # Split on the tabs to get key=val pairs, then split on the '='.
         $line =~ s/\t+/\t/g;
         $line =~ s/^\t//;
-        my @key_val_pairs = split( "\t", $line );
+        my @key_val_pairs = split("\t", $line);
         next unless @key_val_pairs;
 
         # Each line becomes a hash.
         my $hash = {};
-        foreach my $key_val_pair ( @key_val_pairs ) {
-            my ( $key, $val ) = split( '=', $key_val_pair );
-            next unless ( defined $key and defined $val );
-            $hash->{ $key } = $val;
+        foreach my $key_val_pair (@key_val_pairs) {
+            my ($key, $val) = split('=', $key_val_pair);
+            next unless (defined $key and defined $val);
+            $hash->{$key} = $val;
         }
 
         push @ary, $hash if (%$hash);
@@ -203,6 +203,7 @@ The name of the data_dir (e.g. "data").
 =cut
 
 sub data_dir_name {
+
     # name only.
     return cfg()->{general}->{data_dir_name} || 'data';
 }
@@ -223,38 +224,42 @@ shipper is given.
 sub get_req_mod {
     my (%opt) = @_;
     my $shipper = $opt{shipper};
-    
+
     my $req_mod = {
-        'Minimum' => [qw/
-            Moose
-            Log::Log4perl
-            Business::Shipping
-            /
+        'Minimum' => [
+            qw/
+                Moose
+                Log::Log4perl
+                Business::Shipping
+                /
         ],
-        'UPS_Offline' => [qw/
-            Business::Shipping::DataFiles
-            Config::IniFiles
-            /
+        'UPS_Offline' => [
+            qw/
+                Business::Shipping::DataFiles
+                Config::IniFiles
+                /
         ],
-        'UPS_Online' => [qw/
-            Cache::FileCache
-            Crypt::SSLeay
-            Date::Parse
-            LWP::UserAgent
-            XML::DOM
-            XML::Simple
-            / 
+        'UPS_Online' => [
+            qw/
+                Cache::FileCache
+                Crypt::SSLeay
+                Date::Parse
+                LWP::UserAgent
+                XML::DOM
+                XML::Simple
+                /
         ],
-        'USPS_Online' => [qw/
-            Cache::FileCache
-            Crypt::SSLeay
-            Date::Parse
-            LWP::UserAgent
-            XML::DOM
-            XML::Simple
-            /
+        'USPS_Online' => [
+            qw/
+                Cache::FileCache
+                Crypt::SSLeay
+                Date::Parse
+                LWP::UserAgent
+                XML::DOM
+                XML::Simple
+                /
         ],
-            
+
     };
     if ($opt{get_hash}) {
         return $req_mod;
@@ -281,10 +286,9 @@ Determine if the required modules for each shipper are available, in turn.
 
 sub calc_req_mod {
     my ($one_shipper) = @_;
-    
+
     my @avail;
     my $req_mod = get_req_mod(get_hash => 1);
-    
 
     if ($one_shipper) {
         foreach my $shipper (keys %$req_mod) {
@@ -294,12 +298,13 @@ sub calc_req_mod {
         }
     }
     my @to_load;
-    SHIPPER: while (my ($shipper, $list) = each %$req_mod) {
+SHIPPER: while (my ($shipper, $list) = each %$req_mod) {
         @to_load = ();
-        MODULE: foreach my $module (@$list) {
+    MODULE: foreach my $module (@$list) {
             eval "use $module";
             if ($@) {
                 $@ = '';
+
                 # "Could not load $module";
                 next SHIPPER;
             }
@@ -308,7 +313,7 @@ sub calc_req_mod {
                 next MODULE;
             }
         }
-        if (! $@) {
+        if (!$@) {
             push @avail, $shipper;
         }
     }

@@ -1,8 +1,7 @@
-# Copyright (c) 2003 Kavod Technologies, Dan Browning. 
-# All rights reserved. 
+# Copyright (c) 2003 Kavod Technologies, Dan Browning.
+# All rights reserved.
 
 package Business::Shipping::RateRequest::Offline;
-
 
 =head1 NAME
 
@@ -27,20 +26,20 @@ use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;
-use base ( 'Business::Shipping::RateRequest' );
+use base ('Business::Shipping::RateRequest');
 use Business::Shipping::RateRequest;
 use Business::Shipping::Shipment;
 use Business::Shipping::Package;
 use Business::Shipping::Logging;
-use Class::MethodMaker 2.0 [ new => [ qw/ -hash new / ] ];
-    
+use Class::MethodMaker 2.0 [new => [qw/ -hash new /]];
+
 =item * perform_action()
 
 For compatibility with parent class
 
 =cut
 
-sub perform_action {}
+sub perform_action { }
 
 =item * cache()
 
@@ -59,17 +58,16 @@ Shorten to three digits.  If the input doesn't have leading zeros, add them.
 
 =cut
 
-sub make_three 
-{
-    my ( $self, $zip ) = @_;
+sub make_three {
+    my ($self, $zip) = @_;
     return unless $zip;
-    trace( '( ' . ( $zip ? $zip : 'undef' ) . ' )' );
-    
-    $zip = substr( $zip, 0, 3 );
-    while ( length( $zip ) < 3 ) {
+    trace('( ' . ($zip ? $zip : 'undef') . ' )');
+
+    $zip = substr($zip, 0, 3);
+    while (length($zip) < 3) {
         $zip = "0$zip";
     }
-    
+
     return $zip;
 }
 
