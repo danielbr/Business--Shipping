@@ -1,7 +1,5 @@
-# Business::Shipping::USPS_Online::Tracking - Abstract class for tracking shipments
-# 
-# $Id$
-# 
+package Business::Shipping::USPS_Online::Tracking;
+
 # Copyright (c) 2004 InfoGears Inc.  All Rights Reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
 # 
@@ -13,6 +11,10 @@
 Business::Shipping::USPS_Online::Tracking - A USPS module for Tracking Packages
 
 See Tracking.pm POD for usage information.
+
+=head1 VERSION
+
+2.2.0
 
 =head2 EXAMPLE
 
@@ -59,9 +61,8 @@ the same terms as Perl itself. See LICENSE for more info.
 
 =cut
 
-package Business::Shipping::USPS_Online::Tracking;
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;

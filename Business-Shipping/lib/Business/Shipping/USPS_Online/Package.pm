@@ -6,13 +6,13 @@ Business::Shipping::USPS_Online::Package
 
 =head1 VERSION
 
-$Rev$
+2.2.0
 
 =head1 METHODS
 
 =cut
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 use vars qw( $VERSION );
 use Business::Shipping::Logging;

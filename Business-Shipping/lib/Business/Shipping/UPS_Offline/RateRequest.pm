@@ -10,7 +10,7 @@ Business::Shipping::UPS_Offline::RateRequest
 
 =head1 VERSION
 
-$Rev$
+2.2.0
 
 =head1 GLOSSARY
 
@@ -26,7 +26,7 @@ $Rev$
 
 =cut
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;

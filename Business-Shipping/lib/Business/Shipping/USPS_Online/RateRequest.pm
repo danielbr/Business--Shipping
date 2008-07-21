@@ -4,7 +4,7 @@ Business::Shipping::USPS_Online::RateRequest
 
 =head1 VERSION
 
-$Rev: 377 $
+2.2.0
 
 =head1 SERVICE TYPES
 
@@ -36,7 +36,7 @@ First Class Mail International
 
 package Business::Shipping::USPS_Online::RateRequest;
 
-$VERSION = do { my $r = q$Rev: 377 $; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 use Business::Shipping::Logging;
 use Business::Shipping::USPS_Online::Shipment;

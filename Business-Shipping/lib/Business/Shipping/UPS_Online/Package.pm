@@ -6,8 +6,7 @@ Business::Shipping::UPS_Online::Package
 
 =head1 VERSION
 
-$Rev: 157 $
-$Date: 2004-07-09 14:25:49 -0700 (Fri, 09 Jul 2004) $
+2.2.0
 
 =head1 METHODS
 
@@ -15,7 +14,7 @@ $Date: 2004-07-09 14:25:49 -0700 (Fri, 09 Jul 2004) $
 
 =cut
 
-$VERSION = do { my $r = q$Rev: 157 $; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 use Moose;
 use Business::Shipping::Package;

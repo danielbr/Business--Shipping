@@ -14,6 +14,10 @@ package Business::Shipping::UPS_Online::Tracking;
 
 Business::Shipping::UPS_Online::Tracking
 
+=head1 VERSION
+
+2.2.0
+
 =head2 EXAMPLE 
 
 my $results = $tracker->results();
@@ -83,7 +87,7 @@ the same terms as Perl itself. See LICENSE for more info.
 
 =cut
 
-$VERSION = do { my $r = q$Rev: 365 $; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;

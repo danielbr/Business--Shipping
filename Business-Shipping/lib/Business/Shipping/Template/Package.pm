@@ -4,7 +4,7 @@ Business::Shipping::Template::Package
 
 =head1 VERSION
 
-$Rev$      $Date$
+2.2.0
 
 =head1 METHODS
 
@@ -12,7 +12,7 @@ $Rev$      $Date$
 
 package Business::Shipping::Template::Package;
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;

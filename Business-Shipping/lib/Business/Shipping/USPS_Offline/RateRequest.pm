@@ -78,7 +78,7 @@ multiple 70-pound packages (plus one package with the remainder).
 
 =cut
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;

@@ -6,11 +6,11 @@ Business::Shipping::Shipment - Abstract class
 
 =head1 VERSION
 
-$Rev: 280 $
+2.2.0
 
 =cut
 
-$VERSION = do { my $r = q$Rev: 280 $; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 =head1 DESCRIPTION
 

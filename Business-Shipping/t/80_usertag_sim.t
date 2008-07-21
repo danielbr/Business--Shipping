@@ -66,7 +66,7 @@ sub uneval { return Dumper( @_ ); };
 ##  Begin contents of business-shipping.tag 
 ###############################################################################
 
-use Business::Shipping 2.05; # For 'all/shop' support.
+use Business::Shipping 2.2.0; # For 'all/shop' support.
 
 sub tag_business_shipping {
     my ( $shipper, $opt ) = @_;

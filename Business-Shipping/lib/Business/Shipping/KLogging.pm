@@ -4,6 +4,10 @@ package Business::Shipping::KLogging;
 
 Business::Shipping::KLogging - Simplified wrapper for Log::Log4perl
 
+=head1 VERSION
+
+2.2.0
+
 =head1 DESCRIPTION
 
 Wrapper for Log::Log4perl.  Must be initialized before use.  Recommend usage is
@@ -15,7 +19,7 @@ Provides simple "dubug()", "error()", and etc. routines.
 
 =cut
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;

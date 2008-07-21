@@ -6,7 +6,7 @@ Business::Shipping::Config - Configuration functions
 
 =head1 VERSION
 
-$Rev: 370 $
+2.2.0
 
 =head1 DESCRIPTION
 
@@ -24,7 +24,7 @@ use constant DEFAULT_DATA_DIR => '/usr/local/B_Shipping/data';
 #use constant DEFAULT_DATA_DIR => '~_~DEFAULT_DATA_DIR~_~';
 
 
-$VERSION = do { my $r = q$Rev: 370 $; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 @EXPORT = qw/ cfg cfg_obj config_to_hash config_to_ary_of_hashes /;
 
 use strict;

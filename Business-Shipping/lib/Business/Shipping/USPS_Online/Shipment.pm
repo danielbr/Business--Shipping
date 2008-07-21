@@ -1,10 +1,12 @@
+package Business::Shipping::USPS_Online::Shipment;
+
 =head1 NAME
 
 Business::Shipping::USPS_Online::Shipment
 
 =head1 VERSION
 
-$Rev$
+2.2.0
 
 =head1 DESCRIPTION
 
@@ -36,10 +38,7 @@ See Business::Shipping POD for usage information.
 
 =cut
 
-package Business::Shipping::USPS_Online::Shipment;
-
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
-
+use version; our $VERSION = qv('2.2.0');
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Util;

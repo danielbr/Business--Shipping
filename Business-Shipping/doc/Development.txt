@@ -1,0 +1,8 @@
+Intended audience: developers who wish to modify Business::Shipping.
+
+The reason that the version is specified the same in every module is only to 
+help in those rare circumstances where partial module installations exist in 
+@INC so that old versions are mixed with new versions, as described here:
+http://perlmonks.org/?node_id=634884
+
+

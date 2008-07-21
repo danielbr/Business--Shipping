@@ -10,7 +10,7 @@ Business::Shipping::RateRequest::Offline - Abstract class for cost calculation.
 
 =head1 VERSION
 
-$Rev$      $Date$
+2.2.0
 
 =head1 DESCRIPTION
 
@@ -23,7 +23,7 @@ a few miscellaneous functions.
 
 =cut
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;

@@ -6,7 +6,7 @@ Business::Shipping::UPS_Offline::Shipment
 
 =head1 VERSION
 
-$Rev: 158 $
+2.2.0
 
 =head1 METHODS
 
@@ -25,7 +25,7 @@ for hundredweight rates and a much higher rate than estimated.
 
 =cut
 
-$VERSION = do { my $r = q$Rev: 158 $; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;

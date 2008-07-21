@@ -4,7 +4,7 @@ Business::Shipping::Util - Miscellaneous functions
 
 =head1 VERSION
 
-$Rev: 352 $
+2.2.0
 
 =head1 DESCRIPTION
 
@@ -16,7 +16,7 @@ Misc functions.
 
 package Business::Shipping::Util;
 
-$VERSION = do { my $r = q$Rev: 352 $; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 @EXPORT_OK = qw( looks_like_number unique );
 
 use strict;

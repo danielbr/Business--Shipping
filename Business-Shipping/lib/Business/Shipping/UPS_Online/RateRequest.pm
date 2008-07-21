@@ -6,11 +6,11 @@ Business::Shipping::UPS_Online::RateRequest
 
 =head1 VERSION
 
-Version $Rev: 377 $
+2.2.0
 
 =cut
 
-$VERSION = do { my $r = q$Rev: 377 $; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 =head1 REQUIRED FIELDS
 

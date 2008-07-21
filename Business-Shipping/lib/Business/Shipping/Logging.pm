@@ -4,7 +4,7 @@ Business::Shipping::Logging - Interface between KLogging and Business::Shipping
 
 =head1 VERSION
 
-$Rev $
+2.2.0
 
 =head1 DESCRIPTION
 
@@ -15,6 +15,7 @@ Wrapper for KLogger.
 =cut
 
 package Business::Shipping::Logging;
+use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;
@@ -24,7 +25,6 @@ use Business::Shipping::KLogging;
 use Business::Shipping::Config;
 
 @EXPORT = Business::Shipping::KLogging::subs;
-$VERSION = do { my $r = q$Rev: 244 $; $r =~ /\d+/; $&; };
 
 foreach my $_sub ( Business::Shipping::KLogging::subs ) {
     eval "\*$_sub = \*Business::Shipping::KLogging::$_sub";

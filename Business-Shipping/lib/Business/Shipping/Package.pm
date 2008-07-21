@@ -15,7 +15,7 @@ Business::Shipping::Package - Abstract class
 
 =head1 VERSION
 
-$Rev$
+2.2.0
 
 =head1 DESCRIPTION
 
@@ -26,7 +26,7 @@ implementation.
 
 =cut
 
-$VERSION = do { my $r = q$Rev$; $r =~ /\d+/; $&; };
+use version; our $VERSION = qv('2.2.0');
 
 use Moose;
 extends 'Business::Shipping';
