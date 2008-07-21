@@ -22,8 +22,6 @@ my %user = (
         access_key => $ENV{ UPS_ACCESS_KEY },
 );
 
-my %test;
-my $this_test_desc;
 sub test
 {
     my ( %args ) = @_;
@@ -67,13 +65,8 @@ sub close_enough
 }
 
 
-my $shipment;
-my $shipment_online;
-my $rr;
-my $rr_online;
 
-
-my $ups_online_msg = 'UPS: we need the username, password, and access license key';
+{
 ###########################################################################
 ##  Domestic Single-package API
 ###########################################################################
@@ -86,18 +79,21 @@ my %one_da_light_us = (
     to_zip         => '98270',
 );
 
-$shipment = test( %one_da_light_us );
+my $shipment = test( %one_da_light_us );
 ok( $shipment->total_charges(),        'UPS domestic single-package API total_charges > 0' );
 print "offline 1DA light close: " . $shipment->total_charges() . "\n";
 
 SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
-    $shipment_online = test_online( %one_da_light_us );
+    my $shipment_online = test_online( %one_da_light_us );
     ok( $shipment_online->total_charges(),        'UPS domestic single-package API total_charges > 0' );
     print "online 1DA light close: " . $shipment_online->total_charges() . "\n";
 }
 
+}
+
+{
 my %ground_res_heavy_far_us = (
     service            => 'GNDRES',
     weight            => '45.00',
@@ -106,7 +102,7 @@ my %ground_res_heavy_far_us = (
     to_zip            => '22182',
 );
 
-$shipment = test( %ground_res_heavy_far_us );
+my $shipment = test( %ground_res_heavy_far_us );
 ok( $shipment->total_charges(),        'UPS domestic single-package API total_charges > 0' );
 print "Offline: GNDRES, heavy, far: " . $shipment->total_charges() . "\n";
 
@@ -114,11 +110,14 @@ print "Offline: GNDRES, heavy, far: " . $shipment->total_charges() . "\n";
 SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
     
-    $shipment_online = test_online( %ground_res_heavy_far_us );
+    my $shipment_online = test_online( %ground_res_heavy_far_us );
     ok( $shipment_online->total_charges(),        'UPS domestic single-package API total_charges > 0' );
     print "Online: GNDRES, heavy, far: " . $shipment_online->total_charges() . "\n";
 }
 
+}
+
+{
 my %ground_res_light_far_us = (
     service            => 'GNDRES',
     weight            => '3.00',
@@ -127,18 +126,20 @@ my %ground_res_light_far_us = (
     to_zip            => '22182',
 );
 
-$shipment = test( %ground_res_light_far_us );
+my $shipment = test( %ground_res_light_far_us );
 ok( $shipment->total_charges(),        'UPS domestic single-package API total_charges > 0' );
 print "Offline: GNDRES, light, far: " . $shipment->total_charges() . "\n";
 
 SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
     
-    $shipment_online = test_online( %ground_res_light_far_us );
+    my $shipment_online = test_online( %ground_res_light_far_us );
     ok( $shipment_online->total_charges(),        'UPS domestic single-package API total_charges > 0' );
     print "Online: GNDRES, light, far: " . $shipment_online->total_charges() . "\n";
 }
+}
 
+{
 my %ground_res_light_close_us = (
     service            => 'GNDRES',
     weight            => '3.00',
@@ -147,18 +148,20 @@ my %ground_res_light_close_us = (
     to_zip            => '98270',
 );
 
-$shipment = test( %ground_res_light_close_us );
+my $shipment = test( %ground_res_light_close_us );
 ok( $shipment->total_charges(),        'UPS domestic single-package API total_charges > 0' );
 print "Offline: GNDRES, light, close: " . $shipment->total_charges() . "\n";
 
 SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
     
-    $shipment_online = test_online( %ground_res_light_close_us );
+    my $shipment_online = test_online( %ground_res_light_close_us );
     ok( $shipment_online->total_charges(),        'UPS domestic single-package API total_charges > 0' );
     print "Online: GNDRES, light, close: " . $shipment_online->total_charges() . "\n";
 }
+}
 
+{
 my %ground_res_medium_close_us = (
     service            => 'GNDRES',
     weight            => '22.50',
@@ -167,19 +170,20 @@ my %ground_res_medium_close_us = (
     to_zip            => '22182',
 );
 
-$shipment = test( %ground_res_medium_close_us );
+my $shipment = test( %ground_res_medium_close_us );
 ok( $shipment->total_charges(),        'UPS domestic single-package API total_charges > 0' );
 print "Offline: GNDRES, medium, close, residential: " . $shipment->total_charges() . "\n";
 
 SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
     
-    $shipment_online = test_online( %ground_res_medium_close_us );
+    my $shipment_online = test_online( %ground_res_medium_close_us );
     ok( $shipment_online->total_charges(),        'UPS domestic single-package API total_charges > 0' );
     print "Online: GNDRES, medium, close, residential: " . $shipment_online->total_charges() . "\n";
 }
+}
 
-
+{
 my %ground_res_medium_close_us_98075 = (
     service            => 'GNDRES',
     weight            => '22.50',
@@ -188,15 +192,16 @@ my %ground_res_medium_close_us_98075 = (
     to_zip            => '98075',
 );
 
-$shipment = test( %ground_res_medium_close_us_98075 );
+my $shipment = test( %ground_res_medium_close_us_98075 );
 ok( $shipment->total_charges(),        'UPS domestic single-package API total_charges > 0' );
 print "Offline: GNDRES, medium, close, residential: " . $shipment->total_charges() . "\n";
+}
 
-
+{
 ###########################################################################
 ##  International
 ###########################################################################
-%test = (
+my %test = (
     from_state  => 'Washington',
     from_zip    => '98682',
     service     => 'XPD',
@@ -205,19 +210,21 @@ print "Offline: GNDRES, medium, close, residential: " . $shipment->total_charges
     to_zip      => 'RH98AX',
 );
 
-$shipment = test( %test );
+my $shipment = test( %test );
 ok( $shipment->total_charges(),        'UPS offline intl to gb' );
 print "Offline: intl to gb " . $shipment->total_charges() . "\n";
 
 SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
     
-    $shipment_online = test_online( %test );
+    my $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),        'UPS intl to gb' );
     print "Online: intl to gb: " . $shipment_online->total_charges() . "\n";
 }
+}
 
-%test = (
+{
+my %test = (
     from_state    => 'Washington',
     from_zip    => '98682',
     service        => 'XPR',
@@ -226,20 +233,22 @@ SKIP: {
     to_zip        => 'RH98AX',
 );
 
-$shipment = test( %test );
+my $shipment = test( %test );
 ok( $shipment->total_charges(),        'UPS offline express to gb' );
 print "Offline: intl express to gb " . $shipment->total_charges() . "\n";
 
 SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
-    $shipment_online = test_online( %test );
+    my $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),        'UPS intl to gb' );
     print "Online: intl to gb: " . $shipment_online->total_charges() . "\n";
 }
+}
 
+{
 # XDM invalid for this request, changed to XPR 
-%test = (
+my %test = (
     from_state    => 'Washington',
     from_zip    => '98682',
     service        => 'XPR',
@@ -248,49 +257,49 @@ SKIP: {
     to_zip        => 'RH98AX',
 );
 
-$shipment = test( %test );
+my $shipment = test( %test );
 ok( $shipment->total_charges(),        'UPS express plus intl to gb' );
 print "Offline: intl to gb " . $shipment->total_charges() . "\n";
 
 SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
-    $shipment_online = test_online( %test );
+    my $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),        'UPS intl to gb' );
     print "Online: intl to gb: " . $shipment_online->total_charges() . "\n";
 }
-
-%test = (
+}
+{
+my %test = (
         shipper =>      'Offline::UPS',
         service =>      'XPR',
         to_country =>   'CA',
         weight =>       '0.5',
         to_zip =>       'M1V 2Z9',
 );
-$this_test_desc = "0.5 XPR to Canada M1V: ";
+my $this_test_desc = "0.5 XPR to Canada M1V: ";
 
-$shipment = test( %test );
+my $shipment = test( %test );
 ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
-
+}
 
 
 
 ###########################################################################
 ##  Hawaii / Alaska
 ###########################################################################
-
-  
-%test = (
+{
+my %test = (
     service        => '2DA',
     weight        => 20,
     from_zip    => '98682',
     from_state    => 'Washington',
     to_zip        => '96826',
 );
-$this_test_desc = "Hawaii 2DA: ";
+my $this_test_desc = "Hawaii 2DA: ";
 
-$shipment = test( %test );
+my $shipment = test( %test );
 ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
@@ -298,14 +307,14 @@ SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
 
-    $shipment_online = test_online( %test );
+    my $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc );
     "UPS Online: " . $this_test_desc . $shipment_online->total_charges() . "\n";
 }
+}
 
 
-
-
+{
 my $rr2 = Business::Shipping->rate_request( shipper => 'Offline::UPS' );
 
 $rr2->submit(
@@ -319,21 +328,21 @@ $rr2->submit(
 
 print "Hawaii 2DA (alternate calling method):" . $rr2->total_charges() . "\n";
 ok( $rr2->total_charges, "Hawaii 2DA (alternate calling method):" );
+}
 
 
 
-
-
-%test = (
+{
+my %test = (
     service        => '1DA',
     weight        => 20,
     from_zip    => '98682',
     from_state    => 'Washington',
     to_zip        => '96826',
 );
-$this_test_desc = "Hawaii 1DA: ";
+my $this_test_desc = "Hawaii 1DA: ";
 
-$shipment = test( %test );
+my $shipment = test( %test );
 ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
@@ -341,20 +350,22 @@ SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
 
-    $shipment_online = test_online( %test );
+    my $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );
 }
+}
 
-%test = (
+{
+my %test = (
     service        => '2DA',
     weight        => 20,
     from_zip    => '98682',
     from_state    => 'Washington',
     to_zip        => '99501',
 );
-$this_test_desc = "Alaska 2DA: ";
+my $this_test_desc = "Alaska 2DA: ";
 
-$shipment = test( %test );
+my $shipment = test( %test );
 ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
@@ -362,20 +373,22 @@ SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
 
-    $shipment_online = test_online( %test );
+    my $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );
 }
+}
 
-%test = (
+{
+my %test = (
     service        => '1DA',
     weight        => 20,
     from_zip    => '98682',
     from_state    => 'Washington',
     to_zip        => '99501',
 );
-$this_test_desc = "Alaska 1DA: ";
+my $this_test_desc = "Alaska 1DA: ";
 
-$shipment = test( %test );
+my $shipment = test( %test );
 ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
@@ -383,8 +396,9 @@ SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
 
-    $shipment_online = test_online( %test );
+    my $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );
+}
 }
 
 
@@ -392,7 +406,8 @@ SKIP: {
 ##  Mexico 
 ###################
 
-%test = (
+{
+my %test = (
     from_zip    => '98682',
     from_state    => 'Washington',
     service        => 'XPD',
@@ -400,9 +415,9 @@ SKIP: {
     to_country    => 'MX',
     to_zip        => '06400',
 );
-$this_test_desc = "Mexico XPD: ";
+my $this_test_desc = "Mexico XPD: ";
 
-$shipment = test( %test );
+my $shipment = test( %test );
 ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
@@ -410,33 +425,33 @@ SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
 
-    $shipment_online = test_online( %test );
+    my $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );    
 }
-
+}
 
 ###################
 ##  NetherLands 
 ###################
-
-%test = (
+{
+my %test = (
         from_zip =>      '98682',
         from_state =>    'Washington',
         service =>       'XPD',
         to_country =>    'NL',
         weight =>        '12.75',
 );
-$this_test_desc = "Netherlands XPD: ";
+my $this_test_desc = "Netherlands XPD: ";
 
-$shipment = test( %test );
+my $shipment = test( %test );
 ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
-
+}
 ###################
 ##  Israel 
 ###################
-
-%test = (
+{
+my %test = (
         from_zip =>     '98682',
         from_state =>   'Washington',
         shipper =>      'Offline::UPS',
@@ -445,9 +460,9 @@ print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
         weight =>       '1.75',
         to_zip =>       '034296',
 );
-$this_test_desc = "Israel XPR: ";
+my $this_test_desc = "Israel XPR: ";
 
-$shipment = test( %test );
+my $shipment = test( %test );
 ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
@@ -457,12 +472,12 @@ print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 #    $shipment_online = test_online( %test );
 #    ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );    
 #}
-
+}
 ###################
 ##  UPS Standard to Canada
 ###################
-
-%test = (
+{
+my %test = (
         from_zip =>     '98682',
         from_state =>   'Washington',
         shipper =>      'Offline::UPS',
@@ -471,25 +486,25 @@ print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
         weight =>       '20',
         to_zip =>       'N2H6S9',
 );
-$this_test_desc = "Canada UPS Standard: ";
+my $this_test_desc = "Canada UPS Standard: ";
 
-$shipment = test( %test );
+my $shipment = test( %test );
 ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
 
 SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
 
-    $shipment_online = test_online( %test );
+    my $shipment_online = test_online( %test );
     ok( $shipment_online->total_charges(),    "UPS Online: " . $this_test_desc . $shipment_online->total_charges() );    
 }
-    
+}   
 ########################################################################
 ##  Make sure that it handles zip+4 zip codes correctly (by throwing
 ##  away the +4.
 ########################################################################
 if (0) {
-%test = (
+my %test = (
         from_country =>         'US',
         to_country =>           'US',
         from_state =>           'WA',
@@ -499,12 +514,12 @@ if (0) {
         weight =>               '4.25',
         to_zip =>               '96720-1749',
 );
-$this_test_desc = "Zip+4: ";
+my $this_test_desc = "Zip+4: ";
 
-$shipment = test( %test );
+my $shipment = test( %test );
 ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
-}
+
 
 SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
@@ -534,19 +549,19 @@ SKIP: {
         "UPS Offline ($rr_on_rate) and Online ($rr_off_rate) are close enough for GNDRES, light, far" 
       );
 }
-
+}
 ########################################################################
 ## Multi-package
 ########################################################################
 if (0) {
-%test = (
+my %test = (
         service =>              '2DA',
         from_zip =>             '98682',
         to_zip =>               '98270',
 );
-$this_test_desc = "UPS Offline: Multi-package: ";
+my $this_test_desc = "UPS Offline: Multi-package: ";
 
-$rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
+my $rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 $rr->init( %test );
 $rr->shipment->add_package( weight => 5 );
 $rr->shipment->add_package( weight => 15 );
@@ -560,40 +575,43 @@ print $this_test_desc . $rr->total_charges() . "\n";
 ########################################################################
 ## Overweight split shipments
 ########################################################################
-%test = (
+{
+my %test = (
         service =>              'GNDRES',
         from_zip =>             '98682',
         to_zip =>               '98270',
         weight =>               151,
 );
-$this_test_desc = "UPS Offline: Over max package weight: ";
-$rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
+my $this_test_desc = "UPS Offline: Over max package weight: ";
+my $rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 $rr->init( %test );
 $rr->execute or die $rr->user_error;
 ok( $rr->total_charges(), $this_test_desc );
 print $this_test_desc . $rr->total_charges() . "\n";
-
+}
 
 ########################################################################
 ## Hundredweight
 ########################################################################
-%test = (
+{
+my %test = (
         service =>              'GNDRES',
         from_zip =>             '98682',
         to_zip =>               '98270',
         weight =>               455,
 );
-$this_test_desc = "UPS Offline: Hundredweight: ";
-$rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
+my $this_test_desc = "UPS Offline: Hundredweight: ";
+my $rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 $rr->init( %test );
 $rr->execute or die $rr->user_error;
 ok( $rr->total_charges(), $this_test_desc );
 print $this_test_desc . $rr->total_charges() . "\n";
-
+}
 ########################################################################
 ## Hundredweight with tiers
 ########################################################################
-%test = (
+{
+my %test = (
     service    => 'gndcom',
     weight     => '330',
     from_zip   => '98682',
@@ -602,28 +620,30 @@ print $this_test_desc . $rr->total_charges() . "\n";
     tier       => 3,
     to_residential => 0,
 );
-$this_test_desc = "UPS Offline: Hundredweight: tier 3:  ";
-$rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
+my $this_test_desc = "UPS Offline: Hundredweight: tier 3:  ";
+my $rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 $rr->init( %test );
 $rr->execute or die $rr->user_error;
 ok(  close_enough( 127.06, $rr->total_charges() ), $this_test_desc );
 print $this_test_desc . $rr->total_charges() . "\n";
-
+}
 ########################################################################
 ## Named services
 ########################################################################
-%test = (
+{
+my %test = (
         service =>              'Ground Residential',
         from_zip =>             '98682',
         to_zip =>               '98270',
         weight =>               5,
 );
-$this_test_desc = "UPS Offline: Use the long name of the service: ";
-$rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
+my $this_test_desc = "UPS Offline: Use the long name of the service: ";
+my $rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
 $rr->init( %test );
 $rr->execute or die $rr->user_error;
 ok( $rr->total_charges(), $this_test_desc );
 print $this_test_desc . $rr->total_charges() . "\n";
+}
 
 while ( defined( my $data = <DATA> ) ) {
 	my $autotest_count = 0;
@@ -638,15 +658,15 @@ while ( defined( my $data = <DATA> ) ) {
         
         # to_city is not currently used.
         
-        %test = (
+        my %test = (
                 service =>              $service,
                 from_zip =>             $from_zip,
                 to_zip =>               $to_zip,
                 weight =>               $weight,
                 to_residential =>       $to_residential,
         );
-        $this_test_desc = "UPS Offline: Autotest " . $autotest_count . " is close enough to $exp_price.";
-        $rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
+        my $this_test_desc = "UPS Offline: Autotest " . $autotest_count . " is close enough to $exp_price.";
+        my $rr = Business::Shipping->rate_request( shipper => 'UPS_Offline' );
         $rr->init( %test );
         $rr->execute or die $rr->user_error;
         ok( close_enough( $exp_price, $rr->total_charges() ), $this_test_desc );
