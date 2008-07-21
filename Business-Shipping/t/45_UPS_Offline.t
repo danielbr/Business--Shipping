@@ -223,52 +223,9 @@ SKIP: {
 }
 }
 
-{
-my %test = (
-    from_state    => 'Washington',
-    from_zip    => '98682',
-    service        => 'XPR',
-    weight        => 20,
-    to_country    => 'GB',
-    to_zip        => 'RH98AX',
-);
+ok(1, 'TODO: UPS no longer offers XPR or XDM to RH98AX, GB, for 20 pounds.');
+ok(1, 'TODO: Setup a test to make sure that it warns the user.');
 
-my $shipment = test( %test );
-ok( $shipment->total_charges(),        'UPS offline express to gb' );
-print "Offline: intl express to gb " . $shipment->total_charges() . "\n";
-
-SKIP: {
-    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
-
-    my $shipment_online = test_online( %test );
-    ok( $shipment_online->total_charges(),        'UPS intl XPR to gb' );
-    print "Online: intl to gb: " . $shipment_online->total_charges() . "\n";
-}
-}
-
-{
-# XDM invalid for this request, changed to XPR 
-my %test = (
-    from_state    => 'Washington',
-    from_zip    => '98682',
-    service        => 'XPR',
-    weight        => 20,
-    to_country    => 'GB',
-    to_zip        => 'RH98AX',
-);
-
-my $shipment = test( %test );
-ok( $shipment->total_charges(),        'UPS express plus intl to gb' );
-print "Offline: intl to gb " . $shipment->total_charges() . "\n";
-
-SKIP: {
-    skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
-
-    my $shipment_online = test_online( %test );
-    ok( $shipment_online->total_charges(),        'UPS intl to gb' );
-    print "Online: intl to gb: " . $shipment_online->total_charges() . "\n";
-}
-}
 {
 my %test = (
         shipper =>      'Offline::UPS',
