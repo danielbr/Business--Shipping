@@ -89,7 +89,7 @@ has 'shipper'             => (is => 'rw', isa => 'Str');
 has 'results'             => (is => 'rw', isa => 'ArrayRef');
 has 'is_success'          => (is => 'rw', isa => 'Str');
 has '_total_charges'      => (is => 'rw', isa => 'Str');
-has 'price_components'    => (is => 'rw', isa => 'Str');
+has 'price_components'    => (is => 'rw', isa => 'ArrayRef');
 has 'dont_split_packages' => (is => 'rw', isa => 'Str');
 has 'error_details'       => (is => 'rw', isa => 'HashRef');
 has 'shipment'            => (
@@ -228,7 +228,7 @@ sub execute {
         my $sum_rate     = 0;
         my $last_charges = 0;
 
-        $self->shipment->packages_index($p_idx)
+        $self->shipment->packages->[$p_idx]
             ->weight($max_weight_per_package);
         $running_weight -= $max_weight_per_package;
 

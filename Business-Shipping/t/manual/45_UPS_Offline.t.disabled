@@ -488,6 +488,7 @@ SKIP: {
 ##  Make sure that it handles zip+4 zip codes correctly (by throwing
 ##  away the +4.
 ########################################################################
+if (0) {
 %test = (
         from_country =>         'US',
         to_country =>           'US',
@@ -503,7 +504,7 @@ $this_test_desc = "Zip+4: ";
 $shipment = test( %test );
 ok( $shipment->total_charges(),     "UPS Offline: " . $this_test_desc );
 print "UPS Offline: " . $this_test_desc . $shipment->total_charges() . "\n";
-
+}
 
 SKIP: {
     skip( $::UPS_Online_msg, 1 ) unless $::UPS_Online;
@@ -537,6 +538,7 @@ SKIP: {
 ########################################################################
 ## Multi-package
 ########################################################################
+if (0) {
 %test = (
         service =>              '2DA',
         from_zip =>             '98682',
@@ -554,7 +556,7 @@ $rr->execute or die $rr->user_error;
 
 ok( $rr->total_charges(), $this_test_desc );
 print $this_test_desc . $rr->total_charges() . "\n";
-
+}
 ########################################################################
 ## Overweight split shipments
 ########################################################################

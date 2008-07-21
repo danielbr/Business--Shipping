@@ -83,7 +83,7 @@ Hash.  Format:
 =cut
 
 use Moose;
-entends 'Business::Shipping::RateRequest::Offline';
+extends 'Business::Shipping::RateRequest::Offline';
 has 'update' => (is => 'rw');
 has 'download' => (is => 'rw');
 has 'unzip' => (is => 'rw');
@@ -93,8 +93,6 @@ has 'zone_file' => (is => 'rw');
 has 'zone_name' => (is => 'rw');
 has 'type' => (is => 'rw');
 has 'zone' => (is => 'rw');
-
-has '' => (is => 'rw');
 
 has 'shipment' => (
     is      => 'rw',
@@ -110,17 +108,16 @@ has 'shipment' => (
                 'domestic_or_ca', 'from_canada',
                 'to_canada',      'from_ak_or_hi',
                 'from_state',     'from_state_abbrev',
-                'tier',
+                'tier',           'service',
+                'service_nick',   'service_name',
     ]
 );
 
-use MooseX::ClassAttribute;
 # Zones is deprecated.
-
-class_has 'Zones' => (is => 'rw');
-class_has 'Data' => (is => 'rw', isa => 'HashRef', default => {});
-class_has 'Fuel_surcharge_ground' => (is => 'rw');
-class_has 'Fuel_surcharge_air' => (is => 'rw');
+has 'Zones' => (is => 'rw');
+has 'Data' => (is => 'rw', isa => 'HashRef', default => sub { {} });
+has 'Fuel_surcharge_ground' => (is => 'rw');
+has 'Fuel_surcharge_air' => (is => 'rw');
 
 sub _init {
     $_[0]->set_fuel_surcharge();
@@ -809,8 +806,9 @@ sub calc_cost {
             #    $weight = $weight * $zref->{mult_factor};
             #}
 
-         # Tables don't cover fractional pounds, and UPS specifies "at least",
-         # so any fraction should cause a jump to the next integer.
+            # Tables don't cover fractional pounds, and UPS specifies 
+            # "at least", so any fraction should cause a jump to the next 
+            # integer.
             $weight = POSIX::ceil($weight);
 
             $cost = $self->get_cost($table, $self->zone, $weight);

@@ -35,7 +35,7 @@ extends 'Business::Shipping::Shipment::UPS';
 # TODO: Only allow tiers 1-8
 has 'tier' => (is => 'rw');
 has 'from_state' => (is => 'rw');
-has 'max_weight' => (is => 'rw', default=> 150);
+has 'max_weight' => (is => 'rw', default => 150);
 has 'disable_hundredweight' => (is => 'rw');
 has 'hundredweight_margin' => (is => 'rw', default => 10);
 has 'packages' => (
@@ -128,6 +128,18 @@ sub cwt_is_per {
     return 'pound'         if grep($_ eq lc $self->service, @airborn);
     return 'hundredweight' if grep($_ eq lc $self->service, @ground);
     error "could not determine is_per type.  service = " . $self->service;
+    return;
+}
+
+=head2 packages_push
+
+Syntatic sugar to avoid push @{$self->packages()}, $new_package;
+
+=cut
+
+sub packages_push {
+    my ($self, $new_package) = @_;
+    push @{$self->packages()}, $new_package;
     return;
 }
 
