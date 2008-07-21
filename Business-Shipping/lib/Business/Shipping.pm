@@ -12,10 +12,6 @@ Business::Shipping - Rates and tracking for UPS and USPS
 
 Version 2.2.0
 
-=cut
-
-use version; our $VERSION = qv('2.2.0');
-
 =head1 SYNOPSIS
 
 =head2 Rate request example
@@ -94,13 +90,15 @@ Add these options to your rate request for C.O.D.:
 
 cod: enable C.O.D.
 
-cod_funds_code:  The code that indicates the type of funds that will be used for the COD payment.  
-Required if CODCode is 1, 2, or 3.  Valid Values: 0 = All Funds Allowed.  8 = cashier's check or 
-money order, no cash allowed.
+cod_funds_code:  The code that indicates the type of funds that will be used for
+the COD payment. Required if CODCode is 1, 2, or 3.  Valid Values: 0 = All Funds
+Allowed.  8 = cashier's check or money order, no cash allowed.
 
-cod_value: The COD value for the package.  Required if COD option is present.  Valid values: 0.01 - 50000.00
+cod_value: The COD value for the package.  Required if COD option is present. 
+Valid values: 0.01 - 50000.00
 
-cod_code: The code associated with the type of COD.  Values: 1 = Regular COD, 2 = Express COD, 3 = Tagless COD
+cod_code: The code associated with the type of COD.  Values: 1 = Regular COD, 
+2 = Express COD, 3 = Tagless COD
  
 For example:
 
@@ -128,16 +126,18 @@ See doc/INSTALL.
 
 =head1 REQUIRED MODULES
 
-The following modules are required for offline UPS rate estimation.  See doc/INSTALL.
+The following modules are required for offline UPS rate estimation.  See 
+INSTALL.
 
  Business::Shipping::DataFiles (any)
- Class::MethodMaker::Engine (any)
+ Moose (any)
  Config::IniFiles (any)
  Log::Log4perl (any)
 
 =head1 OPTIONAL MODULES
 
-The following modules are used by online rate estimation and tracking.  See doc/INSTALL.
+The following modules are used by online rate estimation and tracking.  See 
+INSTALL.
 
  Cache::FileCache (any)
  Clone (any)
@@ -197,9 +197,10 @@ L<http://www.ups.com/content/us/en/resources/service/terms/index.html>
 
 =head1 ERROR/DEBUG HANDLING
 
-Log4perl is used for logging error, debug, etc. messages.  For simple manipulation of the current log level, 
-use the Business::Shipping->log_level( $log_level ) class method (below).  For more advanced logging/debugging
-options, see config/log4perl.conf.
+Log4perl is used for logging error, debug, etc. messages. For simple 
+manipulation of the current log level, use the Business::Shipping->log_level()
+class method (below). For more advanced logging/debugging options, see 
+config/log4perl.conf.
 
 =head1 Preloading Modules
 
@@ -232,6 +233,7 @@ utilization.
 
 =cut
 
+use version; our $VERSION = qv('2.2.0');
 use Moose;
 use Carp;
 use Business::Shipping::Logging;
@@ -243,14 +245,13 @@ has '_user_error_msg' => (is => 'rw', isa => 'Str');
 
 $Business::Shipping::RuntimeLoad = 1;
 
-sub import 
-{
-    my ( $class_name, $record ) = @_;
+sub import {
+    my ($class_name, $record) = @_;
     
-    return unless defined $record and ref( $record ) eq 'HASH';
+    return unless defined $record and ref($record) eq 'HASH';
     
-    while ( my ( $key, $val ) = each %$record ) {
-        if ( lc $key eq 'preload' ) {
+    while (my ($key, $val) = each %$record) {
+        if (lc $key eq 'preload') {
             # Required modules lists
             # ======================
             # Each of these modules does a compile-time require of all 
@@ -269,19 +270,20 @@ sub import
             };
                     
             my @to_load;
-            while ( my ( $shipper, $mod_list ) = each %$module_list ) {
-                if ( lc $val eq lc $shipper or lc $val eq 'all' ) {
-                    push @to_load, ( 
+            while (my ($shipper, $mod_list) = each %$module_list) {
+                if (lc $val eq lc $shipper or lc $val eq 'all') {
+                    push @to_load, (
                         @$mod_list, 
                         'Business::Shipping::' . $shipper . '::RateRequest',
                     );
                 }
             }
             
-            if ( @to_load ) 
-                { $Business::Shipping::RuntimeLoad = 0 };
+            if (@to_load) { 
+                $Business::Shipping::RuntimeLoad = 0 
+            };
             
-            foreach my $module ( Business::Shipping::Util::unique( @to_load ) ) {
+            foreach my $module (Business::Shipping::Util::unique(@to_load)) {
                 eval "use $module;";
                 die $@ if $@;
             }
@@ -364,7 +366,8 @@ sub validate
     }
     
     if ( @missing ) {
-        $self->user_error( "Missing required argument(s): " . join ", ", @missing );
+        my $user_error = "Missing required argument(s): " . join ", ", @missing;
+        $self->user_error($user_error);
         $self->invalid( 1 );
         return 0;
     }
@@ -409,7 +412,8 @@ The origin zipcode.
 
 =item * from_state
 
-The origin state in two-letter code format or full-name format.  Required for UPS_Offline.
+The origin state in two-letter code format or full-name format.  Required for 
+UPS_Offline.
 
 =item * to_zip
 
@@ -599,10 +603,12 @@ instead of the UPS Online Tools.  For shipments that originate in the USA only.
  
 =head1 Use of this software
 
-It is appreciated when users mention their use of Business::Shipping to the 
-author and/or in their web site/application.
+Please let the author know how you are using Business::Shipping.
 
 =over 4
+
+=item * Advanced support and integration services are available from End Point 
+    Corporation (L<http://www.endpoint.com/>).
 
 =item * Interchange e-commerce system ( L<http://www.icdevgroup.org> ).  See 
     C<UserTag/business-shipping.tag>.
@@ -614,7 +620,7 @@ author and/or in their web site/application.
 =item * The "Shopping Cart" Wobject for the WebGUI project, by Andy Grundman 
     L<http://www.plainblack.com/shopping_cart_wobject>
 
-=item * Mentioned in YAPC 2004 Presentation: "Writing web applications with perl ..."
+=item * Mentioned in YAPC 2004: "Writing web applications with perl ..."
 
 =back
 
@@ -639,11 +645,11 @@ See the C<doc/Todo> file for a comprehensive list of known bugs.
 
 =head1 CREDITS
 
-Many people have contributed to this module, please see the C<CREDITS> file. 
+Many people have contributed to this software, please see the C<CREDITS> file. 
 
 =head1 AUTHOR
 
-Daniel Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+Daniel Browning, db@kavod.com
 
 =head1 COPYRIGHT AND LICENCE
 
