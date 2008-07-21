@@ -10,15 +10,12 @@ use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;
-use base ( 'Business::Shipping::RateRequest' );
+use base ('Business::Shipping::RateRequest');
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 
-use Class::MethodMaker 2.0
-    [
-      new => [ qw/ -hash new / ],
-    ];
-    
+use Class::MethodMaker 2.0 [new => [qw/ -hash new /],];
+
 1;
 
 __END__

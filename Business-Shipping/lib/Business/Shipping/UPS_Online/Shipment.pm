@@ -19,17 +19,18 @@ use Business::Shipping::Config;
 use Business::Shipping::Logging;
 
 extends 'Business::Shipping::Shipment::UPS';
+
 # of 'Business::Shipping::UPS_Online::Package' objects
 has 'packages' => (
-    is => 'rw',
-    isa => 'ArrayRef[Business::Shipping::UPS_Online::Package]',
-    default => sub { [ Business::Shipping::UPS_Online::Package->new() ] },
+    is         => 'rw',
+    isa        => 'ArrayRef[Business::Shipping::UPS_Online::Package]',
+    default    => sub { [Business::Shipping::UPS_Online::Package->new()] },
     auto_deref => 1
 );
 has 'max_weight' => (is => 'rw', default => 150);
 has 'cod' => (is => 'rw');
 has 'cod_funds_code' => (is => 'rw');
-has 'cod_value' => (is => 'rw');
+has 'cod_value'      => (is => 'rw');
 
 1;
 

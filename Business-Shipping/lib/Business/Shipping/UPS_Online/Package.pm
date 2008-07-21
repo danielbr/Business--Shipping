@@ -49,16 +49,16 @@ UPS_Online-only attribute.
   UPS_Online-only attribute
  
 =cut
- 
+
 has 'packaging' => (
-    is => 'rw',
-    isa => 'Str',
+    is      => 'rw',
+    isa     => 'Str',
     default => '02',
 );
-    
-has 'signature_type' => (is => 'rw');
+
+has 'signature_type'        => (is => 'rw');
 has 'insured_currency_type' => (is => 'rw');
-has 'insured_value' => (is => 'rw');
+has 'insured_value'         => (is => 'rw');
 
 1;
 

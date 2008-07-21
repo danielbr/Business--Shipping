@@ -5,13 +5,13 @@
 # $Id$
 #
 # Copyright (C) 2003 Interchange Development Group
-# Copyright (c) 2003, 2004 Kavod Technologies, Dan Browning. 
+# Copyright (c) 2003, 2004 Kavod Technologies, Dan Browning.
 #
-# All rights reserved. 
-# 
+# All rights reserved.
+#
 # Licensed under the GNU Public Licnese (GPL).  See LICENSE for more info.
-# 
-# Based on the corresponding work in the Interchange project, which was written 
+#
+# Based on the corresponding work in the Interchange project, which was written
 # by Mike Heins <mike@perusion.com>. See http://www.icdevgroup.org for more info.
 
 package Business::Shipping::USPS_Offline::RateRequest;
@@ -82,7 +82,7 @@ use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;
-use base ( 'Business::Shipping::RateRequest::Offline' );
+use base ('Business::Shipping::RateRequest::Offline');
 use Business::Shipping::Shipment;
 use Business::Shipping::Package;
 use Business::Shipping::Logging;
@@ -90,7 +90,7 @@ use Business::Shipping::Data;
 use Business::Shipping::Util;
 use Business::Shipping::Config;
 use Data::Dumper;
-use Class::MethodMaker 2.0 [ new => [ qw/ -hash new / ] ];
+use Class::MethodMaker 2.0 [new => [qw/ -hash new /]];
 
 sub calculate {
     my ($mode, $weight, $row, $opt, $tagopt, $extra) = @_;
@@ -102,38 +102,39 @@ sub calculate {
     $type = $opt->{table};
     $o->{geo} ||= 'country';
 
-    if(! $type) {
-        $extra = interpolate_html($extra) if $extra =~ /__|\[/;;
+    if (!$type) {
+        $extra = interpolate_html($extra) if $extra =~ /__|\[/;
         ($type) = split /\s+/, $extra;
     }
 
-    unless($type) {
+    unless ($type) {
         do_error("No table/type specified for %s shipping", 'Postal');
         return 0;
     }
 
-    $country = $::Values->{$o->{geo}};
+    $country = $::Values->{ $o->{geo} };
+
 #::logDebug("ready to calculate postal type=$type country=$country weight=$weight");
 
-    if($opt->{source_grams}) {
+    if ($opt->{source_grams}) {
         $weight *= 0.00220462;
     }
-    elsif($opt->{source_kg}) {
+    elsif ($opt->{source_kg}) {
         $weight *= 2.20462;
     }
-    elsif($opt->{source_oz}) {
+    elsif ($opt->{source_oz}) {
         $weight /= 16;
     }
 
-    if($opt->{auto}) {
-        if($type eq 'surf_lp') {
+    if ($opt->{auto}) {
+        if ($type eq 'surf_lp') {
             $opt->{oz} = 1;
         }
         elsif ($type eq 'air_lp') {
             $opt->{oz} = 1;
         }
 
-        if($type =~ /_([pl]p)$/) {
+        if ($type =~ /_([pl]p)$/) {
             $opt->{max_field} = "max_$1";
         }
         elsif ($type =~ /^(ems|gxg)$/) {
@@ -141,7 +142,7 @@ sub calculate {
         }
     }
 
-    if($opt->{oz}) {
+    if ($opt->{oz}) {
         $weight *= 16;
     }
 
@@ -151,11 +152,11 @@ sub calculate {
 
     $weight = $opt->{min_weight} if $opt->{min_weight} > $weight;
 
-    if(my $modulo = $opt->{aggregate}) {
-        if($weight > $modulo) {
+    if (my $modulo = $opt->{aggregate}) {
+        if ($weight > $modulo) {
             my $cost = 0;
-            my $w = $weight;
-            while($w > $modulo) {
+            my $w    = $weight;
+            while ($w > $modulo) {
                 $w -= $modulo;
                 $cost += tag_postal($type, $modulo, $country, $opt);
             }
@@ -167,47 +168,42 @@ sub calculate {
     $opt->{table} ||= $type;
     $opt->{zone_table} ||= 'usps';
 
-    unless (defined $Vend::Database{$opt->{zone_table}}) {
-        logError("Postal lookup called, no database table named '%s'", $opt->{zone_table});
+    unless (defined $Vend::Database{ $opt->{zone_table} }) {
+        logError("Postal lookup called, no database table named '%s'",
+            $opt->{zone_table});
         return undef;
     }
 
-    unless (defined $Vend::Database{$opt->{table}}) {
-        logError("Postal lookup called, no database table named '%s'", $opt->{table});
+    unless (defined $Vend::Database{ $opt->{table} }) {
+        logError("Postal lookup called, no database table named '%s'",
+            $opt->{table});
         return undef;
     }
 
     $country =~ s/\W+//;
     $country = uc $country;
 
-    unless(length($country) == 2) {
+    unless (length($country) == 2) {
         return do_error(
-                        'Country code %s improper format for postal shipping.',
-                        $country,
-                        );
+            'Country code %s improper format for postal shipping.', $country,
+        );
     }
 
-
-    my $crecord = tag_data($opt->{zone_table}, undef, $country, {hash => 1})
-                    or return do_error(
-                            'Country code %s has no zone for postal shipping.',
-                            $country,
-                        );
+    my $crecord = tag_data($opt->{zone_table}, undef, $country, { hash => 1 })
+        or return do_error('Country code %s has no zone for postal shipping.',
+        $country,);
 
     $opt->{type_field} ||= $type;
 
-    my $zone = $crecord->{$opt->{type_field}};
+    my $zone = $crecord->{ $opt->{type_field} };
 
-    unless($zone =~ /^\w+$/) {
-        return do_error(
-                        'Country code %s has no zone for type %s.',
-                        $country,
-                        $type,
-                       );
+    unless ($zone =~ /^\w+$/) {
+        return do_error('Country code %s has no zone for type %s.',
+            $country, $type,);
     }
 
     $zone = "zone$zone" unless $zone =~ /^zone/ or $opt->{verbatim_zone};
-    
+
     my $maxits = $opt->{max_modulo} || 4;
     my $its = 1;
     my $cost;
@@ -215,12 +211,9 @@ sub calculate {
     do {
         $cost = tag_data($opt->{table}, $zone, $weight);
     } until $cost or $its++ > $maxits;
-        
-    return do_error(
-                    "Zero cost returned for mode %s, geo code %s.",
-                    $type,
-                    $country,
-                )
+
+    return do_error("Zero cost returned for mode %s, geo code %s.",
+        $type, $country,)
         unless $cost;
 
     return $cost;

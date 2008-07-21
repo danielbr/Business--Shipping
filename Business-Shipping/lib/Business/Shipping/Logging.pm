@@ -1,3 +1,4 @@
+
 =head1 NAME
 
 Business::Shipping::Logging - Interface between KLogging and Business::Shipping
@@ -19,18 +20,18 @@ use version; our $VERSION = qv('2.2.0');
 
 use strict;
 use warnings;
-use base ( 'Exporter' );
-use vars ( '@EXPORT', '$VERSION'  );
+use base ('Exporter');
+use vars ('@EXPORT', '$VERSION');
 use Business::Shipping::KLogging;
 use Business::Shipping::Config;
 
 @EXPORT = Business::Shipping::KLogging::subs;
 
-foreach my $_sub ( Business::Shipping::KLogging::subs ) {
+foreach my $_sub (Business::Shipping::KLogging::subs) {
     eval "\*$_sub = \*Business::Shipping::KLogging::$_sub";
 }
 
-*trace    = *Business::Shipping::KLogging::debug;
+*trace = *Business::Shipping::KLogging::debug;
 
 my $file         = Business::Shipping::Config::config_dir . '/log4perl.conf';
 my $caller_depth = 2;
@@ -45,14 +46,13 @@ Initializes KLogging with values from Business::Shipping::Config.
 
 =cut
 
-sub bs_init
-{
+sub bs_init {
     Business::Shipping::KLogging::init(
         file         => $file,
         caller_depth => $caller_depth,
         once         => 0,              #disabled for event_handlers() support
     );
-    
+
     return;
 }
 
@@ -62,19 +62,19 @@ Does the heavy lifting for Business::Shipping->log_level().
 
 =cut
 
-sub log_level
-{
-    my ( $class, $log_level ) = @_;
-    
+sub log_level {
+    my ($class, $log_level) = @_;
+
     return unless $log_level;
-    
+
     $log_level = uc $log_level;
-    
-    if ( grep( $log_level, @Business::Shipping::KLogging::Levels ) ) 
-        { $Business::Shipping::KLogging::Current_Level = $log_level; }
-    
+
+    if (grep($log_level, @Business::Shipping::KLogging::Levels)) {
+        $Business::Shipping::KLogging::Current_Level = $log_level;
+    }
+
     Business::Shipping::Logging::bs_init();
-    
+
     return $log_level;
 }
 
