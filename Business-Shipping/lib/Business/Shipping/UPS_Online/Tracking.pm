@@ -89,36 +89,48 @@ the same terms as Perl itself. See LICENSE for more info.
 
 use version; our $VERSION = qv('2.2.0');
 
-use strict;
-use warnings;
-use base('Business::Shipping::Tracking');
 use Business::Shipping::Logging;
 use XML::Simple 2.05;
 use XML::DOM;
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
-use Class::MethodMaker 2.0 [
-    new    => [qw/ -hash new /],
-    scalar => ['access_key'],
-    scalar => [
-        { -static => 1, -default => 'user_id, password, access_key' },
-        'Required'
-    ],
-    scalar =>
-        [{ -static => 1, -default => 'prod_url, test_url' }, 'Optional'],
+use Moose;
+extends 'Business::Shipping::Tracking';
 
-    #
-    # Overrides the Parent fields of the same name.
-    # TODO: Just remove the Parent ones -- the confusion is not worth the
-    # OO-purity.
-    #
+has 'access_key' => (is => 'rw');
+
+has 'prod_url' => (
+    is => 'rw',
+    default => 'https://www.ups.com/ups.app/xml/Track',
+);
+
+has 'test_url' => (
+    is => 'rw',
+    default => 'https://wwwcie.ups.com/ups.app/xml/Track',
+);
+
+
+sub Required {
+    return (
+        $_[0]->SUPER::Required,
+        qw/ user_id password access_key /
+    );
+}
+
+sub Optional {
+    return (
+        $_[0]->SUPER::Optional,
+        qw/ prod_url test_url /
+    );
+}
+
     scalar =>
-        [{ -default => 'https://www.ups.com/ups.app/xml/Track' }, 'prod_url'],
+        [{ -default => '' }, 'prod_url'],
     scalar => [
-        { -default => 'https://wwwcie.ups.com/ups.app/xml/Track' }, 'test_url'
+        { -default => '' }, 'test_url'
     ],
-];
+
 
 # UPS only allows tracking one package at a time, so each package
 # needs its own XML document.  Hopefully UPS will get the on same bus
