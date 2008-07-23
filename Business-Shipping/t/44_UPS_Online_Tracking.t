@@ -92,11 +92,13 @@ $tracker->submit() || logdie $tracker->user_error();
 my $hash = $tracker->results();
 
 use Data::Dumper;
-print Data::Dumper->Dump($hash);
+print Dumper($hash);
+#print Dumper($hash->{'1Z12345E0291980793'}{activity}[0]);
 
 is(ref($hash), 'HASH', 'Got results hash.');
-
-#is(ref($hash->{EJ958083578US}), 'HASH', 'Test tracking id in results.');
-#is(ref($hash->{EJ958083578US}{summary}), 'HASH', 'Has summary');
-#is($hash->{EJ958083578US}{summary}{status_description}, 'DELIVERED', 
-#    'Test tracking number status description is delivered.');
+is(ref($hash->{'1Z12345E0291980793'}), 'HASH', 'Test tracking id exists.');
+is(ref($hash->{'1Z12345E0291980793'}{summary}), 'HASH', 'Has summary');
+is($hash->{'1Z12345E0291980793'}{activity}[0]{status_description}, 
+    'DELIVERED', 'Long-form access to description is DELIVERED');
+is($hash->{EJ958083578US}{summary}{status_description}, 'DELIVERED', 
+    'Test tracking number status description is delivered.');

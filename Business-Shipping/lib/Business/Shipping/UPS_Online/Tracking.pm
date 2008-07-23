@@ -110,7 +110,6 @@ has 'test_url' => (
     default => 'https://wwwcie.ups.com/ups.app/xml/Track',
 );
 
-
 sub Required {
     return (
         $_[0]->SUPER::Required,
@@ -125,18 +124,10 @@ sub Optional {
     );
 }
 
-    scalar =>
-        [{ -default => '' }, 'prod_url'],
-    scalar => [
-        { -default => '' }, 'test_url'
-    ],
-
-
 # UPS only allows tracking one package at a time, so each package
 # needs its own XML document.  Hopefully UPS will get the on same bus
 # as USPS and allow multiple packages to be tracked in the same
 # request.
-
 sub _gen_single_package_xml {
     trace '()';
     my $self        = shift;
@@ -366,7 +357,7 @@ sub _handle_response {
 
     Business::Shipping::Tracking::_delete_undefined_keys($result_hash);
 
-    $self->results($shipment_id => $result_hash);
+    $self->results({$shipment_id => $result_hash});
 
     trace 'returning success';
     return $self->is_success(1);
