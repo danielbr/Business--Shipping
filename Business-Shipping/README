@@ -111,7 +111,6 @@ OPTIONAL MODULES
     See INSTALL.
 
      Cache::FileCache (any)
-     Clone (any)
      Crypt::SSLeay (any)
      LWP::UserAgent (any)
      XML::DOM (any)

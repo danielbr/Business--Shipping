@@ -140,7 +140,6 @@ The following modules are used by online rate estimation and tracking.  See
 INSTALL.
 
  Cache::FileCache (any)
- Clone (any)
  Crypt::SSLeay (any)
  LWP::UserAgent (any)
  XML::DOM (any)

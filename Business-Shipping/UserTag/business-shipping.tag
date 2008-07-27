@@ -42,7 +42,7 @@ Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.c
 The following modules are required for offline UPS rate estimation.  See doc/INSTALL.
 
  Business::Shipping::DataFiles (any)
- Class::MethodMaker::Engine (any)
+ Moose (any)
  Config::IniFiles (any)
  Log::Log4perl (any)
 
@@ -51,7 +51,6 @@ The following modules are required for offline UPS rate estimation.  See doc/INS
 The following modules are used by online rate estimation and tracking.  See doc/INSTALL.
 
  Cache::FileCache (any)
- Clone (any)
  Crypt::SSLeay (any)
  LWP::UserAgent (any)
  XML::DOM (any)

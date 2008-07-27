@@ -70,7 +70,6 @@ combined list for all shippers:
  Business::Shipping::DataFiles (any)
  Cache::FileCache (any)
  Moose (any)
- Clone (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)
  Getopt::Mixed (any)
