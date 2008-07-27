@@ -167,12 +167,13 @@ every first monday of the month.
 =item * Read the legal terms and conditions: 
 L<http://www.ups.com/content/us/en/resources/service/terms/index.html>
 
-=item * L<https://www.ups.com/servlet/registration>
+=item * L<https://www.ups.com/one-to-one/register>
 
 =item * After receiving a User Id and Password from UPS, login, then select
         "Get Access Key", then "Get XML Access Key".
 
-=item * Read more about UPS Online Tools at L<http://www.ec.ups.com>
+=item * Read more about UPS Online Tools: 
+L<http://www.ups.com/e_comm_access/toolintro>
 
 =back
 
@@ -180,9 +181,9 @@ L<http://www.ups.com/content/us/en/resources/service/terms/index.html>
 
 =over 4
 
-=item * L<http://www.uspswebtools.com/registration/>
+=item * L<https://secure.shippingapis.com/Registration/>
 
-=item * (More info at L<http://www.uspswebtools.com>)
+=item * (More info at L<http://www.usps.com/webtools/>)
 
 =item * The online signup will result in a testing-only account (only a small
         sample of queries will work).  
