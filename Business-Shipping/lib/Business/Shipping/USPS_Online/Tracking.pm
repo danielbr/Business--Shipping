@@ -61,8 +61,8 @@ the same terms as Perl itself. See LICENSE for more info.
 
 =cut
 
-use version; our $VERSION = qv('2.2.0');
 
+use Moose;
 use Business::Shipping::Logging;
 use XML::Simple 2.05;
 use XML::DOM;
@@ -71,7 +71,8 @@ use HTTP::Request;
 use HTTP::Response;
 use Date::Parse;
 use POSIX;
-use Moose;
+use version; our $VERSION = qv('2.2.0');
+
 extends 'Business::Shipping::Tracking';
 
 has 'prod_url' => (

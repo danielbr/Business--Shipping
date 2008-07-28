@@ -22,13 +22,13 @@ a few miscellaneous functions.
 
 =cut
 
-use version; our $VERSION = qv('2.2.0');
-
+use Moose;
 use Business::Shipping::RateRequest;
 use Business::Shipping::Shipment;
 use Business::Shipping::Package;
 use Business::Shipping::Logging;
-use Moose;
+use version; our $VERSION = qv('2.2.0');
+
 extends 'Business::Shipping::RateRequest';
 
 =item * perform_action()

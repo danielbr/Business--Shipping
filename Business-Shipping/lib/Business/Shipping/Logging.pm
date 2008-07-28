@@ -1,3 +1,4 @@
+package Business::Shipping::Logging;
 
 =head1 NAME
 
@@ -15,15 +16,13 @@ Wrapper for KLogger.
 
 =cut
 
-package Business::Shipping::Logging;
-use version; our $VERSION = qv('2.2.0');
-
 use strict;
 use warnings;
 use base ('Exporter');
 use vars ('@EXPORT', '$VERSION');
 use Business::Shipping::KLogging;
 use Business::Shipping::Config;
+use version; our $VERSION = qv('2.2.0');
 
 @EXPORT = Business::Shipping::KLogging::subs;
 

@@ -14,9 +14,9 @@ Business::Shipping::UPS_Offline::Package
 
 =cut
 
+use Moose;
 use version; our $VERSION = qv('2.2.0');
 
-use Moose;
 extends 'Business::Shipping::Package';
 
 1;

@@ -14,10 +14,10 @@ Business::Shipping::UPS_Online::Package
 
 =cut
 
-use version; our $VERSION = qv('2.2.0');
-
 use Moose;
 use Business::Shipping::Package;
+use version; our $VERSION = qv('2.2.0');
+
 extends 'Business::Shipping::Package';
 
 =item * packaging

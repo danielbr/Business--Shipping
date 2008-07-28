@@ -25,11 +25,11 @@ for hundredweight rates and a much higher rate than estimated.
 
 =cut
 
-use version; our $VERSION = qv('2.2.0');
-
 use Business::Shipping::Config;
 use Business::Shipping::Logging;
 use Moose;
+use version; our $VERSION = qv('2.2.0');
+
 extends 'Business::Shipping::Shipment::UPS';
 
 # TODO: Only allow tiers 1-8

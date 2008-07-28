@@ -1,9 +1,5 @@
 package Business::Shipping::UPS_Online::Tracking;
 
-# Business::Shipping::UPS_Online::Tracking - Abstract class for tracking shipments
-#
-# $Id: Tracking.pm 365 2007-05-21 04:45:06Z db-ship $
-#
 # Copyright (c) 2004 InfoGears Inc.  All Rights Reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
 #
@@ -87,15 +83,15 @@ the same terms as Perl itself. See LICENSE for more info.
 
 =cut
 
-use version; our $VERSION = qv('2.2.0');
-
+use Moose;
 use Business::Shipping::Logging;
 use XML::Simple 2.05;
 use XML::DOM;
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
-use Moose;
+use version; our $VERSION = qv('2.2.0');
+
 extends 'Business::Shipping::Tracking';
 
 has 'access_key' => (is => 'rw');

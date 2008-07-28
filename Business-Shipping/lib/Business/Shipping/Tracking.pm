@@ -1,13 +1,8 @@
-# Business::Shipping::Tracking - Abstract class
-#
-# $Id$
-#
 # Copyright (c) 2004-2007 Infogears Inc.  All rights reserved.
 # Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights
 # reserved.
 # This program is free software; you may redistribute it and/or modify it under
 # the same terms as Perl itself. See LICENSE for more info.
-#
 
 package Business::Shipping::Tracking;
 
@@ -45,14 +40,14 @@ Business::Tracking is an API for tracking shipments
 
 =cut
 
-use version; our $VERSION = qv('2.2.0');
-
 use Data::Dumper;
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Cache::FileCache;
 use Business::Shipping::Package;
 use Moose;
+use version; our $VERSION = qv('2.2.0');
+
 extends 'Business::Shipping';
 
 has 'is_success' => (is => 'rw');

@@ -12,15 +12,14 @@ Business::Shipping::RateRequest::Online - Abstract rates class
 
 =cut
 
-use version; our $VERSION = qv('2.2.0');
-
 use Moose;
-extends 'Business::Shipping::RateRequest';
-
 use Business::Shipping::Logging;
 use XML::Simple;
 use LWP::UserAgent;
 use Cache::FileCache;
+use version; our $VERSION = qv('2.2.0');
+
+extends 'Business::Shipping::RateRequest';
 
 has 'test_mode' => (is => 'rw');
 has 'user_id'   => (is => 'rw');

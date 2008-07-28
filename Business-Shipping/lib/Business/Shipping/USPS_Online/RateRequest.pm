@@ -1,3 +1,4 @@
+package Business::Shipping::USPS_Online::RateRequest;
 
 =head1 NAME
 
@@ -35,10 +36,7 @@ First Class Mail International
 
 =cut
 
-package Business::Shipping::USPS_Online::RateRequest;
-
-use version; our $VERSION = qv('2.2.0');
-
+use Moose;
 use Business::Shipping::Logging;
 use Business::Shipping::USPS_Online::Shipment;
 use Business::Shipping::USPS_Online::Package;
@@ -47,6 +45,7 @@ use XML::DOM;
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
+use version; our $VERSION = qv('2.2.0');
 
 =head2 domestic
 
@@ -58,7 +57,6 @@ to_zip, from_zip, to_city, from_city, to_country, from_country.
 
 =cut
 
-use Moose;
 extends 'Business::Shipping::RateRequest::Online';
 
 has 'domestic' => (is => 'rw', default => 1);

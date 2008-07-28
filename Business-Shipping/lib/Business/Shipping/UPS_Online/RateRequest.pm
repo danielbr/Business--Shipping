@@ -8,10 +8,6 @@ Business::Shipping::UPS_Online::RateRequest
 
 2.2.0
 
-=cut
-
-use version; our $VERSION = qv('2.2.0');
-
 =head1 REQUIRED FIELDS
 
 user_id
@@ -83,8 +79,6 @@ UPS_ACCESS_KEY
 =cut
 
 use Moose;
-extends 'Business::Shipping::RateRequest::Online';
-
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::UPS_Online::Package;
@@ -94,6 +88,9 @@ use XML::Simple 2.05;
 use Cache::FileCache;
 use LWP::UserAgent;
 use POSIX ('strftime');
+use version; our $VERSION = qv('2.2.0');
+
+extends 'Business::Shipping::RateRequest::Online';
 
 has 'shipment' => (
     is      => 'rw',

@@ -10,14 +10,6 @@ Business::Shipping::USPS_Online::Package
 
 =head1 METHODS
 
-=cut
-
-use version; our $VERSION = qv('2.2.0');
-
-use vars qw( $VERSION );
-use Business::Shipping::Logging;
-use Business::Shipping::Util;
-
 =head2 container
 
 Default 'None'. 
@@ -41,7 +33,12 @@ Default 'Package'.
 =cut
 
 use Moose;
+use version; our $VERSION = qv('2.2.0');
+use Business::Shipping::Logging;
+use Business::Shipping::Util;
+
 extends 'Business::Shipping::Package';
+
 has 'container'  => (is => 'rw', default => undef);
 has 'size'       => (is => 'rw', default => 'Regular');
 has 'machinable' => (is => 'rw', default => undef);

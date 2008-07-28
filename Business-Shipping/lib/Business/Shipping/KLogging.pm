@@ -19,12 +19,11 @@ Provides simple "dubug()", "error()", and etc. routines.
 
 =cut
 
-use version; our $VERSION = qv('2.2.0');
-
 use strict;
 use warnings;
 use Carp;
 use Log::Log4perl;
+use version; our $VERSION = qv('2.2.0');
 
 $Business::Shipping::KLogging::Current_Level = 'WARN';
 @Business::Shipping::KLogging::Levels = qw(DEBUG INFO WARN ERROR FATAL);

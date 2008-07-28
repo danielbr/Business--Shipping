@@ -38,12 +38,12 @@ See Business::Shipping POD for usage information.
 
 =cut
 
-use version; our $VERSION = qv('2.2.0');
+use Moose;
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Util;
 use Business::Shipping::USPS_Online::Package;
-use Moose;
+use version; our $VERSION = qv('2.2.0');
 extends 'Business::Shipping::Shipment';
 
 has 'packages' => (

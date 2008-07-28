@@ -1,3 +1,4 @@
+package Business::Shipping::Util;
 
 =head1 NAME
 
@@ -15,10 +16,6 @@ Misc functions.
 
 =cut
 
-package Business::Shipping::Util;
-
-use version; our $VERSION = qv('2.2.0');
-@EXPORT_OK = qw( looks_like_number unique );
 
 use strict;
 use warnings;
@@ -30,6 +27,10 @@ use File::Find;
 use File::Copy;
 use Fcntl ':flock';
 use English;
+use version; our $VERSION = qv('2.2.0');
+use vars qw(@EXPORT_OK);
+
+@EXPORT_OK = qw( looks_like_number unique );
 
 =head2 * currency( $opt, $amount )
 

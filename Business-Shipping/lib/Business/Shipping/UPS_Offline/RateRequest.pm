@@ -26,15 +26,12 @@ Business::Shipping::UPS_Offline::RateRequest
 
 =cut
 
-use version; our $VERSION = qv('2.2.0');
-
 use Business::Shipping::UPS_Offline::Shipment;
 use Business::Shipping::UPS_Offline::Package;
 use Business::Shipping::Logging;
 use Business::Shipping::Util;
 use Business::Shipping::Config;
 use POSIX qw{ ceil strftime };
-
 #use Fcntl ':flock';
 #use File::Find;
 #use File::Copy;
@@ -42,6 +39,7 @@ use POSIX qw{ ceil strftime };
 #use Data::Dumper;
 use Storable;
 use Cwd;
+use version; our $VERSION = qv('2.2.0');
 
 =head2 update
 

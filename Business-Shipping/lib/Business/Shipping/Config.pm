@@ -17,6 +17,9 @@ Config::IniFiles module.
 
 =cut
 
+use strict;
+use warnings;
+
 use constant DEFAULT_CONFIG_DIR => '/usr/local/B_Shipping/config';
 
 #use constant DEFAULT_CONFIG_DIR => '~_~DEFAULT_CONFIG_DIR~_~';
@@ -25,17 +28,15 @@ use constant DEFAULT_DATA_DIR => '/usr/local/B_Shipping/data';
 
 #use constant DEFAULT_DATA_DIR => '~_~DEFAULT_DATA_DIR~_~';
 
-use version; our $VERSION = qv('2.2.0');
-@EXPORT = qw/ cfg cfg_obj config_to_hash config_to_ary_of_hashes /;
-
-use strict;
-use warnings;
 use base ('Exporter');
 use Config::IniFiles;
 use Business::Shipping::Logging;
 use Carp;
 use Cwd;
+use version; our $VERSION = qv('2.2.0');
+use vars qw(@EXPORT);
 
+@EXPORT = qw/ cfg cfg_obj config_to_hash config_to_ary_of_hashes /;
 $Business::Shipping::Config::config_dir             = '';
 $Business::Shipping::Config::data_dir               = '';
 $Business::Shipping::Config::main_config_file       = '';
