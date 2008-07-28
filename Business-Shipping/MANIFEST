@@ -24,9 +24,6 @@ lib/Business/Shipping/RateRequest/Offline.pm
 lib/Business/Shipping/RateRequest/Online.pm
 lib/Business/Shipping/Shipment.pm
 lib/Business/Shipping/Shipment/UPS.pm
-lib/Business/Shipping/Template/Package.pm
-lib/Business/Shipping/Template/RateRequest.pm
-lib/Business/Shipping/Template/Shipment.pm
 lib/Business/Shipping/Tracking.pm
 lib/Business/Shipping/UPS_Offline/Package.pm
 lib/Business/Shipping/UPS_Offline/RateRequest.pm
@@ -58,6 +55,8 @@ t/40_UPS_Online.t
 t/41_UPS_Online_Shop.t
 t/42_UPS_Online_COD.t
 t/43_UPS_Online_Package.t
+t/44_UPS_Online_Tracking.t
+t/45_UPS_Offline.t
 t/61_Log4perl.t
 t/70_countries.t
 t/80_usertag_sim.t
