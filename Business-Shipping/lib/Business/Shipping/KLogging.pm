@@ -24,6 +24,7 @@ use warnings;
 use Carp;
 use Log::Log4perl;
 use version; our $VERSION = qv('2.2.0');
+use vars qw(%subs @subs);
 
 $Business::Shipping::KLogging::Current_Level = 'WARN';
 @Business::Shipping::KLogging::Levels = qw(DEBUG INFO WARN ERROR FATAL);
@@ -55,32 +56,66 @@ config/log4perl.conf.
 # Creates subs like the following:
 #
 # sub debug3 { _log( { priority => 'debug', prepend => 'debug3' }, @_ ); }
-BEGIN {
+#
+# Format:
+#   sub_name   priority:prepend_text
 
-    # Format:
-    #   sub_name   priority:prepend_text
+%subs = qw(
+    debug      debug
+    debug1     debug
+    debug2     debug:debug2
+    debug3     debug:debug3
+    trace      debug:trace1
+    trace1     debug:trace1
+    trace2     debug:trace2
+    trace3     debug:trace3
+    returning  debug:returning1
+    returning1 debug:returning1
+    returning2 debug:returning2
+    returning3 debug:returning3
+    info       info
+    warn       warn
+    error      error
+    fatal      fatal
+    logdie     logdie
+    logwarn    logwarn
+);
 
-    my %subs = qw(
-        debug      debug
-        debug1     debug
-        debug2     debug:debug2
-        debug3     debug:debug3
-        trace      debug:trace1
-        trace1     debug:trace1
-        trace2     debug:trace2
-        trace3     debug:trace3
-        returning  debug:returning1
-        returning1 debug:returning1
-        returning2 debug:returning2
-        returning3 debug:returning3
-        info       info
-        warn       warn
-        error      error
-        fatal      fatal
-        logdie     logdie
-        logwarn    logwarn
-    );
-    my @subs = sort keys %subs;
+@subs = sort keys %subs;
+
+while (my ($sub_name, $parameters) = each %subs) {
+    my ($priority, $prepend) = split(':', $parameters);
+    $prepend = $prepend ? $prepend . '::' : '';
+    eval "
+        sub $sub_name 
+        {
+            my \$opts;
+            my \@msg;
+
+            \$opts->{ priority } = '$priority';
+            \$opts->{ prepend  } = '$prepend'; 
+            
+            # If first element is a hash, add the options to our hash. 
+            
+            my \$ref_element_1 = ref \$_[ 0 ];
+            if ( \$ref_element_1 and \$ref_element_1 eq 'HASH' ) {
+                my \$in_opts = shift;
+                foreach my \$opt ( keys \%\$in_opts ) {
+                    \$opts->{ \$opt } = \$in_opts->{ \$opt };
+                }
+            }
+
+            \@msg = \@_;
+            
+            _log( 
+                \$opts,
+                \@_ 
+            );
+        }
+    ";
+}
+
+1;
 
 =head2 subs()
 
@@ -88,42 +123,10 @@ Gives the name of all the subs that this module has.
 
 =cut
 
-    sub subs {
-        return (@subs, 'uneval');
-    }
-
-    while (my ($sub_name, $parameters) = each %subs) {
-        my ($priority, $prepend) = split(':', $parameters);
-        $prepend = $prepend ? $prepend . '::' : '';
-        eval "
-            sub $sub_name 
-            {
-                my \$opts;
-                my \@msg;
-
-                \$opts->{ priority } = '$priority';
-                \$opts->{ prepend  } = '$prepend'; 
-                
-                # If first element is a hash, add the options to our hash. 
-                
-                my \$ref_element_1 = ref \$_[ 0 ];
-                if ( \$ref_element_1 and \$ref_element_1 eq 'HASH' ) {
-                    my \$in_opts = shift;
-                    foreach my \$opt ( keys \%\$in_opts ) {
-                        \$opts->{ \$opt } = \$in_opts->{ \$opt };
-                    }
-                }
-
-                \@msg = \@_;
-                
-                _log( 
-                    \$opts,
-                    \@_ 
-                );
-            }
-        ";
-    }
+sub subs {
+    return (@subs, 'uneval');
 }
+
 
 =head2 init
 
@@ -265,8 +268,6 @@ sub uneval {
 
     $s;
 }
-
-1;
 
 __END__
 
