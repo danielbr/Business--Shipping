@@ -26,6 +26,8 @@ Business::Shipping::UPS_Offline::RateRequest
 
 =cut
 
+use strict;
+use warnings;
 use Business::Shipping::UPS_Offline::Shipment;
 use Business::Shipping::UPS_Offline::Package;
 use Business::Shipping::Logging;
@@ -40,6 +42,7 @@ use POSIX qw{ ceil strftime };
 use Storable;
 use Cwd;
 use version; our $VERSION = qv('2.2.0');
+use Moose;
 
 =head2 update
 
@@ -80,8 +83,8 @@ Hash.  Format:
 
 =cut
 
-use Moose;
 extends 'Business::Shipping::RateRequest::Offline';
+
 has 'update' => (is => 'rw');
 has 'download' => (is => 'rw');
 has 'unzip' => (is => 'rw');

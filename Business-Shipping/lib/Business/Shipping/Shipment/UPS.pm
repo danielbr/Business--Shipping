@@ -12,10 +12,9 @@ $Rev: 280 $
 
 =cut
 
-$VERSION = do { my $r = q$Rev: 280 $; $r =~ /\d+/; $&; };
-
 use Moose;
 use Business::Shipping::Config;
+use version; our $VERSION = qv('2.2.0');
 
 =head2 to_residential()
 
