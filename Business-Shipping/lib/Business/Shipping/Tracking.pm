@@ -90,7 +90,7 @@ sub Optional {
         qw/ prod_url test_url /);
 }
 
-sub _delete_undefined_keys($) {
+sub _delete_undefined_keys {
     my $hash_ref = shift;
 
     map {
@@ -139,11 +139,11 @@ sub submit {
     $self->init(%args) if %args;
     $self->validate() or return;
 
-    my $cache = Cache::FileCache->new() if $self->cache();
-
     my $cache_results;
     if ($self->cache()) {
         trace('cache enabled');
+        
+        my $cache = Cache::FileCache->new();
 
         foreach my $id (@{ $self->tracking_ids }) {
             my $key = $self->gen_unique_key($id);

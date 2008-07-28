@@ -149,10 +149,10 @@ sub execute {
     $self->init(%args) if %args;
     $self->_massage_values();
     $self->validate() or return;
-    my $cache = Cache::FileCache->new() if $self->cache();
     if ($self->cache()) {
         trace('cache enabled');
-
+        my $cache = Cache::FileCache->new();
+        
         my $key = $self->gen_unique_key();
         debug "cache key = $key\n";
 
