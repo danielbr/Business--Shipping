@@ -8,9 +8,20 @@ package Business::Shipping;
 
 Business::Shipping - Rates and tracking for UPS and USPS
 
+=cut
+
+use Moose;
+use Carp;
+use Business::Shipping::Logging;
+use Business::Shipping::Util 'unique';
+
 =head1 VERSION
 
 Version 2.2.0
+
+=cut
+
+use version; our $VERSION = qv('2.2.0');
 
 =head1 SYNOPSIS
 
@@ -232,12 +243,6 @@ utilization.
 =head1 METHODS
 
 =cut
-
-use version; our $VERSION = qv('2.2.0');
-use Moose;
-use Carp;
-use Business::Shipping::Logging;
-use Business::Shipping::Util 'unique';
 
 has 'tx_type'         => (is => 'rw', isa => 'Str');
 has 'shipper'         => (is => 'rw', isa => 'Str');
@@ -512,7 +517,9 @@ sub _new_subclass {
 
     my $new_class = $class . '::' . $subclass;
 
-    if ($Business::Shipping::RuntimeLoad) { eval "use $new_class"; }
+    if ($Business::Shipping::RuntimeLoad) { 
+        eval "use $new_class"; 
+    }
 
     croak("Error when trying to use $new_class: \n\t$@") if $@;
 
