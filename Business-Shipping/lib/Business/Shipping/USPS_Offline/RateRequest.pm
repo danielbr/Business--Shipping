@@ -78,8 +78,6 @@ multiple 70-pound packages (plus one package with the remainder).
 
 =cut
 
-use version; our $VERSION = qv('2.2.0');
-
 use strict;
 use warnings;
 use base ('Business::Shipping::RateRequest::Offline');
@@ -90,6 +88,7 @@ use Business::Shipping::Data;
 use Business::Shipping::Util;
 use Business::Shipping::Config;
 use Data::Dumper;
+use version; our $VERSION = qv('2.2.0');
 use Class::MethodMaker 2.0 [new => [qw/ -hash new /]];
 
 sub calculate {

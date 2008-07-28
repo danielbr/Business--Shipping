@@ -168,7 +168,8 @@ sub pickup_type {
     $self->{'pickup_type'} = shift if @_;
 
     # Translate alphas to numeric.
-    my $alpha = 1 if ($self->{'pickup_type'} =~ /\w+/);
+    my $alpha;
+    $alpha = 1 if ($self->{'pickup_type'} =~ /\w+/);
     if ($alpha) {
         my %pickup_type_map = (
             'daily pickup'       => '01',
@@ -334,7 +335,8 @@ sub _gen_request_xml {
     }
     $shipment_tree{Package} = \@packages if (@packages > 0);
 
-    my $req_option = ucfirst $shipment->service
+    my $req_option;
+    $req_option = ucfirst $shipment->service
         if ucfirst $shipment->service eq 'Shop';
 
     my $request_tree = {

@@ -1193,7 +1193,7 @@ Note: this is not an object-oriented method.
 sub readfile {
     my ($file) = @_;
 
-    return undef unless open(READIN, "< $file");
+    return unless open(READIN, "< $file");
 
     # TODO: Use English;
 

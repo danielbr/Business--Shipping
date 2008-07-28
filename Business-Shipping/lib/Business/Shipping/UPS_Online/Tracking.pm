@@ -215,7 +215,7 @@ sub _gen_request {
     my $request_xml = $self->_gen_request_xml();
 
     if (!defined($request_xml) || scalar(@$request_xml) == 0) {
-        return undef;
+        return;
     }
 
     # Return an array of http request objects with the
