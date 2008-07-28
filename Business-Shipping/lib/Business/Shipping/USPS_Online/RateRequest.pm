@@ -406,6 +406,11 @@ sub _handle_response {
     # 'Priority Mail Flat Rate Box (11.25" x 8.75" x 6")' and the other for
     # 'Priority Mail Flat Rate Box (14" x 12" x 3.5")'
     if ($self->domestic()) {
+        if (ref($response_tree->{Package}) eq 'ARRAY') {
+            $self->user_error("Sorry, multiple packages not supported yet.");
+            return $self->is_success(0);
+        }
+        
         $charges = $response_tree->{Package}->{Postage};
 
         #debug('response_tree = ' . Dumper($response_tree));

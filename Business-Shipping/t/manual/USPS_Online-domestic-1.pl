@@ -2,27 +2,38 @@
 
 use strict;
 use warnings;
-
+use Data::Dumper;
 use Business::Shipping;
 
-Business::Shipping->log_level( 'debug' );
+#Business::Shipping->log_level( 'info' );
 
-my $rate_request = Business::Shipping->rate_request( shipper => 'USPS_Online' );
-
-my $results = $rate_request->submit(
+my $rate_req = Business::Shipping->rate_request(
+    shipper => 'USPS_Online',
     user_id    => $ENV{ USPS_USER_ID },
-    password   => $ENV{ USPS_PASSWORD },    
+    password   => $ENV{ USPS_PASSWORD },
     cache      => 0,
     service    => 'Priority',
-    weight     => 70,
     from_zip   => '98682',
-    to_zip     => '98270',
-    size       => 'LARGE',
-    #container  => 'Flat Rate Box',
-    #machinable => 'FALSE',
-    
-) or die $rate_request->user_error();
+    to_zip     => '98270',    
+);
 
-use Data::Dumper;
-print Dumper( $rate_request );
-print $rate_request->total_charges() . "\n";
+# 1st package.
+$rate_req->init(
+    weight     => 70,
+    size       => 'LARGE',
+    container  => 'Flat Rate Box',
+);
+
+$rate_req->shipment->add_package(
+    weight     => 30,
+    size       => 'LARGE',
+    container  => 'Flat Rate Box',
+);
+
+
+
+$rate_req->submit() or die $rate_req->user_error();
+
+#print Dumper($rate_req);
+#print Dumper($results);
+print $rate_req->total_charges() . "\n";
