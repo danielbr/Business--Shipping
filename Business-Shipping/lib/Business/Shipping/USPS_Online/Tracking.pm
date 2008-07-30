@@ -179,7 +179,7 @@ sub _gen_request {
     return @reqs;
 }
 
-sub cleanup_xml_hash($) {
+sub cleanup_xml_hash {
     my $hash_ref = shift;
 
     map { $hash_ref->{$_} = undef; } grep {
