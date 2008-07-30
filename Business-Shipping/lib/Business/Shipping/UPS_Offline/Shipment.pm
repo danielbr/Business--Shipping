@@ -23,6 +23,8 @@ hundredweight shipping, then do not calculate hundredweight.  This is to guard a
 actual shipment weight turns out to be lower than what is used for estimation, resulting in failed eligibility
 for hundredweight rates and a much higher rate than estimated.
 
+=back
+
 =cut
 
 use Business::Shipping::Config;
@@ -146,8 +148,6 @@ sub packages_push {
 1;
 
 __END__
-
-=back
 
 =head1 AUTHOR
 
