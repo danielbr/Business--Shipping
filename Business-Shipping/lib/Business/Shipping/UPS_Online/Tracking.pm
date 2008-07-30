@@ -219,26 +219,19 @@ sub _gen_request {
     }
 
     # Return an array of http request objects with the
-
-    return map {
+    my @http_request_objects;
+    for my $xml_request (@$request_xml) {
         my $request = HTTP::Request->new('POST', $self->_gen_url());
         $request->header(
             'content-type' => 'application/x-www-form-urlencoded');
-        $request->header('content-length' => length($_));
-        $request->content($_);
-        $_ = $request;
-
-        #
+        $request->header('content-length' => length($xml_request));
+        $request->content($xml_request);
         # Large debug
-        #
-        debug('HTTP Request: ' . $request->as_string());
-
-        #
-
-        $_;
-
-    } @$request_xml;
-
+        trace('HTTP Request: ' . $request->as_string());
+        push @http_request_objects, $request;
+    }
+    
+    return @http_request_objects;
 }
 
 sub _handle_response {
