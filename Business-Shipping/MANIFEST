@@ -32,7 +32,6 @@ lib/Business/Shipping/UPS_Online/Package.pm
 lib/Business/Shipping/UPS_Online/RateRequest.pm
 lib/Business/Shipping/UPS_Online/Shipment.pm
 lib/Business/Shipping/UPS_Online/Tracking.pm
-lib/Business/Shipping/USPS_Offline/RateRequest.pm
 lib/Business/Shipping/USPS_Online/Package.pm
 lib/Business/Shipping/USPS_Online/RateRequest.pm
 lib/Business/Shipping/USPS_Online/Shipment.pm
