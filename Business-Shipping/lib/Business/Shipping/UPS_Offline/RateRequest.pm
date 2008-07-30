@@ -1192,15 +1192,15 @@ Note: this is not an object-oriented method.
 
 sub readfile {
     my ($file) = @_;
-
-    return unless open(READIN, "< $file");
+    my $readin_fh;
+    return unless open($readin_fh, "< $file");
 
     # TODO: Use English;
 
     undef $/;
 
-    my $contents = <READIN>;
-    close(READIN);
+    my $contents = <$readin_fh>;
+    close($readin_fh);
 
     return $contents;
 }
@@ -1213,14 +1213,15 @@ Note: this is not an object-oriented method.
 
 sub writefile {
     my ($filename, $contents) = @_;
-
-    return unless open(OUT, "> $filename");
+    
+    my $out_fh;
+    return unless open($out_fh, "> $filename");
 
     # TODO: Use English;
 
     undef $/;
 
-    print OUT $contents;
+    print $out_fh $contents;
 
     return $contents;
 }

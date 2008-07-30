@@ -238,7 +238,7 @@ by Mike Heins E<lt>F<mike@perusion.com>E<gt>.
 
 sub uneval {
     my ($self, $o) = @_;    # recursive
-    my ($r, $s, $i, $key, $value);
+    my ($r, $s, $key, $value);
 
     local ($^W) = 0;
     no warnings;            #supress 'use of unitialized values'
@@ -250,7 +250,7 @@ sub uneval {
     }
     elsif ($r eq 'ARRAY') {
         $s = "[";
-        foreach $i (0 .. $#$o) {
+        for my $i (0 .. $#$o) {
             $s .= uneval($o->[$i]) . ",";
         }
         $s .= "]";
