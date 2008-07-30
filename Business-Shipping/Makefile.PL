@@ -33,8 +33,12 @@ $::UseDefaults = $ENV{BS_USE_DEFAULTS} ? 1 : 0;
 $::UseOptions = 0;
 
 if (@ARGV) {
-    eval "use Getopt::Mixed";
-    if (!$@) {
+    eval { require Getopt::Mixed };
+    if ($@) {
+        warn "Getopt::Mixed required in order to use command line arguments.";
+    }
+    else {
+        import Getopt::Mixed;
         $::UseOptions = 1;
     }
 }
