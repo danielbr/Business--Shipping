@@ -113,15 +113,6 @@ sub _delete_undefined_keys {
 L<Business::Shipping::UPS_Online::Tracking>
 L<Business::Shipping::USPS_Online::Tracking>
 
-=head1 COPYRIGHT AND LICENCE
-
-Copyright (c) 2004-2007 InfoGears Inc. L<http://www.infogears.com>  All rights reserved.
-
-Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-
-This program is free software; you may redistribute it and/or modify it under
-the same terms as Perl itself. See LICENSE for more info.
-
 =cut
 
 sub submit {

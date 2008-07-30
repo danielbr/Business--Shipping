@@ -3,9 +3,6 @@ Variable USERTAG_INCIDENT 1
 Message -i Loading [incident] usertag...
 UserTag incident AddAttr
 UserTag incident Routine     <<EOR
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved. 
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
 =head1 NAME
 
 [incident] - Interchange usertag for incident alerts
@@ -58,13 +55,13 @@ __END__
 
 =head1 AUTHOR
 
-Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+Daniel Browning, db@endpoint.com, L<http://www.endpoint.com/>
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-This program is free software; you may redistribute it and/or modify it under
-the same terms as Perl itself. See LICENSE for more info.
+Copyright 2003-2008 Daniel Browning <db@endpoint.com>. All rights reserved.
+This program is free software; you may redistribute it and/or modify it 
+under the same terms as Perl itself. See LICENSE for more info.
 
 =cut
 

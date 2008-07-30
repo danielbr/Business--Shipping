@@ -1,8 +1,8 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
+# Copyright 2003-2008 Daniel Browning <db@endpoint.com>. All rights reserved.
+# This program is free software; you may redistribute it and/or modify it 
+# under the same terms as Perl itself. See LICENSE for more info.
 
 ifndef DEF_USERTAG_BUSINESS_SHIPPING
 Variable DEF_USERTAG_BUSINESS_SHIPPING     1
