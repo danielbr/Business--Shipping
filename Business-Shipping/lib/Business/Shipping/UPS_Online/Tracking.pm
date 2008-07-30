@@ -97,27 +97,21 @@ extends 'Business::Shipping::Tracking';
 has 'access_key' => (is => 'rw');
 
 has 'prod_url' => (
-    is => 'rw',
+    is      => 'rw',
     default => 'https://www.ups.com/ups.app/xml/Track',
 );
 
 has 'test_url' => (
-    is => 'rw',
+    is      => 'rw',
     default => 'https://wwwcie.ups.com/ups.app/xml/Track',
 );
 
 sub Required {
-    return (
-        $_[0]->SUPER::Required,
-        qw/ user_id password access_key /
-    );
+    return ($_[0]->SUPER::Required, qw/ user_id password access_key /);
 }
 
 sub Optional {
-    return (
-        $_[0]->SUPER::Optional,
-        qw/ prod_url test_url /
-    );
+    return ($_[0]->SUPER::Optional, qw/ prod_url test_url /);
 }
 
 # UPS only allows tracking one package at a time, so each package
@@ -226,11 +220,12 @@ sub _gen_request {
             'content-type' => 'application/x-www-form-urlencoded');
         $request->header('content-length' => length($xml_request));
         $request->content($xml_request);
+
         # Large debug
         trace('HTTP Request: ' . $request->as_string());
         push @http_request_objects, $request;
     }
-    
+
     return @http_request_objects;
 }
 
@@ -346,7 +341,7 @@ sub _handle_response {
 
     Business::Shipping::Tracking::_delete_undefined_keys($result_hash);
 
-    $self->results({$shipment_id => $result_hash});
+    $self->results({ $shipment_id => $result_hash });
 
     trace 'returning success';
     return $self->is_success(1);

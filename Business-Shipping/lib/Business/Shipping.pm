@@ -517,8 +517,8 @@ sub _new_subclass {
 
     my $new_class = $class . '::' . $subclass;
 
-    if ($Business::Shipping::RuntimeLoad) { 
-        eval "use $new_class"; 
+    if ($Business::Shipping::RuntimeLoad) {
+        eval "use $new_class";
     }
 
     croak("Error when trying to use $new_class: \n\t$@") if $@;

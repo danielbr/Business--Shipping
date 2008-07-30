@@ -397,10 +397,10 @@ sub _handle_response {
     # TODO: Get the pricing routines to work for multi-packages (not just
     # the default_package()
     #
-    # Domestic *does* tell you the price of all services if you ask for 
-    # service "ALL". If you ask for a specific service, it still might send 
-    # more then one price. For example, if you ask for "Flat Rate Box" 
-    # service, it will send you two prices, one for 
+    # Domestic *does* tell you the price of all services if you ask for
+    # service "ALL". If you ask for a specific service, it still might send
+    # more then one price. For example, if you ask for "Flat Rate Box"
+    # service, it will send you two prices, one for
     # 'Priority Mail Flat Rate Box (11.25" x 8.75" x 6")' and the other for
     # 'Priority Mail Flat Rate Box (14" x 12" x 3.5")'
     if ($self->domestic()) {
@@ -408,7 +408,7 @@ sub _handle_response {
             $self->user_error("Sorry, multiple packages not supported yet.");
             return $self->is_success(0);
         }
-        
+
         $charges = $response_tree->{Package}->{Postage};
 
         #debug('response_tree = ' . Dumper($response_tree));

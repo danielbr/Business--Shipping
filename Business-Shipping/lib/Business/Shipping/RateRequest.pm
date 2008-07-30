@@ -152,7 +152,7 @@ sub execute {
     if ($self->cache()) {
         trace('cache enabled');
         my $cache = Cache::FileCache->new();
-        
+
         my $key = $self->gen_unique_key();
         debug "cache key = $key\n";
 
@@ -227,8 +227,7 @@ sub execute {
         my $sum_rate     = 0;
         my $last_charges = 0;
 
-        $self->shipment->packages->[$p_idx]
-            ->weight($max_weight_per_package);
+        $self->shipment->packages->[$p_idx]->weight($max_weight_per_package);
         $running_weight -= $max_weight_per_package;
 
         for (my $c = 1; $c <= $number_of_packages; $c++) {

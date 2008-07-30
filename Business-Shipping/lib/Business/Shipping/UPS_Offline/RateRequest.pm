@@ -34,6 +34,7 @@ use Business::Shipping::Logging;
 use Business::Shipping::Util;
 use Business::Shipping::Config;
 use POSIX qw{ ceil strftime };
+
 #use Fcntl ':flock';
 #use File::Find;
 #use File::Copy;
@@ -85,32 +86,32 @@ Hash.  Format:
 
 extends 'Business::Shipping::RateRequest::Offline';
 
-has 'update' => (is => 'rw');
-has 'download' => (is => 'rw');
-has 'unzip' => (is => 'rw');
-has 'convert' => (is => 'rw');
+has 'update'             => (is => 'rw');
+has 'download'           => (is => 'rw');
+has 'unzip'              => (is => 'rw');
+has 'convert'            => (is => 'rw');
 has 'is_from_west_coast' => (is => 'rw');
-has 'zone_file' => (is => 'rw');
-has 'zone_name' => (is => 'rw');
-has 'type' => (is => 'rw');
-has 'zone' => (is => 'rw');
+has 'zone_file'          => (is => 'rw');
+has 'zone_name'          => (is => 'rw');
+has 'type'               => (is => 'rw');
+has 'zone'               => (is => 'rw');
 
 has 'shipment' => (
     is      => 'rw',
     isa     => 'Business::Shipping::UPS_Offline::Shipment',
     default => sub { Business::Shipping::UPS_Offline::Shipment->new() },
     handles => [
-                'from_country',   'from_country_abbrev',
-                'to_country',     'to_country_abbrev',
-                'to_ak_or_hi',    'from_zip',
-                'to_zip',         'packages',
-                'weight',         'shipper',
-                'domestic',       'intl',
-                'domestic_or_ca', 'from_canada',
-                'to_canada',      'from_ak_or_hi',
-                'from_state',     'from_state_abbrev',
-                'tier',           'service',
-                'service_nick',   'service_name',
+        'from_country',   'from_country_abbrev',
+        'to_country',     'to_country_abbrev',
+        'to_ak_or_hi',    'from_zip',
+        'to_zip',         'packages',
+        'weight',         'shipper',
+        'domestic',       'intl',
+        'domestic_or_ca', 'from_canada',
+        'to_canada',      'from_ak_or_hi',
+        'from_state',     'from_state_abbrev',
+        'tier',           'service',
+        'service_nick',   'service_name',
     ]
 );
 
@@ -118,7 +119,7 @@ has 'shipment' => (
 has 'Zones' => (is => 'rw');
 has 'Data' => (is => 'rw', isa => 'HashRef', default => sub { {} });
 has 'Fuel_surcharge_ground' => (is => 'rw');
-has 'Fuel_surcharge_air' => (is => 'rw');
+has 'Fuel_surcharge_air'    => (is => 'rw');
 
 sub _init {
     $_[0]->set_fuel_surcharge();
@@ -807,8 +808,8 @@ sub calc_cost {
             #    $weight = $weight * $zref->{mult_factor};
             #}
 
-            # Tables don't cover fractional pounds, and UPS specifies 
-            # "at least", so any fraction should cause a jump to the next 
+            # Tables don't cover fractional pounds, and UPS specifies
+            # "at least", so any fraction should cause a jump to the next
             # integer.
             $weight = POSIX::ceil($weight);
 
@@ -1192,7 +1193,7 @@ Note: this is not an object-oriented method.
 
 sub readfile {
     my ($file) = @_;
-    
+
     return unless open my $readin_fh, '<', $file;
 
     # TODO: Use English;
@@ -1213,7 +1214,7 @@ Note: this is not an object-oriented method.
 
 sub writefile {
     my ($filename, $contents) = @_;
-    
+
     return unless open my $out_fh, '>', $filename;
 
     # TODO: Use English;

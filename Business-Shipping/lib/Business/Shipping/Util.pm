@@ -16,7 +16,6 @@ Misc functions.
 
 =cut
 
-
 use strict;
 use warnings;
 use base ('Exporter');

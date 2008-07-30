@@ -122,7 +122,6 @@ sub to_country {
     return $self->_to_country();
 }
 
-
 =head2 packages_push
 
 Syntatic sugar to avoid push @{$self->packages()}, $new_package;
@@ -131,10 +130,9 @@ Syntatic sugar to avoid push @{$self->packages()}, $new_package;
 
 sub packages_push {
     my ($self, $new_package) = @_;
-    push @{$self->packages()}, $new_package;
+    push @{ $self->packages() }, $new_package;
     return;
 }
-
 
 1;
 

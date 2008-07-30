@@ -61,7 +61,6 @@ the same terms as Perl itself. See LICENSE for more info.
 
 =cut
 
-
 use Moose;
 use Business::Shipping::Logging;
 use XML::Simple 2.05;
@@ -76,12 +75,12 @@ use version; our $VERSION = qv('2.2.0');
 extends 'Business::Shipping::Tracking';
 
 has 'prod_url' => (
-    is => 'rw',
+    is      => 'rw',
     default => 'http://production.shippingapis.com/ShippingAPI.dll'
 );
 
 has 'test_url' => (
-    is => 'rw',
+    is      => 'rw',
     default => 'http://testing.shippingapis.com/ShippingAPItest.dll'
 );
 
@@ -303,7 +302,7 @@ sub _handle_response {
             };
 
             Business::Shipping::Tracking::_delete_undefined_keys($result);
-            $self->results({$id => $result});
+            $self->results({ $id => $result });
         }
     }
 

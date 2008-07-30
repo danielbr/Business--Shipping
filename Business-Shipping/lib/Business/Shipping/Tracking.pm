@@ -51,17 +51,17 @@ use version; our $VERSION = qv('2.2.0');
 extends 'Business::Shipping';
 
 has 'is_success' => (is => 'rw');
-has 'cache' => (is => 'rw');
-has 'invalid' => (is => 'rw');
-has 'test_mode' => (is => 'rw');
-has 'user_id' => (is => 'rw');
-has 'password' => (is => 'rw');
+has 'cache'      => (is => 'rw');
+has 'invalid'    => (is => 'rw');
+has 'test_mode'  => (is => 'rw');
+has 'user_id'    => (is => 'rw');
+has 'password'   => (is => 'rw');
 has 'cache_time' => (is => 'rw');
 
 # Used to be a static class attribute
-has 'results' => (is => 'rw', isa => 'HashRef');
+has 'results'       => (is => 'rw', isa => 'HashRef');
 has '_tracking_ids' => (is => 'rw', isa => 'ArrayRef');
-has 'packages' => (
+has 'packages'      => (
     is         => 'rw',
     isa        => 'ArrayRef[Business::Shipping::Package]',
     default    => sub { [Business::Shipping::Package->new()] },
@@ -69,25 +69,23 @@ has 'packages' => (
 );
 
 has 'user_agent' => (
-    is         => 'rw',
-    isa        => 'LWP::UserAgent',
-    default    => sub { LWP::UserAgent->new() },
+    is      => 'rw',
+    isa     => 'LWP::UserAgent',
+    default => sub { LWP::UserAgent->new() },
 );
 
 has 'response' => (
-    is         => 'rw',
-    isa        => 'HTTP::Response',
-    default    => sub { HTTP::Response->new() },
+    is      => 'rw',
+    isa     => 'HTTP::Response',
+    default => sub { HTTP::Response->new() },
 );
 
 sub Required {
-    return ($_[0]->SUPER::Required,
-        qw/ user_id password /);
+    return ($_[0]->SUPER::Required, qw/ user_id password /);
 }
 
 sub Optional {
-    return ($_[0]->SUPER::Required,
-        qw/ prod_url test_url /);
+    return ($_[0]->SUPER::Required, qw/ prod_url test_url /);
 }
 
 sub _delete_undefined_keys {
@@ -142,7 +140,7 @@ sub submit {
     my $cache_results;
     if ($self->cache()) {
         trace('cache enabled');
-        
+
         my $cache = Cache::FileCache->new();
 
         foreach my $id (@{ $self->tracking_ids }) {
@@ -232,7 +230,7 @@ sub validate {
     my ($self) = @_;
     trace '()';
 
-    if (scalar(@{$self->tracking_ids()}) == 0) {
+    if (scalar(@{ $self->tracking_ids() }) == 0) {
         $self->invalid(1);
         $self->user_error("No tracking ids passed to track");
         return 0;
@@ -271,18 +269,18 @@ as syntactic sugar.
 
 sub tracking_ids {
     my $self = shift;
-    
+
     # Check for new Moose-style arrayref syntax.
     $self->_tracking_ids($_[0]) if (ref($_[0]) eq 'ARRAY');
-    
+
     # Old-stay list input
     $self->_tracking_ids(\@_) if @_;
-    
+
     # Read-only usage.
-    return @{$self->_tracking_ids()}
+    return @{ $self->_tracking_ids() }
         if wantarray();
-    
-    return $self->_tracking_ids();    
+
+    return $self->_tracking_ids();
 }
 
 =head2 results_exists
