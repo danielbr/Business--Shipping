@@ -1192,8 +1192,8 @@ Note: this is not an object-oriented method.
 
 sub readfile {
     my ($file) = @_;
-    my $readin_fh;
-    return unless open($readin_fh, "< $file");
+    
+    return unless open my $readin_fh, '<', $file;
 
     # TODO: Use English;
 
@@ -1214,8 +1214,7 @@ Note: this is not an object-oriented method.
 sub writefile {
     my ($filename, $contents) = @_;
     
-    my $out_fh;
-    return unless open($out_fh, "> $filename");
+    return unless open my $out_fh, '>', $filename;
 
     # TODO: Use English;
 
