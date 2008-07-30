@@ -8,9 +8,9 @@ NOTES
     signup for a username and password.
 
   Choosing your bundle
-    If you are planning on using all of the shipping methods, install
+    If you would like to use UPS and USPS, install
     "Bundle::Business::Shipping". However, you may opt instead to install
-    the required modules for only one shipper:
+    the required modules for only one:
 
     *   "Bundle::Business::Shipping::UPS_Offline"
 
@@ -27,12 +27,10 @@ CPAN INSTALLATION
 
     All shippers:
 
-     perl -MCPAN -e 'force install XML::Parser'
      perl -MCPAN -e 'install Bundle::Business::Shipping'
 
     UPS_Online only:
 
-     perl -MCPAN -e 'force install XML::Parser'
      perl -MCPAN -e 'install Bundle::Business::Shipping::UPS_Offline'
 
     UPS_Offline only:
@@ -41,7 +39,6 @@ CPAN INSTALLATION
 
     USPS_Online only:
 
-     perl -MCPAN -e 'force install XML::Parser'
      perl -MCPAN -e 'install Bundle::Business::Shipping::USPS_Online'
 
 MANUAL INSTALLATION

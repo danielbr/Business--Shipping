@@ -134,17 +134,18 @@ GETTING STARTED
         <http://www.ups.com/content/us/en/resources/service/terms/index.html
         >
 
-    *   <https://www.ups.com/servlet/registration>
+    *   <https://www.ups.com/one-to-one/register>
 
     *   After receiving a User Id and Password from UPS, login, then select
         "Get Access Key", then "Get XML Access Key".
 
-    *   Read more about UPS Online Tools at <http://www.ec.ups.com>
+    *   Read more about UPS Online Tools:
+        <http://www.ups.com/e_comm_access/toolintro>
 
   USPS_Online: For United States Postal Service (USPS): Free signup
-    *   <http://www.uspswebtools.com/registration/>
+    *   <https://secure.shippingapis.com/Registration/>
 
-    *   (More info at <http://www.uspswebtools.com>)
+    *   (More info at <http://www.usps.com/webtools/>)
 
     *   The online signup will result in a testing-only account (only a
         small sample of queries will work).
@@ -321,11 +322,11 @@ CREDITS
     file.
 
 AUTHOR
-    Daniel Browning, db@kavod.com
+    Daniel Browning, db@endpoint.com, <http://www.endpoint.com/>
 
 COPYRIGHT AND LICENCE
-    Copyright (c) 2003-2006 Daniel Browning <db@kavod.com>. All rights
-    reserved. This program is free software; you can redistribute it and/or
-    modify it under the same terms as Perl itself. See "LICENSE" for more
+    Copyright 2003-2008 Daniel Browning <db@endpoint.com>. All rights
+    reserved. This program is free software; you may redistribute it and/or
+    modify it under the same terms as Perl itself. See LICENSE for more
     info.
 

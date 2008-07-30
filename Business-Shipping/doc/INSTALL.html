@@ -50,9 +50,8 @@ username and password.</p>
 <p>
 </p>
 <h2><a name="choosing_your_bundle">Choosing your bundle</a></h2>
-<p>If you are planning on using all of the shipping methods, install 
-<a href="#bundle_business_shipping"><code>Bundle::Business::Shipping</code></a>.  However, you may opt instead to 
-install the required modules for only one shipper:</p>
+<p>If you would like to use UPS and USPS, install <a href="#bundle_business_shipping"><code>Bundle::Business::Shipping</code></a>. 
+However, you may opt instead to install the required modules for only one:</p>
 <ul>
 <li><strong><a name="bundle_business_shipping_ups_offline" class="item"><code>Bundle::Business::Shipping::UPS_Offline</code></a></strong>
 
@@ -71,18 +70,15 @@ install the required modules for only one shipper:</p>
 you may need to install Expat before XML::Parser will install.</p>
 <p>All shippers:</p>
 <pre>
- perl -MCPAN -e 'force install XML::Parser'
  perl -MCPAN -e 'install Bundle::Business::Shipping'</pre>
 <p>UPS_Online only:</p>
 <pre>
- perl -MCPAN -e 'force install XML::Parser'
  perl -MCPAN -e 'install Bundle::Business::Shipping::UPS_Offline'</pre>
 <p>UPS_Offline only:</p>
 <pre>
  perl -MCPAN -e 'install Bundle::Business::Shipping::UPS_Offline'</pre>
 <p>USPS_Online only:</p>
 <pre>
- perl -MCPAN -e 'force install XML::Parser'
  perl -MCPAN -e 'install Bundle::Business::Shipping::USPS_Online'</pre>
 <p>
 </p>

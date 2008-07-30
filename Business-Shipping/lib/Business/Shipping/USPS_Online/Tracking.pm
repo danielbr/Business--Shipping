@@ -1,11 +1,5 @@
 package Business::Shipping::USPS_Online::Tracking;
 
-# Copyright (c) 2004 InfoGears Inc.  All Rights Reserved.
-# Portions Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-#
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
-
 =head1 NAME
 
 Business::Shipping::USPS_Online::Tracking - A USPS module for Tracking Packages
@@ -318,3 +312,16 @@ sub gen_unique_key {
 }
 
 1;
+
+=head1 AUTHOR
+
+Rusty Conover <rconover@infogears.com>
+
+=head1 COPYRIGHT AND LICENCE
+
+Copyright 2004-2007 Infogears Inc. Portions Copyright 2003-2008 Daniel 
+Browning <db@endpoint.com>. All rights reserved. This program is free 
+software; you may redistribute it and/or modify it under the same terms as 
+Perl itself. See LICENSE for more info.
+
+=cut

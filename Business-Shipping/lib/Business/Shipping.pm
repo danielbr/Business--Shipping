@@ -1,6 +1,6 @@
-# Copyright (c) 2003-2008 Daniel Browning <db@kavod.com>. All rights reserved.
-# This program is free software; you may redistribute it and/or modify it under
-# the same terms as Perl itself. See LICENSE for more info.
+# Copyright 2003-2008 Daniel Browning <db@endpoint.com>. All rights reserved.
+# This program is free software; you may redistribute it and/or modify it
+# under the same terms as Perl itself. See LICENSE for more info.
 
 package Business::Shipping;
 
@@ -631,9 +631,9 @@ Backpan (old releases): L<http://backpan.cpan.org/authors/id/D/DB/DBROWNING/>
 
 =head1 SUPPORT
 
-This module is supported by the author.  Please report any bugs or feature 
+This module is supported by the author. Please report any bugs or feature 
 requests to C<bug-business-shipping@rt.cpan.org>, or through the web interface 
-at L<http://rt.cpan.org>.  The author will be notified, and then you'll 
+at L<http://rt.cpan.org>. The author will be notified, and then you'll 
 automatically be notified of progress on your bug as the author makes changes.
 
 =head1 KNOWN BUGS
@@ -646,12 +646,12 @@ Many people have contributed to this software, please see the C<CREDITS> file.
 
 =head1 AUTHOR
 
-Daniel Browning, db@kavod.com
+Daniel Browning, db@endpoint.com, L<http://www.endpoint.com/>
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright (c) 2003-2006 Daniel Browning E<lt>F<db@kavod.com>E<gt>. All rights 
-reserved.  This program is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.  See C<LICENSE> for more info.
+Copyright 2003-2008 Daniel Browning <db@endpoint.com>. All rights reserved.
+This program is free software; you may redistribute it and/or modify it 
+under the same terms as Perl itself. See LICENSE for more info.
 
 =cut
