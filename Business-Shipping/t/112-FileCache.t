@@ -6,6 +6,7 @@ use Test::More;
 
 eval { require Cache::FileCache; };
 plan skip_all => 'Cache::FileCache not installed.' if $@;
+plan 'no_plan';
 import Cache::FileCache;
 
 my $cache = Cache::FileCache->new;
