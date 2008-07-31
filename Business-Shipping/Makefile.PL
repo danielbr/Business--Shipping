@@ -1,9 +1,11 @@
+#!/bin/env perl
+
 use 5.006000;
+use strict;
+use warnings;
 use ExtUtils::MakeMaker;
 use File::Copy qw(copy);
 use English;
-use strict;
-use warnings;
 
 # Auto-update REQUIRED MODULES documentation if needed
 #eval "use Devel::Required text => [ '' ], pod => [qw(lib/Business/Shipping.pm), qw(doc/README.pod), qw(doc/INSTALL.pod), qw(UserTag/business-shipping.tag)]";
