@@ -46,7 +46,7 @@ WriteMakefile(
     NAME         => 'Business::Shipping',
     VERSION_FROM => 'lib/Business/Shipping.pm',
     ABSTRACT  => 'Business::Shipping - Rates and tracking for UPS and USPS',
-    AUTHOR    => 'Dan Browning <db@kavod.com>',
+    AUTHOR    => 'Daniel Browning <db@endpoint.com>',
     CONFIGURE => \&extra_WriteMakefile_options,
     PREREQ_PM => {
         'Moose'         => 0,
