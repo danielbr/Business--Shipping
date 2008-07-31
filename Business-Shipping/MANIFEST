@@ -1,4 +1,4 @@
-bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
+bin/update-UPS-surcharge.pl
 CHANGELOG
 config/config.ini
 config/fuel_surcharge.txt
@@ -6,8 +6,8 @@ config/log4perl.conf
 configure
 CREDITS
 doc/Artistic
-doc/Development.txt
 doc/GPL
+doc/HACKERS
 doc/INSTALL.html
 doc/INSTALL.pod
 doc/INSTALL.txt
@@ -59,6 +59,8 @@ t/45_UPS_Offline.t
 t/61_Log4perl.t
 t/70_countries.t
 t/80_usertag_sim.t
+t/90-Perl-Critic.t
+t/perlcriticrc
 UserTag/business-shipping.tag
 UserTag/incident.tag
 UserTag/ups-query.tag
