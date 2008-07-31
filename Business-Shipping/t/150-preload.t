@@ -1,3 +1,9 @@
+#!/bin/env perl
+
+# Ensure that preload works.
+# TODO: Check that it actually loaded all the modules (and wont do runtime
+# loading later.)
+
 use strict;
 use warnings;
 use Carp;

@@ -1,4 +1,6 @@
-# Simulate the way that we use Cache::FileCache.
+#!/bin/env perl
+
+# Simulate the way that Cache::FileCache is used.
 
 use strict;
 use warnings;

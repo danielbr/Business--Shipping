@@ -1,3 +1,7 @@
+#!/bin/env perl
+
+# Ensure that pre-requisites for at least one shipper are installed.
+
 use strict;
 use warnings;
 use Test::More 'no_plan';

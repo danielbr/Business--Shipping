@@ -1,3 +1,7 @@
+#!/bin/env perl
+
+# Check that all POD is valid with Test::POD.
+
 use strict;
 use warnings;
 use Test::More;

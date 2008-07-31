@@ -1,3 +1,7 @@
+#!/bin/env perl
+
+# UPS_Online RateRequest suite of tests.
+
 use strict;
 use warnings;
 

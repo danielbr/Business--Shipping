@@ -1,3 +1,7 @@
+#!/bin/env perl
+
+# USPS_Online RateRequest suite of tests.
+
 use strict;
 use warnings;
 

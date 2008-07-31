@@ -1,3 +1,7 @@
+#!/bin/env perl
+
+# UPS_Offline RateRequest - suite of tests. (Compares a lot to UPS_Online.)
+
 use strict;
 use warnings;
 

@@ -1,3 +1,7 @@
+#!/bin/env perl
+
+# Use Test::Pod::Coverage to check how much of the perl is documented.
+
 use strict;
 use warnings;
 use Test::More;

@@ -1,3 +1,7 @@
+#!/bin/env perl
+
+# Run Perl::Critic on the perl code (not the entire distro, yet).
+
 use strict;
 use warnings;
 use File::Spec;
