@@ -5,7 +5,7 @@ use Test::More;
 use Carp;
 use Business::Shipping;
 
-#plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'USPS_Online' );
+plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'USPS_Online' );
 plan skip_all => 'No credentials' unless $ENV{ USPS_USER_ID } and $ENV{ USPS_PASSWORD };
 plan 'no_plan';
 
