@@ -42,12 +42,6 @@ XML::Simple         2.05
 
 =head1 AUTHOR
 
-Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
-
-=head1 COPYRIGHT AND LICENCE
-
-Copyright (c) 2003-2004 Kavod Technologies and Daniel Browning. All rights 
-reserved.  This program is free software; you may redistribute it and/or modify
-it under the same terms as Perl itself. See LICENSE for more info.
+Daniel Browning, db@endpoint.com, L<http://www.endpoint.com/>
 
 =cut
