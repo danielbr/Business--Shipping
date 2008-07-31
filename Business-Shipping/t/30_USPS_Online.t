@@ -5,12 +5,18 @@ use Test::More;
 use Carp;
 use Business::Shipping;
 use Scalar::Util qw(blessed);
-#plan skip_all => '' unless Business::Shipping::Config::calc_req_mod( 'USPS_Online' );
-plan skip_all => 'No credentials' unless $ENV{ USPS_USER_ID } and $ENV{ USPS_PASSWORD };
-plan skip_all => 'SLOW_TESTS is not set, skipping.' unless $ENV{SLOW_TESTS};
+
+plan skip_all => 'Required modules not installed'
+    unless Business::Shipping::Config::calc_req_mod('USPS_Online');
+    
+plan skip_all => 'No credentials' 
+    unless $ENV{ USPS_USER_ID } and $ENV{ USPS_PASSWORD };
+    
+plan skip_all => 'Slow tests are not executed unless SLOW_TESTS is set.' 
+    unless $ENV{SLOW_TESTS};
+    
 plan 'no_plan';
 
-#goto TEST;
 {
     my $standard_method = new Business::Shipping->rate_request( shipper => 'Online::USPS' );
     ok( defined $standard_method,    'USPS standard object construction' );
