@@ -1,6 +1,6 @@
 use 5.006000;
 use ExtUtils::MakeMaker;
-use File::Copy;
+use File::Copy qw(copy);
 use English;
 use strict;
 use warnings;
@@ -9,7 +9,6 @@ use warnings;
 #eval "use Devel::Required text => [ '' ], pod => [qw(lib/Business/Shipping.pm), qw(doc/README.pod), qw(doc/INSTALL.pod), qw(UserTag/business-shipping.tag)]";
 
 # Defaults
-
 my %my_globals = (
     PREFIX_DIR => '/usr/local/B_Shipping'
 
@@ -29,26 +28,18 @@ my %my_globals = (
 
 =cut
 
-$::UseDefaults = $ENV{BS_USE_DEFAULTS} ? 1 : 0;
-$::UseOptions = 0;
+# Default is zero, but can be overridden by environment variable, which, 
+# in turn, can be overridden by command-line.
+$::UseDefaults = $ENV{B_SHIPPING_USE_DEFAULTS} ? 1 : 0;
 
 if (@ARGV) {
-    eval { require Getopt::Mixed };
+    eval { require Getopt::Long };
     if ($@) {
-        warn "Getopt::Mixed required in order to use command line arguments.";
+        warn "Getopt::Long required in order to use command line arguments.";
     }
     else {
-        import Getopt::Mixed;
-        $::UseOptions = 1;
-    }
-}
-
-if ($::UseOptions) {
-    our $opt_u;
-    Getopt::Mixed::getOptions('u:i use_defaults>u');
-    my %rr_params;
-    if ($opt_u) {
-        $::UseDefaults = 1;
+        import Getopt::Long;
+        Getopt::Long::GetOptions('use_defaults=i' => \$::UseDefaults);
     }
 }
 
@@ -69,9 +60,7 @@ WriteMakefile(
 );
 
 # Override the standard "install" target, so that it calls "support_files_install"
-
 sub MY::install {
-
     package MY;
     my $inherited = shift->SUPER::install(@_);
     my $new;
