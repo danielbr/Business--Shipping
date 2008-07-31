@@ -29,6 +29,7 @@ use Business::Shipping::UPS_Offline::Package;
 use Business::Shipping::Logging;
 use Business::Shipping::Util;
 use Business::Shipping::Config;
+use Business::Shipping::DataFiles 1.02;
 use POSIX qw{ ceil strftime };
 
 #use Fcntl ':flock';

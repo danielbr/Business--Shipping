@@ -9,8 +9,12 @@ use Carp;
 use Business::Shipping;
 use Data::Dumper;
 
-plan skip_all => ''
+plan skip_all => 'Required modules for UPS_Offline are not installed'
     unless Business::Shipping::Config::calc_req_mod('UPS_Offline');
+
+plan skip_all => 'DataFiles version 1.02+ is required.'
+    unless $Business::Shipping::DataFiles::VERSION >= 1.02;
+
 plan 'no_plan';
 
 $::UPS_Online = 1 if Business::Shipping::Config::calc_req_mod('UPS_Online');
