@@ -1,6 +1,6 @@
 package Bundle::Business::Shipping::Basic;
 
-$VERSION = '1.01';
+$VERSION = '1.2.0';
 
 1;
 
@@ -20,7 +20,7 @@ See the INSTALL file in Business::Shipping for more information.
 
 Business::Shipping
 
-Class::MethodMaker::Engine
+Moose
 
 Log::Log4perl
 

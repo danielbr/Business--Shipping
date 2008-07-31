@@ -1,6 +1,6 @@
 package Bundle::Business::Shipping::UPS_Offline;
 
-$VERSION = '1.01';
+$VERSION = '1.2.0';
 
 1;
 

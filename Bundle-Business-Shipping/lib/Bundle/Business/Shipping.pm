@@ -1,6 +1,6 @@
 package Bundle::Business::Shipping;
 
-$VERSION = '1.12';
+$VERSION = '1.2.0';
 
 1;
 
@@ -26,8 +26,6 @@ Cache::FileCache
 
 Class::MethodMaker::Engine
 
-Clone
-
 Config::IniFiles
 
 Crypt::SSLeay
@@ -35,6 +33,8 @@ Crypt::SSLeay
 Log::Log4perl
 
 LWP::UserAgent
+
+Moose
 
 XML::DOM
 

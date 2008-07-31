@@ -1,6 +1,6 @@
 package Bundle::Business::Shipping::DataTools;
 
-$VERSION = '1.00';
+$VERSION = '1.1.0';
 
 1;
 
@@ -19,8 +19,6 @@ See the INSTALL file in Business::Shipping for more information.
 =head1 CONTENTS
 
 Bundle::Business::Shipping::UPS_Offline
-
-Getopt::Mixed
 
 =head1 SEE ALSO
 

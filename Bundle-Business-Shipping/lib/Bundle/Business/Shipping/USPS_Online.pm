@@ -1,6 +1,6 @@
 package Bundle::Business::Shipping::USPS_Online;
 
-$VERSION = '1.00';
+$VERSION = '1.2.0';
 
 1;
 
@@ -21,8 +21,6 @@ See the INSTALL file in Business::Shipping for more information.
 Bundle::Business::Shipping::Basic
 
 Cache::FileCache
-
-Clone
 
 Crypt::SSLeay
 
