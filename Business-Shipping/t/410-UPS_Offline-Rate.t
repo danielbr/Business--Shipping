@@ -4,14 +4,15 @@
 
 use strict;
 use warnings;
-
 use Test::More;
 use Carp;
 use Business::Shipping;
 use Data::Dumper;
+
 plan skip_all => ''
     unless Business::Shipping::Config::calc_req_mod('UPS_Offline');
 plan 'no_plan';
+
 $::UPS_Online = 1 if Business::Shipping::Config::calc_req_mod('UPS_Online');
 
 unless ($ENV{UPS_USER_ID} and $ENV{UPS_PASSWORD} and $ENV{UPS_ACCESS_KEY}) {

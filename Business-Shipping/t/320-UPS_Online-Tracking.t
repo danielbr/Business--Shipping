@@ -4,7 +4,6 @@
 
 use strict;
 use warnings;
-
 use Test::More;
 use Carp;
 use Business::Shipping;
@@ -33,64 +32,6 @@ $tracker->init(
     password   => $ENV{UPS_PASSWORD},
     access_key => $ENV{UPS_ACCESS_KEY},
 );
-
-=pod
-
-# The results hash will contain this type of information
-
-{
-  # Date the package was picked up
-  pickup_date => '...',
-
-
-  # Scheduled delivery date (YYYYMMDD)
-  scheduled_delivery_date => '...',
-
-  # Scheduled delivery time (HHMMSS)
-  scheduled_delivery_time => '...',
-
-  # Rescheduled delivery date (YYYYMMDD)
-  rescheduled_delivery_date => '...',
-
-  # Rescheduled delivery time (HHMMSS)
-  rescheduled_delivery_time => '...',
-
-
-  # Shipment method code and description for package
-  service_code => '...',
-  service_description => '...',
-
-  
-  # Summary will contain the latest activity entry, a copy of activity->[0]
-  summary => { },
-  # Activity of the package in transit, newest entries first.
-  activity => [
-  {
-    # Address information of the activity 
-    address => {
-       city => '...',
-       state => '...',
-       zip => '...',
-       country => '...',
-       description => '...',
-       code => '...',
-       signedforbyname => '...',
-    },
-
-    # Code of activity
-    status_code => '...',
-    status_description => '...',
-    
-    # Date of activity (YYYYMMDD)
-    date => '...',
-    # Time of activity (HHMMSS)
-    time => '...',
-  }
- 
-  ],
-}
-
-=cut
 
 $tracker->tracking_ids('1Z12345E0291980793');
 

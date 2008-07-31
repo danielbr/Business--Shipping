@@ -4,8 +4,8 @@
 
 use strict;
 use warnings;
-
 use Test::More 'no_plan';
+
 use_ok('Business::Shipping::Package');
 
 my $p = Business::Shipping::Package->new();

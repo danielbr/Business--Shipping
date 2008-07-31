@@ -4,9 +4,9 @@
 
 use strict;
 use warnings;
-
 use Test::More;
 use Carp;
+use Scalar::Util qw(blessed);
 use Business::Shipping;
 
 plan skip_all => ''
@@ -16,7 +16,7 @@ plan skip_all => 'No credentials'
 plan 'no_plan';
 
 use_ok('Business::Shipping::USPS_Online::Tracking');
-use Scalar::Util qw(blessed);
+
 my $tracker = Business::Shipping::USPS_Online::Tracking->new();
 is( blessed($tracker),
     'Business::Shipping::USPS_Online::Tracking',
