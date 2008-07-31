@@ -7,9 +7,6 @@ use ExtUtils::MakeMaker;
 use File::Copy qw(copy);
 use English;
 
-# Auto-update REQUIRED MODULES documentation if needed
-#eval "use Devel::Required text => [ '' ], pod => [qw(lib/Business/Shipping.pm), qw(doc/README.pod), qw(doc/INSTALL.pod), qw(UserTag/business-shipping.tag)]";
-
 # Defaults
 my %my_globals = (
     PREFIX_DIR => '/usr/local/B_Shipping'
