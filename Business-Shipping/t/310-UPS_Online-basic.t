@@ -14,7 +14,10 @@ plan skip_all => 'No credentials'
     unless $ENV{UPS_USER_ID}
         and $ENV{UPS_PASSWORD}
         and $ENV{UPS_ACCESS_KEY};
-plan skip_all => 'SLOW_TESTS is not set, skipping.' unless $ENV{SLOW_TESTS};
+        
+plan skip_all => 'Slow tests. Set TEST_SLOW to run.'
+    unless $ENV{SLOW_TESTS};
+    
 plan 'no_plan';
 
 $::debug = 0;

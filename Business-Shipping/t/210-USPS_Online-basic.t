@@ -16,8 +16,8 @@ plan skip_all => 'Required modules not installed'
 plan skip_all => 'No credentials'
     unless $ENV{USPS_USER_ID} and $ENV{USPS_PASSWORD};
 
-plan skip_all => 'Slow tests are not executed unless SLOW_TESTS is set.'
-    unless $ENV{SLOW_TESTS};
+plan skip_all => 'Slow tests. Set TEST_SLOW to run.'
+    unless $ENV{TEST_SLOW};
 
 plan 'no_plan';
 
