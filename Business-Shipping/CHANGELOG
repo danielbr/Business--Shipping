@@ -5,16 +5,14 @@ Revision history for Business::Shipping
 
   General
     
-    * Changed from Subversion to Git.
-    
     * Upgraded from Class::MethodMaker to Moose.
     
-    * New version numbering scheme.
+    * New version number scheme.
     
-    * New perl style enforced by perltidy.
-    
-    * Many small bug fixes and improvements.
-    
+    * Many bug fixes, improvements, and style changes.
+
+    * Changed from Subversion to Git.    
+
   Backwards-Compatiblity:
   
     * New required module: Moose.

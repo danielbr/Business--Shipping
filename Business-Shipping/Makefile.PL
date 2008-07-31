@@ -53,9 +53,8 @@ WriteMakefile(
         'Log::Log4perl' => 0,
         'Test::More'    => 0.40,
     },
-    EXE_FILES =>
-        ['bin/update-UPS-surcharge.pl',],
-    NO_META => 1,
+    EXE_FILES => ['bin/update-UPS-surcharge.pl',],
+    NO_META   => 1,
 );
 
 # Override the standard "install" target, so that it calls "support_files_install"

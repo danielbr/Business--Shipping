@@ -20,7 +20,7 @@ See the INSTALL file in Business::Shipping for more information.
 
 Bundle::Business::Shipping::Basic
 
-Business::Shipping::DataFiles
+Business::Shipping::DataFiles      1.02
 
 Config::IniFiles
 
