@@ -23,27 +23,4 @@ BEGIN {
         ok( 1, "Required modules installed for: $shippers2" );
     }
     
-    eval "use Cache::FileCache";
-    
-    
-    if ( ! $@ ) {
-    
-        # This simulates the way that we use Cache::FileCache
-        
-        use_ok( 'Cache::FileCache' );
-        my $cache = Cache::FileCache->new;
-        my $key = join( "|", ( 'Parcel Post', 'Germany', '5', 'Package' ) ); 
-        my $rate = $cache->get( $key );
-        
-        if ( not defined $rate ) {
-            sleep( 1 );
-            $rate = '5.99';
-            $cache->set( $key, $rate, "30 minutes" );
-        }
-        
-        ok( 1, 'Cache::FileCache works as expected.' );
-    }
-    else {
-        ok( 1, 'Skip test for Cache::FileCache, because it is not installed.' );
-    }
 }
