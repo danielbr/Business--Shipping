@@ -2,13 +2,15 @@
 
 =head1 NAME
 
-Business-Shipping-UPS_Offline-update-fuel-surcharge.pl
+update-UPS-surcharge.pl
 
 =head1 VERSION
 
 $Rev: 189 $
 
 =head1 DESCRIPTION
+
+Installed by Business::Shipping.
 
 Updates the fuel surcharge (stored in C<config/fuel_surcharge.txt>) from the UPS web site.  It is 
 recommended that this be run every first Monday of the month in the early AM.  Here is an example 

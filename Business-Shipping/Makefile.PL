@@ -54,7 +54,7 @@ WriteMakefile(
         'Test::More'    => 0.40,
     },
     EXE_FILES =>
-        ['bin/Business-Shipping-UPS_Offline-update-fuel-surcharge.pl',],
+        ['bin/update-UPS-surcharge.pl',],
     NO_META => 1,
 );
 
