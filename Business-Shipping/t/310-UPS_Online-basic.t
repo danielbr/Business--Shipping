@@ -360,6 +360,33 @@ SKIP: {
         to_city        => 'Kitchener',
         to_zip         => 'N2H6S9',
     );
+    
+    
+    my $print = 0;
+    
+    $rate_request = Business::Shipping->rate_request( 'shipper' => 'UPS_Online' );
+    $rate_request->init( to_country    => 'US' );
+    print "\tto_country = " . $rate_request->to_country() . "\n" if $print;
+    ok( $rate_request->to_country,
+        'UPS_Online init( to_country => \'US\' ) works' );
+    
+    $rate_request = Business::Shipping->rate_request( 'shipper' => 'UPS_Online' );
+    $rate_request->to_country( 'US' );
+    print "\tto_country = " . $rate_request->to_country() . "\n" if $print;
+    ok( $rate_request->to_country,
+        'UPS_Online to_country() works' );
+    
+    $rate_request = Business::Shipping->rate_request( 'shipper' => 'UPS' );
+    $rate_request->init( to_country    => 'US' );
+    print "\tto_country = " . $rate_request->to_country() . "\n" if $print;
+    ok( $rate_request->to_country,
+        'UPS init( to_country => \'US\' ) works' );
+    
+    $rate_request = Business::Shipping->rate_request( 'shipper' => 'UPS' );
+    $rate_request->to_country( 'US' );
+    print "\tto_country = " . $rate_request->to_country() . "\n" if $print;
+    ok( $rate_request->to_country,
+        'UPS to_country() works' );
         
 }
 
