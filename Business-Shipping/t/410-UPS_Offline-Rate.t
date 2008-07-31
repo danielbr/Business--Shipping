@@ -13,11 +13,24 @@ plan skip_all => ''
     unless Business::Shipping::Config::calc_req_mod('UPS_Offline');
 plan 'no_plan';
 $::UPS_Online = 1 if Business::Shipping::Config::calc_req_mod('UPS_Online');
-$::UPS_Online = 0
-    unless $ENV{UPS_USER_ID}
-        and $ENV{UPS_PASSWORD}
-        and $ENV{UPS_ACCESS_KEY};
-$::UPS_Online = 0 if $ENV{DISABLE_UPS_ONLINE};
+
+unless ($ENV{UPS_USER_ID} and $ENV{UPS_PASSWORD} and $ENV{UPS_ACCESS_KEY}) {
+    $::UPS_Online = 0;
+    $::UPS_Online_msg = 'No credentials. Set three UPS_* variables to run.';
+}
+
+if ($ENV{DISABLE_UPS_ONLINE}) {
+    $::UPS_Online = 0;
+    $::UPS_Online_msg 
+        = 'Comparison to UPS_Online is disabled. '
+        . 'Unset DISABLE_UPS_ONLINE to run.';
+}
+
+if (not $ENV{TEST_SLOW}) {
+    $::UPS_Online = 0;
+    $::UPS_Online_msg 
+        = 'Comparison to UPS_Online is too slow. Set TEST_SLOW to run.';
+}
 
 # How to test for performance: time DIABLE_UPS_ONLINE=1 /usr/local/perl/bin/perl t/45_UPS_Offline.t
 # Currently 1.8 - 2.2 seconds.
