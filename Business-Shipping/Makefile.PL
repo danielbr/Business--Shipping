@@ -24,11 +24,11 @@ my %my_globals = (
  
  -u=1 or --use_defaults=1: Use default values, do not ask for values.  
  
- This option is only available if you have Getopt::Mixed installed.
+ This option is only available if you have Getopt::Long installed.
 
 =cut
 
-# Default is zero, but can be overridden by environment variable, which, 
+# Default is zero, but can be overridden by environment variable, which,
 # in turn, can be overridden by command-line.
 $::UseDefaults = $ENV{B_SHIPPING_USE_DEFAULTS} ? 1 : 0;
 
@@ -61,6 +61,7 @@ WriteMakefile(
 
 # Override the standard "install" target, so that it calls "support_files_install"
 sub MY::install {
+
     package MY;
     my $inherited = shift->SUPER::install(@_);
     my $new;
