@@ -36,6 +36,8 @@ has 'offline' => (is => 'rw');
 #type => 'Business::Shipping::Package
 #has 'packages' => (is => 'rw', isa => 'ArrayRef');
 
+__PACKAGE__->meta()->make_immutable();
+
 =head2 packaging()
 
 =head2 weight()

@@ -248,6 +248,8 @@ has 'tx_type'         => (is => 'rw', isa => 'Str');
 has 'shipper'         => (is => 'rw', isa => 'Str');
 has '_user_error_msg' => (is => 'rw', isa => 'Str');
 
+__PACKAGE__->meta()->make_immutable();
+
 $Business::Shipping::RuntimeLoad = 1;
 
 sub import {

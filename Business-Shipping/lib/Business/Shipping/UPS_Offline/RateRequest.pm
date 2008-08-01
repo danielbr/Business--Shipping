@@ -118,6 +118,8 @@ has 'Data' => (is => 'rw', isa => 'HashRef', default => sub { {} });
 has 'Fuel_surcharge_ground' => (is => 'rw');
 has 'Fuel_surcharge_air'    => (is => 'rw');
 
+__PACKAGE__->meta()->make_immutable();
+
 sub _init {
     $_[0]->set_fuel_surcharge();
 }

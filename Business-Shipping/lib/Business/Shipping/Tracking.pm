@@ -74,6 +74,8 @@ has 'response' => (
     default => sub { HTTP::Response->new() },
 );
 
+__PACKAGE__->meta()->make_immutable();
+
 sub Required {
     return ($_[0]->SUPER::Required, qw/ user_id password /);
 }

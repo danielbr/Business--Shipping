@@ -62,6 +62,8 @@ sub BUILD {
     return;
 }
 
+__PACKAGE__->meta()->make_immutable();
+
 # Can't use 'handles', because the ArrayRef itself doesn't actually handle
 # anything, it's the objects inside it that do.
 

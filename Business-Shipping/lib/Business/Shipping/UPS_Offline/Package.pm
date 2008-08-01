@@ -19,6 +19,8 @@ use version; our $VERSION = qv('2.2.0');
 
 extends 'Business::Shipping::Package';
 
+__PACKAGE__->meta()->make_immutable();
+
 1;
 
 __END__

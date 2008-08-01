@@ -97,6 +97,8 @@ has 'shipment'            => (
     ]
 );
 
+__PACKAGE__->meta()->make_immutable();
+
 # weight can be required even though some use pounds.
 sub Required { return ($_[0]->SUPER::Required, qw/ shipper weight /); }
 

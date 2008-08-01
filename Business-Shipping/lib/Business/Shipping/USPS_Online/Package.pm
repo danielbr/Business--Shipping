@@ -50,6 +50,8 @@ has 'height'     => (is => 'rw', default => '');
 has 'length'     => (is => 'rw', default => '');
 has 'girth'      => (is => 'rw', default => '');
 
+__PACKAGE__->meta()->make_immutable();
+
 =head2 weight
 
 Overrides the standard weight definition so that it can correctly set pounds &

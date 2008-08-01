@@ -91,6 +91,8 @@ has 'test_url' => (
     default => 'https://wwwcie.ups.com/ups.app/xml/Track',
 );
 
+__PACKAGE__->meta()->make_immutable();
+
 sub Required {
     return ($_[0]->SUPER::Required, qw/ user_id password access_key /);
 }

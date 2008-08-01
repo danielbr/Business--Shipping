@@ -36,6 +36,8 @@ has 'id'                 => (is => 'rw');
 has 'charges'            => (is => 'rw');
 has 'dimensional_weight' => (is => 'rw');
 
+__PACKAGE__->meta()->make_immutable();
+
 1;
 
 __END__
