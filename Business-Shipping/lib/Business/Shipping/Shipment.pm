@@ -52,6 +52,8 @@ has 'to_city'               => (is => 'rw');
 has 'to_zip'                => (is => 'rw');
 has 'shipment_num'          => (is => 'rw');
 
+__PACKAGE__->meta()->make_immutable();
+
 =head2 weight
 
 Forward the weight to the current package.

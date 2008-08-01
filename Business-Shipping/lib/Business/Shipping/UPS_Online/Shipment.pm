@@ -31,6 +31,8 @@ has 'cod' => (is => 'rw');
 has 'cod_funds_code' => (is => 'rw');
 has 'cod_value'      => (is => 'rw');
 
+__PACKAGE__->meta()->make_immutable();
+
 1;
 
 __END__

@@ -83,6 +83,8 @@ has 'shipment' => (
     ]
 );
 
+__PACKAGE__->meta()->make_immutable();
+
 =head2 Required()
 
 International USPS does not require the service or from_zip parameters, but 

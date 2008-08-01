@@ -47,6 +47,8 @@ has 'packages' => (
     auto_deref => 1
 );
 
+__PACKAGE__->meta()->make_immutable();
+
 sub use_hundred_weight {
     my ($self) = @_;
 

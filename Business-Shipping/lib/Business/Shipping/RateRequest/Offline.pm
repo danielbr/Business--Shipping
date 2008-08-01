@@ -28,6 +28,8 @@ use version; our $VERSION = qv('2.2.0');
 
 extends 'Business::Shipping::RateRequest';
 
+__PACKAGE__->meta()->make_immutable();
+
 =item * perform_action()
 
 For compatibility with parent class

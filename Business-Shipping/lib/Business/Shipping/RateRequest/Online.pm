@@ -26,6 +26,8 @@ has 'user_id'   => (is => 'rw');
 has 'password'  => (is => 'rw');
 has 'response'  => (is => 'rw');
 
+__PACKAGE__->meta()->make_immutable();
+
 sub Required { return ($_[0]->SUPER::Required, qw/ user_id password /); }
 sub Optional { return ($_[0]->SUPER::Optional, qw/ prod_url test_url /); }
 

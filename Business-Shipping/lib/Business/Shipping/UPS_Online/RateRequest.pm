@@ -140,6 +140,8 @@ has 'test_url' => (
 
 has 'access_key' => (is => 'rw');
 
+__PACKAGE__->meta()->make_immutable();
+
 sub Required { return ($_[0]->SUPER::Required, qw/ access_key /); }
 
 sub Optional {
