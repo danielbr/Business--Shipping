@@ -88,6 +88,47 @@ sub looks_like_number {
     0;
 }
 
+=head2 uneval
+
+Takes any built-in object and returns the perl representation of it as a string
+of text.  It was copied from Interchange L<http://www.icdevgroup.org>, written 
+by Mike Heins E<lt>F<mike@perusion.com>E<gt>.  
+
+=cut
+
+sub uneval {
+    my ($self, $o) = @_;    # recursive
+    my ($r, $s, $key, $value);
+
+    local ($^W) = 0;
+    no warnings;            #supress 'use of unitialized values'
+
+    $r = ref $o;
+    if (!$r) {
+        $o =~ s/([\\"\$@])/\\$1/g;
+        $s = '"' . $o . '"';
+    }
+    elsif ($r eq 'ARRAY') {
+        $s = "[";
+        for my $i (0 .. $#$o) {
+            $s .= uneval($o->[$i]) . ",";
+        }
+        $s .= "]";
+    }
+    elsif ($r eq 'HASH') {
+        $s = "{";
+        while (($key, $value) = each %$o) {
+            $s .= "'$key' => " . uneval($value) . ",";
+        }
+        $s .= "}";
+    }
+    else {
+        $s = "'something else'";
+    }
+
+    $s;
+}
+
 1;
 
 __END__
