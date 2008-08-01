@@ -114,10 +114,8 @@ sub _gen_request_xml {
             ForceArray => 1
         );
 
-        #
-        # Large debug
-        #
-        trace(XML::Simple::XMLout($request_xml_tree, KeepRoot => 1));
+        trace(XML::Simple::XMLout($request_xml_tree, KeepRoot => 1)) 
+            if is_trace();
 
         #
         push @results, $request_xml;
@@ -150,12 +148,7 @@ sub _gen_request {
         $request->content($new_content);
         $request->header('content-length' => length($request->content()));
 
-        #
-        # Large debug
-        #
-        info('HTTP Request: ' . $request->as_string());
-
-        #
+        trace('HTTP Request: ' . $request->as_string()) if is_trace();
 
         push @reqs, $request;
     }
@@ -194,12 +187,7 @@ sub _handle_response {
         return (undef);
     }
 
-    #
-    # This is a "large" debug.
-    #
-    trace('response = ' . $self->response->content);
-
-    #
+    trace('response = ' . $self->response->content) if is_trace();
 
     $response_tree = $response_tree->{TrackResponse};
 
@@ -284,6 +272,8 @@ sub _handle_response {
                 (($summary) ? (summary => $summary) : ()),
                 activity => \@activity_entries,
             };
+            
+            debug('returning results.');
 
             Business::Shipping::Tracking::_delete_undefined_keys($result);
             $self->results({ $id => $result });

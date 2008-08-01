@@ -18,6 +18,8 @@ plan skip_all => 'No credentials'
 #plan skip_all => 'SLOW_TESTS is not set, skipping.' unless $ENV{SLOW_TESTS};
 plan 'no_plan';
 
+#Business::Shipping->log_level('DEBUG');
+
 use_ok('Business::Shipping::UPS_Online::Tracking');
 use Scalar::Util qw(blessed);
 my $tracker = Business::Shipping::UPS_Online::Tracking->new();

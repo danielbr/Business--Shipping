@@ -493,10 +493,11 @@ sub _compat_shipper_name {
 
 =head2 Business::Shipping->log_level()
 
-Simple alternative to editing the config/log4perl.conf file.  Sets the log level
-for all Business::Shipping objects.  
+Simple alternative to editing the config/log4perl.conf file.  Sets the log 
+level for all Business::Shipping objects.  
 
-Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.
+Takes a scalar that can be 'trace', 'debug', 'info', 'warn', 'error', or 
+'fatal'.
 
 =cut
 
