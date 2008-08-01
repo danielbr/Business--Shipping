@@ -61,7 +61,7 @@ ounces.
 
 sub weight {
     my ($self, $in_weight) = @_;
-    trace('(' . uneval(\@_) . ')');
+    trace('()');
 
     if ($in_weight) {
         $self->set_lbs_oz($in_weight);

@@ -119,7 +119,7 @@ L<Business::Shipping::USPS_Online::Tracking>
 
 sub submit {
     my ($self, %args) = @_;
-    trace("( " . uneval(%args) . " )");
+    trace('()');
 
     $self->init(%args) if %args;
     $self->validate() or return;
