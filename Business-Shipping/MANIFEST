@@ -16,7 +16,6 @@ doc/README.txt
 INSTALL
 lib/Business/Shipping.pm
 lib/Business/Shipping/Config.pm
-lib/Business/Shipping/KLogging.pm
 lib/Business/Shipping/Logging.pm
 lib/Business/Shipping/Package.pm
 lib/Business/Shipping/RateRequest.pm
