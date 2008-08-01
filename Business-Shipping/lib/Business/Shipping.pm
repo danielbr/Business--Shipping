@@ -531,37 +531,6 @@ sub _new_subclass {
     return $new_sub_object;
 }
 
-# COMPAT: event_handlers()
-#=head2 $obj->event_handlers()
-#
-#For backwards compatibility with 1.06 and prior only.
-#
-#=cut
-#
-# We ignore the value of the key (whether STDERR, STDOUT, etc.),
-# because it would be a lot of work to set it up correctly, and
-# if a user is going to use the debug system, they would probably
-# be willing to upgrade to the most recent version.
-
-# The levels are in order from least to greatest, so as soon as
-# we get a match, we need to stop, because the lowest level (DEBUG)
-# will automatically include all of the greater levels.
-sub event_handlers {
-    my ($self, $event_handlers_hash) = @_;
-
-KEY: foreach my $key (keys %$event_handlers_hash) {
-        $key = uc $key;
-        foreach my $Log_Level (@Business::Shipping::KLogging::Levels) {
-            if ($key eq $Log_Level) {
-                Business::Shipping->log_level($Log_Level);
-                last KEY;
-            }
-        }
-    }
-
-    return;
-}
-
 sub Optional { return qw/ tx_type /; }
 sub Required { return (); }
 sub Unique   { return (); }

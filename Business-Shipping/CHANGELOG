@@ -20,6 +20,7 @@ Revision history for Business::Shipping
     * Minor internal API changes:
       - $rate_request->packages() returns arrayref of Package objects.
 
+    * Remove event_handlers(). This debug code was deprecated after 1.06.
 
 2.05 Limited beta release  
 
