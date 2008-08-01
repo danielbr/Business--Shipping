@@ -8,6 +8,12 @@ Business::Shipping::Logging - Log4perl wrapper for easy, non-OO usage.
 
 2.2.0
 
+=head1 NOTES
+
+The Log4perl category is Package::subroutine::line. This gives a lot of 
+information for debugging. (Technically, category is whatever the fourth 
+return value of caller(1) is.)
+
 =head1 METHODS
 
 =cut
@@ -64,39 +70,56 @@ sub init {
     return;
 }
 
-sub logdie   { _log('logdie',  @_); }
-sub logwarn  { _log('logwarn', @_); }
+=head1 Exported functions
 
-sub fatal    { _log('fatal', @_); }
-sub error    { _log('error', @_); }
-sub warn     { _log('warn',  @_); }
-sub info     { _log('info',  @_); }
-sub debug    { _log('debug', @_); }
-sub trace    { _log('trace', @_); }
+Please see Log4perl for more about these wrapped functions.
 
-sub is_fatal { _log('is_fatal' ); }
-sub is_error { _log('is_error' ); }
-sub is_warn  { _log('is_warn'  ); }
-sub is_info  { _log('is_info'  ); }
-sub is_debug { _log('is_debug' ); }
-sub is_trace { _log('is_trace' ); }
+=head2 logdie
 
-=head2 _log
+=head2 logwarn 
 
-Automatically uses the package name and subroutine as the log4perl 'category'.
+=head2 fatal
+
+=head2 error
+
+=head2 warn
+
+=head2 info
+
+=head2 debug
+
+=head2 trace
+
+=head2 is_fatal
+
+=head2 is_error 
+
+=head2 is_warn
+
+=head2 is_info
+
+=head2 is_debug
+
+=head2 is_trace
 
 =cut
 
-sub _log {
-    my $priority = shift;
-    
-    # Not using $line currently.
-    my ($package, $filename, undef, $sub) = caller(1);
-    my $category = $package . $sub;
-    my $logger = Log::Log4perl->get_logger($category);
-    
-    return $logger->$priority(@_);
-}
+# (caller(1))[3] is shorthand for my (undef, undef, undef, $sub) = caller(1);
+
+sub logdie   { Log::Log4perl->get_logger((caller(1))[3])->logdie (@_); }
+sub logwarn  { Log::Log4perl->get_logger((caller(1))[3])->logwarn(@_); }
+sub fatal    { Log::Log4perl->get_logger((caller(1))[3])->fatal(@_);  }
+sub error    { Log::Log4perl->get_logger((caller(1))[3])->error(@_);  }
+sub warn     { Log::Log4perl->get_logger((caller(1))[3])->warn (@_);  }
+sub info     { Log::Log4perl->get_logger((caller(1))[3])->info (@_);  }
+sub debug    { Log::Log4perl->get_logger((caller(1))[3])->debug(@_);  }
+sub trace    { Log::Log4perl->get_logger((caller(1))[3])->trace(@_);  }
+sub is_fatal { Log::Log4perl->get_logger((caller(1))[3])->is_fatal(); }
+sub is_error { Log::Log4perl->get_logger((caller(1))[3])->is_error(); }
+sub is_warn  { Log::Log4perl->get_logger((caller(1))[3])->is_warn (); }
+sub is_info  { Log::Log4perl->get_logger((caller(1))[3])->is_info (); }
+sub is_debug { Log::Log4perl->get_logger((caller(1))[3])->is_debug(); }
+sub is_trace { Log::Log4perl->get_logger((caller(1))[3])->is_trace(); }
 
 =head2 log_level()
 
@@ -109,8 +132,9 @@ sub log_level {
     return unless $log_level;
 
     $log_level = lc $log_level;
-    if (grep($log_level, @Levels)) {
-        $Current_Level = $log_level;
+    my @levels = qw(fatal error warn info debug trace);
+    if (grep($log_level, @levels)) {
+        $Current_Level = uc $log_level;
     }
     Business::Shipping::Logging::init();
 
