@@ -2,15 +2,11 @@ package Business::Shipping::Logging;
 
 =head1 NAME
 
-Business::Shipping::Logging - Interface between KLogging and Business::Shipping
+Business::Shipping::Logging - Log4perl wrapper for easy, non-OO usage.
 
 =head1 VERSION
 
 2.2.0
-
-=head1 DESCRIPTION
-
-Wrapper for KLogger.
 
 =head1 METHODS
 
@@ -18,41 +14,88 @@ Wrapper for KLogger.
 
 use strict;
 use warnings;
-use base ('Exporter');
-use vars ('@EXPORT', '$VERSION');
-use Business::Shipping::KLogging;
+use base qw(Exporter);
+use vars qw(@EXPORT @Levels $Current_Level);
+use Carp;
+use Log::Log4perl;
 use Business::Shipping::Config;
 use version; our $VERSION = qv('2.2.0');
 
-@EXPORT = Business::Shipping::KLogging::subs;
+$Current_Level = 'WARN';
+@EXPORT = qw(
+    fatal    is_fatal    logdie 
+    error    is_error
+    warn     is_warn     logwarn
+    info     is_info 
+    debug    is_debug
+    trace    is_trace
+);
 
-foreach my $_sub (Business::Shipping::KLogging::subs) {
-    eval "\*$_sub = \*Business::Shipping::KLogging::$_sub";
-}
-
-*trace = *Business::Shipping::KLogging::debug;
-
-my $file         = Business::Shipping::Config::config_dir . '/log4perl.conf';
-my $caller_depth = 2;
-
-bs_init();
+init();
 
 1;
 
-=head2 bs_init()
+=head2 init
 
-Initializes KLogging with values from Business::Shipping::Config.
+Build wrapper on top of Log4perl, increasing caller_depth to one:
+
+ Business::Shipping::UPS_Offline::RateRequest::debug()
+  |
+  |
+ Business::Shipping::Logging::debug()
+  |
+  |
+ Log::Log4perl->logger->DEBUG()
 
 =cut
 
-sub bs_init {
-    Business::Shipping::KLogging::init(
-        file         => $file,
-        caller_depth => $caller_depth,
-        once         => 0,              #disabled for event_handlers() support
-    );
+# TODO: Should assume some basic configuration when the file isn't available.
+
+sub init {
+    my $config_dir = Business::Shipping::Config::config_dir();
+    return carp "Could not find config directory." unless defined $config_dir;
+
+    my $file =  "$config_dir/log4perl.conf";
+    return croak "Could not get log4perl config file: $file" unless -f $file;
+    
+    Log::Log4perl::init($file);
+    ${Log::Log4perl::caller_depth} = 2;
 
     return;
+}
+
+sub logdie   { _log('logdie',  @_); }
+sub logwarn  { _log('logwarn', @_); }
+
+sub fatal    { _log('fatal', @_); }
+sub error    { _log('error', @_); }
+sub warn     { _log('warn',  @_); }
+sub info     { _log('info',  @_); }
+sub debug    { _log('debug', @_); }
+sub trace    { _log('trace', @_); }
+
+sub is_fatal { _log('is_fatal' ); }
+sub is_error { _log('is_error' ); }
+sub is_warn  { _log('is_warn'  ); }
+sub is_info  { _log('is_info'  ); }
+sub is_debug { _log('is_debug' ); }
+sub is_trace { _log('is_trace' ); }
+
+=head2 _log
+
+Automatically uses the package name and subroutine as the log4perl 'category'.
+
+=cut
+
+sub _log {
+    my $priority = shift;
+    
+    # Not using $line currently.
+    my ($package, $filename, undef, $sub) = caller(1);
+    my $category = $package . $sub;
+    my $logger = Log::Log4perl->get_logger($category);
+    
+    return $logger->$priority(@_);
 }
 
 =head2 log_level()
@@ -63,16 +106,13 @@ Does the heavy lifting for Business::Shipping->log_level().
 
 sub log_level {
     my ($class, $log_level) = @_;
-
     return unless $log_level;
 
-    $log_level = uc $log_level;
-
-    if (grep($log_level, @Business::Shipping::KLogging::Levels)) {
-        $Business::Shipping::KLogging::Current_Level = $log_level;
+    $log_level = lc $log_level;
+    if (grep($log_level, @Levels)) {
+        $Current_Level = $log_level;
     }
-
-    Business::Shipping::Logging::bs_init();
+    Business::Shipping::Logging::init();
 
     return $log_level;
 }
