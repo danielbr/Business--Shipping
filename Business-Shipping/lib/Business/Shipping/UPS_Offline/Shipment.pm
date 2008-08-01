@@ -65,7 +65,7 @@ sub use_hundred_weight {
         my $airborn_min = 100 + (100 * $self->hundredweight_margin * 0.01);
         my $ground_min  = 200 + (100 * $self->hundredweight_margin * 0.01);
 
-#debug "ground minimum = $ground_min, current weight = " . $self->weight . ", service = " . $self->service;
+#info "ground minimum = $ground_min, current weight = " . $self->weight . ", service = " . $self->service;
 
         if ((   grep($_ eq lc $self->service, @airborn_100)
                 and $self->weight > $airborn_min
@@ -94,9 +94,9 @@ sub is_ground {
     );
 
     my $ups_service_name = $self->service_name;
-    debug "ups_service_name = '$ups_service_name'";
+    info "ups_service_name = '$ups_service_name'";
     $is_ground_svc = 1 if grep /${ups_service_name}/i, @ground_services;
-    debug "is_ground_svc = $is_ground_svc";
+    info "is_ground_svc = $is_ground_svc";
 
     return $is_ground_svc;
 }

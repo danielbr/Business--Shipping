@@ -208,7 +208,7 @@ Generate the XML document.
 =cut
 
 sub _gen_request_xml {
-    debug('called');
+    info('called');
     my ($self) = shift;
 
     logdie "No packages defined internally."
@@ -367,7 +367,7 @@ sub _gen_request_xml {
         . '<?xml version="1.0"?>' . "\n"
         . XML::Simple::XMLout($request_tree, KeepRoot => 1);
 
-    debug($request_xml);
+    info($request_xml);
 
     return ($request_xml);
 }
@@ -398,7 +398,7 @@ sub _handle_response {
         KeepRoot   => 0,
     );
 
-    #use Data::Dumper; debug3("response = " . Dumper($response_tree));
+    #use Data::Dumper; trace("response = " . Dumper($response_tree));
 
     my $status_code = $response_tree->{Response}->{ResponseStatusCode};
     my $status_description
@@ -505,7 +505,7 @@ sub _handle_response {
     }
 
     #use Data::Dumper;
-    #debug2 "ups_results = " . Dumper( $ups_results );
+    #debug "ups_results = " . Dumper( $ups_results );
 
     foreach my $ups_rate_info (@$ups_results) {
 
@@ -564,7 +564,7 @@ sub _handle_response {
         }
     ];
 
-    #debug3 'results = ' . uneval(  $results );
+    #trace 'results = ' . uneval(  $results );
     $self->results($results);
 
     return $self->is_success(1);

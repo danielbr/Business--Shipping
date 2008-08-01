@@ -152,7 +152,7 @@ sub execute {
         my $cache = Cache::FileCache->new();
 
         my $key = $self->gen_unique_key();
-        debug "cache key = $key\n";
+        info "cache key = $key\n";
 
         my $results = $cache->get($key);
         if ($results) {
@@ -179,8 +179,8 @@ sub execute {
         if $self->shipment->can('max_weight');
     $max_weight_per_package ||= 150;
 
-    #debug3 "before we start, all packages = "
-    #debug3 Dumper( $self->shipment->packages );
+    #trace "before we start, all packages = "
+    #trace Dumper( $self->shipment->packages );
     foreach my $p_idx (0 .. @{ $self->shipment->packages } - 1) {
         my $package = $self->shipment->packages->[$p_idx];
 
@@ -197,7 +197,7 @@ sub execute {
             unless ($max_weight_per_package
             and ($original_weight > $max_weight_per_package));
 
-        debug 'calculating multiple shipments due to overweight...';
+        info 'calculating multiple shipments due to overweight...';
         debug
             "original weight: $original_weight, max_weight_per_package: $max_weight_per_package";
 
@@ -210,7 +210,7 @@ sub execute {
             $number_of_packages = int $number_of_packages + 1;
         }
 
-        debug 'number of packages = ' . $number_of_packages;
+        info 'number of packages = ' . $number_of_packages;
 
         if ($number_of_packages > $MAX_NUM_PACKAGES) {
             $self->user_error("Too heavy.");
@@ -229,23 +229,23 @@ sub execute {
         $running_weight -= $max_weight_per_package;
 
         for (my $c = 1; $c <= $number_of_packages; $c++) {
-            debug "splitting out package #$c";
+            info "splitting out package #$c";
 
             my $current_weight = $running_weight > $max_weight_per_package
                 ? $max_weight_per_package    # Common path
                 : $running_weight;  # Last shipment, unless it divided evenly.
 
             $running_weight -= $current_weight;
-            debug "setting weight to $current_weight";
+            info "setting weight to $current_weight";
             last if $current_weight <= 0;
 
             $self->shipment->add_package(weight => $current_weight);
         }
 
-        debug "done handling overweight.";
+        info "done handling overweight.";
 
         #use Data::Dumper;
-        #debug2 "shipment now: " . Dumper( $self->shipment );
+        #debug "shipment now: " . Dumper( $self->shipment );
     }
 
     $self->perform_action();
@@ -253,7 +253,7 @@ sub execute {
 
     my $results = $self->results();
 
-    #use Data::Dumper; debug2 'results = ' . Dumper( $results );
+    #use Data::Dumper; debug 'results = ' . Dumper( $results );
 
 # Only cache if there weren't any errors and we only have one package.  The Unique() subs are not
 # built (currently) to generate cache keys for multiple packages.  It's all done at the shipment level.
@@ -274,7 +274,7 @@ sub execute {
         trace('cache disabled, not saving results.');
     }
 
-    debug "returning " . ($self->is_success || 'undef');
+    info "returning " . ($self->is_success || 'undef');
     return $self->is_success();
 }
 
@@ -315,12 +315,12 @@ sub validate {
                 $matches++;    # Just fudge it so the count will be correct.
             }
             elsif ($self->can($option) and $self->$option()) {
-                debug3("checking $option... matches = $matches");
+                trace("checking $option... matches = $matches");
                 if ($not_logic) {
                     if ($self->$option() ne $invalid_rate_request->{$option})
                     {
                         $matches++;
-                        debug3(   $self->$option()
+                        trace(   $self->$option()
                                 . " does not equal "
                                 . $invalid_rate_request->{$option});
                     }
@@ -328,7 +328,7 @@ sub validate {
                 else {
                     if ($self->$option() eq $invalid_rate_request->{$option})
                     {
-                        debug3(   $self->$option()
+                        trace(   $self->$option()
                                 . " equals "
                                 . $invalid_rate_request->{$option});
                         $matches++;
@@ -337,7 +337,7 @@ sub validate {
             }
         }
 
-        #debug( "matches = $matches, keys = " . keys %$invalid_rate_request );
+        #info( "matches = $matches, keys = " . keys %$invalid_rate_request );
 
      #
      # If all keys matched (i.e. the number of matches == the number of keys )
@@ -374,7 +374,7 @@ sub get_unique_hash {
 
     my @Unique = $self->get_grouped_attrs('Unique');
 
-    debug(
+    info(
         "Unique attributes for this RateRequest are: " . join(',', @Unique));
     for (@Unique) {
         if ($self->can($_)) {
@@ -469,7 +469,7 @@ sub rate {
     foreach my $shipper (@{ $self->results }) {
 
         # Just return the amount for the first one.
-        #debug "Shipper: $shipper\n";
+        #info "Shipper: $shipper\n";
         return $shipper->{rates}->[0]->{split_shipment_sum_rate}
             || $shipper->{rates}->[0]->{charges};
     }

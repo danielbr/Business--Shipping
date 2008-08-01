@@ -132,7 +132,7 @@ sub submit {
 
         foreach my $id (@{ $self->tracking_ids }) {
             my $key = $self->gen_unique_key($id);
-            debug "cache key = $key\n";
+            info "cache key = $key\n";
 
             my $cache_result = $cache->get($key);
 
@@ -157,7 +157,7 @@ sub submit {
     while (my $request = shift @requests) {
         trace('Please wait while we get a response from the server...');
         $self->response($self->_get_response($request));
-        debug3("response content = " . $self->response()->content());
+        trace("response content = " . $self->response()->content());
 
         if (!$self->response()->is_success()) {
 

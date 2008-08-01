@@ -354,8 +354,8 @@ sub validate {
     my @required = $self->get_grouped_attrs('Required');
     my @optional = $self->get_grouped_attrs('Optional');
 
-    debug("required = " . join(', ', @required));
-    debug3("optional = " . join(', ', @optional));
+    info("required = " . join(', ', @required));
+    trace("optional = " . join(', ', @optional));
 
     my @missing;
     foreach my $required_field (@required) {

@@ -166,7 +166,7 @@ sub set_fuel_surcharge {
     my $fuel_surcharge_contents = readfile($fuel_surcharge_filename);
     my (@lines) = split("\n", $fuel_surcharge_contents);
 
-    #debug( "lines = " . join( "\n", @lines ) . "\n\n\n" );
+    #info( "lines = " . join( "\n", @lines ) . "\n\n\n" );
 
     my (undef, $ground_through_fuel_surcharge) = split(': ', $lines[0]);
     my (undef, $through_date)                  = split(': ', $lines[1]);
@@ -306,7 +306,7 @@ sub _handle_response {
                 next;
             }
         }
-        debug3 "adding price $price to final_components";
+        trace "adding price $price to final_components";
 
         push @$final_price_components,
             {
@@ -323,7 +323,7 @@ sub _handle_response {
 
     my $name = $self->shipper();
 
-    debug "total_charges = $total_charges";
+    info "total_charges = $total_charges";
 
     my $results = [
         {   name  => $name,
@@ -337,7 +337,7 @@ sub _handle_response {
         }
     ];
 
-    #debug3 'results = ' . uneval( $results );
+    #trace 'results = ' . uneval( $results );
     $self->results($results);
 
     return $self->is_success(1);
@@ -387,14 +387,14 @@ services, for example).
 sub calc_delivery_area_surcharge {
     my ($self) = @_;
 
-    debug2 "Checking delivery area surcharge...";
+    debug "Checking delivery area surcharge...";
 
     # Does not apply to hundredweight service.
     return 0.00 if ($self->service_name eq 'Ground Hundredweight Service');
 
     if ($self->domestic) {
 
-        #debug "is domestic...";
+        #info "is domestic...";
         my $table = 'xarea';
         $self->load_table($table);
         my $zip_codes = $self->Data->{$table}->{table};
@@ -564,16 +564,16 @@ sub rate_table_exceptions {
     return $table unless $exceptions_cfg;
 
     my $exceptions_hash = config_to_hash($exceptions_cfg);
-    debug3(
+    trace(
         "type = $type, table = $table, looking for type in exceptions hash..."
     );
 
     if ($exceptions_hash->{$type}) {
         $table = $exceptions_hash->{$type};
-        debug3("table exception found: $table");
+        trace("table exception found: $table");
     }
     else {
-        debug3("No table exception found.  Returning regular table $table");
+        trace("No table exception found.  Returning regular table $table");
     }
 
     return $table;
@@ -584,7 +584,7 @@ sub load_table {
 
     if (!$self->Data->{$table}) {
         my $filename = Business::Shipping::Config::data_dir . "/$table.dat";
-        debug "loading filename $filename";
+        info "loading filename $filename";
         if (!-f $filename) {
 
 # Current working directory is useful to know if the $filename is not an absolute path.
@@ -656,12 +656,12 @@ sub calc_zone {
 
 # TODO: binary search here as well
 #$key = cnv( $key, 36, 10 ) if $self->shipment->to_canada; # We're using lt and gt instead of numeric
-    debug "number of records to check: " . scalar(@$table_data);
+    info "number of records to check: " . scalar(@$table_data);
 
     foreach my $record (@$table_data) {
         my ($min, $max) = @$record[0, 1];
 
-     #debug3 "checking if $key >= $min and $key <= $max";
+     #trace "checking if $key >= $min and $key <= $max";
      # TODO: detect if the zone name is numeric, then use numeric comparisons?
         if ($self->shipment->to_canada) {
 
@@ -682,9 +682,9 @@ sub calc_zone {
             or ($self->shipment->to_canada and $key ge $min and $key le $max)
             or ($self->shipment->intl and lc $key eq lc $min))
         {
-            debug "found zone record:" . join(', ', @$record);
+            info "found zone record:" . join(', ', @$record);
 
-#debug "(key = $key, min = $min, max = $max)";
+#info "(key = $key, min = $min, max = $max)";
 #my $col_num = $col_idx{ $self->service_nick2 } or do {
 #    error "Could not find the column ($self->service_nick2) in the column list: "
 #        . join( ', ', @$cols );
@@ -693,7 +693,7 @@ sub calc_zone {
             my $col_num = $col_idx->{$type};
             if (not defined $col_num) {
                 error "could not find column for " . $type;
-                debug "columns were: " . join(', ', keys %$col_idx);
+                info "columns were: " . join(', ', keys %$col_idx);
                 return;
             }
             $zone = $record->[$col_num];    # Minus one if International?
@@ -713,7 +713,7 @@ sub calc_zone {
                 }
             }
             else {
-                debug "Setting zone to $zone";
+                info "Setting zone to $zone";
             }
             last;
         }
@@ -750,7 +750,7 @@ sub calc_cost {
         = $self->rate_table_exceptions($self->shipment->service_nick, $table);
 
     #die "type = " . $self->type;
-    debug("rate table = " . ($table ? $table : 'undef'));
+    info("rate table = " . ($table ? $table : 'undef'));
 
 # Check to see if this shipment qualifies for hundred-weight shipping, which is probably
 # cheaper than regular shipping if it qualifies.
@@ -765,7 +765,7 @@ sub calc_cost {
         $weight = POSIX::ceil($weight);
 
         my $h_table = $self->shipment->get_hundredweight_table($table);
-        debug "Using hundredweight with table $h_table";
+        info "Using hundredweight with table $h_table";
 
         my $rate_val = $self->get_cost($h_table, $self->zone, $weight);
 
@@ -773,7 +773,7 @@ sub calc_cost {
 
 # Many tier tables are not implemented yet.
 # TODO: remove this after all the tier levels are implemented for all the services.
-            debug "No rate for tier '"
+            info "No rate for tier '"
                 . $self->tier
                 . "'.  Try removing tier.";
             $h_table =~ s/\d$//;
@@ -827,7 +827,7 @@ sub calc_cost {
         return 0;
     }
 
-    debug "cost = $cost";
+    info "cost = $cost";
 
     # TODO: Surcharge table + Surcharge_field?
     # TODO: Residential field (same table)?
@@ -846,7 +846,7 @@ sub get_cost {
 
     #my $row = seq_scan( $table_data, $weight );
     my $row = binary_numeric($table_data, $weight);
-    debug "searching for weight $weight";
+    info "searching for weight $weight";
 
     # Calculate cost from row.
     if (not defined $row) {
@@ -1012,7 +1012,7 @@ sub special_zone_hi_ak {
         (cfg()->{ups_information}->{ak_special_zipcodes_124_224} or ''));
     my @ak_special_zipcodes_126_226 = split(',',
         (cfg()->{ups_information}->{ak_special_zipcodes_126_226} or ''));
-    debug3(   "zip="
+    trace(   "zip="
             . $self->to_zip
             . ".  Hawaii special zip codes = "
             . join(",\t", @hi_special_zipcodes_124_224));
@@ -1058,17 +1058,17 @@ sub calc_zone_info {
     my $zone_file;
     my $data_dir_name = Business::Shipping::Config::data_dir_name();
     if ($self->domestic) {
-        debug("domestic");
+        info("domestic");
         if (!$self->from_zip) {
             $self->user_error("Need from_zip");
             return;
         }
-        debug "from_zip = " . $self->from_zip;
+        info "from_zip = " . $self->from_zip;
         $zone      = $self->make_three($self->from_zip);
         $zone_file = $zone;
     }
     elsif ($self->to_canada) {
-        debug("to canada");
+        info("to canada");
         $zone = $self->make_three($self->to_zip);
 
         if ($self->service_nick eq 'UPSSTD') {
@@ -1093,7 +1093,7 @@ sub calc_zone_info {
                 and $states->{ $self->from_state_abbrev })
             {
                 $zone_file = $states->{ $self->from_state_abbrev };
-                debug3(
+                trace(
                     "Found state in the state to upsstd_zone_file configuration "
                         . "parameter, zone_file = $zone_file ");
             }
@@ -1130,7 +1130,7 @@ sub calc_zone_info {
     if (Business::Shipping::Util::looks_like_number($zone)) {
         for my $c (1 .. 10) {
             if (!-f $zone_file_with_path) {
-                debug3(
+                trace(
                     "Zone file '$zone_file_with_path' doesn't exist, trying others nearby ($zone)..."
                 );
                 my $zone = $zone - $c;
@@ -1140,7 +1140,7 @@ sub calc_zone_info {
         }
     }
 
-    debug(
+    info(
         "zone_name = $zone, zone file = $zone_file, zone_file_with_path = $zone_file_with_path"
     );
     $self->zone_name($zone);

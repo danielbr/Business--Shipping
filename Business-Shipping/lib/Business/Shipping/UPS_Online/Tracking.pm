@@ -166,7 +166,7 @@ sub _gen_single_package_xml {
     #
     # Large debug
     #
-    #debug3( XML::Simple::XMLout( $request_xml_tree, KeepRoot => 1 ) );
+    #trace( XML::Simple::XMLout( $request_xml_tree, KeepRoot => 1 ) );
     #
 
     return ($request_xml);
@@ -241,7 +241,7 @@ sub _handle_response {
     }
 
     # This is a large debug.
-    debug3('response = ' . $self->response->content);
+    trace('response = ' . $self->response->content);
 
     my $shipment_id
         = $response_tree->{Shipment}->{ShipmentIdentificationNumber};

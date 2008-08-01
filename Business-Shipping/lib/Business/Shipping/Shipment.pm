@@ -371,7 +371,7 @@ sub add_package {
         return;
     }
 
-    debug2 "add_package shipper = " . $self->shipper;
+    debug "add_package shipper = " . $self->shipper;
 
     my $package;
     eval {
@@ -386,7 +386,7 @@ sub add_package {
     # If the passed package has an ID.  Do not evaluate for perl trueness,
     # because 0 is a valid true value in this case.
     if (defined $package->id()) {
-        debug 'Using id in passed package';
+        info 'Using id in passed package';
         $self->packages_set($package->id => $package);
         return 1;
     }

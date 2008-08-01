@@ -117,7 +117,7 @@ sub _gen_request_xml {
         #
         # Large debug
         #
-        debug3(XML::Simple::XMLout($request_xml_tree, KeepRoot => 1));
+        trace(XML::Simple::XMLout($request_xml_tree, KeepRoot => 1));
 
         #
         push @results, $request_xml;
@@ -153,7 +153,7 @@ sub _gen_request {
         #
         # Large debug
         #
-        debug('HTTP Request: ' . $request->as_string());
+        info('HTTP Request: ' . $request->as_string());
 
         #
 
@@ -197,7 +197,7 @@ sub _handle_response {
     #
     # This is a "large" debug.
     #
-    debug3('response = ' . $self->response->content);
+    trace('response = ' . $self->response->content);
 
     #
 

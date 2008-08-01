@@ -263,7 +263,7 @@ sub _gen_request_xml {
         = XML::Simple::XMLin($request_xml, KeepRoot => 1, ForceArray => 1);
 
     # Large debug
-    debug3(XML::Simple::XMLout($request_xml_tree, KeepRoot => 1));
+    trace(XML::Simple::XMLout($request_xml_tree, KeepRoot => 1));
 
     return ($request_xml);
 }
@@ -287,7 +287,7 @@ sub _gen_request {
     $request->header('content-length' => CORE::length($request->content()));
 
     # Large debug
-    debug3('HTTP Request: ' . $request->as_string());
+    trace('HTTP Request: ' . $request->as_string());
 
     return ($request);
 }
@@ -337,7 +337,7 @@ sub _handle_response {
     $response_tree = $response_tree->{IntlRateResponse}
         if (exists($response_tree->{IntlRateResponse}));
 
-    #use Data::Dumper; debug3(Dumper($response_tree));
+    #use Data::Dumper; trace(Dumper($response_tree));
 
     # Handle errors
     ### Get all errors
@@ -389,7 +389,7 @@ sub _handle_response {
     }    # if errors
 
     # This is a "large" debug.
-    debug3('response = ' . $self->response->content);
+    trace('response = ' . $self->response->content);
 
     #
 
@@ -413,7 +413,7 @@ sub _handle_response {
 
         $charges = $response_tree->{Package}->{Postage};
 
-        #debug('response_tree = ' . Dumper($response_tree));
+        #info('response_tree = ' . Dumper($response_tree));
         if (defined($charges)) {
             $charges = [$charges] if (ref $charges ne 'ARRAY');
             foreach my $chg (@$charges) {
@@ -472,10 +472,10 @@ sub _handle_response {
     #
         my $service_description;
         foreach my $service (@{ $response_tree->{Package}->{Service} }) {
-            debug("Trying to find a matching service by service description ("
+            info("Trying to find a matching service by service description ("
                     . $service->{SvcDescription}
                     . ")...");
-            debug("Charges for $service->{SvcDescription} service = "
+            info("Charges for $service->{SvcDescription} service = "
                     . $service->{Postage});
 
 # BUG: you can't check if the service descriptions match, because many countries use
@@ -520,7 +520,7 @@ sub _handle_response {
 
             # Couldn't find it by service description, try by mail_type...
             foreach my $service (@{ $response_tree->{Package}->{Service} }) {
-                debug("Trying to find a matching service by mail_type...");
+                info("Trying to find a matching service by mail_type...");
                 if (    $self->mail_type()
                     and $self->mail_type() =~ $service->{MailType})
                 {
@@ -560,7 +560,7 @@ sub _handle_response {
         $self->user_error('charges are 0, error out');
         return $self->is_success(0);
     }
-    debug('Setting charges to ' . $charges);
+    info('Setting charges to ' . $charges);
 
     my $results = [
         {   name => $self->shipper() || 'USPS_Online',
@@ -597,7 +597,7 @@ sub _domestic_or_intl {
     my $self = shift;
     trace '()';
 
-    #debug('to_country = ' . $self->shipment->to_country());
+    #info('to_country = ' . $self->shipment->to_country());
     if (    $self->shipment->to_country()
         and $self->shipment->to_country() !~ /(US)|(United States)/)
     {
@@ -606,7 +606,7 @@ sub _domestic_or_intl {
     else {
         $self->domestic(1);
     }
-    debug($self->domestic() ? 'Domestic' : 'International');
+    info($self->domestic() ? 'Domestic' : 'International');
     return;
 }
 

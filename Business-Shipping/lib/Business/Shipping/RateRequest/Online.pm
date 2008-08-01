@@ -43,7 +43,7 @@ sub perform_action {
     trace('Please wait while we get a response from the server...');
     $self->response($self->_get_response($request));
 
-    #debug3( "response content = " . $self->response()->content() );
+    #trace( "response content = " . $self->response()->content() );
 
     if (!$self->response()->is_success()) {
         $self->user_error("HTTP Error. Status line: "
@@ -52,7 +52,7 @@ sub perform_action {
                 . $self->response->content());
     }
 
-  #use Data::Dumper; debug3 "self->response = " . Dumper( $self->response() );
+  #use Data::Dumper; trace "self->response = " . Dumper( $self->response() );
 
     return (undef);
 }
@@ -70,8 +70,8 @@ sub _gen_request {
 
     my $request_xml = $self->_gen_request_xml();
 
-    #debug3( $request_xml );
-    debug("gen_url = " . $self->_gen_url());
+    #trace( $request_xml );
+    info("gen_url = " . $self->_gen_url());
     my $request = HTTP::Request->new('POST', $self->_gen_url());
     $request->header('content-type'   => 'application/x-www-form-urlencoded');
     $request->header('content-length' => length($request_xml));

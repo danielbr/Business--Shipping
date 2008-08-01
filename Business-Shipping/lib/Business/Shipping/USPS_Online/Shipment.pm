@@ -116,10 +116,10 @@ sub to_country {
             cfg()->{usps_information}->{usps_country_name_translations});
         $to_country = $countries->{$to_country} || $to_country;
 
-        debug3("setting to_country to \'$to_country\'");
+        trace("setting to_country to \'$to_country\'");
         $self->_to_country($to_country);
     }
-    debug3("SUPER::to_country now is " . ($self->SUPER::to_country() || ''));
+    trace("SUPER::to_country now is " . ($self->SUPER::to_country() || ''));
 
     return $self->_to_country();
 }
