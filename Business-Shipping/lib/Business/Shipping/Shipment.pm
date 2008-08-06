@@ -101,7 +101,8 @@ sub weight {
     else {
         my $sum_weight;
         foreach my $package ($self->packages) {
-            $sum_weight += $package->weight;
+            next unless defined $package->weight();
+            $sum_weight += $package->weight();
         }
         return $sum_weight;
     }
