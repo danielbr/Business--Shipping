@@ -323,19 +323,7 @@ sub user_error {
 
     if (defined $msg) {
         $self->_user_error_msg($msg);
-
-      # Make it look like I'm calling error() from the caller, instead of this
-      # function.
-        my ($package, $filename, $line, $sub) = caller(1);
-        error(
-            {   'caller_package'        => '',
-                'caller_filename'       => $filename,
-                'caller_line'           => $line,
-                'caller_sub'            => $sub,
-                'caller_depth_modifier' => 1,
-            },
-            $msg
-        );
+        error($msg);
     }
 
     return $self->_user_error_msg;
