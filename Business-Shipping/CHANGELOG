@@ -7,20 +7,23 @@ Revision history for Business::Shipping
     
     * Upgraded from Class::MethodMaker to Moose.
     
+    * Faster, simpler logging wrapper for Log4perl.
+    
     * New version number scheme.
     
     * Many bug fixes, improvements, and style changes.
 
-    * Changed from Subversion to Git.    
+    * Changed from Subversion to Git.
 
   Backwards-Compatiblity:
   
     * New required module: Moose.
     
-    * Minor internal API changes:
+    * Minor API changes:
+      - log_level() and log4perl.conf now use standard levels (not custom).
+      - event_handlers() removed. This debug code was deprecated after 1.06.
       - $rate_request->packages() returns arrayref of Package objects.
 
-    * Remove event_handlers(). This debug code was deprecated after 1.06.
 
 2.05 Limited beta release  
 
