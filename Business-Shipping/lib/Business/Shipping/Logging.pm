@@ -21,7 +21,7 @@ return value of caller(1) is.)
 use strict;
 use warnings;
 use base qw(Exporter);
-use vars qw(@EXPORT @Levels $Current_Level);
+use vars qw(@EXPORT $Current_Level);
 use Carp;
 use Log::Log4perl;
 use Business::Shipping::Config;
@@ -133,7 +133,7 @@ sub log_level {
 
     $log_level = lc $log_level;
     my @levels = qw(fatal error warn info debug trace);
-    if (grep($log_level, @levels)) {
+    if (grep { $_ eq $log_level } @levels) {
         $Current_Level = uc $log_level;
     }
     Business::Shipping::Logging::init();
