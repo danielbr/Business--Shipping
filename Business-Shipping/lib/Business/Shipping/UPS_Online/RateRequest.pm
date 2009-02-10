@@ -114,6 +114,9 @@ has 'shipment' => (
     ]
 );
 
+has 'shipper_number' => (is => 'rw');
+
+
 =head1
 
 =cut
@@ -241,6 +244,7 @@ sub _gen_request_xml {
                         'PostalCode'  => [$self->from_zip()],
                     }
                 ],
+                'ShipperNumber' => [$self->shipper_number()],
             }
         ],
         'ShipTo' => [

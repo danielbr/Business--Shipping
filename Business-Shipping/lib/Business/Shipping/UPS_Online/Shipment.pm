@@ -31,6 +31,19 @@ has 'cod' => (is => 'rw');
 has 'cod_funds_code' => (is => 'rw');
 has 'cod_value'      => (is => 'rw');
 
+=head2 packages_push
+
+Syntatic sugar to avoid push @{$self->packages()}, $new_package;
+
+=cut
+
+sub packages_push {
+    my ($self, $new_package) = @_;
+    push @{ $self->packages() }, $new_package;
+    return;
+}
+
+
 __PACKAGE__->meta()->make_immutable();
 
 1;
