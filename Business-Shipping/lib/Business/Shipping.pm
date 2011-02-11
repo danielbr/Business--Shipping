@@ -21,7 +21,7 @@ Version 2.2.0
 
 =cut
 
-use version; our $VERSION = qv('2.2.0');
+use version; our $VERSION = qv('2.2.1');
 
 =head1 SYNOPSIS
 
@@ -155,7 +155,7 @@ INSTALL.
  LWP::UserAgent (any)
  XML::DOM (any)
  XML::Simple (2.05)
- 
+
 =head1 GETTING STARTED
 
 Be careful to read, understand, and comply with the terms of use for the 

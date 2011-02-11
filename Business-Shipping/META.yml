@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:         Business-Shipping
-version:      2.2.0
+version:      2.2.1
 version_from: lib/Business/Shipping.pm
 installdirs:  site
 author:       Daniel Browning <db@endpoint.com>
