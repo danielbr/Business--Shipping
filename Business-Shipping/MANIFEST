@@ -47,6 +47,7 @@ t/112-FileCache.t
 t/120-POD-is-valid.t
 t/121-Pod-Coverage.t
 t/130-Perl-Critic.t
+t/140-Log4perl.t
 t/150-preload.t
 t/210-USPS_Online-basic.t
 t/220-USPS_Online_Tracking.t
