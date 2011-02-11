@@ -1,7 +1,18 @@
 Revision history for Business::Shipping
 =======================================
 
-2.2.0
+2.2.1
+
+  General
+  
+    * [Fixed] You are overwriting a locally defined method (to_zip) with an 
+      accessor.
+    
+    * Remove redundant 'Business.Shipping' from logging layout.
+    
+    
+
+2.2.0 Limited beta release
 
   General
     
@@ -21,7 +32,7 @@ Revision history for Business::Shipping
     
     * Minor API changes:
       - log_level() and log4perl.conf now use standard levels (not custom).
-      - event_handlers() removed. This debug code was deprecated after 1.06.
+      - event_handlers() removed. This debug code was deprecated as of 1.06.
       - $rate_request->packages() returns arrayref of Package objects.
 
 
