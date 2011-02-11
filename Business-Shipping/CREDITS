@@ -41,6 +41,8 @@ The contributions of these people and organizations is greatly appreciated.
   
  * Chris Ochs <chris@paymentonline.com> contributed information about running
    under mod_perl.
+   
+ * Kevin D. McClellan contributed a patch to fix a USPS service match bug.
 
  * Mike Wexler <mwexler@tias.com> contributed USPS_Online changes (2.03+):
    - Fix weight calculation error and support shipments less than one pound.  

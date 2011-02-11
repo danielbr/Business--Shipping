@@ -10,7 +10,9 @@ Revision history for Business::Shipping
     
     * Remove redundant 'Business.Shipping' from logging layout.
     
-    
+    * [Fixed] USPS not matching service descriptions (Kevin D. McClellan)
+      This resolves the "Nested quantifiers in regex" error. Thanks, Kevin!
+
 
 2.2.0 Limited beta release
 
