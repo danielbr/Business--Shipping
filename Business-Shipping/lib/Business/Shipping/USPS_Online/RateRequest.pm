@@ -508,9 +508,11 @@ sub _handle_response {
 #        $service = $new;
 #    }
 #}
+            my $removereg = quotemeta('&lt;sup&gt;&amp;reg;&lt;/sup&gt;');
+            $service->{SvcDescription} =~ s/$removereg//gi;
 
             if (    $self->service()
-                and $self->service() =~ $service->{SvcDescription})
+                and $self->service() =~ quotemeta($service->{SvcDescription}))
             {
                 $charges             = $service->{'Postage'};
                 $service_description = $service->{SvcDescription};
