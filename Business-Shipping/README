@@ -7,18 +7,18 @@ VERSION
 SYNOPSIS
   Rate request example
      use Business::Shipping;
-     
- my $rate_request = Business::Shipping->rate_request(
+ 
+     my $rate_request = Business::Shipping->rate_request(
          shipper   => 'UPS_Offline',
          service   => 'Ground Residential',
          from_zip  => '98683',
          to_zip    => '98270',
          weight    =>  5.00,
      );    
-     
- $rate_request->execute() or die $rate_request->user_error();
-     
- print $rate_request->rate();
+ 
+     $rate_request->execute() or die $rate_request->user_error();
+ 
+     print $rate_request->rate();
 
 FEATURES
     Business::Shipping currently supports three shippers:
@@ -50,10 +50,10 @@ FEATURES
              password     => '',
              access_key   => '',
          );
-         
- $rr_shop->execute() or die $rr_shop->user_error();
-         
- foreach my $shipper ( @$results ) {
+ 
+         $rr_shop->execute() or die $rr_shop->user_error();
+ 
+         foreach my $shipper ( @$results ) {
              print "Shipper: $shipper->{name}\n\n";
              foreach my $rate ( @{ $shipper->{ rates } } ) {
                  print "  Service:  $rate->{name}\n";
@@ -255,7 +255,8 @@ METHODS
     Simple alternative to editing the config/log4perl.conf file. Sets the
     log level for all Business::Shipping objects.
 
-    Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.
+    Takes a scalar that can be 'trace', 'debug', 'info', 'warn', 'error', or
+    'fatal'.
 
 SEE ALSO
     Important modules that are related to Business::Shipping:

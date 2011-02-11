@@ -4,7 +4,7 @@
 <head>
 <title>Business::Shipping - Rates and tracking for UPS and USPS</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<link rev="made" href="mailto:db@lx4.kavod.com" />
+<link rev="made" href="mailto:db@lx4.(none)" />
 </head>
 
 <body style="background-color: white">
@@ -35,6 +35,7 @@
 	<li><a href="#installation">INSTALLATION</a></li>
 	<li><a href="#required_modules">REQUIRED MODULES</a></li>
 	<li><a href="#optional_modules">OPTIONAL MODULES</a></li>
+	<li><a href="#getting_started">GETTING STARTED</a></li>
 	<ul>
 
 		<li><a href="#ups_offline__for_united_parcel_service__ups__offline_rate_requests">UPS_Offline: For United Parcel Service (UPS) offline rate requests</a></li>
@@ -123,8 +124,10 @@ every month.</p>
 <ul>
 <li><strong><a name="shipment_rate_estimation" class="item">Shipment rate estimation</a></strong>
 
+</li>
 <li><strong><a name="shipment_tracking" class="item">Shipment tracking.</a></strong>
 
+</li>
 <li><strong><a name="rate_shopping" class="item">Rate Shopping.</a></strong>
 
 <p>Gets rates for all the services in one request:</p>
@@ -179,8 +182,10 @@ For example:</pre>
 <ul>
 <li><strong><a name="shipment_rate_estimation_using_usps_online_webtools" class="item">Shipment rate estimation using USPS Online WebTools.</a></strong>
 
+</li>
 <li><strong><a name="shipment_tracking2" class="item">Shipment tracking</a></strong>
 
+</li>
 </ul>
 <p>
 </p>
@@ -211,9 +216,11 @@ INSTALL.</p>
  Crypt::SSLeay (any)
  LWP::UserAgent (any)
  XML::DOM (any)
- XML::Simple (2.05)
- 
-=head1 GETTING STARTED</pre>
+ XML::Simple (2.05)</pre>
+<p>
+</p>
+<hr />
+<h1><a name="getting_started">GETTING STARTED</a></h1>
 <p>Be careful to read, understand, and comply with the terms of use for the 
 provider that you will use.</p>
 <p>
@@ -232,14 +239,18 @@ every first monday of the month.</p>
 <li><strong><a name="read_the_legal_terms_and_conditions_http_www_ups_com_content_us_en_resources_service_terms_index_html" class="item">Read the legal terms and conditions: 
 <a href="http://www.ups.com/content/us/en/resources/service/terms/index.html">http://www.ups.com/content/us/en/resources/service/terms/index.html</a></a></strong>
 
+</li>
 <li><strong><a name="https_www_ups_com_one_to_one_register" class="item"><a href="https://www.ups.com/one-to-one/register">https://www.ups.com/one-to-one/register</a></a></strong>
 
+</li>
 <li><strong><a name="after_receiving_a_user_id_and_password_from_ups_login_then_select_get_access_key_then_get_xml_access_key" class="item">After receiving a User Id and Password from UPS, login, then select
         &quot;Get Access Key&quot;, then &quot;Get XML Access Key&quot;.</a></strong>
 
+</li>
 <li><strong><a name="read_more_about_ups_online_tools_http_www_ups_com_e_comm_access_toolintro" class="item">Read more about UPS Online Tools: 
 <a href="http://www.ups.com/e_comm_access/toolintro">http://www.ups.com/e_comm_access/toolintro</a></a></strong>
 
+</li>
 </ul>
 <p>
 </p>
@@ -247,16 +258,20 @@ every first monday of the month.</p>
 <ul>
 <li><strong><a name="https_secure_shippingapis_com_registration" class="item"><a href="https://secure.shippingapis.com/Registration/">https://secure.shippingapis.com/Registration/</a></a></strong>
 
+</li>
 <li><strong><a name="more_info_at_http_www_usps_com_webtools" class="item">(More info at <a href="http://www.usps.com/webtools/">http://www.usps.com/webtools/</a>)</a></strong>
 
+</li>
 <li><strong><a name="account" class="item">The online signup will result in a testing-only account (only a small
         sample of queries will work).</a></strong>
 
+</li>
 <li><strong><a name="mail" class="item">To activate the &quot;production&quot; use of your USPS account, you must follow 
         the USPS documentation.  As of Sept 16 2004, that means contacting the 
         USPS Internet Customer Care Center by e-mail 
         (<code>icustomercare@usps.com</code>) or phone: 1-800-344-7779.</a></strong>
 
+</li>
 </ul>
 <p>
 </p>
@@ -284,12 +299,15 @@ when preloading is advantagous.  For example:</pre>
 <li><strong><a name="for_mod_perl_to_load_the_modules_only_once_at_startup_to_reduce_memory_utilization" class="item">For mod_perl, to load the modules only once at startup to reduce memory
 utilization.</a></strong>
 
+</li>
 <li><strong><a name="modules" class="item">For compatibilty with some security modules (e.g. Safe).</a></strong>
 
+</li>
 <li><strong><a name="to_move_the_delay_that_would_normally_occur_with_the_first_request_into_startup_time_that_way_it_takes_longer_to_start_up_but_the_first_user_will_not_experience_any_delay" class="item">To move the delay that would normally occur with the first request into 
  startup time.  That way, it takes longer to start up, but the first user
  will not experience any delay.</a></strong>
 
+</li>
 </ul>
 <p>
 </p>
@@ -372,9 +390,10 @@ this, while UPS_Offline does not.</p>
 <p>
 </p>
 <h2><a name="business__shipping__log_level__">Business::Shipping-&gt;<code>log_level()</code></a></h2>
-<p>Simple alternative to editing the config/log4perl.conf file.  Sets the log level
-for all Business::Shipping objects.</p>
-<p>Takes a scalar that can be 'debug', 'info', 'warn', 'error', or 'fatal'.</p>
+<p>Simple alternative to editing the config/log4perl.conf file.  Sets the log 
+level for all Business::Shipping objects.</p>
+<p>Takes a scalar that can be 'trace', 'debug', 'info', 'warn', 'error', or 
+'fatal'.</p>
 <p>
 </p>
 <hr />
@@ -383,23 +402,30 @@ for all Business::Shipping objects.</p>
 <ul>
 <li><strong><a name="business_shipping_datafiles_required_for_offline_cost_estimation" class="item">Business::Shipping::DataFiles - Required for offline cost estimation</a></strong>
 
+</li>
 <li><strong><a name="datafiles" class="item">Business::Shipping::DataTools - Tools that generate DataFiles (optional)</a></strong>
 
+</li>
 </ul>
 <p>Other Perl modules that are simliar to Business::Shipping:</p>
 <ul>
 <li><strong><a name="business_shipping_ups_xml_online_cost_estimation_module_that_has_very_few_prerequisites_supports_shipments_that_originate_in_usa_and_canada" class="item">Business::Shipping::UPS_XML - Online cost estimation module that has 
 very few prerequisites.  Supports shipments that originate in USA and Canada.</a></strong>
 
+</li>
 <li><strong><a name="business_ups_online_cost_estimation_module_that_uses_the_ups_web_form_instead_of_the_ups_online_tools_for_shipments_that_originate_in_the_usa_only" class="item">Business::UPS - Online cost estimation module that uses the UPS web form
 instead of the UPS Online Tools.  For shipments that originate in the USA only.</a></strong>
 
+</li>
 <li><strong><a name="net_ups_implementation_of_ups_online_tools_api_in_perl" class="item">Net::UPS - Implementation of UPS Online Tools API in Perl</a></strong>
 
+</li>
 <li><strong><a name="http_www_halofree_com_lib_public_code_ship_ups_pm" class="item"><a href="http://www.halofree.com/lib/public/code/Ship/UPS.pm">http://www.halofree.com/lib/public/code/Ship/UPS.pm</a></a></strong>
 
+</li>
 <li><strong><a name="http_www_halofree_com_lib_public_code_ship_usps_pm" class="item"><a href="http://www.halofree.com/lib/public/code/Ship/USPS.pm">http://www.halofree.com/lib/public/code/Ship/USPS.pm</a></a></strong>
 
+</li>
 </ul>
 <pre>
 
@@ -409,18 +435,24 @@ instead of the UPS Online Tools.  For shipments that originate in the USA only.<
 <li><strong><a name="corporation" class="item">Advanced support and integration services are available from End Point 
     Corporation (<a href="http://www.endpoint.com/">http://www.endpoint.com/</a>).</a></strong>
 
+</li>
 <li><strong><a name="system" class="item">Interchange e-commerce system ( <a href="http://www.icdevgroup.org">http://www.icdevgroup.org</a> ).  See 
     <code>UserTag/business-shipping.tag</code>.</a></strong>
 
+</li>
 <li><strong><a name="many_e_commerce_websites_such_as_phatmotorsports_com" class="item">Many E-Commerce websites, such as Phatmotorsports.com.</a></strong>
 
+</li>
 <li><strong><a name="paymentonline_com_software" class="item">PaymentOnline.com software.</a></strong>
 
+</li>
 <li><strong><a name="the_shopping_cart_wobject_for_the_webgui_project_by_andy_grundman_http_www_plainblack_com_shopping_cart_wobject" class="item">The &quot;Shopping Cart&quot; Wobject for the WebGUI project, by Andy Grundman 
     <a href="http://www.plainblack.com/shopping_cart_wobject">http://www.plainblack.com/shopping_cart_wobject</a></a></strong>
 
+</li>
 <li><strong><a name="mentioned_in_yapc_2004_writing_web_applications_with_perl" class="item">Mentioned in YAPC 2004: &quot;Writing web applications with perl ...&quot;</a></strong>
 
+</li>
 </ul>
 <p>
 </p>
