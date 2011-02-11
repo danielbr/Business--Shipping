@@ -12,7 +12,7 @@ plan skip_all => 'Test::Pod::Coverage not installed.'
 import Test::Pod::Coverage;
 
 plan skip_all => 'Author test. Set TEST_AUTHOR to run.'
-    unless $ENV{ALL_TESTS};
+    unless $ENV{TEST_AUTHOR};
 plan 'no_plan';
 
 my @all_modules = Test::Pod::Coverage::all_modules();
