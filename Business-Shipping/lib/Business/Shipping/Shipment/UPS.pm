@@ -13,6 +13,7 @@ $Rev: 280 $
 =cut
 
 use Moose;
+use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use version; our $VERSION = qv('2.2.0');
 
@@ -122,6 +123,7 @@ sub massage_values {
         $self->to_zip() =~ /^(\d{5})/ and $self->to_zip($1);
     }
 
+    #info('to_country currently = ' . $self->to_country());
     # UPS prefers 'GB' instead of 'UK'
     $self->to_country('GB') if $self->to_country() eq 'UK';
 
