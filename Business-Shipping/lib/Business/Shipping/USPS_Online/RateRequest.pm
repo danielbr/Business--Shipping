@@ -49,6 +49,8 @@ Business::Shipping::USPS_Online::RateRequest
 =cut
 
 use Moose;
+use Data::Dumper;
+use Carp;
 use Business::Shipping::Logging;
 use Business::Shipping::USPS_Online::Shipment;
 use Business::Shipping::USPS_Online::Package;
