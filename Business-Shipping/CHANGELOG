@@ -8,10 +8,12 @@ Revision history for Business::Shipping
     * [Fixed] You are overwriting a locally defined method (to_zip) with an 
       accessor.
     
-    * Remove redundant 'Business.Shipping' from logging layout.
-    
     * [Fixed] USPS not matching service descriptions (Kevin D. McClellan)
       This resolves the "Nested quantifiers in regex" error. Thanks, Kevin!
+
+    * Remove redundant 'Business.Shipping' from logging layout and fix logging
+      messages with the wrong caller (due to off-by-one error in call frame 
+      depth).
 
 
 2.2.0 Limited beta release

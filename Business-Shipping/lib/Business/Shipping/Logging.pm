@@ -65,7 +65,7 @@ sub init {
     return croak "Could not get log4perl config file: $file" unless -f $file;
     
     Log::Log4perl::init($file);
-    ${Log::Log4perl::caller_depth} = 2;
+    ${Log::Log4perl::caller_depth} = 1;
 
     return;
 }
@@ -105,6 +105,7 @@ Please see Log4perl for more about these wrapped functions.
 =cut
 
 # (caller(1))[3] is shorthand for my (undef, undef, undef, $sub) = caller(1);
+# Using call frame depth of 1
 
 sub logdie   { Log::Log4perl->get_logger((caller(1))[3])->logdie (@_); }
 sub logwarn  { Log::Log4perl->get_logger((caller(1))[3])->logwarn(@_); }
