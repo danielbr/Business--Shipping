@@ -15,7 +15,7 @@ $Rev: 280 $
 use Any::Moose;
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
-use version; our $VERSION = qv('2.4.1');
+use version; our $VERSION = qv('400');
 
 =head2 to_residential()
 

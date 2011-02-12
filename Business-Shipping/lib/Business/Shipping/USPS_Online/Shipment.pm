@@ -39,7 +39,7 @@ use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Util;
 use Business::Shipping::USPS_Online::Package;
-use version; our $VERSION = qv('2.4.1');
+use version; our $VERSION = qv('400');
 extends 'Business::Shipping::Shipment';
 
 has 'packages' => (

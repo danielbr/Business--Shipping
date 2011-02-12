@@ -36,7 +36,7 @@ use Business::Shipping::Config;
 use Cache::FileCache;
 use Business::Shipping::Package;
 use Any::Moose;
-use version; our $VERSION = qv('2.4.1');
+use version; our $VERSION = qv('400');
 
 extends 'Business::Shipping';
 

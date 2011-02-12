@@ -11,7 +11,7 @@ Business::Shipping::UPS_Online::Shipment
 use Any::Moose;
 use Business::Shipping::Config;
 use Business::Shipping::Logging;
-use version; our $VERSION = qv('2.4.1');
+use version; our $VERSION = qv('400');
 
 extends 'Business::Shipping::Shipment::UPS';
 

@@ -50,7 +50,7 @@ use HTTP::Request;
 use HTTP::Response;
 use Date::Parse;
 use POSIX;
-use version; our $VERSION = qv('2.4.1');
+use version; our $VERSION = qv('400');
 
 extends 'Business::Shipping::Tracking';
 

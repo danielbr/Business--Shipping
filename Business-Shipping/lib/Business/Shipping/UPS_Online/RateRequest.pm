@@ -84,7 +84,7 @@ use XML::Simple 2.05;
 use Cache::FileCache;
 use LWP::UserAgent;
 use POSIX ('strftime');
-use version; our $VERSION = qv('2.4.1');
+use version; our $VERSION = qv('400');
 
 extends 'Business::Shipping::RateRequest::Online';
 
