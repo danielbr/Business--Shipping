@@ -94,9 +94,9 @@ sub check_for_updates {
     my $rates      = { ground => {}, air => {} };
     my %type_regex = (
         'ground' =>
-            '^<STRONG>Ground<BR></STRONG>Through&nbsp;(\w+) (\d+), (\d+): (\d+\.?\d?\d?)%<BR>Effective&nbsp;(\w+) (\d+), (\d+): (\d+\.?\d?\d?)%',
+            qr{<STRONG>Ground<BR></STRONG>Through(?:\s|&nbsp;)(\w+) (\d+), (\d+): (\d+\.?\d?\d?)%<BR>Effective(?:\s|&nbsp;)(\w+)(?:\s|&nbsp;)(\d+), (\d+): (\d+\.?\d?\d?)%},
         'air' =>
-            '^<STRONG>Air and International<BR></STRONG>Through&nbsp;(\w+) (\d+), (\d+): (\d+\.?\d?\d?)%<BR>Effective&nbsp;(\w+) (\d+), (\d+): (\d+\.?\d?\d?)%',
+            qr{<STRONG>Air and International<BR></STRONG>Through(?:\s|&nbsp;)(\w+)(?:\s|&nbsp;)(\d+), (\d+): (\d+\.?\d?\d?)%<BR>Effective(?:\s|&nbsp;)(\w+) (\d+), (\d+): (\d+\.?\d?\d?)%},
     );
 
 #print "content = $content\n";
