@@ -21,6 +21,7 @@ use vars qw(@EXPORT $Current_Level);
 use Carp;
 use Log::Log4perl;
 use Business::Shipping::Config;
+use version; our $VERSION = qv('2.4.1');
 
 $Current_Level = 'WARN';
 @EXPORT        = qw(

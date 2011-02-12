@@ -22,6 +22,7 @@ use File::Find;
 use File::Copy;
 use Fcntl ':flock';
 use English;
+use version; our $VERSION = qv('2.4.1');
 use vars qw(@EXPORT_OK);
 
 @EXPORT_OK = qw( looks_like_number unique );

@@ -2,6 +2,15 @@ Revision history for Business::Shipping
 =======================================
 
 
+2.4.1  February 12, 2011
+
+
+  General
+
+    * Add $VERSION back into sub-modules. PAUSE doesn't like it when you
+      remove them.
+
+
 2.4.0  February 12, 2011
 
 

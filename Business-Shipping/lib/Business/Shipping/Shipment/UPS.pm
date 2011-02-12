@@ -15,10 +15,11 @@ $Rev: 280 $
 use Any::Moose;
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
+use version; our $VERSION = qv('2.4.1');
 
 =head2 to_residential()
 
-Defaults to true.Test
+Defaults to true.
 
 =cut
 

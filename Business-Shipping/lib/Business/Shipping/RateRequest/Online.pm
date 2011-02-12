@@ -13,6 +13,7 @@ use Business::Shipping::Logging;
 use XML::Simple;
 use LWP::UserAgent;
 use Cache::FileCache;
+use version; our $VERSION = qv('2.4.1');
 
 extends 'Business::Shipping::RateRequest';
 

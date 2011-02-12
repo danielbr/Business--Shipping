@@ -26,6 +26,7 @@ for hundredweight rates and a much higher rate than estimated.
 use Business::Shipping::Config;
 use Business::Shipping::Logging;
 use Any::Moose;
+use version; our $VERSION = qv('2.4.1');
 
 extends 'Business::Shipping::Shipment::UPS';
 

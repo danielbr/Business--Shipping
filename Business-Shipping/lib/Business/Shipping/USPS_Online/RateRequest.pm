@@ -55,6 +55,7 @@ use XML::DOM;
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
+use version; our $VERSION = qv('2.4.1');
 
 =head2 domestic
 

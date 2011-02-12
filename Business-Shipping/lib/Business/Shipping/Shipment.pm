@@ -19,6 +19,7 @@ extends 'Business::Shipping';
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Util;
+use version; our $VERSION = qv('2.4.1');
 
 =head2 service
 

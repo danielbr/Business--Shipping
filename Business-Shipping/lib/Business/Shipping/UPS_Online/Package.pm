@@ -12,6 +12,7 @@ Business::Shipping::UPS_Online::Package
 
 use Any::Moose;
 use Business::Shipping::Package;
+use version; our $VERSION = qv('2.4.1');
 
 extends 'Business::Shipping::Package';
 
