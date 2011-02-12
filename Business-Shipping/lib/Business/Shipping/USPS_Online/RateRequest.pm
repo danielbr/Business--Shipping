@@ -479,105 +479,75 @@ sub _handle_response {
         }    # if services defined
     }
 
-    # International with one specific service.
+    # International with one specific service. International *does* tell you 
+    # the price of all services for each package
     else {
-
-    #
-    # International *does* tell you the price of all services for each package
-    #
+        my $desired_service = $self->service();
+        
+        # Handle difference between "Flat-Rate" and "Flat Rate" automatically.
+        $desired_service =~ s/Flat[-_]Rate/Flat Rate/i;
         my $service_description;
+
+        if (is_trace()) {
+            trace('Service part of response tree: ' . 
+                Dumper($response_tree->{Package}->{Service})
+            );
+        }
+        info("Requested service is '$desired_service'");
         foreach my $service (@{ $response_tree->{Package}->{Service} }) {
-            info("Trying to find a matching service by service description ("
-                    . $service->{SvcDescription}
-                    . ")...");
-            info("Charges for $service->{SvcDescription} service = "
-                    . $service->{Postage});
+            my $remove_reg = quotemeta('&lt;sup&gt;&amp;reg;&lt;/sup&gt;');
+            my $remove_tm  = quotemeta('&lt;sup&gt;&amp;trade;&lt;/sup&gt;');
+            my $compare_service = $service->{SvcDescription};
+            $compare_service =~ s/\*//g;
+            $compare_service =~ s/$remove_reg//gi;
+            $compare_service =~ s/$remove_tm//gi;
+            my $postage_formatted
+                = Business::Shipping::Util::currency({}, $service->{Postage});
 
-# BUG: you can't check if the service descriptions match, because many countries use
-# different descriptions for the same service.  So we try to match by description
-# *or* by mail_type.  (There are probably many services with the same mail_type, how
-# do we handle those?  We could just get them based on index number (maybe all "zero"
-# is the cheapest ground service, or...?
-
-#
-# TODO: Try searching all of them for a service that matches.  Perhaps we should
-# have a "matching" variable for each service.  Like, "Air" for "Airmail Parcel Post",
-# so that whichever service has "Air" in the description will be used first.
-#
-
-# USPS introduced new service types on May 14, 2007. Convert old service types to the new.
-
-# A service translation would have to take 'letter' and 'flat rate' into account, it's probably
-# better to leave the user to change their service.
-#my %services_old_to_new = (
-#    'Global Express Mail'       => 'Express Mail International',
-#    'EMS'                       => 'Express Mail International',
-#    'Global Priority Mail'
-#    'Airmail( Parcel[- ]Post)?' => 'Priority Mail International',
-#    'Economy( Parcel[- ]Post)?' => 'First Class Mail International',
-#);
-#
-#while (my($old, $new) = each %services_old_to_new) {
-#    if ($service =~ /$old/i) {
-#        #print "Changing old service ($service) into new ($new)\n";
-#        $service = $new;
-#    }
-#}
-            my $removereg = quotemeta('&lt;sup&gt;&amp;reg;&lt;/sup&gt;');
-            $service->{SvcDescription} =~ s/$removereg//gi;
-
-            if (    $self->service()
-                and $self->service() =~ quotemeta($service->{SvcDescription}))
-            {
+            debug("Checking for matching service in description:\n"
+                . $compare_service . " ($postage_formatted)"
+            );
+            if ($desired_service 
+                and 
+                lc $compare_service eq lc $desired_service) {
+                info("Found match: $compare_service "
+                    . "($postage_formatted)"
+                );
                 $charges             = $service->{'Postage'};
-                $service_description = $service->{SvcDescription};
-            }
-        }
-        if (!$charges) {
-
-            # Couldn't find it by service description, try by mail_type...
-            foreach my $service (@{ $response_tree->{Package}->{Service} }) {
-                info("Trying to find a matching service by mail_type...");
-                if (    $self->mail_type()
-                    and $self->mail_type() =~ $service->{MailType})
-                {
-                    $charges = $service->{Postage};
-                }
-            }
-
-            # Still can't find the right service...
-            if (!$charges) {
-                my $error_msg
-                    = "The requested service ("
-                    . ($self->service() || 'none entered by user')
-                    . ") did not match any services that were available for that country.";
-
-                print STDERR $error_msg;
-                $self->user_error($error_msg);
+                $service_description = $compare_service;
+                last;
             }
         }
 
-        if (defined($charges)) {
-            my $service_hash = {
-                code       => undef,
-                nick       => service_to_nick($service_description),
-                name       => undef,
-                deliv_days => undef,
-                deliv_date => undef,
-                charges    => $charges,
-                charges_formatted =>
-                    Business::Shipping::Util::currency({}, $charges),
-                deliv_date_formatted => undef,
-            };
-            push(@services_results, $service_hash);
+        # Still can't find the right service...
+        if (not defined $charges) {
+            my $error_msg
+                = "The requested service ("
+                . ($self->service() || 'none entered by user')
+                . ") did not match any services that were available for that country.";
+
+            $self->user_error($error_msg);
         }
+
+        my $service_hash = {
+            code       => undef,
+            nick       => service_to_nick($service_description),
+            name       => undef,
+            deliv_days => undef,
+            deliv_date => undef,
+            charges    => $charges,
+            charges_formatted =>
+                Business::Shipping::Util::currency({}, $charges),
+            deliv_date_formatted => undef,
+        };
+        push(@services_results, $service_hash);
     }
 
     if (!$charges) {
         $self->user_error('charges are 0, error out');
         return $self->is_success(0);
     }
-    info('Setting charges to ' . $charges);
+    info('Setting charges to: ' . $charges);
 
     my $results = [
         {   name => $self->shipper() || 'USPS_Online',
