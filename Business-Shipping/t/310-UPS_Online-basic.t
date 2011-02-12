@@ -33,6 +33,7 @@ ok(defined $other_method, 'UPS alternate object construction');
 my $package_one = new Business::Shipping::UPS_Online::Package;
 ok(defined $package_one, 'UPS package object construction');
 
+#goto wwe_uk;
 sub debug {
     print STDERR $_[0] . "\n" if $::debug;
 }
@@ -242,10 +243,13 @@ ok( $total_charges_2_pounds != $total_charges_12_pounds,
 ###########################################################################
 ##  World Wide Expedited
 ###########################################################################
+wwe_uk:
+#Business::Shipping->log_level('info');
 $shipment = test(
     'pickup_type'    => 'daily pickup',
     'from_zip'       => '98682',
     'from_country'   => 'US',
+    
     'to_country'     => 'GB',
     'service'        => 'XPD',
     'to_residential' => '1',
@@ -255,9 +259,9 @@ $shipment = test(
     'weight'    => '3.45',
     'packaging' => '02',
 );
-$shipment->submit() or die $shipment->user_error();
+$shipment->submit() or print $shipment->user_error();
+#print "shipment = " . Dumper($shipment);
 ok($shipment->total_charges(), 'UPS World Wide Expedited > 0');
-
 ###########################################################################
 ##  UPS One Day Air -- Specific cases
 ###########################################################################
