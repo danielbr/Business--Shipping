@@ -2,7 +2,7 @@ NAME
     Business::Shipping - Rates and tracking for UPS and USPS
 
 VERSION
-    Version 2.4.0
+    Version 2.4.1
 
 SYNOPSIS
   Rate request example
