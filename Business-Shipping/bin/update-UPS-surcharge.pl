@@ -4,10 +4,6 @@
 
 update-UPS-surcharge.pl
 
-=head1 VERSION
-
-$Rev: 189 $
-
 =head1 DESCRIPTION
 
 Installed by Business::Shipping.
@@ -55,29 +51,8 @@ Stores the "Good Through" rate in config/fuel_surcharge.txt, with the date it wa
 sub check_for_updates {
     my ($self) = @_;
 
-# Check last updated date, and see if the first monday of the next month has passed.
-
     my $fuel_surcharge_filename
         = Business::Shipping::Config::config_dir() . '/fuel_surcharge.txt';
-
-# UPS usually releases a new file three weeks after the effective date, but
-# we should check anyways, so just always do the update.
-#
-# my $fuel_surcharge_contents = readfile( $fuel_surcharge_filename );
-#
-#print( $fuel_surcharge_contents );
-#
-# my ( undef, $line2 ) = split( "\n", $fuel_surcharge_contents );
-# my ( undef, $gt_good_through_date ) = split( ': ', $line2 );
-# Determine today's date, and see if it is past the $good_through_date.
-# my $today = strftime "%Y%m%d", localtime( time );
-#if ( $today <= $gt_good_through_date ) {
-#    print "Update not necessary\n";
-#    exit;
-#}
-#else {
-#    print "Update is recommended.  Requesting new rates from the UPS website...\n";
-#}
 
     my $ua = LWP::UserAgent->new;
     $ua->timeout(10);
@@ -99,12 +74,6 @@ sub check_for_updates {
             qr{<STRONG>Air and International<BR></STRONG>Through(?:\s|&nbsp;)(\w+)(?:\s|&nbsp;)(\d+), (\d+): (\d+\.?\d?\d?)%<BR>Effective(?:\s|&nbsp;)(\w+) (\d+), (\d+): (\d+\.?\d?\d?)%},
     );
 
-#print "content = $content\n";
-# New HTML style (2006-10-25)
-# <STRONG>Current Fuel Surcharge Rate:</STRONG><br><br>
-# <STRONG>Ground<BR></STRONG>Through&nbsp;November 5, 2006: 5.25%<BR>Effective&nbsp;November 6, 2006: 4.50%<br><br>
-# <STRONG>Air and International<BR></STRONG>Through&nbsp;November 5, 2006: 16.50%<BR>Effective&nbsp;November 6, 2006: 12.50%<BR><br>
-
     foreach my $line (@lines) {
         while (my ($service_type, $regex) = each %type_regex) {
             if ($line =~ m|$regex|) {
@@ -120,7 +89,8 @@ sub check_for_updates {
         }
     }
 
-#print "INFO: $gt_month, $gt_day, $gt_year, $gt_rate\n$at_month, $at_day, $at_year, $at_rate\n\n";
+    #print "INFO: $gt_month, $gt_day, $gt_year, $gt_rate\n$at_month, ";
+    #print "$at_day, $at_year, $at_rate\n\n";
 
     #print Dumper( $rates );
 
@@ -150,7 +120,6 @@ sub check_for_updates {
             for my $c (0 .. $#month_names) {
                 if ($cur{month} eq $month_names[$c]) {
 
-  #print "cur month ('$cur{month}') eq month_names[c] ('$month_names[$c]')\n";
                     $cur{month} = $c + 1
                         ; # Add one because we don't count months from 0 in real life.
                     $found_month = 1;
@@ -251,12 +220,12 @@ __END__
 
 =head1 AUTHOR
 
-Dan Browning E<lt>F<db@kavod.com>E<gt>, Kavod Technologies, L<http://www.kavod.com>.
+Daniel Browning, db@kavod.com, L<http://www.kavod.com/>
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright (c) 2003-2004 Kavod Technologies, Dan Browning. All rights reserved.
-This program is free software; you may redistribute it and/or modify it under
-the same terms as Perl itself. See LICENSE for more info.
+Copyright 2003-2011 Daniel Browning <db@kavod.com>. All rights reserved.
+This program is free software; you may redistribute it and/or modify it 
+under the same terms as Perl itself. See LICENSE for more info.
 
 =cut
