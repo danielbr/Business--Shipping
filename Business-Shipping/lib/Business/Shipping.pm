@@ -17,11 +17,11 @@ use Business::Shipping::Util 'unique';
 
 =head1 VERSION
 
-Version 2.4.1
+Version 3.0.0
 
 =cut
 
-use version; our $VERSION = qv('2.4.1');
+use version; our $VERSION = qv('3.0.0');
 
 =head1 SYNOPSIS
 

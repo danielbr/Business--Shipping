@@ -2,10 +2,16 @@ Revision history for Business::Shipping
 =======================================
 
 
+3.0.0  February 12, 2011
+
+
+    * 2.4.1 is less than 2.03 -- bumping to 3.0.0.
+    * 2.4.1 is also less than the sub-module versions (e.g. 338). Bump those
+      to 400.
+
+
 2.4.1  February 12, 2011
 
-
-  General
 
     * Add $VERSION back into sub-modules. PAUSE doesn't like it when you
       remove them.
