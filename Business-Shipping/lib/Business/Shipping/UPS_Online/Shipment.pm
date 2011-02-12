@@ -12,7 +12,7 @@ Business::Shipping::UPS_Online::Shipment
 
 =cut
 
-use Moose;
+use Any::Moose;
 use Business::Shipping::Config;
 use Business::Shipping::Logging;
 use version; our $VERSION = qv('2.2.0');

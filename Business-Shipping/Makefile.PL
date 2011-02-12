@@ -49,7 +49,7 @@ WriteMakefile(
     AUTHOR    => 'Daniel Browning <db@kavod.com>',
     CONFIGURE => \&extra_WriteMakefile_options,
     PREREQ_PM => {
-        'Moose'         => 0,
+        'Any::Moose'    => 0,
         'Log::Log4perl' => 0,
         'Test::More'    => 0.40,
     },

@@ -68,7 +68,7 @@ my $results = $tracker->results();
 
 =cut
 
-use Moose;
+use Any::Moose;
 use Business::Shipping::Logging;
 use XML::Simple 2.05;
 use XML::DOM;

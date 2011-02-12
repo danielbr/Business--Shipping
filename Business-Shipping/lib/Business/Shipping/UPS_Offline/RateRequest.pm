@@ -40,7 +40,7 @@ use POSIX qw{ ceil strftime };
 use Storable;
 use Cwd;
 use version; our $VERSION = qv('2.2.0');
-use Moose;
+use Any::Moose;
 
 =head2 update
 

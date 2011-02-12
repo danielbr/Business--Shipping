@@ -78,7 +78,7 @@ UPS_ACCESS_KEY
 
 =cut
 
-use Moose;
+use Any::Moose;
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::UPS_Online::Package;

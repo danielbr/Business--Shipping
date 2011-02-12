@@ -12,7 +12,7 @@ $Rev: 280 $
 
 =cut
 
-use Moose;
+use Any::Moose;
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use version; our $VERSION = qv('2.2.0');

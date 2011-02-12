@@ -229,7 +229,7 @@ sub get_req_mod {
     my $req_mod = {
         'Minimum' => [
             qw/
-                Moose
+                Any::Moose
                 Log::Log4perl
                 Business::Shipping
                 /

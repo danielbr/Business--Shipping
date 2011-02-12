@@ -1,6 +1,14 @@
 Revision history for Business::Shipping
 =======================================
 
+2.2.2
+
+  General
+
+    * Change from Moose to Any::Moose
+      - This allows for the Mouse module which has far fewer dependencies, 
+        starts up faster, and has a lower memory footprint.
+
 2.2.1
 
   General

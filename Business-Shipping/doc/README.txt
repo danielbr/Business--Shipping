@@ -98,15 +98,17 @@ INSTALLATION
     See doc/INSTALL.
 
 REQUIRED MODULES
-    The following modules are required for offline UPS rate estimation. See
-    INSTALL.
+    See INSTALL.
 
-     Business::Shipping::DataFiles (any)
-     Moose (any)
+     Any::Moose (any)
      Config::IniFiles (any)
      Log::Log4perl (any)
 
 OPTIONAL MODULES
+    For UPS offline rate estimation:
+
+     Business::Shipping::DataFiles (any)
+
     The following modules are used by online rate estimation and tracking.
     See INSTALL.
 

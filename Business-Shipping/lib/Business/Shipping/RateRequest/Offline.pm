@@ -19,7 +19,7 @@ a few miscellaneous functions.
 
 =cut
 
-use Moose;
+use Any::Moose;
 use Business::Shipping::RateRequest;
 use Business::Shipping::Shipment;
 use Business::Shipping::Package;

@@ -14,7 +14,7 @@ Business::Shipping::UPS_Online::Package
 
 =cut
 
-use Moose;
+use Any::Moose;
 use Business::Shipping::Package;
 use version; our $VERSION = qv('2.2.0');
 

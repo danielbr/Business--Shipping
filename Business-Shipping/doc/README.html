@@ -111,11 +111,10 @@
 <ul>
 <li><strong><a name="shipment_rate_estimation_using_offline_tables" class="item">Shipment rate estimation using offline tables.</a></strong>
 
-<p>As of January, 2007, 
-UPS has only released the data tables in binary Excel format. These have not 
-been converted to the text files necessary for use in this module. A script is
-distributed with the module for automatically updating the fuel surcharge 
-every month.</p>
+<p>As of January, 2007, UPS has only released the data tables in binary Excel 
+format. These have not been converted to the text files necessary for use in 
+this module. A script is distributed with the module for automatically 
+updating the fuel surcharge every month.</p>
 </li>
 </ul>
 <p>
@@ -198,17 +197,18 @@ For example:</pre>
 </p>
 <hr />
 <h1><a name="required_modules">REQUIRED MODULES</a></h1>
-<p>The following modules are required for offline UPS rate estimation.  See 
-INSTALL.</p>
+<p>See INSTALL.</p>
 <pre>
- Business::Shipping::DataFiles (any)
- Moose (any)
+ Any::Moose (any)
  Config::IniFiles (any)
  Log::Log4perl (any)</pre>
 <p>
 </p>
 <hr />
 <h1><a name="optional_modules">OPTIONAL MODULES</a></h1>
+<p>For UPS offline rate estimation:</p>
+<pre>
+ Business::Shipping::DataFiles (any)</pre>
 <p>The following modules are used by online rate estimation and tracking.  See 
 INSTALL.</p>
 <pre>

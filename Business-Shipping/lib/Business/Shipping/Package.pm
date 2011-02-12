@@ -17,7 +17,7 @@ implementation.
 
 =cut
 
-use Moose;
+use Any::Moose;
 use version; our $VERSION = qv('2.2.0');
 
 =head2 $package->weight()

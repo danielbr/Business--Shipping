@@ -32,7 +32,7 @@ Default 'Package'.
 
 =cut
 
-use Moose;
+use Any::Moose;
 use version; our $VERSION = qv('2.2.0');
 use Business::Shipping::Logging;
 use Business::Shipping::Util;

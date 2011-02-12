@@ -39,7 +39,7 @@ use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Cache::FileCache;
 use Business::Shipping::Package;
-use Moose;
+use Any::Moose;
 use version; our $VERSION = qv('2.2.0');
 
 extends 'Business::Shipping';
@@ -248,8 +248,8 @@ sub _get_response {
 =head2 tracking_ids
 
 The Class::MethodMaker-based system accepted any number of inputs to assigned
-it to the internal arrayref. As part of moving to Moose, this is changed to
-using a real arrayref at _tracking_ids, and providing this tracking_ids()
+it to the internal arrayref. As part of moving to Any::Moose, this is changed 
+to using a real arrayref at _tracking_ids, and providing this tracking_ids()
 as syntactic sugar.
 
 =cut
@@ -257,7 +257,7 @@ as syntactic sugar.
 sub tracking_ids {
     my $self = shift;
 
-    # Check for new Moose-style arrayref syntax.
+    # Check for new Any::Moose-style arrayref syntax.
     $self->_tracking_ids($_[0]) if (ref($_[0]) eq 'ARRAY');
 
     # Old-stay list input

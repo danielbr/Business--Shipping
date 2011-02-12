@@ -7,7 +7,7 @@ author:       Daniel Browning <db@kavod.com>
 abstract:     Rates and tracking for UPS and USPS
 license:      perl
 requires:
-    Moose:            0
+    Any::Moose:       0
     Log::Log4perl:    0
     Test::More:       0.4
 recommends:

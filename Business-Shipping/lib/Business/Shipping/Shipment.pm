@@ -18,7 +18,7 @@ Shipments have a source, a destination, packages, and other attributes.
 
 =cut
 
-use Moose;
+use Any::Moose;
 extends 'Business::Shipping';
 use Business::Shipping::Logging;
 use Business::Shipping::Config;

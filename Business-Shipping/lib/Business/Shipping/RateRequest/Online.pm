@@ -12,7 +12,7 @@ Business::Shipping::RateRequest::Online - Abstract rates class
 
 =cut
 
-use Moose;
+use Any::Moose;
 use Business::Shipping::Logging;
 use XML::Simple;
 use LWP::UserAgent;

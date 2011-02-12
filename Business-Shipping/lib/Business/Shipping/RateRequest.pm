@@ -18,7 +18,7 @@ Represents a request for shipping cost estimation.
 
 =cut
 
-use Moose;
+use Any::Moose;
 extends 'Business::Shipping';
 use Data::Dumper;
 use Business::Shipping::Util;

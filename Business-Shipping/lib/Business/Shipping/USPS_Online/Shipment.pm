@@ -38,7 +38,7 @@ See Business::Shipping POD for usage information.
 
 =cut
 
-use Moose;
+use Any::Moose;
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Util;
