@@ -21,16 +21,28 @@ Business::Shipping::USPS_Online::RateRequest
     Media
 
 =head2 International
- 
-Global Express Guaranteed
-Global Express Guaranteed Non-Document Rectangular
-Global Express Guaranteed Non-Document Non-Rectangular
-Express Mail International (EMS)
-Express Mail International (EMS) Flat Rate Envelope
-Priority Mail International
-Priority Mail International Flat Rate Box
-Priority Mail International Flat Rate Envelope
-First Class Mail International
+
+ Global Express Guaranteed
+ Global Express Guaranteed Non-Document Rectangular
+ Global Express Guaranteed Non-Document Non-Rectangular
+ USPS GXG Envelopes
+ Express Mail International
+ Express Mail International Flat Rate Envelope
+ Express Mail International Legal Flat Rate Envelope
+ Priority Mail International
+ Priority Mail International Large Flat Rate Box
+ Priority Mail International Medium Flat Rate Box
+ Priority Mail International Small Flat Rate Box
+ Priority Mail International DVD Flat Rate Box
+ Priority Mail International Large Video Flat Rate Box
+ Priority Mail International Flat Rate Envelope
+ Priority Mail International Legal Flat Rate Envelope
+ Priority Mail International Padded Flat Rate Envelope
+ Priority Mail International Gift Card Flat Rate Envelope
+ Priority Mail International Small Flat Rate Envelope
+ Priority Mail International Window Flat Rate Envelope
+ First-Class Mail International Package
+ First-Class Mail International Large Envelope
 
 =head1 METHODS
 
