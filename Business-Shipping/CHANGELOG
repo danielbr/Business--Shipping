@@ -42,6 +42,10 @@ Revision history for Business::Shipping
     * Reversed the polarity to fix bug in USPS service check: Check current
       against desired instead of the other way around (which was often overzealous
       in matching).
+      
+  UPS_Offline
+  
+    * Fix UPS fuel surcharge update script by updating regex [Josh Lavin].
 
 
 2.2.1 Limited beta release
