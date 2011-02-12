@@ -1,3 +1,4 @@
+bin/apply-code-style
 bin/update-UPS-surcharge.pl
 CHANGELOG
 config/config.ini
