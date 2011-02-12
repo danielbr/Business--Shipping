@@ -29,7 +29,7 @@ Eventually, it should run a gamut of tests, for all modules, etc.
 
 =cut
 
-use version; our $VERSION = qv('2.2.0');
+use version; our $VERSION = qv('2.4.0');
 
 use strict;
 use warnings;
@@ -68,7 +68,7 @@ sub uneval { return Dumper(@_); }
 ##  Begin contents of business-shipping.tag
 ###############################################################################
 
-use Business::Shipping 2.2.0;    # For 'all/shop' support.
+use Business::Shipping 2.4.0;    # For 'all/shop' support.
 
 sub tag_business_shipping {
     my ($shipper, $opt) = @_;

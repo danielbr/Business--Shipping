@@ -19,9 +19,9 @@ UserTag  business-shipping  Documentation <<EOD
 
 =head1 VERSION
 
-[business-shipping] usertag:    2.2.0
+[business-shipping] usertag:    2.4.0
 
-Requires Business::Shipping:     Revision: 2.2.0+
+Requires Business::Shipping:     Revision: 2.4.0+
 
 =head1 AUTHOR 
 
@@ -125,7 +125,7 @@ the same terms as Perl itself. See LICENSE for more info.
 EOD
 
 UserTag  business-shipping  Routine <<EOR
-use Business::Shipping 2.2.0; # For 'all/shop' support.
+use Business::Shipping 2.4.0; # For 'all/shop' support.
 
 sub tag_business_shipping {
     my ( $shipper, $opt ) = @_;
