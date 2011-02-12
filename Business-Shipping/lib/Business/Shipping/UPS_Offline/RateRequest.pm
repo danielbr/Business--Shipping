@@ -1205,26 +1205,6 @@ sub readfile {
     return $contents;
 }
 
-=head2 * writefile( $filename, $filecontents )
-
-Note: this is not an object-oriented method.
-
-=cut
-
-sub writefile {
-    my ($filename, $contents) = @_;
-
-    return unless open my $out_fh, '>', $filename;
-
-    # TODO: Use English;
-
-    undef $/;
-
-    print $out_fh $contents;
-
-    return $contents;
-}
-
 =head2 _massage_values()
 
 Performs some final value modification just before the submit.
