@@ -6,6 +6,7 @@ use strict;
 use warnings;
 use Test::More;
 use Carp;
+use Data::Dumper;
 use Business::Shipping;
 
 plan skip_all => 'Required modules not installed'
