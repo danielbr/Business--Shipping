@@ -135,6 +135,15 @@ sub check_for_updates {
         foreach my $date_type ('through', 'effective') {
 
             # cur = current date and rate hash.
+            if (!defined $rates->{$service_type}) {
+                die "Could not find '$service_type'.";
+                next;
+            }
+            if (!defined $rates->{$service_type}{$date_type}) {
+                die "Found '$service_type', but could not find '$date_type'";
+                next;
+            }
+
             my %cur = %{ $rates->{$service_type}{$date_type} };
 
             my $found_month;
