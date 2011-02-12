@@ -1,6 +1,6 @@
 # [business-shipping] - Interchange Usertag for Business::Shipping
 #
-# Copyright 2003-2008 Daniel Browning <db@kavod.com>. All rights reserved.
+# Copyright 2003-2011 Daniel Browning <db@kavod.com>. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it 
 # under the same terms as Perl itself. See LICENSE for more info.
 

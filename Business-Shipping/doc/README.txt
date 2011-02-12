@@ -2,7 +2,7 @@ NAME
     Business::Shipping - Rates and tracking for UPS and USPS
 
 VERSION
-    Version 2.4.0
+    Version 2.2.0
 
 SYNOPSIS
   Rate request example
@@ -328,7 +328,7 @@ AUTHOR
     Daniel Browning, db@kavod.com, <http://www.kavod.com/>
 
 COPYRIGHT AND LICENCE
-    Copyright 2003-2008 Daniel Browning <db@kavod.com>. All rights reserved.
+    Copyright 2003-2011 Daniel Browning <db@kavod.com>. All rights reserved.
     This program is free software; you may redistribute it and/or modify it
     under the same terms as Perl itself. See LICENSE for more info.
 
