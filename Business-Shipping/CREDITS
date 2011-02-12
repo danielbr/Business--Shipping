@@ -4,7 +4,7 @@ The contributions of these people and organizations is greatly appreciated.
    tremendous amount of support for this module.
 
  * The Rubenstein Technology Group (http://www.rubensteintech.com/), 
-   Ed Zborowski<ed@rubensteintech.com>, Martin H. Beauchamp 
+   Ed Zborowski <ed@rubensteintech.com>, Martin H. Beauchamp 
    <martin@rubensteintech.com>, and Jaron Rubenstein <jaron@rubensteintech.com>
    have contributed patches for the following: 
    - 1.57: Many bug fixes and new features: see ChangeLog.
@@ -42,7 +42,8 @@ The contributions of these people and organizations is greatly appreciated.
  * Chris Ochs <chris@paymentonline.com> contributed information about running
    under mod_perl.
    
- * Kevin D. McClellan contributed a patch to fix a USPS service match bug.
+ * Kevin D. McClellan and Mark Milhollan contributed patches to fix USPS 
+   service match bugs.
 
  * Mike Wexler <mwexler@tias.com> contributed USPS_Online changes (2.03+):
    - Fix weight calculation error and support shipments less than one pound.  
@@ -58,6 +59,7 @@ The contributions of these people and organizations is greatly appreciated.
    - Mike Heins <mike@perusion.com>
    - CPAN Tester Josts Smokehouse <Jost.Krieger+smokeback[at]ruhr-uni-bochum.de>
    - Todd Anderson <ahqmed@hotmail.com>
+   - Joe Engleson <joe@jewebdesign.com>
  
  * Individuals who have contributed feature suggestions:
    - Mark <MpoloN7@netscape.net>
