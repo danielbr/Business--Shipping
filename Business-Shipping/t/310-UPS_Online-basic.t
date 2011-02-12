@@ -46,7 +46,7 @@ sub test {
         'access_key' => $ENV{UPS_ACCESS_KEY},
         'cache'      => 0,
     );
-    $shipment->submit(%args) or croak $shipment->user_error();
+    $shipment->submit(%args) or confess $shipment->user_error();
     return $shipment;
 }
 
