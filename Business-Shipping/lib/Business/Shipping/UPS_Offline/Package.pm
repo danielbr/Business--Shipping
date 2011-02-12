@@ -4,10 +4,6 @@ package Business::Shipping::UPS_Offline::Package;
 
 Business::Shipping::UPS_Offline::Package
 
-=head1 VERSION
-
-2.2.0
-
 =head1 METHODS
 
 =over 4
@@ -15,7 +11,6 @@ Business::Shipping::UPS_Offline::Package
 =cut
 
 use Any::Moose;
-use version; our $VERSION = qv('2.2.0');
 
 extends 'Business::Shipping::Package';
 

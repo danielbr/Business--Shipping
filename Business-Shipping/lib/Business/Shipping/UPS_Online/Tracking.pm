@@ -4,10 +4,6 @@ package Business::Shipping::UPS_Online::Tracking;
 
 Business::Shipping::UPS_Online::Tracking
 
-=head1 VERSION
-
-2.2.0
-
 =head2 EXAMPLE 
 
 my $results = $tracker->results();
@@ -75,7 +71,6 @@ use XML::DOM;
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
-use version; our $VERSION = qv('2.2.0');
 
 extends 'Business::Shipping::Tracking';
 

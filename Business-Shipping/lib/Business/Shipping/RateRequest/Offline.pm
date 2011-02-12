@@ -4,10 +4,6 @@ package Business::Shipping::RateRequest::Offline;
 
 Business::Shipping::RateRequest::Offline - Abstract class for cost calculation.
 
-=head1 VERSION
-
-2.2.0
-
 =head1 DESCRIPTION
 
 This doesn't have very much to it.  It just disables the cache feature, and has
@@ -24,7 +20,6 @@ use Business::Shipping::RateRequest;
 use Business::Shipping::Shipment;
 use Business::Shipping::Package;
 use Business::Shipping::Logging;
-use version; our $VERSION = qv('2.2.0');
 
 extends 'Business::Shipping::RateRequest';
 

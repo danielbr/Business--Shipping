@@ -4,10 +4,6 @@ package Business::Shipping::Config;
 
 Business::Shipping::Config - Configuration functions
 
-=head1 VERSION
-
-2.2.0
-
 =head1 DESCRIPTION
 
 Among other things, this module implements a simple API on top of the 
@@ -33,7 +29,6 @@ use Config::IniFiles;
 use Business::Shipping::Logging;
 use Carp;
 use Cwd;
-use version; our $VERSION = qv('2.2.0');
 use vars qw(@EXPORT);
 
 @EXPORT = qw/ cfg cfg_obj config_to_hash config_to_ary_of_hashes /;

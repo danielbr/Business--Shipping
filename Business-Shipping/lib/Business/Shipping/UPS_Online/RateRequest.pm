@@ -4,10 +4,6 @@ package Business::Shipping::UPS_Online::RateRequest;
 
 Business::Shipping::UPS_Online::RateRequest
 
-=head1 VERSION
-
-2.2.0
-
 =head1 REQUIRED FIELDS
 
 user_id
@@ -88,7 +84,6 @@ use XML::Simple 2.05;
 use Cache::FileCache;
 use LWP::UserAgent;
 use POSIX ('strftime');
-use version; our $VERSION = qv('2.2.0');
 
 extends 'Business::Shipping::RateRequest::Online';
 

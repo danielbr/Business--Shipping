@@ -4,10 +4,6 @@ package Business::Shipping::UPS_Online::Shipment;
 
 Business::Shipping::UPS_Online::Shipment
 
-=head1 VERSION
-
-2.2.0
-
 =head1 METHODS
 
 =cut
@@ -15,7 +11,6 @@ Business::Shipping::UPS_Online::Shipment
 use Any::Moose;
 use Business::Shipping::Config;
 use Business::Shipping::Logging;
-use version; our $VERSION = qv('2.2.0');
 
 extends 'Business::Shipping::Shipment::UPS';
 

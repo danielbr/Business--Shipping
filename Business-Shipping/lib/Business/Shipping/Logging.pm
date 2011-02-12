@@ -4,10 +4,6 @@ package Business::Shipping::Logging;
 
 Business::Shipping::Logging - Log4perl wrapper for easy, non-OO usage.
 
-=head1 VERSION
-
-2.2.0
-
 =head1 NOTES
 
 The Log4perl category is Package::subroutine::line. This gives a lot of 
@@ -25,7 +21,6 @@ use vars qw(@EXPORT $Current_Level);
 use Carp;
 use Log::Log4perl;
 use Business::Shipping::Config;
-use version; our $VERSION = qv('2.2.0');
 
 $Current_Level = 'WARN';
 @EXPORT        = qw(

@@ -4,10 +4,6 @@ package Business::Shipping::Shipment;
 
 Business::Shipping::Shipment - Abstract class
 
-=head1 VERSION
-
-2.2.0
-
 =head1 DESCRIPTION
 
 Abstract Class: real implementations are done in subclasses.
@@ -23,7 +19,6 @@ extends 'Business::Shipping';
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Util;
-use version; our $VERSION = qv('2.2.0');
 
 =head2 service
 

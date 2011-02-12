@@ -16,6 +16,11 @@ Revision history for Business::Shipping
 
     * Apply perl coding style.
 
+  Backwards-Compatiblity:
+  
+    * Remove $VERSION from all the modules except Business::Shipping.
+      I don't think the benefit of sub-module-specific versions is significant. 
+
   USPS_Online
 
     * Document new International USPS service types.

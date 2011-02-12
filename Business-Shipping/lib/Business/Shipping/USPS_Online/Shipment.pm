@@ -4,10 +4,6 @@ package Business::Shipping::USPS_Online::Shipment;
 
 Business::Shipping::USPS_Online::Shipment
 
-=head1 VERSION
-
-2.2.0
-
 =head1 DESCRIPTION
 
 See Business::Shipping POD for usage information.
@@ -43,7 +39,6 @@ use Business::Shipping::Logging;
 use Business::Shipping::Config;
 use Business::Shipping::Util;
 use Business::Shipping::USPS_Online::Package;
-use version; our $VERSION = qv('2.2.0');
 extends 'Business::Shipping::Shipment';
 
 has 'packages' => (

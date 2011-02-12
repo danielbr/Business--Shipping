@@ -4,10 +4,6 @@ package Business::Shipping::UPS_Offline::Shipment;
 
 Business::Shipping::UPS_Offline::Shipment
 
-=head1 VERSION
-
-2.2.0
-
 =head1 METHODS
 
 =over 4
@@ -30,7 +26,6 @@ for hundredweight rates and a much higher rate than estimated.
 use Business::Shipping::Config;
 use Business::Shipping::Logging;
 use Any::Moose;
-use version; our $VERSION = qv('2.2.0');
 
 extends 'Business::Shipping::Shipment::UPS';
 

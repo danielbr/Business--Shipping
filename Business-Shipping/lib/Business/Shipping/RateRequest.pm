@@ -4,10 +4,6 @@ package Business::Shipping::RateRequest;
 
 Business::Shipping::RateRequest - Abstract class
 
-=head1 VERSION
-
-2.2.0
-
 =head1 DESCRIPTION
 
 Abstract Class: real implementations are done in subclasses.
@@ -24,7 +20,6 @@ use Data::Dumper;
 use Business::Shipping::Util;
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
-use version; our $VERSION = qv('2.2.0');
 
 =head2 $rate_request->is_success()
 

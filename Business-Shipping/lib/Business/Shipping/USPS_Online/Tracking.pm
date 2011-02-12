@@ -6,10 +6,6 @@ Business::Shipping::USPS_Online::Tracking - A USPS module for Tracking Packages
 
 See Tracking.pm POD for usage information.
 
-=head1 VERSION
-
-2.2.0
-
 =head2 EXAMPLE
 
 my $results = $tracker->results();
@@ -54,7 +50,6 @@ use HTTP::Request;
 use HTTP::Response;
 use Date::Parse;
 use POSIX;
-use version; our $VERSION = qv('2.2.0');
 
 extends 'Business::Shipping::Tracking';
 

@@ -4,10 +4,6 @@ package Business::Shipping::RateRequest::Online;
 
 Business::Shipping::RateRequest::Online - Abstract rates class
 
-=head1 VERSION
-
-2.2.0
-
 =head1 METHODS
 
 =cut
@@ -17,7 +13,6 @@ use Business::Shipping::Logging;
 use XML::Simple;
 use LWP::UserAgent;
 use Cache::FileCache;
-use version; our $VERSION = qv('2.2.0');
 
 extends 'Business::Shipping::RateRequest';
 

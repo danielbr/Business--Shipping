@@ -4,10 +4,6 @@ package Business::Shipping::UPS_Offline::RateRequest;
 
 Business::Shipping::UPS_Offline::RateRequest
 
-=head1 VERSION
-
-2.2.0
-
 =head1 GLOSSARY
 
 =over 4
@@ -39,7 +35,6 @@ use POSIX qw{ ceil strftime };
 #use Data::Dumper;
 use Storable;
 use Cwd;
-use version; our $VERSION = qv('2.2.0');
 use Any::Moose;
 
 =head2 update

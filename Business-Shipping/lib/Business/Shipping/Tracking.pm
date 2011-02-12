@@ -4,10 +4,6 @@ package Business::Shipping::Tracking;
 
 Business::Shipping::Tracking
 
-=head1 VERSION
-
-2.2.0
-
 =head1 SYNOPSIS
 
 =head2 Example tracking request for USPS:
@@ -40,7 +36,6 @@ use Business::Shipping::Config;
 use Cache::FileCache;
 use Business::Shipping::Package;
 use Any::Moose;
-use version; our $VERSION = qv('2.2.0');
 
 extends 'Business::Shipping';
 

@@ -4,10 +4,6 @@ package Business::Shipping::USPS_Online::Package;
 
 Business::Shipping::USPS_Online::Package
 
-=head1 VERSION
-
-2.2.0
-
 =head1 METHODS
 
 =head2 container
@@ -33,7 +29,6 @@ Default 'Package'.
 =cut
 
 use Any::Moose;
-use version; our $VERSION = qv('2.2.0');
 use Business::Shipping::Logging;
 use Business::Shipping::Util;
 

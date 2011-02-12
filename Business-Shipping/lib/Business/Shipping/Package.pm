@@ -4,10 +4,6 @@ package Business::Shipping::Package;
 
 Business::Shipping::Package - Abstract class
 
-=head1 VERSION
-
-2.2.0
-
 =head1 DESCRIPTION
 
 Represents package-level information (e.g. weight).  Subclasses provide real 
@@ -18,7 +14,6 @@ implementation.
 =cut
 
 use Any::Moose;
-use version; our $VERSION = qv('2.2.0');
 
 =head2 $package->weight()
 

@@ -4,10 +4,6 @@ package Business::Shipping::USPS_Online::RateRequest;
 
 Business::Shipping::USPS_Online::RateRequest 
 
-=head1 VERSION
-
-2.2.0
-
 =head1 SERVICE TYPES
 
 =head2 Domestic
@@ -59,7 +55,6 @@ use XML::DOM;
 use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Response;
-use version; our $VERSION = qv('2.2.0');
 
 =head2 domestic
 
