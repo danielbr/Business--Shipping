@@ -8,6 +8,27 @@ Revision history for Business::Shipping
     * Change from Moose to Any::Moose
       - This allows for the Mouse module which has far fewer dependencies, 
         starts up faster, and has a lower memory footprint.
+        
+    * Fix UPS bug in shipping to United Kingdom. CountryCode was always being 
+      set to 'UK', when UPS needs their 'GB' value.
+
+  USPS_Online
+
+    * Document new International USPS service types.
+    
+    * Reformatting, debug-logging changes, remove unused code.
+    
+    * Remove asterisks and "trademark" symbols in addition to "registered"
+      symbols.
+    
+    * Remove the never-quite-worked-right "find service by matching package 
+      type" code. It was trying too hard to be helpful and will more often than 
+      not just cover up the real problem -- that it can't find the service type 
+      by the normal method.
+    
+    * Reversed the polarity to fix bug in USPS service check: Check current
+      against desired instead of the other way around (which was often overzealous
+      in matching).
 
 2.2.1
 
