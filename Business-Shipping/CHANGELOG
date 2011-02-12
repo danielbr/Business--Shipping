@@ -1,7 +1,9 @@
 Revision history for Business::Shipping
 =======================================
 
-2.2.2
+
+2.4.0  February 11, 2011
+
 
   General
 
@@ -12,7 +14,7 @@ Revision history for Business::Shipping
     * Fix UPS bug in shipping to United Kingdom. CountryCode was always being 
       set to 'UK', when UPS needs their 'GB' value.
 
-    * Enforce perl coding style.
+    * Apply perl coding style.
 
   USPS_Online
 
@@ -32,7 +34,9 @@ Revision history for Business::Shipping
       against desired instead of the other way around (which was often overzealous
       in matching).
 
-2.2.1
+
+2.2.1 Limited beta release
+
 
   General
   
@@ -48,6 +52,7 @@ Revision history for Business::Shipping
 
 
 2.2.0 Limited beta release
+
 
   General
     
