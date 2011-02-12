@@ -19,7 +19,11 @@ Revision history for Business::Shipping
   Backwards-Compatiblity:
   
     * Remove $VERSION from all the modules except Business::Shipping.
-      I don't think the benefit of sub-module-specific versions is significant. 
+      I don't think the benefit of sub-module-specific versions is significant.
+
+    * Use #!/usr/bin/env perl as the shebang for UPS surcharge update script. 
+      It provides wider compatibility and doesn't assume where the current
+      environment's perl is going to be.
 
   USPS_Online
 
