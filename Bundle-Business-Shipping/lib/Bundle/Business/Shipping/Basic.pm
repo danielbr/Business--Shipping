@@ -32,7 +32,7 @@ L<Business::Shipping>
 
 =head1 AUTHOR
 
-Daniel Browning, db@endpoint.com, L<http://www.endpoint.com/>
+Daniel Browning, db@kavod.com, L<http://www.kavod.com/>
 
 =cut
 

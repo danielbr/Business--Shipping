@@ -285,8 +285,8 @@ SEE ALSO
 Use of this software
     Please let the author know how you are using Business::Shipping.
 
-    *   Advanced support and integration services are available from End
-        Point Corporation (<http://www.endpoint.com/>).
+    *   Advanced support and integration services are available from the
+        author.
 
     *   Interchange e-commerce system ( <http://www.icdevgroup.org> ). See
         "UserTag/business-shipping.tag".
@@ -323,11 +323,10 @@ CREDITS
     file.
 
 AUTHOR
-    Daniel Browning, db@endpoint.com, <http://www.endpoint.com/>
+    Daniel Browning, db@kavod.com, <http://www.kavod.com/>
 
 COPYRIGHT AND LICENCE
-    Copyright 2003-2008 Daniel Browning <db@endpoint.com>. All rights
-    reserved. This program is free software; you may redistribute it and/or
-    modify it under the same terms as Perl itself. See LICENSE for more
-    info.
+    Copyright 2003-2008 Daniel Browning <db@kavod.com>. All rights reserved.
+    This program is free software; you may redistribute it and/or modify it
+    under the same terms as Perl itself. See LICENSE for more info.
 

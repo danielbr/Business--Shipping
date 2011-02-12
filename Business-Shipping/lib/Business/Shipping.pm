@@ -1,4 +1,4 @@
-# Copyright 2003-2008 Daniel Browning <db@endpoint.com>. All rights reserved.
+# Copyright 2003-2008 Daniel Browning <db@kavod.com>. All rights reserved.
 # This program is free software; you may redistribute it and/or modify it
 # under the same terms as Perl itself. See LICENSE for more info.
 
@@ -564,8 +564,8 @@ Please let the author know how you are using Business::Shipping.
 
 =over 4
 
-=item * Advanced support and integration services are available from End Point 
-    Corporation (L<http://www.endpoint.com/>).
+=item * Advanced support and integration services are available from the 
+author.
 
 =item * Interchange e-commerce system ( L<http://www.icdevgroup.org> ).  See 
     C<UserTag/business-shipping.tag>.
@@ -606,11 +606,11 @@ Many people have contributed to this software, please see the C<CREDITS> file.
 
 =head1 AUTHOR
 
-Daniel Browning, db@endpoint.com, L<http://www.endpoint.com/>
+Daniel Browning, db@kavod.com, L<http://www.kavod.com/>
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright 2003-2008 Daniel Browning <db@endpoint.com>. All rights reserved.
+Copyright 2003-2008 Daniel Browning <db@kavod.com>. All rights reserved.
 This program is free software; you may redistribute it and/or modify it 
 under the same terms as Perl itself. See LICENSE for more info.
 

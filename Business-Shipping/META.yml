@@ -3,7 +3,7 @@ name:         Business-Shipping
 version:      2.2.1
 version_from: lib/Business/Shipping.pm
 installdirs:  site
-author:       Daniel Browning <db@endpoint.com>
+author:       Daniel Browning <db@kavod.com>
 abstract:     Rates and tracking for UPS and USPS
 license:      perl
 requires:
