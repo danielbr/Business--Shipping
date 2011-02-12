@@ -455,7 +455,8 @@ sub _handle_response {
    # If caller asked for All services, then lets give them All services.  Will
    # pass back service name as-is.  Let caller try to distinguish it.
 
-# Set charges to returned services, since charges needs to be set to something
+   # Set charges to returned services, since charges needs to be set to 
+   # something.
         $charges = $response_tree->{Package}->{Service};
 
         if (defined($charges)) {
