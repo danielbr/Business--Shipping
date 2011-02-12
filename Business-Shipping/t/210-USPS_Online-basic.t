@@ -7,6 +7,7 @@ use warnings;
 use Test::More;
 use Carp;
 use Business::Shipping;
+use Data::Dumper;
 use Scalar::Util qw(blessed);
 
 plan skip_all => 'Required modules not installed'
@@ -19,6 +20,8 @@ plan skip_all => 'Slow tests. Set TEST_SLOW to run.'
     unless $ENV{TEST_SLOW};
 
 plan 'no_plan';
+
+#goto letter_is_cheaper;
 
 {
     my $standard_method
@@ -59,7 +62,7 @@ plan 'no_plan';
 {
     my $rate_request = Business::Shipping->rate_request(
         shipper      => 'USPS_Online',
-        'service'    => 'Parcel',
+        'service'    => 'Priority Mail International',
         'weight'     => 1,
         'ounces'     => 0,
         'mail_type'  => 'Package',
@@ -202,7 +205,7 @@ if (0) {
     #Business::Shipping->log_level('debug');
     my $shipment = test(
         'test_mode'  => 0,
-        'service'    => 'Parcel',
+        'service'    => 'Priority Mail International',
         'weight'     => 1,
         'ounces'     => 0,
         'mail_type'  => 'Package',
@@ -321,9 +324,11 @@ if (0) {
 # This tries to test to make sure that the shipping matches up right
 #  - So that Airmail parcel post goes to Airmail parcel post, etc.
 #
+letter_is_cheaper:
 {
+    #Business::Shipping->log_level('debug');
     my $shipment = test(
-        service => 'Priority Mail International Flat-Rate Box',
+        service => 'Priority Mail International Medium Flat Rate Box',
 
         from_zip => '98682',
         user_id  => $ENV{USPS_USER_ID},
@@ -354,7 +359,9 @@ if (0) {
     #print "airmail parcel post to australia = $airmail_parcel_post_to_AU\n";
     #use Data::Dumper; print Dumper($shipment2->results());
     ok($airmail_letter_post_to_AU < $airmail_parcel_post_to_AU,
-        'USPS Letter is cheaper than Parcel');
+        "USPS Letter to AU (\$$airmail_letter_post_to_AU) is cheaper than "
+        . "Parcel (\$$airmail_parcel_post_to_AU) to AU");
+    #print Dumper($shipment2);
 }
 
 {
@@ -363,7 +370,7 @@ if (0) {
     # Letter to Canada:
     #
     my $shipment = test(
-        service => 'Airmail Letter-post',
+        service => 'Priority Mail International Small Flat Rate Envelope',
 
         from_zip => '98682',
         user_id  => $ENV{USPS_USER_ID},
@@ -376,8 +383,8 @@ if (0) {
     my $airmail_letter_post_to_CA = $shipment->total_charges();
 
     #print "\ttotal charges = $airmail_letter_post_to_CA\n";
-    ok( $airmail_letter_post_to_CA < 7.50,
-        'USPS Letter to Canada is under $7.50'
+    ok( $airmail_letter_post_to_CA,
+        "Got a price ($airmail_letter_post_to_CA) for PMISFRE to Canada"
     );
 }
 
@@ -387,7 +394,7 @@ if (0) {
 
 {
     my $shipment = test(
-        service => 'Airmail Parcel Post',
+        service => 'Priority Mail International Medium Flat Rate Box',
 
         from_zip => '98682',
         user_id  => $ENV{USPS_USER_ID},
