@@ -371,7 +371,7 @@ sub _gen_request_xml {
         . '<?xml version="1.0"?>' . "\n"
         . XML::Simple::XMLout($request_tree, KeepRoot => 1);
 
-    info($request_xml);
+    trace($request_xml) if is_trace();
 
     return ($request_xml);
 }
