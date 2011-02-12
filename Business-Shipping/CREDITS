@@ -45,23 +45,26 @@ The contributions of these people and organizations is greatly appreciated.
  * Kevin D. McClellan and Mark Milhollan contributed patches to fix USPS 
    service match bugs.
 
+ * Father Chrysostomos <sprout@cpan.org> contributed patches to fix OS X
+   installation issues. 
+   
+ * Josh Lavin <josh@perusion.com> contributed a patch to fix the UPS fuel
+   surcharge update script.
+
  * Mike Wexler <mwexler@tias.com> contributed USPS_Online changes (2.03+):
    - Fix weight calculation error and support shipments less than one pound.  
    - Fix error messages on International requests.
    - Add option to disable automatic package splitting.
    - Add width, height, length, and girth.
    
- * Individuals who have contributed bug reports:
+ * Individuals who have contributed bug reports and feature suggestions:
    - Mike Castle <dalgoda@ix.netcom.com>
    - Richard Hornsby <rhornsby@io.osuedc.org>
    - Micah Gersten <micah@davka.com>
    - Chris Ochs <chris@paymentonline.com>
-   - Mike Heins <mike@perusion.com>
    - CPAN Tester Josts Smokehouse <Jost.Krieger+smokeback[at]ruhr-uni-bochum.de>
    - Todd Anderson <ahqmed@hotmail.com>
    - Joe Engleson <joe@jewebdesign.com>
- 
- * Individuals who have contributed feature suggestions:
    - Mark <MpoloN7@netscape.net>
    
  * All the Perl and CPAN authors.
