@@ -589,13 +589,23 @@ sub to_country_abbrev {
     return unless $self->to_country;
 
     # Do the UPS translations
-
+    #info('to_country = ' . $self->to_country());
     my $online_ups_country_to_abbrev
         = cfg()->{ups_information}->{online_ups_country_to_abbrev};
+
+    # The Config module doesn't give an array ref if it's just one value
+    # any more, so we do that ourselves.
+    if ($online_ups_country_to_abbrev 
+        and ref $online_ups_country_to_abbrev ne 'ARRAY' ) {
+        $online_ups_country_to_abbrev = [$online_ups_country_to_abbrev];
+    }
     my $countries         = config_to_hash($online_ups_country_to_abbrev);
+    #info('online_ups_country_to_abbrev LUT = ' . Data::Dumper::Dumper($online_ups_country_to_abbrev));
+    #info('country LUT = ' . Data::Dumper::Dumper($countries));
     my $to_country_abbrev = $countries->{ $self->to_country }
         || $self->shipment->to_country_abbrev();
 
+    #info("to_country_abbrev returning $to_country_abbrev");
     return $to_country_abbrev || $self->to_country;
 }
 
