@@ -15,10 +15,10 @@ plan skip_all => 'No credentials'
     unless $ENV{UPS_USER_ID}
         and $ENV{UPS_PASSWORD}
         and $ENV{UPS_ACCESS_KEY};
-        
+
 plan skip_all => 'Slow tests. Set TEST_SLOW to run.'
     unless $ENV{TEST_SLOW};
-    
+
 plan 'no_plan';
 
 $::debug = 0;
@@ -56,11 +56,12 @@ sub simple_test {
     my $shipment = test(%args);
     $shipment->submit() or die $shipment->user_error();
     my $total_charges = $shipment->total_charges();
-    my $msg
-        = "UPS Simple Test: "
-        . ($args{weight}
+    my $msg           = "UPS Simple Test: "
+        . (
+          $args{weight}
         ? $args{weight} . " pounds"
-        : ($args{pounds} . "lbs and " . $args{ounces} . "ounces"))
+        : ($args{pounds} . "lbs and " . $args{ounces} . "ounces")
+        )
         . " to "
         . ($args{to_city} ? $args{to_city} . " " : '')
         . $args{to_zip} . " via "
@@ -91,7 +92,6 @@ sub simple_test {
 #ok( $@, "UPS Died on missing user_id as expected" );
 #
 #$ENV{ UPS_USER_ID } = $UPS_USER_ID;
-
 
 my $shipment;
 
@@ -125,8 +125,7 @@ my $rate_request;
 use Business::Shipping;
 use Business::Shipping::UPS_Online::Shipment;
 
-$rate_request
-    = Business::Shipping->rate_request(shipper => 'Online::UPS');
+$rate_request = Business::Shipping->rate_request(shipper => 'Online::UPS');
 $shipment = Business::Shipping::UPS_Online::Shipment->new();
 
 $rate_request->init(
@@ -244,12 +243,13 @@ ok( $total_charges_2_pounds != $total_charges_12_pounds,
 ##  World Wide Expedited
 ###########################################################################
 wwe_uk:
+
 #Business::Shipping->log_level('info');
 $shipment = test(
-    'pickup_type'    => 'daily pickup',
-    'from_zip'       => '98682',
-    'from_country'   => 'US',
-    
+    'pickup_type'  => 'daily pickup',
+    'from_zip'     => '98682',
+    'from_country' => 'US',
+
     'to_country'     => 'GB',
     'service'        => 'XPD',
     'to_residential' => '1',
@@ -260,6 +260,7 @@ $shipment = test(
     'packaging' => '02',
 );
 $shipment->submit() or print $shipment->user_error();
+
 #print "shipment = " . Dumper($shipment);
 ok($shipment->total_charges(), 'UPS World Wide Expedited > 0');
 ###########################################################################
@@ -378,15 +379,13 @@ simple_test(
 
 my $print = 0;
 
-$rate_request
-    = Business::Shipping->rate_request('shipper' => 'UPS_Online');
+$rate_request = Business::Shipping->rate_request('shipper' => 'UPS_Online');
 $rate_request->init(to_country => 'US');
 print "\tto_country = " . $rate_request->to_country() . "\n" if $print;
 ok($rate_request->to_country,
     'UPS_Online init( to_country => \'US\' ) works');
 
-$rate_request
-    = Business::Shipping->rate_request('shipper' => 'UPS_Online');
+$rate_request = Business::Shipping->rate_request('shipper' => 'UPS_Online');
 $rate_request->to_country('US');
 print "\tto_country = " . $rate_request->to_country() . "\n" if $print;
 ok($rate_request->to_country, 'UPS_Online to_country() works');

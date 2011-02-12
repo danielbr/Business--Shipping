@@ -28,11 +28,11 @@ use Business::Shipping::Config;
 use version; our $VERSION = qv('2.2.0');
 
 $Current_Level = 'WARN';
-@EXPORT = qw(
-    fatal    is_fatal    logdie 
+@EXPORT        = qw(
+    fatal    is_fatal    logdie
     error    is_error
     warn     is_warn     logwarn
-    info     is_info 
+    info     is_info
     debug    is_debug
     trace    is_trace
 );
@@ -61,9 +61,9 @@ sub init {
     my $config_dir = Business::Shipping::Config::config_dir();
     return carp "Could not find config directory." unless defined $config_dir;
 
-    my $file =  "$config_dir/log4perl.conf";
+    my $file = "$config_dir/log4perl.conf";
     return croak "Could not get log4perl config file: $file" unless -f $file;
-    
+
     Log::Log4perl::init($file);
     ${Log::Log4perl::caller_depth} = 1;
 
@@ -107,18 +107,18 @@ Please see Log4perl for more about these wrapped functions.
 # (caller(1))[3] is shorthand for my (undef, undef, undef, $sub) = caller(1);
 # Using call frame depth of 1
 
-sub logdie   { Log::Log4perl->get_logger((caller(1))[3])->logdie (@_); }
+sub logdie   { Log::Log4perl->get_logger((caller(1))[3])->logdie(@_); }
 sub logwarn  { Log::Log4perl->get_logger((caller(1))[3])->logwarn(@_); }
-sub fatal    { Log::Log4perl->get_logger((caller(1))[3])->fatal(@_);  }
-sub error    { Log::Log4perl->get_logger((caller(1))[3])->error(@_);  }
-sub warn     { Log::Log4perl->get_logger((caller(1))[3])->warn (@_);  }
-sub info     { Log::Log4perl->get_logger((caller(1))[3])->info (@_);  }
-sub debug    { Log::Log4perl->get_logger((caller(1))[3])->debug(@_);  }
-sub trace    { Log::Log4perl->get_logger((caller(1))[3])->trace(@_);  }
+sub fatal    { Log::Log4perl->get_logger((caller(1))[3])->fatal(@_); }
+sub error    { Log::Log4perl->get_logger((caller(1))[3])->error(@_); }
+sub warn     { Log::Log4perl->get_logger((caller(1))[3])->warn(@_); }
+sub info     { Log::Log4perl->get_logger((caller(1))[3])->info(@_); }
+sub debug    { Log::Log4perl->get_logger((caller(1))[3])->debug(@_); }
+sub trace    { Log::Log4perl->get_logger((caller(1))[3])->trace(@_); }
 sub is_fatal { Log::Log4perl->get_logger((caller(1))[3])->is_fatal(); }
 sub is_error { Log::Log4perl->get_logger((caller(1))[3])->is_error(); }
-sub is_warn  { Log::Log4perl->get_logger((caller(1))[3])->is_warn (); }
-sub is_info  { Log::Log4perl->get_logger((caller(1))[3])->is_info (); }
+sub is_warn  { Log::Log4perl->get_logger((caller(1))[3])->is_warn(); }
+sub is_info  { Log::Log4perl->get_logger((caller(1))[3])->is_info(); }
 sub is_debug { Log::Log4perl->get_logger((caller(1))[3])->is_debug(); }
 sub is_trace { Log::Log4perl->get_logger((caller(1))[3])->is_trace(); }
 

@@ -114,7 +114,7 @@ sub _gen_request_xml {
             ForceArray => 1
         );
 
-        trace(XML::Simple::XMLout($request_xml_tree, KeepRoot => 1)) 
+        trace(XML::Simple::XMLout($request_xml_tree, KeepRoot => 1))
             if is_trace();
 
         #
@@ -272,7 +272,7 @@ sub _handle_response {
                 (($summary) ? (summary => $summary) : ()),
                 activity => \@activity_entries,
             };
-            
+
             debug('returning results.');
 
             Business::Shipping::Tracking::_delete_undefined_keys($result);

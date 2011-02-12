@@ -10,7 +10,7 @@ use_ok('Business::Shipping');
 
 foreach my $shipper (Business::Shipping::Config::calc_req_mod()) {
     ok(1, "All required modules for $shipper installed");
-    my @required_modules 
+    my @required_modules
         = Business::Shipping::Config::get_req_mod(shipper => $shipper);
     foreach my $mod_name (@required_modules) {
         use_ok($mod_name);

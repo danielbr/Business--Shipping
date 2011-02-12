@@ -455,8 +455,8 @@ sub _handle_response {
    # If caller asked for All services, then lets give them All services.  Will
    # pass back service name as-is.  Let caller try to distinguish it.
 
-   # Set charges to returned services, since charges needs to be set to 
-   # something.
+        # Set charges to returned services, since charges needs to be set to
+        # something.
         $charges = $response_tree->{Package}->{Service};
 
         if (defined($charges)) {
@@ -479,19 +479,18 @@ sub _handle_response {
         }    # if services defined
     }
 
-    # International with one specific service. International *does* tell you 
+    # International with one specific service. International *does* tell you
     # the price of all services for each package
     else {
         my $desired_service = $self->service();
-        
+
         # Handle difference between "Flat-Rate" and "Flat Rate" automatically.
         $desired_service =~ s/Flat[-_]Rate/Flat Rate/i;
         my $service_description;
 
         if (is_trace()) {
-            trace('Service part of response tree: ' . 
-                Dumper($response_tree->{Package}->{Service})
-            );
+            trace('Service part of response tree: '
+                    . Dumper($response_tree->{Package}->{Service}));
         }
         info("Requested service is '$desired_service'");
         foreach my $service (@{ $response_tree->{Package}->{Service} }) {
@@ -504,15 +503,14 @@ sub _handle_response {
             my $postage_formatted
                 = Business::Shipping::Util::currency({}, $service->{Postage});
 
-            debug("Checking for matching service in description:\n"
-                . $compare_service . " ($postage_formatted)"
-            );
-            if ($desired_service 
-                and 
-                lc $compare_service eq lc $desired_service) {
-                info("Found match: $compare_service "
-                    . "($postage_formatted)"
-                );
+            debug(    "Checking for matching service in description:\n"
+                    . $compare_service
+                    . " ($postage_formatted)");
+            if ($desired_service
+                and lc $compare_service eq lc $desired_service)
+            {
+                info(     "Found match: $compare_service "
+                        . "($postage_formatted)");
                 $charges             = $service->{'Postage'};
                 $service_description = $compare_service;
                 last;

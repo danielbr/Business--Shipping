@@ -116,7 +116,6 @@ has 'shipment' => (
 
 has 'shipper_number' => (is => 'rw');
 
-
 =head1
 
 =cut
@@ -595,13 +594,15 @@ sub to_country_abbrev {
 
     # The Config module doesn't give an array ref if it's just one value
     # any more, so we do that ourselves.
-    if ($online_ups_country_to_abbrev 
-        and ref $online_ups_country_to_abbrev ne 'ARRAY' ) {
+    if ($online_ups_country_to_abbrev
+        and ref $online_ups_country_to_abbrev ne 'ARRAY')
+    {
         $online_ups_country_to_abbrev = [$online_ups_country_to_abbrev];
     }
-    my $countries         = config_to_hash($online_ups_country_to_abbrev);
-    #info('online_ups_country_to_abbrev LUT = ' . Data::Dumper::Dumper($online_ups_country_to_abbrev));
-    #info('country LUT = ' . Data::Dumper::Dumper($countries));
+    my $countries = config_to_hash($online_ups_country_to_abbrev);
+
+#info('online_ups_country_to_abbrev LUT = ' . Data::Dumper::Dumper($online_ups_country_to_abbrev));
+#info('country LUT = ' . Data::Dumper::Dumper($countries));
     my $to_country_abbrev = $countries->{ $self->to_country }
         || $self->shipment->to_country_abbrev();
 

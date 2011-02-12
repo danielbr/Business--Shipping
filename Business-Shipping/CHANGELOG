@@ -8,9 +8,11 @@ Revision history for Business::Shipping
     * Change from Moose to Any::Moose
       - This allows for the Mouse module which has far fewer dependencies, 
         starts up faster, and has a lower memory footprint.
-        
+
     * Fix UPS bug in shipping to United Kingdom. CountryCode was always being 
       set to 'UK', when UPS needs their 'GB' value.
+
+    * Enforce perl coding style.
 
   USPS_Online
 

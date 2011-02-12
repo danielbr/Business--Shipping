@@ -107,7 +107,7 @@ sub Optional {
 # request.
 sub _gen_single_package_xml {
     trace '()';
-    
+
     info('Creating XML request.');
     my $self        = shift;
     my $tracking_id = shift;
@@ -164,10 +164,9 @@ sub _gen_single_package_xml {
 # We only do this to provide a pretty, formatted XML doc for the debug.
 # Commented out lines below, because XML::Parser complains
 #my $request_xml_tree = XML::Simple::XMLin( $request_xml, KeepRoot => 1, ForceArray => 1 );
-    
-    trace( XML::Simple::XMLout( $request_tree, KeepRoot => 1 ) )
+
+    trace(XML::Simple::XMLout($request_tree, KeepRoot => 1))
         if is_trace();
-    
 
     return ($request_xml);
 }
@@ -207,7 +206,7 @@ sub _gen_request {
             'content-type' => 'application/x-www-form-urlencoded');
         $request->header('content-length' => length($xml_request));
         $request->content($xml_request);
-        
+
         # Large debug
         trace('HTTP Request: ' . $request->as_string()) if is_trace();
         push @http_request_objects, $request;

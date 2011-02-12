@@ -20,20 +20,19 @@ plan 'no_plan';
 $::UPS_Online = 1 if Business::Shipping::Config::calc_req_mod('UPS_Online');
 
 unless ($ENV{UPS_USER_ID} and $ENV{UPS_PASSWORD} and $ENV{UPS_ACCESS_KEY}) {
-    $::UPS_Online = 0;
+    $::UPS_Online     = 0;
     $::UPS_Online_msg = 'No credentials. Set three UPS_* variables to run.';
 }
 
 if ($ENV{DISABLE_UPS_ONLINE}) {
-    $::UPS_Online = 0;
-    $::UPS_Online_msg 
-        = 'Comparison to UPS_Online is disabled. '
+    $::UPS_Online     = 0;
+    $::UPS_Online_msg = 'Comparison to UPS_Online is disabled. '
         . 'Unset DISABLE_UPS_ONLINE to run.';
 }
 
 if (not $ENV{TEST_SLOW}) {
     $::UPS_Online = 0;
-    $::UPS_Online_msg 
+    $::UPS_Online_msg
         = 'Comparison to UPS_Online is too slow. Set TEST_SLOW to run.';
 }
 
@@ -561,9 +560,10 @@ SKIP: {
             service => 'GNDRES',
         );
 
-        my $rr_off
-            = Business::Shipping->rate_request(shipper => 'Offline::UPS',
-            %r1);
+        my $rr_off = Business::Shipping->rate_request(
+            shipper => 'Offline::UPS',
+            %r1
+        );
         $rr_off->submit or print STDERR $rr_off->user_error();
 
         my $rr_on = Business::Shipping->rate_request(

@@ -1012,7 +1012,7 @@ sub special_zone_hi_ak {
         (cfg()->{ups_information}->{ak_special_zipcodes_124_224} or ''));
     my @ak_special_zipcodes_126_226 = split(',',
         (cfg()->{ups_information}->{ak_special_zipcodes_126_226} or ''));
-    trace(   "zip="
+    trace(    "zip="
             . $self->to_zip
             . ".  Hawaii special zip codes = "
             . join(",\t", @hi_special_zipcodes_124_224));

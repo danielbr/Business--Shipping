@@ -60,7 +60,7 @@ has 'signature_type'        => (is => 'rw');
 has 'insured_currency_type' => (is => 'rw');
 has 'insured_value'         => (is => 'rw');
 
-# NOTE: Causes "Unsupported packaging requested." error. 
+# NOTE: Causes "Unsupported packaging requested." error.
 #__PACKAGE__->meta()->make_immutable();
 
 1;

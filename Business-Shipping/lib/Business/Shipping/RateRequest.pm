@@ -320,7 +320,7 @@ sub validate {
                     if ($self->$option() ne $invalid_rate_request->{$option})
                     {
                         $matches++;
-                        trace(   $self->$option()
+                        trace(    $self->$option()
                                 . " does not equal "
                                 . $invalid_rate_request->{$option});
                     }
@@ -328,7 +328,7 @@ sub validate {
                 else {
                     if ($self->$option() eq $invalid_rate_request->{$option})
                     {
-                        trace(   $self->$option()
+                        trace(    $self->$option()
                                 . " equals "
                                 . $invalid_rate_request->{$option});
                         $matches++;
@@ -374,8 +374,7 @@ sub get_unique_hash {
 
     my @Unique = $self->get_grouped_attrs('Unique');
 
-    info(
-        "Unique attributes for this RateRequest are: " . join(',', @Unique));
+    info("Unique attributes for this RateRequest are: " . join(',', @Unique));
     for (@Unique) {
         if ($self->can($_)) {
             $unique{$_} = $self->$_;

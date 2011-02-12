@@ -96,11 +96,12 @@ sub simple_test {
     my $shipment = test(%args);
     $shipment->submit() or die $shipment->user_error();
     my $total_charges = $shipment->total_charges();
-    my $msg
-        = "USPS Simple Test: "
-        . ($args{weight}
+    my $msg           = "USPS Simple Test: "
+        . (
+          $args{weight}
         ? $args{weight} . " pounds"
-        : ($args{pounds} . "lbs and " . $args{ounces} . "ounces"))
+        : ($args{pounds} . "lbs and " . $args{ounces} . "ounces")
+        )
         . " to "
         . ($args{to_city} ? $args{to_city} . " " : '')
         . $args{to_zip} . " via "
@@ -326,6 +327,7 @@ if (0) {
 #
 letter_is_cheaper:
 {
+
     #Business::Shipping->log_level('debug');
     my $shipment = test(
         service => 'Priority Mail International Medium Flat Rate Box',
@@ -358,9 +360,11 @@ letter_is_cheaper:
     #print "airmail letter post to Australia = $airmail_letter_post_to_AU\n";
     #print "airmail parcel post to australia = $airmail_parcel_post_to_AU\n";
     #use Data::Dumper; print Dumper($shipment2->results());
-    ok($airmail_letter_post_to_AU < $airmail_parcel_post_to_AU,
+    ok( $airmail_letter_post_to_AU < $airmail_parcel_post_to_AU,
         "USPS Letter to AU (\$$airmail_letter_post_to_AU) is cheaper than "
-        . "Parcel (\$$airmail_parcel_post_to_AU) to AU");
+            . "Parcel (\$$airmail_parcel_post_to_AU) to AU"
+    );
+
     #print Dumper($shipment2);
 }
 
@@ -383,9 +387,8 @@ letter_is_cheaper:
     my $airmail_letter_post_to_CA = $shipment->total_charges();
 
     #print "\ttotal charges = $airmail_letter_post_to_CA\n";
-    ok( $airmail_letter_post_to_CA,
-        "Got a price ($airmail_letter_post_to_CA) for PMISFRE to Canada"
-    );
+    ok($airmail_letter_post_to_CA,
+        "Got a price ($airmail_letter_post_to_CA) for PMISFRE to Canada");
 }
 
 #######################################################################
