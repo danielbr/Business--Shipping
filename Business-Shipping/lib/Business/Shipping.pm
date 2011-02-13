@@ -545,6 +545,10 @@ Other Perl modules that are simliar to Business::Shipping:
 
 =over 4
 
+=item * Business::UPS::Tracking - Online shipment tracking.
+
+=item * WebService::UPS - Online shipment tracking
+
 =item * Business::Shipping::UPS_XML - Online cost estimation module that has 
 very few prerequisites.  Supports shipments that originate in USA and Canada.
 
@@ -552,10 +556,6 @@ very few prerequisites.  Supports shipments that originate in USA and Canada.
 instead of the UPS Online Tools.  For shipments that originate in the USA only.
 
 =item * Net::UPS - Implementation of UPS Online Tools API in Perl
-
-=item * http://www.halofree.com/lib/public/code/Ship/UPS.pm
-
-=item * http://www.halofree.com/lib/public/code/Ship/USPS.pm
 
 =back
  
