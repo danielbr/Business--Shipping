@@ -49,9 +49,10 @@ WriteMakefile(
     AUTHOR    => 'Daniel Browning <db@kavod.com>',
     CONFIGURE => \&extra_WriteMakefile_options,
     PREREQ_PM => {
-        'Any::Moose'    => 0,
-        'Log::Log4perl' => 0,
-        'Test::More'    => 0.40,
+        'Any::Moose'       => 0,
+        'Config::IniFiles' => 0,
+        'Log::Log4perl'    => 0,
+        'Test::More'       => 0.40,
     },
     EXE_FILES => ['bin/update-UPS-surcharge.pl',],
     NO_META   => 1,
