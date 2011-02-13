@@ -541,7 +541,7 @@ Important modules that are related to Business::Shipping:
 
 =back
 
-Other Perl modules that are simliar to Business::Shipping:
+Other Perl modules that are similar to Business::Shipping:
 
 =over 4
 
