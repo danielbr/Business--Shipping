@@ -584,11 +584,13 @@ author.
 
 =head1 WEBSITE
 
-L<http://www.kavod.com/Business-Shipping/>
+Source code repository: L<https://github.com/danielbr/Business--Shipping>
 
 CPAN web site: L<http://search.cpan.org/~dbrowning/Business-Shipping/>
 
 Backpan (old releases): L<http://backpan.cpan.org/authors/id/D/DB/DBROWNING/>
+
+Author homepage: L<http://www.kavod.com/Business-Shipping/>
 
 =head1 SUPPORT
 
