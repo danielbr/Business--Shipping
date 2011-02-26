@@ -22,7 +22,7 @@ Business::Shipping
 
 Business::Shipping::DataFiles
 
-Cache::FileCache
+CHI
 
 Class::MethodMaker::Engine
 

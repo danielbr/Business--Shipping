@@ -12,6 +12,8 @@ use Business::Shipping::USPS_Online::Tracking;
 
 my $tracker = Business::Shipping::USPS_Online::Tracking->new();
 
+$tracker->cache_config({ driver => 'Memory', global => 1 }); # Any CHI config will do, defaults to driver => 'File'
+
 $tracker->init(
 test_mode => 1,
 );
@@ -33,7 +35,7 @@ Business::Tracking is an API for tracking shipments
 use Data::Dumper;
 use Business::Shipping::Logging;
 use Business::Shipping::Config;
-use Cache::FileCache;
+use CHI;
 use Business::Shipping::Package;
 use Any::Moose;
 use version; our $VERSION = qv('400');
@@ -42,6 +44,7 @@ extends 'Business::Shipping';
 
 has 'is_success' => (is => 'rw');
 has 'cache'      => (is => 'rw');
+has 'cache_config' => (is => 'rw', isa => 'HashRef', default => sub { { driver => 'File' } });
 has 'invalid'    => (is => 'rw');
 has 'test_mode'  => (is => 'rw');
 has 'user_id'    => (is => 'rw');
@@ -124,7 +127,7 @@ sub submit {
     if ($self->cache()) {
         trace('cache enabled');
 
-        my $cache = Cache::FileCache->new();
+        my $cache = CHI->new(%{$self->cache_config});
 
         foreach my $id (@{ $self->tracking_ids }) {
             my $key = $self->gen_unique_key($id);
@@ -185,7 +188,7 @@ sub submit {
         trace('cache enabled, saving results.');
 
    #TODO: Allow setting of cache properties (time limit, enable/disable, etc.)
-        my $new_cache = Cache::FileCache->new();
+        my $new_cache = CHI->new(%{$self->cache_config});
 
         foreach my $id ($self->results_keys) {
             my $key = $self->gen_unique_key($id);

@@ -65,7 +65,7 @@ Each Bundle lists the required modules for each shipper type.  Here is the
 combined list for all shippers:
 
  Business::Shipping::DataFiles (any)
- Cache::FileCache (any)
+ CHI (0.39)
  Any::Moose (any)
  Config::IniFiles (any)
  Crypt::SSLeay (any)

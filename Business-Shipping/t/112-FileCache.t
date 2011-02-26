@@ -1,17 +1,17 @@
 #!/bin/env perl
 
-# Simulate the way that Cache::FileCache is used.
+# Simulate the way that CHI is used.
 
 use strict;
 use warnings;
 use Test::More;
 
-eval { require Cache::FileCache; };
-plan skip_all => 'Cache::FileCache not installed.' if $@;
+eval { require CHI; };
+plan skip_all => 'CHI not installed.' if $@;
 plan 'no_plan';
-import Cache::FileCache;
+import CHI;
 
-my $cache = Cache::FileCache->new;
+my $cache = CHI->new(driver => 'File');
 my $key   = join("|", ('Parcel Post', 'Germany', '5', 'Package'));
 my $rate  = $cache->get($key);
 
@@ -21,4 +21,4 @@ if (not defined $rate) {
     $cache->set($key, $rate, "30 minutes");
 }
 
-ok(1, 'Cache::FileCache works as expected.');
+ok(1, 'CHI works as expected.');
