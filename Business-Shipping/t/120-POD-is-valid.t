@@ -9,4 +9,7 @@ use Test::More;
 eval { require Test::Pod };
 plan skip_all => 'Test::Pod not installed.' if $@;
 import Test::Pod;
-all_pod_files_ok();
+
+my @poddirs = qw(lib doc t);
+all_pod_files_ok(all_pod_files(@poddirs));
+
