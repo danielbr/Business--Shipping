@@ -132,15 +132,15 @@ For example:
 
  perl -MCPAN -e 'install Bundle::Business::Shipping'
 
-See doc/INSTALL.
+See INSTALL.
 
 =head1 REQUIRED MODULES
-
-See INSTALL.
 
  Any::Moose (any)
  Config::IniFiles (any)
  Log::Log4perl (any)
+
+See INSTALL.
 
 =head1 OPTIONAL MODULES
 
@@ -160,7 +160,7 @@ INSTALL.
 =head1 GETTING STARTED
 
 Be careful to read, understand, and comply with the terms of use for the 
-provider that you will use.
+shipping service that you will use.
 
 =head2 UPS_Offline: For United Parcel Service (UPS) offline rate requests
 
