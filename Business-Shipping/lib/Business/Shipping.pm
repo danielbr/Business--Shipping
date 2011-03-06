@@ -459,7 +459,7 @@ sub rate_request {
 #
 # Shipper name backwards-compatibility
 #
-# 1. Really old: "UPS" or "USPS" (assumes Online::)
+# 1. Really old: "UPS" or "USPS" (implies Online::)
 # 2. Semi-old:   "Online::UPS", "Offline::UPS", or "Online::USPS"
 # 3. Current:    "UPS_Online", "UPS_Offline", or "USPS_Online"
 sub _compat_shipper_name {
