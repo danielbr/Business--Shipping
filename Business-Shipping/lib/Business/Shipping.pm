@@ -455,16 +455,13 @@ sub rate_request {
     return $rr;
 }
 
-=head2 _compat_shipper_name
-
-Shipper name backwards-compatibility
-
-1. Really old: "UPS" or "USPS" (assumes Online::)
-2. Semi-old:   "Online::UPS", "Offline::UPS", or "Online::USPS"
-3. Current:    "UPS_Online", "UPS_Offline", or "USPS_Online"
-
-=cut
-
+# _compat_shipper_name
+#
+# Shipper name backwards-compatibility
+#
+# 1. Really old: "UPS" or "USPS" (assumes Online::)
+# 2. Semi-old:   "Online::UPS", "Offline::UPS", or "Online::USPS"
+# 3. Current:    "UPS_Online", "UPS_Offline", or "USPS_Online"
 sub _compat_shipper_name {
     my ($shipper) = @_;
 
