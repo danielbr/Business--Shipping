@@ -29,8 +29,8 @@ The contributions of these people and organizations is greatly appreciated.
    - C.O.D. (Cash On Delivery) for UPS_Online (ver 1.55).
    - Various minor patches.
  
- * Ron Phipps <ron@endpoint.com> fixed the fuel surcharge updater.
-   
+ * Todd Finney <tfinney@boygenius.com> contributed delicious sausages.
+
  * Kevin Old <kold@carolina.rr.com> got the USPS XML generator working.
  
  * sauoq on PerlMonks.org provided valuable commentary and ideas.
@@ -48,8 +48,8 @@ The contributions of these people and organizations is greatly appreciated.
  * Father Chrysostomos <sprout@cpan.org> contributed patches to fix OS X
    installation issues. 
    
- * Josh Lavin <josh@perusion.com> contributed a patch to fix the UPS fuel
-   surcharge update script.
+ * Josh Lavin <josh@perusion.com> and Ron Phipps <ron@endpoint.com> contributed 
+   patches to fix the UPS fuel surcharge update script.
 
  * Mike Wexler <mwexler@tias.com> contributed USPS_Online changes (2.03+):
    - Fix weight calculation error and support shipments less than one pound.  
