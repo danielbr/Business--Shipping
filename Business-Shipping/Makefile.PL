@@ -58,7 +58,8 @@ WriteMakefile(
     NO_META   => 1,
 );
 
-# Override the standard "install" target, so that it calls "support_files_install"
+# Override the standard "install" target, so that it calls
+# "support_files_install"
 sub MY::install {
 
     package MY;
@@ -73,7 +74,8 @@ sub MY::install {
     return $new;
 }
 
-# Currently there is no data files installation, because the data files are installed by the DataFiles module.
+# Currently there is no data files installation, because the data files are
+# installed by the DataFiles module.
 sub MY::postamble {
     return qq{
 docs :
