@@ -1,11 +1,14 @@
 Revision history for Business::Shipping. See github changelog for more details.
 =======================================
 
-3.1.0 February 26, 2011
+3.1.0  March 6, 2011
+
 
     * Switched to CHI to replace outdated Cache::FileCache [JT Smith].
-    * Added cache_config to RateRequest and Tracking so developer can make use of any of the CHI drivers. [JT Smith]
-    * Fixed failing test for 'Airmail Parcel Post' in 210-USPS_Online-basic.t [JT Smith].
+    * Added cache_config to RateRequest and Tracking so the developer can make
+      use of any of the CHI drivers. [JT Smith]
+    * Fixed failing test for 'Airmail Parcel Post' in 
+      210-USPS_Online-basic.t [JT Smith].
 
 
 3.0.1  March 6, 2011
