@@ -2,7 +2,7 @@ NAME
     Business::Shipping - Rates and tracking for UPS and USPS
 
 VERSION
-    Version 3.0.0
+    Version 3.0.1
 
 SYNOPSIS
   Rate request example
@@ -95,14 +95,14 @@ FEATURES
 INSTALLATION
      perl -MCPAN -e 'install Bundle::Business::Shipping'
 
-    See doc/INSTALL.
-
-REQUIRED MODULES
     See INSTALL.
 
+REQUIRED MODULES
      Any::Moose (any)
      Config::IniFiles (any)
      Log::Log4perl (any)
+
+    See INSTALL.
 
 OPTIONAL MODULES
     For UPS offline rate estimation:
@@ -120,7 +120,7 @@ OPTIONAL MODULES
 
 GETTING STARTED
     Be careful to read, understand, and comply with the terms of use for the
-    provider that you will use.
+    shipping service that you will use.
 
   UPS_Offline: For United Parcel Service (UPS) offline rate requests
     No signup required. "Business::Shipping::DataFiles" has all of rate
@@ -246,13 +246,6 @@ METHODS
         A password, if required by the provider. USPS_Online and UPS_Online
         require this, while UPS_Offline does not.
 
-  _compat_shipper_name
-    Shipper name backwards-compatibility
-
-    1. Really old: "UPS" or "USPS" (assumes Online::) 2. Semi-old:
-    "Online::UPS", "Offline::UPS", or "Online::USPS" 3. Current:
-    "UPS_Online", "UPS_Offline", or "USPS_Online"
-
   Business::Shipping->log_level()
     Simple alternative to editing the config/log4perl.conf file. Sets the
     log level for all Business::Shipping objects.
@@ -268,7 +261,11 @@ SEE ALSO
     *   Business::Shipping::DataTools - Tools that generate DataFiles
         (optional)
 
-    Other Perl modules that are simliar to Business::Shipping:
+    Other Perl modules that are similar to Business::Shipping:
+
+    *   Business::UPS::Tracking - Online shipment tracking.
+
+    *   WebService::UPS - Online shipment tracking
 
     *   Business::Shipping::UPS_XML - Online cost estimation module that has
         very few prerequisites. Supports shipments that originate in USA and
@@ -279,10 +276,6 @@ SEE ALSO
         in the USA only.
 
     *   Net::UPS - Implementation of UPS Online Tools API in Perl
-
-    *   http://www.halofree.com/lib/public/code/Ship/UPS.pm
-
-    *   http://www.halofree.com/lib/public/code/Ship/USPS.pm
 
 Use of this software
     Please let the author know how you are using Business::Shipping.
@@ -303,12 +296,14 @@ Use of this software
     *   Mentioned in YAPC 2004: "Writing web applications with perl ..."
 
 WEBSITE
-    <http://www.kavod.com/Business-Shipping/>
+    Source code repository: <https://github.com/danielbr/Business--Shipping>
 
     CPAN web site: <http://search.cpan.org/~dbrowning/Business-Shipping/>
 
     Backpan (old releases):
     <http://backpan.cpan.org/authors/id/D/DB/DBROWNING/>
+
+    Author homepage: <http://www.kavod.com/Business-Shipping/>
 
 SUPPORT
     This module is supported by the author. Please report any bugs or
@@ -316,9 +311,6 @@ SUPPORT
     web interface at <http://rt.cpan.org>. The author will be notified, and
     then you'll automatically be notified of progress on your bug as the
     author makes changes.
-
-KNOWN BUGS
-    See the "doc/Todo" file for a comprehensive list of known bugs.
 
 CREDITS
     Many people have contributed to this software, please see the "CREDITS"

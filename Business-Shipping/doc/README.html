@@ -53,14 +53,12 @@
 		<li><a href="#_obj__validate__">$obj-&gt;<code>validate()</code></a></li>
 		<li><a href="#_self__get_grouped_attrs___attribute_name__">$self-&gt;get_grouped_attrs( $attribute_name )</a></li>
 		<li><a href="#_obj__rate_request__">$obj-&gt;<code>rate_request()</code></a></li>
-		<li><a href="#_compat_shipper_name">_compat_shipper_name</a></li>
 		<li><a href="#business__shipping__log_level__">Business::Shipping-&gt;<code>log_level()</code></a></li>
 	</ul>
 
 	<li><a href="#see_also">SEE ALSO</a></li>
 	<li><a href="#website">WEBSITE</a></li>
 	<li><a href="#support">SUPPORT</a></li>
-	<li><a href="#known_bugs">KNOWN BUGS</a></li>
 	<li><a href="#credits">CREDITS</a></li>
 	<li><a href="#author">AUTHOR</a></li>
 	<li><a href="#copyright_and_licence">COPYRIGHT AND LICENCE</a></li>
@@ -78,7 +76,7 @@
 </p>
 <hr />
 <h1><a name="version">VERSION</a></h1>
-<p>Version 3.0.0</p>
+<p>Version 3.0.1</p>
 <p>
 </p>
 <hr />
@@ -192,16 +190,16 @@ For example:</pre>
 <h1><a name="installation">INSTALLATION</a></h1>
 <pre>
  perl -MCPAN -e 'install Bundle::Business::Shipping'</pre>
-<p>See doc/INSTALL.</p>
+<p>See INSTALL.</p>
 <p>
 </p>
 <hr />
 <h1><a name="required_modules">REQUIRED MODULES</a></h1>
-<p>See INSTALL.</p>
 <pre>
  Any::Moose (any)
  Config::IniFiles (any)
  Log::Log4perl (any)</pre>
+<p>See INSTALL.</p>
 <p>
 </p>
 <hr />
@@ -222,7 +220,7 @@ INSTALL.</p>
 <hr />
 <h1><a name="getting_started">GETTING STARTED</a></h1>
 <p>Be careful to read, understand, and comply with the terms of use for the 
-provider that you will use.</p>
+shipping service that you will use.</p>
 <p>
 </p>
 <h2><a name="ups_offline__for_united_parcel_service__ups__offline_rate_requests">UPS_Offline: For United Parcel Service (UPS) offline rate requests</a></h2>
@@ -382,13 +380,6 @@ this, while UPS_Offline does not.</p>
 </ul>
 <p>
 </p>
-<h2><a name="_compat_shipper_name">_compat_shipper_name</a></h2>
-<p>Shipper name backwards-compatibility</p>
-<p>1. Really old: &quot;UPS&quot; or &quot;USPS&quot; (assumes Online::)
-2. Semi-old:   &quot;Online::UPS&quot;, &quot;Offline::UPS&quot;, or &quot;Online::USPS&quot;
-3. Current:    &quot;UPS_Online&quot;, &quot;UPS_Offline&quot;, or &quot;USPS_Online&quot;</p>
-<p>
-</p>
 <h2><a name="business__shipping__log_level__">Business::Shipping-&gt;<code>log_level()</code></a></h2>
 <p>Simple alternative to editing the config/log4perl.conf file.  Sets the log 
 level for all Business::Shipping objects.</p>
@@ -407,8 +398,14 @@ level for all Business::Shipping objects.</p>
 
 </li>
 </ul>
-<p>Other Perl modules that are simliar to Business::Shipping:</p>
+<p>Other Perl modules that are similar to Business::Shipping:</p>
 <ul>
+<li><strong><a name="business_ups_tracking_online_shipment_tracking" class="item">Business::UPS::Tracking - Online shipment tracking.</a></strong>
+
+</li>
+<li><strong><a name="webservice_ups_online_shipment_tracking" class="item">WebService::UPS - Online shipment tracking</a></strong>
+
+</li>
 <li><strong><a name="business_shipping_ups_xml_online_cost_estimation_module_that_has_very_few_prerequisites_supports_shipments_that_originate_in_usa_and_canada" class="item">Business::Shipping::UPS_XML - Online cost estimation module that has 
 very few prerequisites.  Supports shipments that originate in USA and Canada.</a></strong>
 
@@ -418,12 +415,6 @@ instead of the UPS Online Tools.  For shipments that originate in the USA only.<
 
 </li>
 <li><strong><a name="net_ups_implementation_of_ups_online_tools_api_in_perl" class="item">Net::UPS - Implementation of UPS Online Tools API in Perl</a></strong>
-
-</li>
-<li><strong><a name="http_www_halofree_com_lib_public_code_ship_ups_pm" class="item"><a href="http://www.halofree.com/lib/public/code/Ship/UPS.pm">http://www.halofree.com/lib/public/code/Ship/UPS.pm</a></a></strong>
-
-</li>
-<li><strong><a name="http_www_halofree_com_lib_public_code_ship_usps_pm" class="item"><a href="http://www.halofree.com/lib/public/code/Ship/USPS.pm">http://www.halofree.com/lib/public/code/Ship/USPS.pm</a></a></strong>
 
 </li>
 </ul>
@@ -458,9 +449,10 @@ author.</a></strong>
 </p>
 <hr />
 <h1><a name="website">WEBSITE</a></h1>
-<p><a href="http://www.kavod.com/Business-Shipping/">http://www.kavod.com/Business-Shipping/</a></p>
+<p>Source code repository: <a href="https://github.com/danielbr/Business--Shipping">https://github.com/danielbr/Business--Shipping</a></p>
 <p>CPAN web site: <a href="http://search.cpan.org/~dbrowning/Business-Shipping/">http://search.cpan.org/~dbrowning/Business-Shipping/</a></p>
 <p>Backpan (old releases): <a href="http://backpan.cpan.org/authors/id/D/DB/DBROWNING/">http://backpan.cpan.org/authors/id/D/DB/DBROWNING/</a></p>
+<p>Author homepage: <a href="http://www.kavod.com/Business-Shipping/">http://www.kavod.com/Business-Shipping/</a></p>
 <p>
 </p>
 <hr />
@@ -469,11 +461,6 @@ author.</a></strong>
 requests to <code>bug-business-shipping@rt.cpan.org</code>, or through the web interface 
 at <a href="http://rt.cpan.org">http://rt.cpan.org</a>. The author will be notified, and then you'll 
 automatically be notified of progress on your bug as the author makes changes.</p>
-<p>
-</p>
-<hr />
-<h1><a name="known_bugs">KNOWN BUGS</a></h1>
-<p>See the <code>doc/Todo</code> file for a comprehensive list of known bugs.</p>
 <p>
 </p>
 <hr />

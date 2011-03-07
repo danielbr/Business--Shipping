@@ -1,5 +1,13 @@
-Revision history for Business::Shipping
+Revision history for Business::Shipping. See github changelog for more details.
 =======================================
+
+
+3.0.1  March 6, 2011
+
+
+    * Fix CPAN build failures caused by missing Config::IniFiles dependancy.
+    * Misc docs and test updates.
+    * Minor logging changes.
 
 
 3.0.0  February 12, 2011
