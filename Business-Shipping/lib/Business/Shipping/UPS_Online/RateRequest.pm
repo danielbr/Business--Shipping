@@ -81,7 +81,7 @@ use Business::Shipping::UPS_Online::Package;
 use Business::Shipping::UPS_Online::Shipment;
 use Business::Shipping::Util;
 use XML::Simple 2.05;
-use Cache::FileCache;
+use CHI;
 use LWP::UserAgent;
 use POSIX ('strftime');
 use version; our $VERSION = qv('400');

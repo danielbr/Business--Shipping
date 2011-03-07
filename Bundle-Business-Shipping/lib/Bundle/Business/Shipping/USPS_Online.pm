@@ -20,7 +20,7 @@ See the INSTALL file in Business::Shipping for more information.
 
 Bundle::Business::Shipping::Basic
 
-Cache::FileCache
+CHI
 
 Crypt::SSLeay
 

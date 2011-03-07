@@ -55,7 +55,7 @@ All required modules
     the combined list for all shippers:
 
      Business::Shipping::DataFiles (any)
-     Cache::FileCache (any)
+     CHI (0.39)
      Any::Moose (any)
      Config::IniFiles (any)
      Crypt::SSLeay (any)

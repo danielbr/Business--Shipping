@@ -11,7 +11,7 @@ requires:
     Log::Log4perl:    0
     Test::More:       0.4
 recommends:
-    Cache::FileCache  0
+    CHI  0.39
     Crypt::SSLeay     0
     LWP::UserAgent    0
     XML::DOM          0

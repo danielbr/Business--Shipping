@@ -50,7 +50,7 @@ The following modules are required for offline UPS rate estimation.  See doc/INS
 
 The following modules are used by online rate estimation and tracking.  See doc/INSTALL.
 
- Cache::FileCache (any)
+ CHI (0.39)
  Crypt::SSLeay (any)
  LWP::UserAgent (any)
  XML::DOM (any)

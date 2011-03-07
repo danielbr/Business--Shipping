@@ -225,7 +225,7 @@ if (0) {
     my $shipment = test(
         'cache'      => 1,
         'test_mode'  => 0,
-        'service'    => 'Airmail Parcel Post',
+        'service'    => 'Express Mail International',
         'weight'     => 1,
         'ounces'     => 0,
         'mail_type'  => 'Package',
@@ -236,7 +236,7 @@ if (0) {
     my $shipment2 = test(
         'cache'      => 1,
         'test_mode'  => 0,
-        'service'    => 'Airmail Parcel Post',
+        'service'    => 'Express Mail International',
         'weight'     => 10,
         'ounces'     => 0,
         'mail_type'  => 'Package',

@@ -238,7 +238,7 @@ sub get_req_mod {
         ],
         'UPS_Online' => [
             qw/
-                Cache::FileCache
+                CHI
                 Crypt::SSLeay
                 Date::Parse
                 LWP::UserAgent
@@ -248,7 +248,7 @@ sub get_req_mod {
         ],
         'USPS_Online' => [
             qw/
-                Cache::FileCache
+                CHI
                 Crypt::SSLeay
                 Date::Parse
                 LWP::UserAgent

@@ -12,7 +12,7 @@ use Any::Moose;
 use Business::Shipping::Logging;
 use XML::Simple;
 use LWP::UserAgent;
-use Cache::FileCache;
+use CHI;
 use version; our $VERSION = qv('400');
 
 extends 'Business::Shipping::RateRequest';
