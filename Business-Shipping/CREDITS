@@ -4,68 +4,64 @@ The contributions of these people and organizations is greatly appreciated.
    tremendous amount of support for this module.
 
  * The Rubenstein Technology Group (http://www.rubensteintech.com/), 
-   Ed Zborowski <ed@rubensteintech.com>, Martin H. Beauchamp 
-   <martin@rubensteintech.com>, and Jaron Rubenstein <jaron@rubensteintech.com>
-   have contributed patches for the following: 
+   Ed Zborowski, Martin H. Beauchamp, and Jaron Rubenstein have contributed 
+   patches for the following: 
    - 1.57: Many bug fixes and new features: see ChangeLog.
    - 1.92: UPS_Online: Added signature_type, insured_value, and 
      insured_currency_type.
      USPS_Online: Added 'all' service type to get all rates in one request.
 
- * Rusty Conover <rconover@infogears.com> contributed the following modules:
+ * Rusty Conover contributed the following modules:
    - Tracking
    - Tracking::USPS
    - Tracking::UPS
  
- * Mike Heins <mike@perusion.com> wrote a complete offline UPS and USPS cost
-   estimation system for the Interchange project.  They were adapted for use 
-   in older versions of Business::Shipping.  But as of 1.90 the UPS part was
-   completely rewritten for performance, clarity, and a new design.  Mike has 
-   also contributed bug reports.
+ * Mike Heins wrote a complete offline UPS and USPS cost estimation system for 
+   the Interchange project.  They were adapted for use in older versions of 
+   Business::Shipping.  But as of 1.90 the UPS part was completely rewritten 
+   for performance, clarity, and a new design.  Mike has also contributed bug 
+   reports.
  
- * Selena Brewington <computers@chrisking.com> contributed:
+ * Selena Brewington contributed:
    - The 'Shop' service for UPS_Online that retrieves all the rates in one 
      request (ver 1.55).
    - C.O.D. (Cash On Delivery) for UPS_Online (ver 1.55).
    - Various minor patches.
  
- * Todd Finney <tfinney@boygenius.com> contributed delicious sausages.
+ * Todd Finney contributed delicious sausages.
 
- * Kevin Old <kold@carolina.rr.com> got the USPS XML generator working.
+ * Kevin Old got the USPS XML generator working.
  
  * sauoq on PerlMonks.org provided valuable commentary and ideas.
  
  * bbfu on PerlMonks.org got Class::MethodMaker working with SUPER.
  
- * Mark Stosberg <mark@stosberg.com> contributed documentation patches.
+ * Mark Stosberg contributed documentation patches.
   
- * Chris Ochs <chris@paymentonline.com> contributed information about running
-   under mod_perl.
+ * Chris Ochs contributed information about running under mod_perl.
    
  * Kevin D. McClellan and Mark Milhollan contributed patches to fix USPS 
    service match bugs.
 
- * Father Chrysostomos <sprout@cpan.org> contributed patches to fix OS X
-   installation issues. 
+ * Father Chrysostomos contributed patches to fix OS X installation issues. 
    
- * Josh Lavin <josh@perusion.com> and Ron Phipps <ron@endpoint.com> contributed 
-   patches to fix the UPS fuel surcharge update script.
+ * Josh Lavin and Ron Phipps contributed patches to fix the UPS fuel surcharge 
+   update script.
 
- * Mike Wexler <mwexler@tias.com> contributed USPS_Online changes (2.03+):
+ * Mike Wexler contributed USPS_Online changes (2.03+):
    - Fix weight calculation error and support shipments less than one pound.  
    - Fix error messages on International requests.
    - Add option to disable automatic package splitting.
    - Add width, height, length, and girth.
    
  * Individuals who have contributed bug reports and feature suggestions:
-   - Mike Castle <dalgoda@ix.netcom.com>
-   - Richard Hornsby <rhornsby@io.osuedc.org>
-   - Micah Gersten <micah@davka.com>
-   - Chris Ochs <chris@paymentonline.com>
-   - CPAN Tester Josts Smokehouse <Jost.Krieger+smokeback[at]ruhr-uni-bochum.de>
-   - Todd Anderson <ahqmed@hotmail.com>
-   - Joe Engleson <joe@jewebdesign.com>
-   - Mark <MpoloN7@netscape.net>
+   - Mike Castle
+   - Richard Hornsby
+   - Micah Gersten
+   - Chris Ochs 
+   - Jost Krieger
+   - Todd Anderson
+   - Joe Engleson
    
  * All the Perl and CPAN authors.
 
