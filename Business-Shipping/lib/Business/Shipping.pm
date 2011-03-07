@@ -596,10 +596,6 @@ requests to C<bug-business-shipping@rt.cpan.org>, or through the web interface
 at L<http://rt.cpan.org>. The author will be notified, and then you'll 
 automatically be notified of progress on your bug as the author makes changes.
 
-=head1 KNOWN BUGS
-
-See the C<doc/Todo> file for a comprehensive list of known bugs.
-
 =head1 CREDITS
 
 Many people have contributed to this software, please see the C<CREDITS> file. 
