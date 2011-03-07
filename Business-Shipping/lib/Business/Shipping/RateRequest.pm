@@ -33,10 +33,10 @@ identical request is made later.  See submit() for implementation details.
 
 =head2 $rate_request->cache_config()
 
-Allows configuration of L<CHI> cache. Pass it a hash reference of a CHI config. Defaults to C<{driver => 'File'}>.
+Allows configuration of L<CHI> cache. Pass it a hash reference of a CHI
+config. Defaults to C<{driver => 'File'}>.
 
  $rate_request->cache_config({ driver => 'Memory', global => 1 });
-
 
 =head2 $rate_request->invalid()
 
@@ -81,8 +81,6 @@ Additional keys may be added by the shipper class.
 
 =cut
 
-has 'cache'               => (is => 'rw', isa => 'Str');
-has 'cache_config'        => (is => 'rw', isa => 'HashRef', default => sub { { driver => 'File' } });
 has 'invalid'             => (is => 'rw', isa => 'Str');
 has 'shipper'             => (is => 'rw', isa => 'Str');
 has 'results'             => (is => 'rw', isa => 'ArrayRef');
@@ -91,7 +89,13 @@ has '_total_charges'      => (is => 'rw', isa => 'Str');
 has 'price_components'    => (is => 'rw', isa => 'ArrayRef');
 has 'dont_split_packages' => (is => 'rw', isa => 'Str');
 has 'error_details'       => (is => 'rw', isa => 'HashRef');
-has 'shipment'            => (
+has 'cache'               => (is => 'rw', isa => 'Str');
+has 'cache_config'        => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { { driver => 'File' } },
+);
+has 'shipment' => (
     is      => 'rw',
     isa     => 'Business::Shipping::USPS_Online::Shipment',
     default => sub { Business::Shipping::Shipment->new() },
@@ -153,7 +157,7 @@ sub execute {
     $self->validate() or return;
     if ($self->cache()) {
         trace('cache enabled');
-        my $cache = CHI->new(%{$self->cache_config});
+        my $cache = CHI->new(%{ $self->cache_config });
 
         my $key = $self->gen_unique_key();
         info "cache key = $key\n";
@@ -271,7 +275,7 @@ sub execute {
   # TODO: Allow setting of cache properties (time limit, enable/disable, etc.)
   #
         my $key       = $self->gen_unique_key();
-        my $new_cache = CHI->new(%{$self->cache_config});
+        my $new_cache = CHI->new(%{ $self->cache_config });
         $new_cache->set($key, $results, "2 days");
     }
     else {

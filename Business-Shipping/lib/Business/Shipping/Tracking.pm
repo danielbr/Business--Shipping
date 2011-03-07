@@ -43,13 +43,17 @@ use version; our $VERSION = qv('400');
 extends 'Business::Shipping';
 
 has 'is_success' => (is => 'rw');
-has 'cache'      => (is => 'rw');
-has 'cache_config' => (is => 'rw', isa => 'HashRef', default => sub { { driver => 'File' } });
 has 'invalid'    => (is => 'rw');
 has 'test_mode'  => (is => 'rw');
 has 'user_id'    => (is => 'rw');
 has 'password'   => (is => 'rw');
 has 'cache_time' => (is => 'rw');
+has 'cache'      => (is => 'rw');
+has 'cache_config' => (
+    is      => 'rw',
+    isa     => 'HashRef',
+    default => sub { { driver => 'File' } },
+);
 
 # Used to be a static class attribute
 has 'results'       => (is => 'rw', isa => 'HashRef');
@@ -127,7 +131,7 @@ sub submit {
     if ($self->cache()) {
         trace('cache enabled');
 
-        my $cache = CHI->new(%{$self->cache_config});
+        my $cache = CHI->new(%{ $self->cache_config });
 
         foreach my $id (@{ $self->tracking_ids }) {
             my $key = $self->gen_unique_key($id);
@@ -188,7 +192,7 @@ sub submit {
         trace('cache enabled, saving results.');
 
    #TODO: Allow setting of cache properties (time limit, enable/disable, etc.)
-        my $new_cache = CHI->new(%{$self->cache_config});
+        my $new_cache = CHI->new(%{ $self->cache_config });
 
         foreach my $id ($self->results_keys) {
             my $key = $self->gen_unique_key($id);
