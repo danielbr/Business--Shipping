@@ -23,6 +23,7 @@ use Log::Log4perl;
 use Business::Shipping::Config;
 use version; our $VERSION = qv('400');
 
+Log::Log4perl->wrapper_register(__PACKAGE__);
 $Current_Level = 'WARN';
 @EXPORT        = qw(
     fatal    is_fatal    logdie
@@ -61,7 +62,6 @@ sub init {
     return croak "Could not get log4perl config file: $file" unless -f $file;
 
     Log::Log4perl::init($file);
-    ${Log::Log4perl::caller_depth} = 1;
 
     return;
 }
