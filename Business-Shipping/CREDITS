@@ -1,68 +1,39 @@
 The contributions of these people and organizations is greatly appreciated.
 
- * End Point Corporation (http://www.endpoint.com/) has provided a
-   tremendous amount of support for this module.
+Major contributions (such as new modules):
 
- * The Rubenstein Technology Group (http://www.rubensteintech.com/), 
-   Ed Zborowski, Martin H. Beauchamp, and Jaron Rubenstein have contributed 
-   patches for the following: 
-   - 1.57: Many bug fixes and new features: see ChangeLog.
-   - 1.92: UPS_Online: Added signature_type, insured_value, and 
-     insured_currency_type.
-     USPS_Online: Added 'all' service type to get all rates in one request.
+ infoGears (http://www.infogears.com/) 
+ The Rubenstein Technology Group (http://www.rubensteintech.com/)
+ Perusion (http://www.perusion.com/)
+ End Point Corporation (http://www.endpoint.com/)
+ Ed Zborowski
+ Martin H. Beauchamp
+ Jaron Rubenstein
+ Rusty Conover
+ Mike Heins
+ Selena Brewington
+ Todd Finney
+ 
+Patches:
 
- * Rusty Conover contributed the following modules:
-   - Tracking
-   - Tracking::USPS
-   - Tracking::UPS
- 
- * Mike Heins wrote a complete offline UPS and USPS cost estimation system for 
-   the Interchange project.  They were adapted for use in older versions of 
-   Business::Shipping.  But as of 1.90 the UPS part was completely rewritten 
-   for performance, clarity, and a new design.  Mike has also contributed bug 
-   reports.
- 
- * Selena Brewington contributed:
-   - The 'Shop' service for UPS_Online that retrieves all the rates in one 
-     request (ver 1.55).
-   - C.O.D. (Cash On Delivery) for UPS_Online (ver 1.55).
-   - Various minor patches.
- 
- * Todd Finney contributed delicious sausages.
+ Kevin Old
+ Mark Stosberg
+ Kevin D. McClellan and Mark Milhollan
+ Father Chrysostomos
+ Josh Lavin and Ron Phipps
+ Mike Wexler
 
- * Kevin Old got the USPS XML generator working.
- 
- * sauoq on PerlMonks.org provided valuable commentary and ideas.
- 
- * bbfu on PerlMonks.org got Class::MethodMaker working with SUPER.
- 
- * Mark Stosberg contributed documentation patches.
-  
- * Chris Ochs contributed information about running under mod_perl.
-   
- * Kevin D. McClellan and Mark Milhollan contributed patches to fix USPS 
-   service match bugs.
+Bug reports, feature requests, commentary, ideas, suggestions:
 
- * Father Chrysostomos contributed patches to fix OS X installation issues. 
-   
- * Josh Lavin and Ron Phipps contributed patches to fix the UPS fuel surcharge 
-   update script.
-
- * Mike Wexler contributed USPS_Online changes (2.03+):
-   - Fix weight calculation error and support shipments less than one pound.  
-   - Fix error messages on International requests.
-   - Add option to disable automatic package splitting.
-   - Add width, height, length, and girth.
-   
- * Individuals who have contributed bug reports and feature suggestions:
-   - Mike Castle
-   - Richard Hornsby
-   - Micah Gersten
-   - Chris Ochs 
-   - Jost Krieger
-   - Todd Anderson
-   - Joe Engleson
-   
- * All the Perl and CPAN authors.
+ Chris Ochs
+ sauoq
+ bbfu
+ Mike Castle
+ Richard Hornsby
+ Micah Gersten
+ Chris Ochs 
+ Jost Krieger
+ Todd Anderson
+ Joe Engleson
 
 Thank you.
