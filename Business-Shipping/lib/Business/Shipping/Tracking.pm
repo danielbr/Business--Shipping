@@ -8,23 +8,21 @@ Business::Shipping::Tracking
 
 =head2 Example tracking request for USPS:
 
-use Business::Shipping::USPS_Online::Tracking;
+ use Business::Shipping::USPS_Online::Tracking;
 
-my $tracker = Business::Shipping::USPS_Online::Tracking->new();
+ my $tracker = Business::Shipping::USPS_Online::Tracking->new();
 
-$tracker->cache_config({ driver => 'Memory', global => 1 }); # Any CHI config will do, defaults to driver => 'File'
+ $tracker->init(
+     test_mode => 1,
+ );
 
-$tracker->init(
-test_mode => 1,
-);
+ $tracker->tracking_ids('EJ958083578US', 'EJ958083578US');
 
-$tracker->tracking_ids('EJ958083578US', 'EJ958083578US');
+ $tracker->submit() || logdie $tracker->user_error();
+ my $hash = $tracker->results();
 
-$tracker->submit() || logdie $tracker->user_error();
-my $hash = $tracker->results();
-
-use Data::Dumper;
-print Data::Dumper->Dump([$hash]);
+ use Data::Dumper;
+ print Data::Dumper->Dump([$hash]);
 
 =head1 ABSTRACT
 
