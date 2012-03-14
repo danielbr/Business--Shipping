@@ -83,7 +83,7 @@ Gets rates for all the services in one request:
  
  $rr_shop->execute() or die $rr_shop->user_error();
  
- foreach my $shipper ( @$results ) {
+ foreach my $shipper ( @{ $rr_shop->results } ) {
      print "Shipper: $shipper->{name}\n\n";
      foreach my $rate ( @{ $shipper->{ rates } } ) {
          print "  Service:  $rate->{name}\n";
