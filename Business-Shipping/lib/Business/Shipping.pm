@@ -554,6 +554,9 @@ instead of the UPS Online Tools.  For shipments that originate in the USA only.
 
 =item * Net::UPS - Implementation of UPS Online Tools API in Perl
 
+=item * Shipment - perl interface to FedEx, UPS, and Purolator. 
+https://github.com/pullingshots/Shipment
+
 =back
  
 =head1 Use of this software
