@@ -8,7 +8,7 @@ abstract:     Rates and tracking for UPS and USPS
 license:      perl
 requires:
     Any::Moose:       0
-    Log::Log4perl:    0
+    Log::Log4perl:    1.27
     Test::More:       0.4
 recommends:
     CHI  0.39

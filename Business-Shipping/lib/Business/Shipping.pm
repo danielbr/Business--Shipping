@@ -138,7 +138,7 @@ See INSTALL.
 
  Any::Moose (any)
  Config::IniFiles (any)
- Log::Log4perl (any)
+ Log::Log4perl (1.27)
 
 See INSTALL.
 

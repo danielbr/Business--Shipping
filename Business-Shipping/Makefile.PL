@@ -51,7 +51,7 @@ WriteMakefile(
     PREREQ_PM => {
         'Any::Moose'       => 0,
         'Config::IniFiles' => 0,
-        'Log::Log4perl'    => 0,
+        'Log::Log4perl'    => 1.27,
         'Test::More'       => 0.40,
     },
     EXE_FILES => ['bin/update-UPS-surcharge.pl',],

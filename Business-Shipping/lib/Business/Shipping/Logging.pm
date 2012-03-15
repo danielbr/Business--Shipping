@@ -19,7 +19,7 @@ use warnings;
 use base qw(Exporter);
 use vars qw(@EXPORT $Current_Level);
 use Carp;
-use Log::Log4perl;
+use Log::Log4perl 1.27;
 use Business::Shipping::Config;
 use version; our $VERSION = qv('400');
 
