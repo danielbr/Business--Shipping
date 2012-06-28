@@ -39,6 +39,7 @@ Business::Shipping::USPS_Online::RateRequest
  Priority Mail International Window Flat Rate Envelope
  First-Class Mail International Package
  First-Class Mail International Large Envelope
+ Worlwide Saver
 
 =head1 METHODS
 
@@ -155,12 +156,17 @@ sub _gen_request_xml {
 # because they enforce the order of their parameters (unlike UPS).
     my $rateReqDoc = XML::DOM::Document->new();
     my $rateReqEl  = $rateReqDoc->createElement(
-        $self->domestic() ? 'RateV3Request' : 'IntlRateRequest');
+        $self->domestic() ? 'RateV4Request' : 'IntlRateV2Request');
 
     # Note that these are required even for test mode transactions.
     $rateReqEl->setAttribute('USERID',   $self->user_id());
     $rateReqEl->setAttribute('PASSWORD', $self->password());
     $rateReqDoc->appendChild($rateReqEl);
+
+    my $rateRev = $rateReqDoc->createElement('Revision');
+    my $revText = $rateReqDoc->createTextNode(2);
+    $rateRev->appendChild($revText);
+    $rateReqEl->appendChild($rateRev);
 
     my $package_count = 0;
     logdie "No packages defined internally."
@@ -203,45 +209,69 @@ sub _gen_request_xml {
         $ouncesEl->appendChild($ouncesText);
         $packageEl->appendChild($ouncesEl);
 
+        unless ($self->domestic()) {
+            if (defined($package->machinable())) {
+                my $machineEl = $rateReqDoc->createElement('Machinable');
+                my $machineText
+                    = $rateReqDoc->createTextNode($package->machinable());
+                $machineEl->appendChild($machineText);
+                $packageEl->appendChild($machineEl);
+            }
+
+            my $mailTypeEl = $rateReqDoc->createElement('MailType');
+            my $mailTypeText
+                = $rateReqDoc->createTextNode($package->mail_type());
+            $mailTypeEl->appendChild($mailTypeText);
+            $packageEl->appendChild($mailTypeEl);
+
+            my $valueEl = $rateReqDoc->createElement('ValueOfContents');
+            my $valueText = $rateReqDoc->createTextNode($package->value());
+            $valueEl->appendChild($valueText);
+            $packageEl->appendChild($valueEl);
+
+            my $countryEl = $rateReqDoc->createElement('Country');
+            my $countryText
+                = $rateReqDoc->createTextNode($self->shipment->to_country());
+            $countryEl->appendChild($countryText);
+            $packageEl->appendChild($countryEl);
+        }
+
+        my $containerEl = $rateReqDoc->createElement('Container');
+        my $containerText
+            = $rateReqDoc->createTextNode($package->container());
+        $containerEl->appendChild($containerText);
+        $packageEl->appendChild($containerEl);
+
+        my $oversizeEl   = $rateReqDoc->createElement('Size');
+        my $oversizeText = $rateReqDoc->createTextNode($package->size());
+        $oversizeEl->appendChild($oversizeText);
+        $packageEl->appendChild($oversizeEl);
+
+        my $widthEl   = $rateReqDoc->createElement('Width');
+        my $widthText = $rateReqDoc->createTextNode($package->width());
+        $widthEl->appendChild($widthText);
+        $packageEl->appendChild($widthEl);
+
+        my $lengthEl   = $rateReqDoc->createElement('Length');
+        my $lengthText = $rateReqDoc->createTextNode($package->length());
+        $lengthEl->appendChild($lengthText);
+        $packageEl->appendChild($lengthEl);
+
+        my $heightEl   = $rateReqDoc->createElement('Height');
+        my $heightText = $rateReqDoc->createTextNode($package->height());
+        $heightEl->appendChild($heightText);
+        $packageEl->appendChild($heightEl);
+
+        my $girthEl   = $rateReqDoc->createElement('Girth');
+        my $girthText = $rateReqDoc->createTextNode($package->girth());
+        $girthEl->appendChild($girthText);
+        $packageEl->appendChild($girthEl);
+
         if ($self->domestic()) {
-            if (defined($package->container())) {
-                my $containerEl = $rateReqDoc->createElement('Container');
-                my $containerText
-                    = $rateReqDoc->createTextNode($package->container());
-                $containerEl->appendChild($containerText);
-                $packageEl->appendChild($containerEl);
-            }
-
-            my $oversizeEl   = $rateReqDoc->createElement('Size');
-            my $oversizeText = $rateReqDoc->createTextNode($package->size());
-            $oversizeEl->appendChild($oversizeText);
-            $packageEl->appendChild($oversizeEl);
-
-            my $widthEl   = $rateReqDoc->createElement('Width');
-            my $widthText = $rateReqDoc->createTextNode($package->width());
-            $widthEl->appendChild($widthText);
-            $packageEl->appendChild($widthEl);
-
-            my $lengthEl   = $rateReqDoc->createElement('Length');
-            my $lengthText = $rateReqDoc->createTextNode($package->length());
-            $lengthEl->appendChild($lengthText);
-            $packageEl->appendChild($lengthEl);
-
-            my $heightEl   = $rateReqDoc->createElement('Height');
-            my $heightText = $rateReqDoc->createTextNode($package->height());
-            $heightEl->appendChild($heightText);
-            $packageEl->appendChild($heightEl);
-
-            my $girthEl   = $rateReqDoc->createElement('Girth');
-            my $girthText = $rateReqDoc->createTextNode($package->girth());
-            $girthEl->appendChild($girthText);
-            $packageEl->appendChild($girthEl);
-
-            if ($self->service() =~ /all/i
-                and not defined $package->machinable())
-            {
-                $package->machinable('False');
-            }
+            my $valueEl = $rateReqDoc->createElement('Value');
+            my $valueText = $rateReqDoc->createTextNode($package->value());
+            $valueEl->appendChild($valueText);
+            $packageEl->appendChild($valueEl);
 
             if (defined($package->machinable())) {
                 my $machineEl = $rateReqDoc->createElement('Machinable');
@@ -251,19 +281,12 @@ sub _gen_request_xml {
                 $packageEl->appendChild($machineEl);
             }
         }
-        else {
-            my $mailTypeEl = $rateReqDoc->createElement('MailType');
-            my $mailTypeText
-                = $rateReqDoc->createTextNode($package->mail_type());
-            $mailTypeEl->appendChild($mailTypeText);
-            $packageEl->appendChild($mailTypeEl);
 
-            my $countryEl = $rateReqDoc->createElement('Country');
-            my $countryText
-                = $rateReqDoc->createTextNode($self->shipment->to_country());
-            $countryEl->appendChild($countryText);
-            $packageEl->appendChild($countryEl);
-        }
+#            if ($self->service() =~ /all/i
+#                and not defined $package->machinable())
+#            {
+#                $package->machinable('False');
+#            }
 
     }    #/foreach package
     my $request_xml = $rateReqDoc->toString();
@@ -291,7 +314,7 @@ sub _gen_request {
     # This is how USPS slightly varies from Business::Shipping
     my $new_content
         = 'API='
-        . ($self->domestic() ? 'RateV3' : 'IntlRate') . '&XML='
+        . ($self->domestic() ? 'RateV4' : 'IntlRateV2') . '&XML='
         . $request->content();
     $request->content($new_content);
     $request->header('content-length' => CORE::length($request->content()));
@@ -337,15 +360,16 @@ sub _handle_response {
         ForceArray => 0,
         KeepRoot   => 1
     );
-    ### Discard the root element if it is RateV3Response
+
+    ### Discard the root element if it is RateV4Response
     $response_tree = $response_tree->{RateV2Response}
         if (exists($response_tree->{RateV2Response}));
-    $response_tree = $response_tree->{RateV3Response}
-        if (exists($response_tree->{RateV3Response}));
+    $response_tree = $response_tree->{RateV4Response}
+        if (exists($response_tree->{RateV4Response}));
 
-    ### Discard the root element if it is IntlRateResponse
-    $response_tree = $response_tree->{IntlRateResponse}
-        if (exists($response_tree->{IntlRateResponse}));
+    ### Discard the root element if it is IntlRateV2Response
+    $response_tree = $response_tree->{IntlRateV2Response}
+        if (exists($response_tree->{IntlRateV2Response}));
 
     #use Data::Dumper; trace(Dumper($response_tree));
 
@@ -431,7 +455,7 @@ sub _handle_response {
                 my $service_hash = {
                     code       => undef,
                     nick       => service_to_nick($chg->{MailService}),
-                    name       => $chg->{MailService},
+                    name       => _remove_reg_tm($chg->{MailService}),
                     deliv_days => undef,
                     deliv_date => undef,
                     charges    => $chg->{Rate},
@@ -461,7 +485,7 @@ sub _handle_response {
                 my $service_hash = {
                     code       => undef,
                     nick       => service_to_nick($service->{SvcDescription}),
-                    name       => $service->{SvcDescription},
+                    name       => _remove_reg_tm($service->{SvcDescription}),
                     deliv_days => undef,
                     deliv_date => undef,
                     charges    => $service->{Postage},
@@ -490,12 +514,7 @@ sub _handle_response {
         }
         info("Requested service is '$desired_service'");
         foreach my $service (@{ $response_tree->{Package}->{Service} }) {
-            my $remove_reg = quotemeta('&lt;sup&gt;&amp;reg;&lt;/sup&gt;');
-            my $remove_tm  = quotemeta('&lt;sup&gt;&amp;trade;&lt;/sup&gt;');
-            my $compare_service = $service->{SvcDescription};
-            $compare_service =~ s/\*//g;
-            $compare_service =~ s/$remove_reg//gi;
-            $compare_service =~ s/$remove_tm//gi;
+            my $compare_service = _remove_reg_tm($service->{SvcDescription});
             my $postage_formatted
                 = Business::Shipping::Util::currency({}, $service->{Postage});
 
@@ -555,6 +574,25 @@ sub _handle_response {
     return $self->is_success(1);
 }
 
+=head2 _remove_reg_tm
+
+USPS returns html for their services which are registered trademarks.
+This method removes the html.
+
+=cut
+
+sub _remove_reg_tm {
+    my $tag = shift;
+    my $remove_reg = quotemeta('&lt;sup&gt;&amp;reg;&lt;/sup&gt;');
+    my $remove_tm  = quotemeta('&lt;sup&gt;&amp;trade;&lt;/sup&gt;');
+
+    $tag =~ s/\*//g;
+    $tag =~ s/$remove_reg//gi;
+    $tag =~ s/$remove_tm//gi;
+ 
+    return $tag;
+}
+
 sub service_to_nick {
     my ($service_description) = @_;
     return $service_description unless $service_description;
@@ -609,7 +647,7 @@ Daniel Browning, db@kavod.com, L<http://www.kavod.com/>
 
 =head1 COPYRIGHT AND LICENCE
 
-Copyright 2003-2011 Daniel Browning <db@kavod.com>. All rights reserved.
+Copyright 2003-2012 Daniel Browning <db@kavod.com>. All rights reserved.
 This program is free software; you may redistribute it and/or modify it 
 under the same terms as Perl itself. See LICENSE for more info.
 

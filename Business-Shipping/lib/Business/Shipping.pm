@@ -124,6 +124,54 @@ For example:
 
 =item * Shipment rate estimation using USPS Online WebTools.
 
+Get rates for domestic and international shipments using the USPS Rate 
+Calculator API.
+
+=head3 Domestic Shipments, single service.
+
+ $rr_shop = Business::Shipping->rate_request(
+   service      => 'PRIORITY',
+   shipper      => 'USPS_Online',
+   from_zip     => '26003',
+   to_zip       => '33625',
+   weight       => '15',
+   user_id      => '',
+   password     => ''
+ );
+
+ $rr_shop->execute() or die $rr_shop->user_error();
+
+=head3 Domestic Shipments, all available services.
+
+ $rr_shop = Business::Shipping->rate_request(
+   service      => 'all',
+   shipper      => 'USPS_Online',
+   from_zip     => '26003',
+   to_zip       => '33625',
+   weight       => '15',
+   user_id      => '',
+   password     => '',
+   size         => 'LARGE',
+   container    => 'RECTANGULAR'
+ );
+
+=head3 International Shipments, all available services.
+
+ $rr_shop = Business::Shipping->rate_request(
+   service      => 'all',
+   shipper      => 'USPS_Online',
+   from_zip     => '26003',
+   to_country   => 'SINGAPORE',
+   weight       => '15',
+   value        => '140',
+   size         => 'REGULAR',
+   user_id      => '',
+   password     => ''
+ );
+
+=item * Refer to the USPS Rate Calculator API for more information about 
+rate request parameters. L<http://www.usps.com/webtools/>
+
 =item * Shipment tracking
 
 =back

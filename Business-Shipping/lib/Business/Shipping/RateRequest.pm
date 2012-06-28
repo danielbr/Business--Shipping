@@ -101,7 +101,7 @@ has 'shipment' => (
     default => sub { Business::Shipping::Shipment->new() },
     handles => [
         'from_zip',     'to_zip', 'from_city', 'to_city',
-        'from_country', 'to_country',
+        'from_country', 'to_country', 'value'
     ]
 );
 
@@ -118,6 +118,7 @@ sub Optional {
         to_zip
         from_city
         to_city
+        value
         /;
     return ($_[0]->SUPER::Optional, @optional);
 }

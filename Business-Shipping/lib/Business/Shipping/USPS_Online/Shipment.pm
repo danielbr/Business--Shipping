@@ -76,6 +76,7 @@ foreach my $attribute (
     height
     length
     girth
+    value
     /
     )
 {

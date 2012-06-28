@@ -26,6 +26,7 @@ has 'max_weight' => (is => 'rw', default => 150);
 has 'cod' => (is => 'rw');
 has 'cod_funds_code' => (is => 'rw');
 has 'cod_value'      => (is => 'rw');
+has 'value'          => (is => 'rw');
 
 =head2 packages_push
 
