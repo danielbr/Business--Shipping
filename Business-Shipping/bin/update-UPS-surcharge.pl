@@ -20,7 +20,7 @@ is one that will update your Business::Shipping::DataFiles:
  01 4 * * 1 perl -MCPAN -e 'install Business::Shipping::DataFiles'
 
  
- http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html
+ http://www.ups.com/content/us/en/shipping/cost/zones/fuel_surcharge.html
     
 =head1 REQUIRED MODULES
 
@@ -58,7 +58,7 @@ sub check_for_updates {
     $ua->timeout(10);
     $ua->env_proxy();
     my $request_param
-        = 'http://www.ups.com/content/us/en/resources/find/cost/fuel_surcharge.html';
+        = 'http://www.ups.com/content/us/en/shipping/cost/zones/fuel_surcharge.html';
     my $response = $ua->get($request_param);
     die
         "Could not update fuel surchage: could not access ups fuel_surcharge page"
