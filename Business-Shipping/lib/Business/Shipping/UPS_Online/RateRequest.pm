@@ -521,9 +521,7 @@ sub _handle_response {
         my $deliv_days   = $ups_rate_info->{GuaranteedDaysToDelivery};
 
         # find the negotiated rates, if applicable
-        my $negot_rate =
-            $ups_rate_info->{NegotiatedRates}->{NetSummaryCharges}->{GrandTotal}->{MonetaryValue}
-            if $self->negotiated_rates();
+        my $negot_rate = _total_negotiated_rate($ups_rate_info);
 
         # When there is no deliv_days,  XML::Simple sets it to an empty hash.
 
@@ -581,6 +579,24 @@ sub _handle_response {
     $self->results($results);
 
     return $self->is_success(1);
+}
+
+=head2 _total_negotiated_rate
+
+Examine the UPS rate info response to find the negotiated rate, if any.
+
+=cut
+
+sub _total_negotiated_rate {
+    my ($ups_rate_info) = @_;
+
+    die "ups_rate_info required" unless $ups_rate_info;
+    return unless $self->negotiated_rates();
+
+    my $sum_charges = $ups_rate_info->{NegotiatedRates}{NetSummaryCharges};
+    my $grand_total = $sum_charges->{GrandTotal}{MonetaryValue};
+
+    return $grand_total;
 }
 
 =head2 to_country_abbrev()
