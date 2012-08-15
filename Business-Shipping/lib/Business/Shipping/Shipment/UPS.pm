@@ -131,13 +131,15 @@ sub massage_values {
 
 =head2 Required()
 
-from_state only required for Offline international orders.
+from_state only required for Offline international orders or negotiated rates.
 
 =cut
 
 sub Required {
-    return 'service, from_state' if $_[0]->to_canada and $_[0]->offline;
-    return 'service, from_zip, from_state' if $_[0]->intl and $_[0]->offline;
+    return 'service, from_state' if ($_[0]->to_canada and $_[0]->offline)
+        || $_[0]->negotiated_rates;
+    return 'service, from_zip, from_state' if ($_[0]->intl and $_[0]->offline)
+        || $_[0]->negotiated_rates;
     return 'service, from_zip';
 }
 

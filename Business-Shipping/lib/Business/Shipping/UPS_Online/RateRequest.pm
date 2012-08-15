@@ -107,10 +107,13 @@ has 'shipment' => (
         'signature_type', 'insured_currency_type',
         'insured_value',  'service_code',
         'service',        'service_name',
+        'to_state',       'to_state_abbrev',
+        'from_state',     'from_state_abbrev'
     ]
 );
 
 has 'shipper_number' => (is => 'rw');
+has 'negotiated_rates' => (is => 'rw');
 
 =head1
 
@@ -248,12 +251,25 @@ sub _gen_request_xml {
                         'CountryCode'        => [$self->to_country_abbrev()],
                         'PostalCode'         => [$self->to_zip()],
                         'City'               => [$self->to_city()],
+                        'StateProvinceCode'  => [$self->to_state_abbrev()],
+                    }
+                ],
+            }
+        ],
+        'ShipFrom' => [
+            {   'Address' => [
+                    {   'CountryCode'        => [$self->from_country_abbrev()],
+                        'PostalCode'         => [$self->from_zip()],
+                        'StateProvinceCode'  => [$self->from_state_abbrev()],
                     }
                 ],
             }
         ],
         'Service'                    => [{ 'Code' => [$service_code], }],
         'ShipmentServiceSelfOptions' => {},
+        'RateInformation'            => [
+            {   'NegotiatedRatesIndicator' => [$self->negotiated_rates()] }
+        ]
     );
 
     my $shipment = $self->shipment;
@@ -512,6 +528,11 @@ sub _handle_response {
         my $charges      = $ups_rate_info->{TotalCharges}->{MonetaryValue};
         my $deliv_days   = $ups_rate_info->{GuaranteedDaysToDelivery};
 
+        # find the negotiated rates, if applicable
+        my $negot_rate =
+            $ups_rate_info->{NegotiatedRates}->{NetSummaryCharges}->{GrandTotal}->{MonetaryValue}
+            if $self->negotiated_rates();
+
         # When there is no deliv_days,  XML::Simple sets it to an empty hash.
 
         $deliv_days = undef if ref $deliv_days eq 'HASH';
@@ -538,9 +559,10 @@ sub _handle_response {
             name => $self->shipment->service_code_to_name($service_code),
             deliv_days => $deliv_days,
             deliv_date => $deliv_date,
-            charges    => $charges,
+            charges    => ($self->negotiated_rates()) ? $negot_rate : $charges,
             charges_formatted =>
-                Business::Shipping::Util::currency({}, $charges),
+                Business::Shipping::Util::currency({},
+                ($self->negotiated_rates()) ? $negot_rate : $charges),
             deliv_date_formatted => $deliv_date_formatted,
         };
 
