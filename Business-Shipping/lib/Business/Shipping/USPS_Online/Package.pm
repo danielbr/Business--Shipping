@@ -45,6 +45,7 @@ has 'width'      => (is => 'rw', default => '');
 has 'height'     => (is => 'rw', default => '');
 has 'length'     => (is => 'rw', default => '');
 has 'girth'      => (is => 'rw', default => '');
+has 'value'      => (is => 'rw', default => '');
 
 __PACKAGE__->meta()->make_immutable();
 
