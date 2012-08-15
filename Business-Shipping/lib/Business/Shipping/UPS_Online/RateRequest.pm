@@ -154,14 +154,6 @@ sub Optional {
 }
 sub Unique { return ($_[0]->SUPER::Unique, qw/ packaging /); }
 
-=head2 from_state()
-
-Ignored.  For compatibility with UPS_Offline only.
-
-=cut
-
-sub from_state { }
-
 =head2 pickup_type
 
 =cut
