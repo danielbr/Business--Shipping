@@ -32,6 +32,7 @@ has 'service_name'   => (is => 'rw');
 has 'service_nick2'  => (is => 'rw');
 has 'from_state_abbrev' => (is => 'rw');
 has 'to_state_abbrev' => (is => 'rw');
+has 'from_state'     => (is => 'rw');
 
 # We need this offline boolean to know if from_state is required.
 has 'offline' => (is => 'rw');

@@ -32,7 +32,6 @@ extends 'Business::Shipping::Shipment::UPS';
 
 # TODO: Only allow tiers 1-8
 has 'tier'                  => (is => 'rw');
-has 'from_state'            => (is => 'rw');
 has 'max_weight'            => (is => 'rw', default => 150);
 has 'disable_hundredweight' => (is => 'rw');
 has 'hundredweight_margin'  => (is => 'rw', default => 10);
