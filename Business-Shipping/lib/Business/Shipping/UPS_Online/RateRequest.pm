@@ -517,11 +517,10 @@ sub _handle_response {
     foreach my $ups_rate_info (@$ups_results) {
 
         my $service_code = $ups_rate_info->{Service}->{Code};
-        my $charges      = $ups_rate_info->{TotalCharges}->{MonetaryValue};
         my $deliv_days   = $ups_rate_info->{GuaranteedDaysToDelivery};
-
-        # find the negotiated rates, if applicable
-        my $negot_rate = _total_negotiated_rate($ups_rate_info);
+        my $charges      = $self->negotiated_rates()
+                         ? _total_negotiated_rate($ups_rate_info)
+                         : $ups_rate_info->{TotalCharges}->{MonetaryValue};
 
         # When there is no deliv_days,  XML::Simple sets it to an empty hash.
 
@@ -549,7 +548,7 @@ sub _handle_response {
             name => $self->shipment->service_code_to_name($service_code),
             deliv_days => $deliv_days,
             deliv_date => $deliv_date,
-            charges    => ($self->negotiated_rates()) ? $negot_rate : $charges,
+            charges    => $charges,
             charges_formatted =>
                 Business::Shipping::Util::currency({},
                 ($self->negotiated_rates()) ? $negot_rate : $charges),
