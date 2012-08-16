@@ -519,7 +519,7 @@ sub _handle_response {
         my $service_code = $ups_rate_info->{Service}->{Code};
         my $deliv_days   = $ups_rate_info->{GuaranteedDaysToDelivery};
         my $charges      = $self->negotiated_rates()
-                         ? _total_negotiated_rate($ups_rate_info)
+                         ? $self->_total_negotiated_rate($ups_rate_info)
                          : $ups_rate_info->{TotalCharges}->{MonetaryValue};
 
         # When there is no deliv_days,  XML::Simple sets it to an empty hash.
@@ -587,7 +587,7 @@ Examine the UPS rate info response to find the negotiated rate, if any.
 =cut
 
 sub _total_negotiated_rate {
-    my ($ups_rate_info) = @_;
+    my ($self, $ups_rate_info) = @_;
 
     die "ups_rate_info required" unless $ups_rate_info;
     return unless $self->negotiated_rates();
