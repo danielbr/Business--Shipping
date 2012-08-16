@@ -550,8 +550,7 @@ sub _handle_response {
             deliv_date => $deliv_date,
             charges    => $charges,
             charges_formatted =>
-                Business::Shipping::Util::currency({},
-                ($self->negotiated_rates()) ? $negot_rate : $charges),
+                Business::Shipping::Util::currency({}, $charges),
             deliv_date_formatted => $deliv_date_formatted,
         };
 
