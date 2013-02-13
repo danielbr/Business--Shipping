@@ -94,6 +94,28 @@ Gets rates for all the services in one request:
      }
  }
 
+=item * Negotiated Rates
+
+If you have negotiated rates with UPS, specify your shipper number 
+and login credentials:
+
+ my $rr_shop = Business::Shipping->rate_request(
+     service          => 'shop',
+     shipper          => 'UPS_Online',
+     shipper_number   => 'your_shipper_#',
+     from_zip         => '26003',
+     from_state       => 'WV',
+     from_country     => 'US',
+     to_zip           => '33625',
+     to_state_abbrev  => 'FL',
+     to_residential   => 1,
+     weight           => '5.00',
+     user_id          => 'your_user_id',
+     password         => 'your_password',
+     access_key       => 'your_UPS_access_key',
+     negotiated_rates => 1
+ );
+
 =item * C.O.D. (Cash On Delivery)
 
 Add these options to your rate request for C.O.D.:
@@ -167,6 +189,41 @@ Calculator API.
    size         => 'REGULAR',
    user_id      => '',
    password     => ''
+ );
+
+=item * Reduced Rates
+
+If you receive reduced rates from the USPS, include your login 
+credentials and the commercial flag.  This example is for an 
+international shipment:
+
+ my $rr_shop = Business::Shipping->rate_request(
+     service        => 'all',
+     shipper        => 'USPS_Online',
+     from_zip       => '26003',
+     to_country     => 'NZ'
+     weight         => '5.00',
+     value          => '100',
+     size           => 'REGULAR',
+     container      => '',
+     user_id        => 'your_USPS_user_id',
+     password       => 'your_USPS_password',
+     commercialflag => 'Y'
+ );
+
+And for a domestic shipment:
+
+ $rr_shop = Business::Shipping->rate_request(
+     service        => 'PRIORITY',
+     shipper        => 'USPS_Online',
+     from_zip       => '26003',
+     to_zip         => '98225',
+     weight         => '5.00',
+     user_id        => 'your_USPS_user_id',
+     password       => 'your_USPS_password',
+     commercialflag => 'Y',
+     machinable     => 'TRUE',
+     container      => 'Variable'
  );
 
 =item * Refer to the USPS Rate Calculator API for more information about 
