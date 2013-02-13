@@ -281,6 +281,12 @@ sub _gen_request_xml {
                 $packageEl->appendChild($machineEl);
             }
         }
+        else {
+            my $commercialEl   = $rateReqDoc->createElement('CommercialFlag');
+            my $commercialText = $rateReqDoc->createTextNode($package->commercialflag());
+            $commercialEl->appendChild($commercialText);
+            $packageEl->appendChild($commercialEl);
+        }
 
 #            if ($self->service() =~ /all/i
 #                and not defined $package->machinable())
