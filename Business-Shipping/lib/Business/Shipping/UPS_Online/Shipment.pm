@@ -27,6 +27,7 @@ has 'cod' => (is => 'rw');
 has 'cod_funds_code' => (is => 'rw');
 has 'cod_value'      => (is => 'rw');
 has 'value'          => (is => 'rw');
+has 'from_state'     => (is => 'rw');
 
 =head2 packages_push
 
