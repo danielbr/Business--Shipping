@@ -44,7 +44,9 @@ has 'packages' => (is => 'rw', isa => 'ArrayRef');
 has 'current_package_index' => (is => 'rw');
 has 'from_zip'              => (is => 'rw');
 has 'from_city'             => (is => 'rw');
+has 'from_state_abbrev'     => (is => 'rw');
 has 'to_city'               => (is => 'rw');
+has 'to_state_abbrev'       => (is => 'rw');
 has 'shipment_num'          => (is => 'rw');
 
 __PACKAGE__->meta()->make_immutable();
